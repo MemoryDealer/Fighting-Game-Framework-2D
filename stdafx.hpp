@@ -17,7 +17,17 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+// Platform-specific headers
+#ifdef __WIN32__
+#include <Windows.h>
+#elif __linux__
+	;
+#elif __APPLE__
+	;
+#endif
+
 // Project
 #include "Singleton.hpp"
+#include "Log.hpp"
 
 // ================================================ //

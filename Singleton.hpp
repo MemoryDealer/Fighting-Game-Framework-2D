@@ -19,7 +19,7 @@ template <typename T>
 class Singleton
 {
 public:
-	Singleton(void)
+	explicit Singleton(void)
 	{
 		assert(!msSingleton);
 

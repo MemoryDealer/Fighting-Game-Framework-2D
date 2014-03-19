@@ -19,6 +19,18 @@
     <Filter Include="Source Files\Log">
       <UniqueIdentifier>{57998ee9-25c3-4519-9766-434aa3f1cd6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\App">
+      <UniqueIdentifier>{54726f84-5aa4-47d2-9958-5e74f33161ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{d99318c6-bf3a-41fb-85e5-87ecc959d680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{5cbfabe0-9523-4639-a445-0dbe21b0aac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\App">
+      <UniqueIdentifier>{cfd1a983-c717-445e-9c50-127499a352ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,6 +45,12 @@
     <ClCompile Include="LogImpl.cpp">
       <Filter>Source Files\Log</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineImpl.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.hpp">
@@ -46,6 +64,12 @@
     </ClInclude>
     <ClInclude Include="LogImpl.hpp">
       <Filter>Header Files\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineImpl.hpp">
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

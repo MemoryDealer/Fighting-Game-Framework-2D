@@ -1,7 +1,7 @@
 // ================================================ //
 
 #include "stdafx.hpp"
-#include "Log.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -16,6 +16,7 @@ int SDL_main(int argc, char** argv)
 	try{
 		// Initialize application log
 		new Log();
+		new Engine();
 	} 
 	catch(std::exception& e){
 		printf("ERROR: %s\n", e.what());

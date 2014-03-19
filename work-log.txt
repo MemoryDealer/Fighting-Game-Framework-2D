@@ -1,8 +1,17 @@
+#3/17/14
+-The main must have parameters argc and argv for SDL to link properly, not sure if calling main SDL_main is necessary. 
+-Got textures loaded; SDL_Texture stores the texture in memory, SDL_RenderCopy() renders the texture and allows specification of 
+	coordinates, SDL_QueryTexture() gets a texture's width and height, SDL_RenderPresent() flips the screen, if I understand correctly. 
+-SDL_Texture's should be destroyed with SDL_DestroyTexture(),
+	same goes for the renderer, and window. 
+-Added SDL_image extension, several DLL files are needed (five) for it to work with the executable. 
+-Calling IMG_Init() will preload the library to later prevent performance hiccups when using it. 
+-Added SDL_ttf library to load true type fonts. 
 
 
 #3/18/14
 -Created git repo and project files. Started building app framework:
 	-Log
 	-Singleton
-
+	-Engine
 -I am using "pointer to implementation" for most classes. 

@@ -80,12 +80,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="EngineImpl.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="LogImpl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="EngineImpl.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="LogImpl.hpp" />
     <ClInclude Include="Singleton.hpp" />
