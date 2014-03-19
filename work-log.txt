@@ -1,0 +1,8 @@
+
+
+#3/18/14
+-Created git repo and project files. Started building app framework:
+	-Log
+	-Singleton
+
+-I am using "pointer to implementation" for most classes. 

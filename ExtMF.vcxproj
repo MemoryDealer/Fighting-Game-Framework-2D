@@ -80,11 +80,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="LogImpl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Log.hpp" />
+    <ClInclude Include="LogImpl.hpp" />
+    <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="work-log.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
