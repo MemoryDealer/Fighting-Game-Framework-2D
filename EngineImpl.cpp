@@ -70,9 +70,31 @@ void EngineImpl::clearRenderer(void)
 
 // ================================================ //
 
+void EngineImpl::renderTexture(SDL_Texture* pTexture)
+{
+	SDL_RenderCopy(m_pRenderer, pTexture, nullptr, nullptr);
+}
+
+// ================================================ //
+
 void EngineImpl::renderPresent(void)
 {
 	SDL_RenderPresent(m_pRenderer);
+}
+
+// ================================================ //
+
+SDL_Texture* EngineImpl::loadTexture(const char* filename)
+{
+	SDL_Texture* tex = nullptr;
+
+	tex = IMG_LoadTexture(m_pRenderer, filename);
+	if(tex == nullptr)
+		Log::getSingletonPtr()->logMessage("Failed to load texture from file: \"" + std::string(filename) + "\"");
+
+	Log::getSingletonPtr()->logMessage("Texture \"" + std::string(filename) + "\" loaded!");
+
+	return tex;
 }
 
 // ================================================ //

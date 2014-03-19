@@ -26,14 +26,28 @@ Engine::~Engine(void)
 
 void Engine::clearRenderer(void)
 {
-	m_pImpl->clearRenderer();
+	return m_pImpl->clearRenderer();
+}
+
+// ================================================ //
+
+void Engine::renderTexture(SDL_Texture* pTexture)
+{
+	return m_pImpl->renderTexture(pTexture);
 }
 
 // ================================================ //
 
 void Engine::renderPresent(void)
 {
-	m_pImpl->renderPresent();
+	return m_pImpl->renderPresent();
+}
+
+// ================================================ //
+
+SDL_Texture* Engine::loadTexture(const char* filename)
+{
+	return m_pImpl->loadTexture(filename);
 }
 
 // ================================================ //

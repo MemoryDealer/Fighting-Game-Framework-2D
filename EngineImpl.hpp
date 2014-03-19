@@ -16,7 +16,11 @@ public:
 	~EngineImpl(void);
 
 	void clearRenderer(void);
+	void renderTexture(SDL_Texture* pTexture);
 	void renderPresent(void);
+
+	// Factory functions
+	SDL_Texture* loadTexture(const char* filename);
 
 private:
 	// SDL components

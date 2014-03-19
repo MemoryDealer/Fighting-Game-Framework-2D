@@ -81,15 +81,9 @@ void AppStateManager::start(AppState* pState)
 		if(true){
 			// startTime = timer
 
-			// Clear the screen
-			Engine::getSingletonPtr()->clearRenderer();
-
 			// Update the active state
 			m_activeStateStack.back()->update(dt);
-
-			// Render updated game world
-			Engine::getSingletonPtr()->renderPresent();
-
+			
 			// dt = timer - startTime
 		}
 	}

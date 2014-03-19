@@ -22,19 +22,20 @@ App::App(void)
 	// Create states
 	MenuState::create(m_pAppStateManager, MENU_STATE);
 
+	Log::getSingletonPtr()->logMessage("App initialized!");
+
 	// Start entry state
 	m_pAppStateManager->start(m_pAppStateManager->findByName(MENU_STATE));
-
-	Log::getSingletonPtr()->logMessage("App initialized!");
 }
 
 // ================================================ //
 
 App::~App(void)
 {
-	Log::getSingletonPtr()->logMessage("Closing app...");
 	delete Engine::getSingletonPtr();
 	delete m_pAppStateManager;
+
+	Log::getSingletonPtr()->logMessage("Exiting app...");
 }
 
 // ================================================ //
