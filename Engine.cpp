@@ -23,3 +23,17 @@ Engine::~Engine(void)
 }
 
 // ================================================ //
+
+void Engine::clearRenderer(void)
+{
+	m_pImpl->clearRenderer();
+}
+
+// ================================================ //
+
+void Engine::renderPresent(void)
+{
+	m_pImpl->renderPresent();
+}
+
+// ================================================ //

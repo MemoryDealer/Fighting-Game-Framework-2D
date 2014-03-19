@@ -16,7 +16,7 @@ public:
 	~LogImpl(void);
 
 	void logMessage(const std::string& str);
-	void logTime(const bool newLine = true);
+	void logTime(const bool time = true, const bool date = false);
 
 private:
 	std::ofstream m_file;

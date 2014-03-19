@@ -15,6 +15,9 @@ public:
 	explicit EngineImpl(void);
 	~EngineImpl(void);
 
+	void clearRenderer(void);
+	void renderPresent(void);
+
 private:
 	// SDL components
 	SDL_Window*			m_pWindow;

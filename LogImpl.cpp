@@ -12,7 +12,7 @@ LogImpl::LogImpl(void)
 		throw std::exception("Failed to open log file");
 	}
 
-	this->logTime(false);
+	this->logTime(false, true);
 	this->logMessage(" Log created for Extreme Metal Fighter\n");
 }
 
@@ -27,27 +27,33 @@ LogImpl::~LogImpl(void)
 
 void LogImpl::logMessage(const std::string& str)
 {
+	this->logTime();
 	m_file << str << std::endl;
 }
 
 // ================================================ //
 
-void LogImpl::logTime(const bool newLine)
+void LogImpl::logTime(const bool time, const bool date)
 {
 #ifdef __WIN32__
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	m_file << "[" << st.wMonth << "/" << st.wDay <<
-		"/" << st.wYear << " - " << st.wHour << ":" <<
-		st.wMinute << ":" << st.wSecond << "]";
+	if(date){
+		m_file << "[" << st.wMonth << "/" << st.wDay << "/" << st.wYear << "] ";
+	}
+	if(time){
+		if(st.wHour < 10) m_file << "0";
+		m_file << st.wHour << ":";
+		if(st.wMinute < 10) m_file << "0";
+		m_file << st.wMinute << ":";
+		if(st.wSecond < 10) m_file << "0";
+		m_file << st.wSecond << ": ";
+	}
 #elif __linux__
 	;
 #elif __APPLE__
 	;
 #endif
-
-	if(newLine)
-		m_file << std::endl;
 }
 
 // ================================================ //

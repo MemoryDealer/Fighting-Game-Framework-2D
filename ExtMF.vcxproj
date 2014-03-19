@@ -80,18 +80,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="AppStateManager.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="LogImpl.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuState.cpp" />
+    <ClCompile Include="MenuStateImpl.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App.hpp" />
+    <ClInclude Include="AppState.hpp" />
+    <ClInclude Include="AppStateManager.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="EngineImpl.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="LogImpl.hpp" />
+    <ClInclude Include="MenuState.hpp" />
+    <ClInclude Include="MenuStateImpl.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
   </ItemGroup>

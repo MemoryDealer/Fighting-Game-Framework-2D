@@ -1,29 +1,28 @@
 // ================================================ //
 
-#ifndef __LOG_HPP__
-#define __LOG_HPP__
+#ifndef __APP_HPP__
+#define __APP_HPP__
 
 // ================================================ //
 
-#include "stdafx.hpp"
+#include "AppStateManager.hpp"
 
 // ================================================ //
 
-class LogImpl;
+const std::string MENU_STATE = "MenuState";
+const std::string LOBBY_STATE = "LobbyState";
+const std::string GAME_STATE = "GameState";
 
 // ================================================ //
 
-class Log : public Singleton<Log>
+class App
 {
 public:
-	explicit Log(void);
-	~Log(void);
-
-	void logMessage(const std::string& str);
-	void logTime(const bool time = true, const bool date = false);
+	explicit App(void);
+	~App(void);
 
 private:
-	std::tr1::shared_ptr<LogImpl> m_pImpl;
+	AppStateManager* m_pAppStateManager; // the Big Dog
 };
 
 // ================================================ //

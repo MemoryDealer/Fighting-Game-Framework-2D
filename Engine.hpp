@@ -19,6 +19,10 @@ public:
 	explicit Engine(void);
 	~Engine(void);
 
+	void clearRenderer(void);
+	//renderObject()...
+	void renderPresent(void);
+
 private:
 	std::tr1::shared_ptr<EngineImpl> m_pImpl;
 };

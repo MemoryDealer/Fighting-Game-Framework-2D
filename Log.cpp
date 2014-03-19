@@ -31,9 +31,9 @@ void Log::logMessage(const std::string& str)
 
 // ================================================ //
 
-void Log::logTime(const bool newLine)
+void Log::logTime(const bool time, const bool date)
 {
-	m_pImpl->logTime(newLine);
+	m_pImpl->logTime(time, date);
 }
 
 // ================================================ //

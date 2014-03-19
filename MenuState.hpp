@@ -1,29 +1,34 @@
 // ================================================ //
 
-#ifndef __LOG_HPP__
-#define __LOG_HPP__
+#ifndef __MENUSTATE_HPP__
+#define __MENUSTATE_HPP__
 
 // ================================================ //
 
-#include "stdafx.hpp"
+#include "AppState.hpp"
 
 // ================================================ //
 
-class LogImpl;
+class MenuStateImpl;
 
 // ================================================ //
 
-class Log : public Singleton<Log>
+class MenuState : public AppState
 {
 public:
-	explicit Log(void);
-	~Log(void);
+	explicit MenuState(void);
+	~MenuState(void);
 
-	void logMessage(const std::string& str);
-	void logTime(const bool time = true, const bool date = false);
+	DECLARE_APPSTATE_CLASS(MenuState);
+
+	void enter(void);
+	void exit(void);
+	bool pause(void);
+	void resume(void);
+	void update(double dt);
 
 private:
-	std::tr1::shared_ptr<LogImpl> m_pImpl;
+	std::tr1::shared_ptr<MenuStateImpl> m_pImpl;
 };
 
 // ================================================ //

@@ -11,6 +11,8 @@
 #include <fstream>
 #include <string>
 #include <cassert>
+#include <vector>
+#include <list>
 
 // SDL
 #include <SDL.h>
