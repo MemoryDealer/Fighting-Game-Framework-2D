@@ -6,6 +6,7 @@
 // ================================================ //
 
 #include "MenuState.hpp"
+#include "Object.hpp"
 
 // ================================================ //
 
@@ -25,6 +26,9 @@ public:
 
 private:
 	bool m_bQuit;
+
+	Object*	m_pObject;
+	Object* m_pBackground;
 };
 
 // ================================================ //

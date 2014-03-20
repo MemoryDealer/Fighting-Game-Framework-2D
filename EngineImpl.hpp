@@ -6,6 +6,7 @@
 // ================================================ //
 
 #include "stdafx.hpp"
+#include "Object.hpp"
 
 // ================================================ //
 
@@ -16,11 +17,14 @@ public:
 	~EngineImpl(void);
 
 	void clearRenderer(void);
-	void renderTexture(SDL_Texture* pTexture);
+	void renderObject(const Object* pObject);
 	void renderPresent(void);
 
 	// Factory functions
 	SDL_Texture* loadTexture(const char* filename);
+
+	// Destroy functions
+	void destroyTexture(SDL_Texture* pTexture);
 
 private:
 	// SDL components

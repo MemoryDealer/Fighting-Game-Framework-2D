@@ -23,6 +23,12 @@ MenuStateImpl::~MenuStateImpl(void)
 void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
+
+	m_pBackground = new Object();
+	m_pBackground->setTextureFile("D:/2D/B/cave.jpg");
+
+	m_pObject = new Object();
+	m_pObject->setTextureFile("D:/2D/Sprites/s.png");
 }
 
 // ================================================ //
@@ -30,6 +36,9 @@ void MenuStateImpl::enter(void)
 void MenuStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
+
+	delete m_pObject;
+	delete m_pBackground;
 }
 
 // ================================================ //
@@ -53,11 +62,6 @@ void MenuStateImpl::resume(void)
 void MenuStateImpl::update(double dt)
 {
 	SDL_Event e;
-	static SDL_Texture* tex = nullptr; // just temporary hack to make sure SDL is working
-	
-	if(tex == nullptr){
-		tex = Engine::getSingletonPtr()->loadTexture("D:/2D/B/cave.jpg");
-	}
 
 	while(SDL_PollEvent(&e)){
 		switch(e.type){
@@ -76,7 +80,8 @@ void MenuStateImpl::update(double dt)
 
 		Engine::getSingletonPtr()->clearRenderer();
 
-		Engine::getSingletonPtr()->renderTexture(tex);
+		Engine::getSingletonPtr()->renderObject(m_pBackground);
+		Engine::getSingletonPtr()->renderObject(m_pObject);
 
 		Engine::getSingletonPtr()->renderPresent();
 	}

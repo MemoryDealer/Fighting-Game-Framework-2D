@@ -70,9 +70,9 @@ void EngineImpl::clearRenderer(void)
 
 // ================================================ //
 
-void EngineImpl::renderTexture(SDL_Texture* pTexture)
+void EngineImpl::renderObject(const Object* pObject)
 {
-	SDL_RenderCopy(m_pRenderer, pTexture, nullptr, nullptr);
+	SDL_RenderCopy(m_pRenderer, pObject->getTexturePtr(), nullptr, nullptr);
 }
 
 // ================================================ //
@@ -95,6 +95,13 @@ SDL_Texture* EngineImpl::loadTexture(const char* filename)
 	Log::getSingletonPtr()->logMessage("Texture \"" + std::string(filename) + "\" loaded!");
 
 	return tex;
+}
+
+// ================================================ //
+
+void EngineImpl::destroyTexture(SDL_Texture* pTexture)
+{
+	SDL_DestroyTexture(pTexture);
 }
 
 // ================================================ //

@@ -6,6 +6,7 @@
 // ================================================ //
 
 #include "stdafx.hpp"
+#include "Object.hpp"
 
 // ================================================ //
 
@@ -20,12 +21,14 @@ public:
 	~Engine(void);
 
 	void clearRenderer(void);
-	void renderTexture(SDL_Texture* pTexture); //! this should eventually be replaced with renderObject(), just temporary hack
-	//renderObject()...
+	void renderObject(const Object* pObject);
 	void renderPresent(void);
 
 	// Factory functions
 	SDL_Texture* loadTexture(const char* filename);
+
+	// Destroy functions
+	void destroyTexture(SDL_Texture* pTexture);
 
 private:
 	std::tr1::shared_ptr<EngineImpl> m_pImpl;

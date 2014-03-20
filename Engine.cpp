@@ -31,9 +31,9 @@ void Engine::clearRenderer(void)
 
 // ================================================ //
 
-void Engine::renderTexture(SDL_Texture* pTexture)
+void Engine::renderObject(const Object* pObject)
 {
-	return m_pImpl->renderTexture(pTexture);
+	return m_pImpl->renderObject(pObject);
 }
 
 // ================================================ //
@@ -48,6 +48,13 @@ void Engine::renderPresent(void)
 SDL_Texture* Engine::loadTexture(const char* filename)
 {
 	return m_pImpl->loadTexture(filename);
+}
+
+// ================================================ //
+
+void Engine::destroyTexture(SDL_Texture* pTexture)
+{
+	return m_pImpl->destroyTexture(pTexture);
 }
 
 // ================================================ //
