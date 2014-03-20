@@ -72,19 +72,19 @@ void AppStateManager::start(AppState* pState)
 	this->changeAppState(pState);
 
 	double dt = 1.0;
-	int startTime = 0;
+	int startTime = 0, prevTime = 0;
 
 	Log::getSingletonPtr()->logMessage("Entering main loop...");
 
 	for(;!m_bShutdown;){
 		
 		if(true){
-			// startTime = timer
+			prevTime = SDL_GetTicks();
+			dt = static_cast<double>(prevTime - startTime) / 1000.0;
+			startTime = prevTime;
 
 			// Update the active state
 			m_activeStateStack.back()->update(dt);
-			
-			// dt = timer - startTime
 		}
 	}
 

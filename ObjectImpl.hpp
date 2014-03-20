@@ -42,7 +42,7 @@ inline void ObjectImpl::setPosition(const int x, const int y)
 { m_pos.x = x; m_pos.y = y; }
 
 inline void ObjectImpl::setPosition(const SDL_Rect& pos)
-{ m_pos = pos; /*memcpy(&m_pos, &pos, sizeof(m_pos));*/ }
+{ m_pos = pos; }
 
 // Getters
 inline SDL_Texture* ObjectImpl::getTexturePtr(void) const

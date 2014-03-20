@@ -45,7 +45,7 @@ bool ObjectImpl::setTextureFile(const char* filename)
 		"\" for Object \"" + m_name + "\"");
 	m_pTexture = Engine::getSingletonPtr()->loadTexture(filename);
 
-	// Set position rect
+	// Get texture width/height
 	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_pos.w, &m_pos.h);
 
 	return (m_pTexture != nullptr);
@@ -55,7 +55,8 @@ bool ObjectImpl::setTextureFile(const char* filename)
 
 void ObjectImpl::update(double dt)
 {
-
+	m_pos.x += static_cast<int>(125.0 * dt);
+	printf("Updating %s...%d\n", m_name.c_str(), m_pos.x);
 }
 
 // ================================================ //

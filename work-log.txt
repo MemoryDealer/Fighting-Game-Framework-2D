@@ -20,7 +20,10 @@
 
 #3/19/14
 -Added Object class, the Engine class now accepts an Object for rendering. 
-
+-Added correct frame time calculations in AppStateManager::start(), although it results in 0.0 per frame with vsync disabled. 
 
 #TODO
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
+-Create Texture class, Hitbox, Rect?, ObjectManager 
+-Make Object abstract, derive TestSprite and Background 
+-Fix frame time when vsync is off

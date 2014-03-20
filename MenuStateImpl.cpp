@@ -80,14 +80,16 @@ void MenuStateImpl::update(double dt)
 				m_bQuit = true;
 			break;
 		}
-
-		Engine::getSingletonPtr()->clearRenderer();
-
-		Engine::getSingletonPtr()->renderObject(m_pBackground);
-		Engine::getSingletonPtr()->renderObject(m_pObject);
-
-		Engine::getSingletonPtr()->renderPresent();
 	}
+	printf("dt: %.2f\n", dt); // testing...
+	m_pObject->update(dt);
+
+	Engine::getSingletonPtr()->clearRenderer();
+
+	Engine::getSingletonPtr()->renderObject(m_pBackground);
+	Engine::getSingletonPtr()->renderObject(m_pObject);
+
+	Engine::getSingletonPtr()->renderPresent();
 }
 
 // ================================================ //
