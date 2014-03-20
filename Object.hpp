@@ -18,15 +18,20 @@ class Object
 public:
 	/** \brief An Object is *anything* that can be rendered and/or interacted with.
 		An abstract class to derive from for any new object in the game. */
-	explicit Object(void);
+	explicit Object(const char* textureFilename = "null");
 	virtual ~Object(void);
 
-	bool setTextureFile(const char* filename);
+	// Setter functions
+	virtual bool setTextureFile(const char* filename);
+
+	virtual void setPosition(const int x, const int y);
+	virtual void setPosition(const SDL_Rect& pos);
 
 	// Getter functions
-	SDL_Texture* getTexturePtr(void) const;
+	virtual SDL_Texture* getTexturePtr(void) const;
+	virtual const SDL_Rect& getPosition(void) const;
 
-	void update(double dt);
+	virtual void update(double dt);
 
 private:
 	std::tr1::shared_ptr<ObjectImpl> m_pImpl;

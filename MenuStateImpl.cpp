@@ -24,11 +24,14 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	m_pBackground = new Object();
-	m_pBackground->setTextureFile("D:/2D/B/cave.jpg");
+	m_pBackground = new Object("D:/2D/B/cave.jpg");
+	SDL_Rect rc;
+	rc.x = rc.y = 0;
+	rc.w = Engine::getSingletonPtr()->getWindowWidth();
+	rc.h = Engine::getSingletonPtr()->getWindowHeight();
+	m_pBackground->setPosition(rc);
 
-	m_pObject = new Object();
-	m_pObject->setTextureFile("D:/2D/Sprites/s.png");
+	m_pObject = new Object("D:/2D/Sprites/s.png");
 }
 
 // ================================================ //

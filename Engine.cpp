@@ -58,3 +58,17 @@ void Engine::destroyTexture(SDL_Texture* pTexture)
 }
 
 // ================================================ //
+
+const int Engine::getWindowWidth(void) const
+{
+	return m_pImpl->getWindowWidth();
+}
+
+// ================================================ //
+
+const int Engine::getWindowHeight(void) const
+{
+	return m_pImpl->getWindowHeight();
+}
+
+// ================================================ //

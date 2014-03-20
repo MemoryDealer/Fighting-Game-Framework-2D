@@ -37,10 +37,10 @@ public:
 		msSingleton = 0;
 	}
 
-	// Getter functions
-	static T& getSingleton(void)
+	// Getter functions 
+	/*static T& getSingleton(void)
 	{ Assert(msSingleton); return (*msSingleton); }
-
+	*/
 	static T* getSingletonPtr(void)
 	{ return msSingleton; }
 

@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Object">
       <UniqueIdentifier>{a77b0e26-2684-43f2-b911-ca3bf2c413c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Timer">
+      <UniqueIdentifier>{e307bf79-41ba-43b4-b5dc-f5b4a4e57e60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

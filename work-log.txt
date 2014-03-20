@@ -17,3 +17,10 @@
 	-App, AppStateManager
 	-MenuState
 -I am using "pointer to implementation" for most classes. 
+
+#3/19/14
+-Added Object class, the Engine class now accepts an Object for rendering. 
+
+
+#TODO
+-Should each state have its own SDL_Renderer? Or is using one for all sufficient?

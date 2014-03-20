@@ -12,15 +12,20 @@
 class ObjectImpl
 {
 public:
-	explicit ObjectImpl(void);
+	explicit ObjectImpl(const char* textureFilename);
 	virtual ~ObjectImpl(void);
 
-	bool setTextureFile(const char* filename);
+	// Setter functions
+	virtual bool setTextureFile(const char* filename);
+
+	virtual void setPosition(const int x, const int y);
+	virtual void setPosition(const SDL_Rect& pos);
 
 	// Getter functions
-	SDL_Texture* getTexturePtr(void) const;
+	virtual SDL_Texture* getTexturePtr(void) const;
+	virtual const SDL_Rect& getPosition(void) const;
 
-	void update(double dt);
+	virtual void update(double dt);
 
 private:
 	// SDL components
@@ -32,8 +37,19 @@ private:
 
 // ================================================ //
 
+// Setters
+inline void ObjectImpl::setPosition(const int x, const int y)
+{ m_pos.x = x; m_pos.y = y; }
+
+inline void ObjectImpl::setPosition(const SDL_Rect& pos)
+{ m_pos = pos; /*memcpy(&m_pos, &pos, sizeof(m_pos));*/ }
+
+// Getters
 inline SDL_Texture* ObjectImpl::getTexturePtr(void) const
 { return m_pTexture; }
+
+inline const SDL_Rect& ObjectImpl::getPosition(void) const
+{ return m_pos; }
 
 // ================================================ //
 

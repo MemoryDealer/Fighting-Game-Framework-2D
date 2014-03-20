@@ -6,7 +6,9 @@
 
 EngineImpl::EngineImpl(void)
 	:	m_pWindow(nullptr),
-		m_pRenderer(nullptr)	
+		m_pRenderer(nullptr),
+		m_width(640),
+		m_height(480)
 {
 	// Initialize SDL
 	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -31,7 +33,7 @@ EngineImpl::EngineImpl(void)
 
 	// Create the window
 	m_pWindow = SDL_CreateWindow("Extreme Metal Fighter", SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
+		SDL_WINDOWPOS_UNDEFINED, m_width, m_height, 0);
 	if(m_pWindow == nullptr)
 		throw std::exception("SDL_CreateWindow() failed.");
 
@@ -72,7 +74,7 @@ void EngineImpl::clearRenderer(void)
 
 void EngineImpl::renderObject(const Object* pObject)
 {
-	SDL_RenderCopy(m_pRenderer, pObject->getTexturePtr(), nullptr, nullptr);
+	SDL_RenderCopy(m_pRenderer, pObject->getTexturePtr(), nullptr, &pObject->getPosition());
 }
 
 // ================================================ //

@@ -30,6 +30,12 @@ public:
 	// Destroy functions
 	void destroyTexture(SDL_Texture* pTexture);
 
+	// Setter functions
+
+	// Getter functions
+	const int getWindowWidth(void) const;
+	const int getWindowHeight(void) const;
+
 private:
 	std::tr1::shared_ptr<EngineImpl> m_pImpl;
 };
