@@ -72,19 +72,32 @@ void AppStateManager::start(AppState* pState)
 	this->changeAppState(pState);
 
 	double dt = 1.0;
-	int startTime = 0, prevTime = 0;
+	Uint32 newTime = 0, currentTime = 0;
 
 	Log::getSingletonPtr()->logMessage("Entering main loop...");
 
 	for(;!m_bShutdown;){
 		
-		if(true){
-			prevTime = SDL_GetTicks();
-			dt = static_cast<double>(prevTime - startTime) / 1000.0;
-			startTime = prevTime;
+		if(Engine::getSingletonPtr()->isWindowFocused()){
+			newTime = SDL_GetTicks();
+			dt = static_cast<double>(newTime - currentTime) / 1000.0;
+			if(dt == 0.0)
+				dt = 0.02; // ...for vsync off?
+			currentTime = newTime;
 
 			// Update the active state
 			m_activeStateStack.back()->update(dt);
+		}
+		else{
+			SDL_Event e;
+			while(SDL_PollEvent(&e)){
+				if(e.type == SDL_WINDOWEVENT){
+					if(e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+						Engine::getSingletonPtr()->setWindowFocused(true);
+				}
+			}
+			
+			currentTime = SDL_GetTicks();
 		}
 	}
 

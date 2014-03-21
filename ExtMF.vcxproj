@@ -93,6 +93,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectImpl.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +110,7 @@
     <ClInclude Include="ObjectImpl.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
+    <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Timer.hpp" />
   </ItemGroup>
   <ItemGroup>

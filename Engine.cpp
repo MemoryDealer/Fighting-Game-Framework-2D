@@ -58,6 +58,17 @@ void Engine::destroyTexture(SDL_Texture* pTexture)
 }
 
 // ================================================ //
+// Setter functions
+// ================================================ //
+
+void Engine::setWindowFocused(const bool focused)
+{
+	return m_pImpl->setWindowFocused(focused);
+}
+
+// ================================================ //
+// Getter functions
+// ================================================ //
 
 const int Engine::getWindowWidth(void) const
 {
@@ -69,6 +80,13 @@ const int Engine::getWindowWidth(void) const
 const int Engine::getWindowHeight(void) const
 {
 	return m_pImpl->getWindowHeight();
+}
+
+// ================================================ //
+
+const bool Engine::isWindowFocused(void) const
+{ 
+	return m_pImpl->isWindowFocused();
 }
 
 // ================================================ //

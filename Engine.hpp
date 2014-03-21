@@ -31,10 +31,12 @@ public:
 	void destroyTexture(SDL_Texture* pTexture);
 
 	// Setter functions
+	void setWindowFocused(const bool focused);
 
 	// Getter functions
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
+	const bool isWindowFocused(void) const;
 
 private:
 	std::tr1::shared_ptr<EngineImpl> m_pImpl;

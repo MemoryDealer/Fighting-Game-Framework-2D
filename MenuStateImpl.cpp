@@ -79,6 +79,11 @@ void MenuStateImpl::update(double dt)
 			if(e.key.keysym.sym == SDLK_ESCAPE)
 				m_bQuit = true;
 			break;
+
+		case SDL_WINDOWEVENT:
+			if(e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+				Engine::getSingletonPtr()->setWindowFocused(false);
+			break;
 		}
 	}
 	printf("dt: %.2f\n", dt); // testing...

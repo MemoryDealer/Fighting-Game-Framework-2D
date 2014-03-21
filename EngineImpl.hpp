@@ -27,10 +27,12 @@ public:
 	void destroyTexture(SDL_Texture* pTexture);
 
 	// Setter functions
+	void setWindowFocused(const bool focused);
 
 	// Getter functions
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
+	const bool isWindowFocused(void) const;
 
 private:
 	// SDL components
@@ -38,7 +40,18 @@ private:
 	SDL_Renderer*		m_pRenderer;
 
 	unsigned int m_width, m_height;
+	bool				m_windowFocused;
 };
+
+// ================================================ //
+
+// Setters
+inline void EngineImpl::setWindowFocused(const bool focused)
+{ m_windowFocused = focused; }
+
+// Getters
+inline const bool EngineImpl::isWindowFocused(void) const
+{ return m_windowFocused; }
 
 // ================================================ //
 
