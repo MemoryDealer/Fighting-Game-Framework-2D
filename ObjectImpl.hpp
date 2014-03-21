@@ -5,7 +5,8 @@
 
 // ================================================ //
 
-#include "stdafx.hpp"
+#include <SDL.h>
+#include <string>
 
 // ================================================ //
 
@@ -25,9 +26,9 @@ public:
 	virtual SDL_Texture* getTexturePtr(void) const;
 	virtual const SDL_Rect& getPosition(void) const;
 
-	virtual void update(double dt);
+	virtual void update(double dt) = 0;
 
-private:
+protected:
 	// SDL components
 	SDL_Texture*	m_pTexture;
 	SDL_Rect		m_pos, m_bb;

@@ -33,8 +33,4 @@
 	;
 #endif
 
-// Project
-#include "Singleton.hpp"
-#include "Log.hpp"
-
 // ================================================ //

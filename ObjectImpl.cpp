@@ -12,14 +12,14 @@ ObjectImpl::ObjectImpl(const char* textureFilename)
 		m_bb(),
 		m_name("Object")
 {
-	if(textureFilename != "null"){
+	static int nameCtr = 0;
+	m_name += std::to_string(static_cast<long long>(nameCtr++));
+
+	if(textureFilename != ""){
 		this->setTextureFile(textureFilename);
 	}
 
 	m_pos.x = m_pos.y = 0;
-
-	static int nameCtr = 0;
-	m_name += std::to_string(static_cast<long long>(nameCtr++));
 
 	Log::getSingletonPtr()->logMessage("Object \"" + m_name + "\" created!");
 }
@@ -49,14 +49,6 @@ bool ObjectImpl::setTextureFile(const char* filename)
 	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_pos.w, &m_pos.h);
 
 	return (m_pTexture != nullptr);
-}
-
-// ================================================ //
-
-void ObjectImpl::update(double dt)
-{
-	m_pos.x += static_cast<int>(125.0 * dt);
-	printf("Updating %s...%d\n", m_name.c_str(), m_pos.x);
 }
 
 // ================================================ //

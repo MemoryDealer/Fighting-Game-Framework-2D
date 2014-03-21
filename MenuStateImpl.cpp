@@ -2,11 +2,14 @@
 
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
+#include "Player.hpp"
 
 // ================================================ //
 
 MenuStateImpl::MenuStateImpl(void)
-	:	m_bQuit(false)
+	:	m_bQuit(false),
+		m_pObject(nullptr),
+		m_pBackground(nullptr)
 {
 
 }
@@ -24,14 +27,14 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	m_pBackground = new Object("D:/2D/B/cave.jpg");
+	/*m_pBackground = new Object("D:/2D/B/cave.jpg");
 	SDL_Rect rc;
 	rc.x = rc.y = 0;
 	rc.w = Engine::getSingletonPtr()->getWindowWidth();
 	rc.h = Engine::getSingletonPtr()->getWindowHeight();
-	m_pBackground->setPosition(rc);
+	m_pBackground->setPosition(rc);*/
 
-	m_pObject = new Object("D:/2D/Sprites/s.png");
+	m_pObject = new Player("D:/2D/Sprites/s.png");
 }
 
 // ================================================ //
@@ -91,7 +94,7 @@ void MenuStateImpl::update(double dt)
 
 	Engine::getSingletonPtr()->clearRenderer();
 
-	Engine::getSingletonPtr()->renderObject(m_pBackground);
+	//Engine::getSingletonPtr()->renderObject(m_pBackground);
 	Engine::getSingletonPtr()->renderObject(m_pObject);
 
 	Engine::getSingletonPtr()->renderPresent();

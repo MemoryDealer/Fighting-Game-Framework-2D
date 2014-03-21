@@ -49,11 +49,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>stdafx.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,8 +92,9 @@
     <ClCompile Include="MenuStateImpl.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectImpl.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerImpl.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +109,10 @@
     <ClInclude Include="MenuStateImpl.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjectImpl.hpp" />
+    <ClInclude Include="Player.hpp" />
+    <ClInclude Include="PlayerImpl.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
-    <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Timer.hpp" />
   </ItemGroup>
   <ItemGroup>

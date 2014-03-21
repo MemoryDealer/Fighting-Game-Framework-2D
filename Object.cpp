@@ -6,9 +6,9 @@
 // ================================================ //
 
 Object::Object(const char* textureFilename)
-	:	m_pImpl(new ObjectImpl(textureFilename))
+	:	m_pImpl(nullptr)
 {
-
+	printf("Object constructor called...\n");
 }
 
 // ================================================ //
@@ -55,13 +55,6 @@ SDL_Texture* Object::getTexturePtr(void) const
 const SDL_Rect& Object::getPosition(void) const
 {
 	return m_pImpl->getPosition();
-}
-
-// ================================================ //
-
-void Object::update(double dt)
-{
-	return m_pImpl->update(dt);
 }
 
 // ================================================ //

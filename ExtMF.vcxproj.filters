@@ -46,14 +46,14 @@
     <Filter Include="Header Files\Engine\Object">
       <UniqueIdentifier>{6a294d40-97eb-4158-a21e-0bea40914a21}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\Texture">
-      <UniqueIdentifier>{dc7ed0f4-3619-48a0-ac5b-b5cd01eec860}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Engine\Object">
       <UniqueIdentifier>{a77b0e26-2684-43f2-b911-ca3bf2c413c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\Texture">
-      <UniqueIdentifier>{8ae70e7f-5f0b-4d46-985b-95fefa4ef457}</UniqueIdentifier>
+    <Filter Include="Header Files\Engine\Player">
+      <UniqueIdentifier>{ffa8071c-ae0b-4ad7-84c5-cb9ced4e4678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Player">
+      <UniqueIdentifier>{857ce1b6-d103-494b-ba9d-216fbe86b61a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,8 +96,11 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files\Engine\Timer</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\Engine\Texture</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Engine\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerImpl.cpp">
+      <Filter>Source Files\Engine\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,8 +146,11 @@
     <ClInclude Include="Timer.hpp">
       <Filter>Header Files\Engine\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.hpp">
-      <Filter>Header Files\Engine\Texture</Filter>
+    <ClInclude Include="Player.hpp">
+      <Filter>Header Files\Engine\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerImpl.hpp">
+      <Filter>Header Files\Engine\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

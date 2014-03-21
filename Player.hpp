@@ -1,29 +1,31 @@
 // ================================================ //
 
-#ifndef __LOG_HPP__
-#define __LOG_HPP__
+#ifndef __PLAYER_HPP__
+#define __PLAYER_HPP__
 
 // ================================================ //
 
-#include "Singleton.hpp"
+#include "Object.hpp"
 
 // ================================================ //
 
-class LogImpl;
+class PlayerImpl;
 
 // ================================================ //
 
-class Log : public Singleton<Log>
+class Player : public Object
 {
 public:
-	explicit Log(void);
-	~Log(void);
+	explicit Player(const char* textureFilename);
+	virtual ~Player(void);
 
-	void logMessage(const std::string& str);
-	void logTime(const bool time = true, const bool date = false);
+	// Getter functions
+	
+
+	virtual void update(double dt);
 
 private:
-	std::tr1::shared_ptr<LogImpl> m_pImpl;
+	std::tr1::shared_ptr<PlayerImpl> m_pImpl;
 };
 
 // ================================================ //

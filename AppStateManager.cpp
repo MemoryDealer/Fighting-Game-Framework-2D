@@ -67,6 +67,7 @@ AppState* AppStateManager::findByName(const std::string& stateName)
 
 // ================================================ //
 // This is the main parent loop
+// ================================================ //
 void AppStateManager::start(AppState* pState)
 {
 	this->changeAppState(pState);

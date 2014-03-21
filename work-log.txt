@@ -22,8 +22,15 @@
 -Added Object class, the Engine class now accepts an Object for rendering. 
 -Added correct frame time calculations in AppStateManager::start(), although it results in 0.0 per frame with vsync disabled. 
 
+#3/20/14
+-Derived Player from Object, along with PlayerImpl from PlayerObject. 
+-At first the Player class wouldn't render, until I overrided the getTexturePtr() function. 
+	Never mind that, since I redeclared m_pImpl in Player, there were two smart pointers allocated separately. I've removed the allocation in Object and
+	added the function Object::setPImpl() which should be called from a derived class. It passes the local private m_pImpl from the child class to the base 
+	class and thus the base class m_pImpl points to the child class's m_pImpl. 
+
 #TODO
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
--Create Texture class, Hitbox, Rect?, ObjectManager 
+-Create Hitbox, Rect?, ObjectManager 
 -Make Object abstract, derive TestSprite and Background 
 -Fix frame time when vsync is off

@@ -5,7 +5,10 @@
 
 // ================================================ //
 
-#include "stdafx.hpp"
+#include <SDL.h>
+#include <memory>
+#include "Singleton.hpp"
+#include "Log.hpp"
 #include "Object.hpp"
 
 // ================================================ //
