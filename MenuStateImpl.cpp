@@ -3,6 +3,7 @@
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
 #include "Player.hpp"
+#include "Background.hpp"
 
 // ================================================ //
 
@@ -33,6 +34,8 @@ void MenuStateImpl::enter(void)
 	rc.w = Engine::getSingletonPtr()->getWindowWidth();
 	rc.h = Engine::getSingletonPtr()->getWindowHeight();
 	m_pBackground->setPosition(rc);*/
+
+	m_pBackground = new Background("D:/2D/B/cave.jpg");
 
 	m_pObject = new Player("D:/2D/Sprites/s.png");
 }
@@ -89,12 +92,12 @@ void MenuStateImpl::update(double dt)
 			break;
 		}
 	}
-	printf("dt: %.2f\n", dt); // testing...
+	
 	m_pObject->update(dt);
 
 	Engine::getSingletonPtr()->clearRenderer();
 
-	//Engine::getSingletonPtr()->renderObject(m_pBackground);
+	Engine::getSingletonPtr()->renderObject(m_pBackground);
 	Engine::getSingletonPtr()->renderObject(m_pObject);
 
 	Engine::getSingletonPtr()->renderPresent();

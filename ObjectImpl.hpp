@@ -5,8 +5,7 @@
 
 // ================================================ //
 
-#include <SDL.h>
-#include <string>
+#include "stdafx.hpp"
 
 // ================================================ //
 
@@ -31,7 +30,7 @@ public:
 protected:
 	// SDL components
 	SDL_Texture*	m_pTexture;
-	SDL_Rect		m_pos, m_bb;
+	SDL_Rect		m_pos;
 
 	std::string		m_name;
 };

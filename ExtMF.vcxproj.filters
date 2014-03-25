@@ -55,6 +55,12 @@
     <Filter Include="Source Files\Engine\Player">
       <UniqueIdentifier>{857ce1b6-d103-494b-ba9d-216fbe86b61a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Background">
+      <UniqueIdentifier>{42cc48de-b28e-48cf-942d-7509d62fd9c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Background">
+      <UniqueIdentifier>{cf0c8cd6-da98-453c-823c-8ca955542b08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,6 +107,12 @@
     </ClCompile>
     <ClCompile Include="PlayerImpl.cpp">
       <Filter>Source Files\Engine\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Background.cpp">
+      <Filter>Source Files\Engine\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="BackgroundImpl.cpp">
+      <Filter>Source Files\Engine\Background</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +163,12 @@
     </ClInclude>
     <ClInclude Include="PlayerImpl.hpp">
       <Filter>Header Files\Engine\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Background.hpp">
+      <Filter>Header Files\Engine\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="BackgroundImpl.hpp">
+      <Filter>Header Files\Engine\Background</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

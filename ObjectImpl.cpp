@@ -9,7 +9,6 @@
 ObjectImpl::ObjectImpl(const char* textureFilename)
 	:	m_pTexture(nullptr),
 		m_pos(),
-		m_bb(),
 		m_name("Object")
 {
 	static int nameCtr = 0;

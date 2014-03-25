@@ -58,7 +58,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,13 +76,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4075 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AppStateManager.cpp" />
+    <ClCompile Include="Background.cpp" />
+    <ClCompile Include="BackgroundImpl.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
     <ClCompile Include="Log.cpp" />
@@ -101,6 +103,8 @@
     <ClInclude Include="App.hpp" />
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="AppStateManager.hpp" />
+    <ClInclude Include="Background.hpp" />
+    <ClInclude Include="BackgroundImpl.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="EngineImpl.hpp" />
     <ClInclude Include="Log.hpp" />

@@ -29,8 +29,17 @@
 	added the function Object::setPImpl() which should be called from a derived class. It passes the local private m_pImpl from the child class to the base 
 	class and thus the base class m_pImpl points to the child class's m_pImpl. 
 
+#3/24/14
+-Added SDLNet in Engine. 
+-Added Background object. 
+-Getting strange linker error: "Background.obj : error LNK2019: unresolved external symbol "public: __thiscall BackgroundImpl::BackgroundImpl(char const *)" (??0BackgroundImpl@@QAE@PBD@Z) referenced in function "public: __thiscall Background::Background(char const *)" (??0Background@@QAE@PBD@Z)"
+	There is also a prior warning: "Debug\BackgroundImpl.obj : warning LNK4042: object specified more than once; extras ignored"
+	-Turns out it was a problem with the project file, due to accidently adding BackgroundImpl.cpp in the headers section and changing it to BackgroundImpl.hpp afterwards. There was something in the project file that was confusing the linker, so I just deleted BackgroundImpl.hpp and re-added it properly. 
+
+
 #TODO
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
--Create Hitbox, Rect?, ObjectManager 
+-Create Hitbox, Rect? 
+-ObjectManager 
 -Make Object abstract, derive TestSprite and Background 
 -Fix frame time when vsync is off

@@ -23,9 +23,15 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_net.h>
+
+// Project
+#include "Singleton.hpp"
+#include "Log.hpp"
 
 // Platform-specific headers
 #ifdef __WIN32__
+#define _WINSOCKAPI_ // prevents automatic winsock.h inclusion 
 #include <Windows.h>
 #elif __linux__
 	;

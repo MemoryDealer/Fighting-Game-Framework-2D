@@ -1,30 +1,28 @@
 // ================================================ //
 
-#ifndef __LOG_HPP__
-#define __LOG_HPP__
+#ifndef __BACKGROUND_HPP__
+#define __BACKGROUND_HPP__
 
 // ================================================ //
 
-#include <memory>
-#include "Singleton.hpp"
+#include "Object.hpp"
 
 // ================================================ //
 
-class LogImpl;
+class BackgroundImpl;
 
 // ================================================ //
 
-class Log : public Singleton<Log>
+class Background : public Object
 {
 public:
-	explicit Log(void);
-	~Log(void);
+	explicit Background(const char* textureFilename);
+	virtual ~Background(void);
 
-	void logMessage(const std::string& str);
-	void logTime(const bool time = true, const bool date = false);
+	virtual void update(double dt);
 
 private:
-	std::tr1::shared_ptr<LogImpl> m_pImpl;
+	std::tr1::shared_ptr<BackgroundImpl> m_pImpl;
 };
 
 // ================================================ //

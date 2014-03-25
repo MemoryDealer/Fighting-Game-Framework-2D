@@ -8,7 +8,7 @@
 Object::Object(const char* textureFilename)
 	:	m_pImpl(nullptr)
 {
-	printf("Object constructor called...\n");
+	
 }
 
 // ================================================ //
