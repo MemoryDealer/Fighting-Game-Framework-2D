@@ -32,8 +32,8 @@ App::App(void)
 
 App::~App(void)
 {
-	delete Engine::getSingletonPtr();
 	delete m_pAppStateManager;
+	delete Engine::getSingletonPtr(); // Engine must be available for AppState's destruction (ObjectManager)
 
 	Log::getSingletonPtr()->logMessage("Exiting app...");
 }

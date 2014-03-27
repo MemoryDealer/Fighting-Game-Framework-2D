@@ -30,6 +30,7 @@ public:
 	// Getter functions
 	virtual SDL_Texture* getTexturePtr(void) const;
 	virtual const SDL_Rect& getPosition(void) const;
+	virtual const std::string& getName(void) const;
 
 	virtual void update(double dt) = 0;
 

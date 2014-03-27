@@ -58,3 +58,10 @@ const SDL_Rect& Object::getPosition(void) const
 }
 
 // ================================================ //
+
+const std::string& Object::getName(void) const
+{
+	return m_pImpl->getName();
+}
+
+// ================================================ //

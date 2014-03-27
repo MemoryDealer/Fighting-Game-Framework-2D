@@ -61,6 +61,12 @@
     <Filter Include="Source Files\Engine\Background">
       <UniqueIdentifier>{cf0c8cd6-da98-453c-823c-8ca955542b08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Object\ObjectManager">
+      <UniqueIdentifier>{8db76e8c-94f0-4ea1-baea-62d818851b58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Object\ObjectManager">
+      <UniqueIdentifier>{8ec1a49d-338a-4a37-b6d7-35ab92418e93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -113,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="BackgroundImpl.cpp">
       <Filter>Source Files\Engine\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Source Files\Engine\Object\ObjectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="BackgroundImpl.hpp">
       <Filter>Header Files\Engine\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.hpp">
+      <Filter>Header Files\Engine\Object\ObjectManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

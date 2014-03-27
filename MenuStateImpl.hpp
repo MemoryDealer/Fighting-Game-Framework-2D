@@ -6,7 +6,7 @@
 // ================================================ //
 
 #include "stdafx.hpp"
-#include "Object.hpp"
+#include "ObjectManager.hpp"
 
 // ================================================ //
 
@@ -27,8 +27,7 @@ public:
 private:
 	bool m_bQuit;
 
-	Object*	m_pObject;
-	Object* m_pBackground;
+	std::tr1::shared_ptr<ObjectManager> m_pObjectManager;
 };
 
 // ================================================ //

@@ -24,6 +24,7 @@ public:
 	// Getter functions
 	virtual SDL_Texture* getTexturePtr(void) const;
 	virtual const SDL_Rect& getPosition(void) const;
+	virtual const std::string& getName(void) const;
 
 	virtual void update(double dt) = 0;
 
@@ -50,6 +51,9 @@ inline SDL_Texture* ObjectImpl::getTexturePtr(void) const
 
 inline const SDL_Rect& ObjectImpl::getPosition(void) const
 { return m_pos; }
+
+inline const std::string& ObjectImpl::getName(void) const
+{ return m_name; }
 
 // ================================================ //
 

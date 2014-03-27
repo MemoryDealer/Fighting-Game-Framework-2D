@@ -29,6 +29,10 @@ void LogImpl::logMessage(const std::string& str)
 {
 	this->logTime();
 	m_file << str << std::endl;
+
+#ifdef _DEBUG
+	printf("%s\n", str.c_str());
+#endif
 }
 
 // ================================================ //

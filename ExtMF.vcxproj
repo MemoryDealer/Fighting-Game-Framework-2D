@@ -94,6 +94,7 @@
     <ClCompile Include="MenuStateImpl.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectImpl.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerImpl.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="MenuStateImpl.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjectImpl.hpp" />
+    <ClInclude Include="ObjectManager.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="PlayerImpl.hpp" />
     <ClInclude Include="Singleton.hpp" />

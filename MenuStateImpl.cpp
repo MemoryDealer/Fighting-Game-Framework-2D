@@ -9,8 +9,7 @@
 
 MenuStateImpl::MenuStateImpl(void)
 	:	m_bQuit(false),
-		m_pObject(nullptr),
-		m_pBackground(nullptr)
+		m_pObjectManager(new ObjectManager())
 {
 
 }
@@ -28,16 +27,8 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	/*m_pBackground = new Object("D:/2D/B/cave.jpg");
-	SDL_Rect rc;
-	rc.x = rc.y = 0;
-	rc.w = Engine::getSingletonPtr()->getWindowWidth();
-	rc.h = Engine::getSingletonPtr()->getWindowHeight();
-	m_pBackground->setPosition(rc);*/
-
-	m_pBackground = new Background("D:/2D/B/cave.jpg");
-
-	m_pObject = new Player("D:/2D/Sprites/s.png");
+	m_pObjectManager->addObject(new Background("D:/2D/B/cave.jpg"));
+	m_pObjectManager->addObject(new Player("D:/2D/Sprites/s.png"));
 }
 
 // ================================================ //
@@ -45,9 +36,6 @@ void MenuStateImpl::enter(void)
 void MenuStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
-
-	delete m_pObject;
-	delete m_pBackground;
 }
 
 // ================================================ //
@@ -92,13 +80,10 @@ void MenuStateImpl::update(double dt)
 			break;
 		}
 	}
-	
-	m_pObject->update(dt);
 
 	Engine::getSingletonPtr()->clearRenderer();
 
-	Engine::getSingletonPtr()->renderObject(m_pBackground);
-	Engine::getSingletonPtr()->renderObject(m_pObject);
+	m_pObjectManager->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

@@ -21,8 +21,7 @@ PlayerImpl::~PlayerImpl(void)
 
 void PlayerImpl::update(double dt)
 {
-	m_pos.x += static_cast<int>(125.0 * dt);
-	printf("Updating from player...\n");
+	//m_pos.x += static_cast<int>(125.0 * dt);
 	printf("dt: %.2f\n", dt); // testing...
 }
 

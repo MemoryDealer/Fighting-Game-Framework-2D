@@ -36,10 +36,11 @@
 	There is also a prior warning: "Debug\BackgroundImpl.obj : warning LNK4042: object specified more than once; extras ignored"
 	-Turns out it was a problem with the project file, due to accidently adding BackgroundImpl.cpp in the headers section and changing it to BackgroundImpl.hpp afterwards. There was something in the project file that was confusing the linker, so I just deleted BackgroundImpl.hpp and re-added it properly. 
 
+#3/26/14
+-Created ObjectManager, added it to the MenuState. Had to rearrange the destruction of the AppStates and Engine to prevent segfault. 
 
 #TODO
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
 -Create Hitbox, Rect? 
 -ObjectManager 
--Make Object abstract, derive TestSprite and Background 
 -Fix frame time when vsync is off
