@@ -65,3 +65,10 @@ const std::string& Object::getName(void) const
 }
 
 // ================================================ //
+
+void Object::render(void)
+{
+	return m_pImpl->render();
+}
+
+// ================================================ //

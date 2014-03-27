@@ -9,6 +9,7 @@
 ObjectImpl::ObjectImpl(const char* textureFilename)
 	:	m_pTexture(nullptr),
 		m_pos(),
+		m_flip(SDL_FLIP_NONE),
 		m_name("Object")
 {
 	static int nameCtr = 0;
@@ -48,6 +49,15 @@ bool ObjectImpl::setTextureFile(const char* filename)
 	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_pos.w, &m_pos.h);
 
 	return (m_pTexture != nullptr);
+}
+
+// ================================================ //
+
+void ObjectImpl::render(void)
+{
+	//! I hope it's safe to const_cast the renderer pointer
+	SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 
+		m_pTexture, nullptr, &m_pos, 0, nullptr, m_flip);
 }
 
 // ================================================ //

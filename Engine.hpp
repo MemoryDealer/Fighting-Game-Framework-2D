@@ -21,7 +21,6 @@ public:
 	~Engine(void);
 
 	void clearRenderer(void);
-	void renderObject(const Object* pObject);
 	void renderPresent(void);
 
 	// Factory functions
@@ -34,6 +33,7 @@ public:
 	void setWindowFocused(const bool focused);
 
 	// Getter functions
+	const SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
 	const bool isWindowFocused(void) const;

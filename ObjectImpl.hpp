@@ -26,14 +26,16 @@ public:
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
 
+	virtual void render(void);
 	virtual void update(double dt) = 0;
 
 protected:
 	// SDL components
-	SDL_Texture*	m_pTexture;
-	SDL_Rect		m_pos;
+	SDL_Texture*		m_pTexture;
+	SDL_Rect			m_pos;
+	SDL_RendererFlip	m_flip;
 
-	std::string		m_name;
+	std::string			m_name;
 };
 
 // ================================================ //

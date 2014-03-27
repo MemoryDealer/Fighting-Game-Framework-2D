@@ -31,13 +31,6 @@ void Engine::clearRenderer(void)
 
 // ================================================ //
 
-void Engine::renderObject(const Object* pObject)
-{
-	return m_pImpl->renderObject(pObject);
-}
-
-// ================================================ //
-
 void Engine::renderPresent(void)
 {
 	return m_pImpl->renderPresent();
@@ -68,6 +61,13 @@ void Engine::setWindowFocused(const bool focused)
 
 // ================================================ //
 // Getter functions
+// ================================================ //
+
+const SDL_Renderer* Engine::getRenderer(void) const
+{
+	return m_pImpl->getRenderer();
+}
+
 // ================================================ //
 
 const int Engine::getWindowWidth(void) const

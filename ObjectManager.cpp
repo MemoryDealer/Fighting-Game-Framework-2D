@@ -35,14 +35,16 @@ bool ObjectManager::addObject(Object* pObject)
 
 // ================================================ //
 
-void ObjectManager::update(double dt)
+void ObjectManager::update(double dt, bool render)
 {
 	// Update all objects in list
 	for(ObjectList::iterator itr = m_objects.begin();
 		itr != m_objects.end();
 		++itr){
 		(*itr)->update(dt);
-		Engine::getSingletonPtr()->renderObject(*itr);
+
+		if(render)
+			(*itr)->render();
 	}
 }
 

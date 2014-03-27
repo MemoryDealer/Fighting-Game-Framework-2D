@@ -16,7 +16,6 @@ public:
 	~EngineImpl(void);
 
 	void clearRenderer(void);
-	void renderObject(const Object* pObject);
 	void renderPresent(void);
 
 	// Factory functions
@@ -29,6 +28,7 @@ public:
 	void setWindowFocused(const bool focused);
 
 	// Getter functions
+	const SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
@@ -49,14 +49,12 @@ inline void EngineImpl::setWindowFocused(const bool focused)
 { m_windowFocused = focused; }
 
 // Getters
+inline const SDL_Renderer* EngineImpl::getRenderer(void) const
+{ return m_pRenderer; }
+
 inline const bool EngineImpl::isWindowFocused(void) const
 { return m_windowFocused; }
 
-// ================================================ //
-
-// Setters
-
-// Getters
 inline const int EngineImpl::getWindowWidth(void) const
 { return m_width; }
 

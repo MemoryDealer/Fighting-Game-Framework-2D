@@ -22,7 +22,7 @@ public:
 
 	bool addObject(Object* pObject);
 
-	void update(double dt);
+	void update(double dt, bool render = true);
 
 private:
 	ObjectList	m_objects;

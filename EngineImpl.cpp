@@ -76,13 +76,6 @@ void EngineImpl::clearRenderer(void)
 
 // ================================================ //
 
-void EngineImpl::renderObject(const Object* pObject)
-{
-	SDL_RenderCopy(m_pRenderer, pObject->getTexturePtr(), nullptr, &pObject->getPosition());
-}
-
-// ================================================ //
-
 void EngineImpl::renderPresent(void)
 {
 	SDL_RenderPresent(m_pRenderer);

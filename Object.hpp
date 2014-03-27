@@ -32,6 +32,7 @@ public:
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
 
+	virtual void render(void);
 	virtual void update(double dt) = 0;
 
 protected:
