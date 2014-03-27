@@ -67,6 +67,12 @@
     <Filter Include="Source Files\Engine\Object\ObjectManager">
       <UniqueIdentifier>{8ec1a49d-338a-4a37-b6d7-35ab92418e93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\FSM">
+      <UniqueIdentifier>{0604c6ce-f28c-4629-be76-92d9bb78d78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\FSM">
+      <UniqueIdentifier>{461ed85c-f5eb-4d93-ac31-aac885a091a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -122,6 +128,12 @@
     </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Source Files\Engine\Object\ObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="FState.cpp">
+      <Filter>Source Files\Engine\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="FSM.cpp">
+      <Filter>Source Files\Engine\FSM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +193,12 @@
     </ClInclude>
     <ClInclude Include="ObjectManager.hpp">
       <Filter>Header Files\Engine\Object\ObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="FSM.hpp">
+      <Filter>Header Files\Engine\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="FState.hpp">
+      <Filter>Header Files\Engine\FSM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

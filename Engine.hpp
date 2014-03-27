@@ -38,6 +38,24 @@ public:
 	const int getWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
 
+	// Some other functions
+	template<typename T>
+	static std::string& toString(const T& value)
+	{
+		std::ostringstream oss;
+		oss << value;
+		return oss.str();
+	}
+#ifdef _DEBUG
+	static bool CustomAssertFunction(bool, char*, int, char*);
+
+#define Assert(exp, desc)\
+	if(Engine::CustomAssertFunction((int)exp, desc, __LINE__, __FILE__))\
+	{ _asm { int 3 } } // trigger debugger to break
+#else
+#define Assert(exp, desc);
+#endif
+
 private:
 	std::tr1::shared_ptr<EngineImpl> m_pImpl;
 };

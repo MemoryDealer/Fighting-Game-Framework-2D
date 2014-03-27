@@ -90,3 +90,24 @@ const bool Engine::isWindowFocused(void) const
 }
 
 // ================================================ //
+
+bool Engine::CustomAssertFunction(bool exp, char* desc, int line, char* file)
+{
+	if(!exp){
+		bool ret = false;
+#ifdef __WIN32__
+		char* msg = new char[strlen(desc) + strlen(file) + 256];
+		wsprintfA(msg, "%s\r\nFILE: %s\r\nLINE: %d\r\nDo you wish to break?", desc, file, line);
+		if((int)MessageBoxA(GetForegroundWindow(), msg, "Assert", MB_YESNO | MB_ICONEXCLAMATION) == IDYES){
+			ret = true;
+		}
+
+		delete msg;
+		return ret;
+#endif
+	}
+
+	return false;
+}
+
+// ================================================ //

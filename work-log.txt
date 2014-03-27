@@ -39,6 +39,8 @@
 #3/26/14
 -Created ObjectManager, added it to the MenuState. Had to rearrange the destruction of the AppStates and Engine to prevent segfault. 
 -Removed Engine::renderObject() and replaced it with Object::render(). This way, the object won't be required to return so many handles. However, the Engine now has to return the SDL_Renderer, but it is a const return value and is casted down in the Object::render() function. 
+-Added custom Assert() macro in Engine.hpp, along with static Engine::toString() function. 
+-Added a finite state machine object (FSM, uses FState) to be used by whatever needs it. 
 
 #TODO
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?

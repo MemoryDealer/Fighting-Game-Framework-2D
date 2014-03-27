@@ -87,6 +87,8 @@
     <ClCompile Include="BackgroundImpl.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
+    <ClCompile Include="FSM.cpp" />
+    <ClCompile Include="FState.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="LogImpl.cpp" />
     <ClCompile Include="main.cpp" />
@@ -108,6 +110,8 @@
     <ClInclude Include="BackgroundImpl.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="EngineImpl.hpp" />
+    <ClInclude Include="FSM.hpp" />
+    <ClInclude Include="FState.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="LogImpl.hpp" />
     <ClInclude Include="MenuState.hpp" />

@@ -18,6 +18,7 @@
 #include <cassert>
 #include <vector>
 #include <list>
+#include <map>
 
 // SDL
 #include <SDL.h>
