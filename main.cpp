@@ -11,6 +11,13 @@
 
 // ================================================ //
 
+/* To update from repo
+* git fetch --all
+* git reset --hard origin/master
+*/
+
+// ================================================ //
+
 int SDL_main(int argc, char** argv)
 {
 	try{
