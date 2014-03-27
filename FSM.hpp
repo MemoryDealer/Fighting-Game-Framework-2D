@@ -9,7 +9,7 @@
 
 // ================================================ //
 
-typedef std::map<StateID, FState*, std::less<int> > StateMap;
+typedef std::map<StateID, FState*, std::less<int>> StateMap;
 typedef StateMap::value_type SM_VT;
 
 // ================================================ //

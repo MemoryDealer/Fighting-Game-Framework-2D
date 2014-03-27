@@ -73,6 +73,9 @@
     <Filter Include="Source Files\Engine\FSM">
       <UniqueIdentifier>{461ed85c-f5eb-4d93-ac31-aac885a091a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Input">
+      <UniqueIdentifier>{89641ba3-feef-4aa3-9390-bd5eec63331f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="FSM.cpp">
       <Filter>Source Files\Engine\FSM</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerManager.cpp">
+      <Filter>Source Files\Engine\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +205,15 @@
     </ClInclude>
     <ClInclude Include="FState.hpp">
       <Filter>Header Files\Engine\FSM</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStates.hpp">
+      <Filter>Header Files\Engine\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.hpp">
+      <Filter>Header Files\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.hpp">
+      <Filter>Header Files\Engine\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

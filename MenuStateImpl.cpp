@@ -2,8 +2,9 @@
 
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
-#include "Player.hpp"
+#include "PlayerManager.hpp"
 #include "Background.hpp"
+#include "Input.hpp"
 
 // ================================================ //
 
@@ -28,7 +29,9 @@ void MenuStateImpl::enter(void)
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
 	m_pObjectManager->addObject(new Background("D:/2D/B/cave.jpg"));
-	m_pObjectManager->addObject(new Player("D:/2D/Sprites/s.png"));
+
+	new PlayerManager("Data/SpriteSheets/glacius.png", "");
+	PlayerManager::getSingletonPtr()->getRedPlayer()->setTextureCoordinates(3, 4, 66, 108);
 }
 
 // ================================================ //
@@ -36,6 +39,8 @@ void MenuStateImpl::enter(void)
 void MenuStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
+
+	delete PlayerManager::getSingletonPtr();
 }
 
 // ================================================ //
@@ -59,6 +64,7 @@ void MenuStateImpl::resume(void)
 void MenuStateImpl::update(double dt)
 {
 	SDL_Event e;
+	unsigned int input;
 
 	while(SDL_PollEvent(&e)){
 		switch(e.type){
@@ -72,6 +78,8 @@ void MenuStateImpl::update(double dt)
 		case SDL_KEYDOWN:
 			if(e.key.keysym.sym == SDLK_ESCAPE)
 				m_bQuit = true;
+			if(e.key.keysym.sym == SDLK_LEFT)
+				input = Input::BUTTON_LEFT;
 			break;
 
 		case SDL_WINDOWEVENT:
@@ -84,6 +92,7 @@ void MenuStateImpl::update(double dt)
 	Engine::getSingletonPtr()->clearRenderer();
 
 	m_pObjectManager->update(dt);
+	PlayerManager::getSingletonPtr()->getRedPlayer()->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

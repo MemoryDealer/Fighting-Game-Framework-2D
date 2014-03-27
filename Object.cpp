@@ -27,6 +27,11 @@ bool Object::setTextureFile(const char* filename)
 	return m_pImpl->setTextureFile(filename);
 }
 
+void Object::setTextureCoordinates(int x, int y, int w, int h)
+{
+	return m_pImpl->setTextureCoordinates(x, y, w, h);
+}
+
 // ================================================ //
 
 void Object::setPosition(const int x, const int y)

@@ -41,6 +41,9 @@
 -Removed Engine::renderObject() and replaced it with Object::render(). This way, the object won't be required to return so many handles. However, the Engine now has to return the SDL_Renderer, but it is a const return value and is casted down in the Object::render() function. 
 -Added custom Assert() macro in Engine.hpp, along with static Engine::toString() function. 
 -Added a finite state machine object (FSM, uses FState) to be used by whatever needs it. 
+-Created PlayerManager singleton, which holds allocates pointers for the RedPlayer and BluePlayer. 
+*Was having trouble with getting the player object to render, but I was rendering it before the background. I must remember that z-ordering in the game loop is important. 
+-So either the background object should always be added to the ObjectManager first, or it can have its own pointer in the AppState. And the Player objects should be always come last. 
 
 #TODO
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?

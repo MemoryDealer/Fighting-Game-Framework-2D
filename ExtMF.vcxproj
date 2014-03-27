@@ -99,6 +99,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerImpl.cpp" />
+    <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -112,6 +113,7 @@
     <ClInclude Include="EngineImpl.hpp" />
     <ClInclude Include="FSM.hpp" />
     <ClInclude Include="FState.hpp" />
+    <ClInclude Include="Input.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="LogImpl.hpp" />
     <ClInclude Include="MenuState.hpp" />
@@ -121,6 +123,8 @@
     <ClInclude Include="ObjectManager.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="PlayerImpl.hpp" />
+    <ClInclude Include="PlayerManager.hpp" />
+    <ClInclude Include="PlayerStates.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="Timer.hpp" />

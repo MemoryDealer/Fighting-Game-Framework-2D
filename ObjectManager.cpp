@@ -35,6 +35,17 @@ bool ObjectManager::addObject(Object* pObject)
 
 // ================================================ //
 
+Object* ObjectManager::getObject(const int index)
+{
+	if(static_cast<size_t>(index) < m_objects.size()){
+		return m_objects[index];
+	}
+
+	return nullptr;
+}
+
+// ================================================ //
+
 void ObjectManager::update(double dt, bool render)
 {
 	// Update all objects in list

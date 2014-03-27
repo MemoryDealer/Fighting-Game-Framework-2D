@@ -10,7 +10,7 @@
 
 // ================================================ //
 
-typedef std::list<Object*> ObjectList;
+typedef std::vector<Object*> ObjectList;
 
 // ================================================ //
 
@@ -21,6 +21,8 @@ public:
 	~ObjectManager(void);
 
 	bool addObject(Object* pObject);
+
+	Object* getObject(const int index);
 
 	void update(double dt, bool render = true);
 

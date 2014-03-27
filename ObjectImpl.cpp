@@ -8,18 +8,22 @@
 
 ObjectImpl::ObjectImpl(const char* textureFilename)
 	:	m_pTexture(nullptr),
-		m_pos(),
+		m_src(),
+		m_dst(),
 		m_flip(SDL_FLIP_NONE),
-		m_name("Object")
+		m_name("Object"),
+		m_pFSM(new FSM(0))
 {
 	static int nameCtr = 0;
 	m_name += std::to_string(static_cast<long long>(nameCtr++));
 
+	m_dst.x = m_dst.y = 0;
+
 	if(textureFilename != ""){
 		this->setTextureFile(textureFilename);
+		m_src.x = m_src.y = 0;
+		SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
 	}
-
-	m_pos.x = m_pos.y = 0;
 
 	Log::getSingletonPtr()->logMessage("Object \"" + m_name + "\" created!");
 }
@@ -46,9 +50,22 @@ bool ObjectImpl::setTextureFile(const char* filename)
 	m_pTexture = Engine::getSingletonPtr()->loadTexture(filename);
 
 	// Get texture width/height
-	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_pos.w, &m_pos.h);
+	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
+	m_dst.w = m_src.w;
+	m_dst.h = m_src.h;
 
 	return (m_pTexture != nullptr);
+}
+
+// ================================================ //
+
+void ObjectImpl::setTextureCoordinates(int x, int y, int w, int h)
+{ 
+	m_src.x = x; m_src.y = y; 
+	if(w != 0)
+		m_src.w = m_dst.w = w;
+	if(h != 0)
+		m_src.h = m_dst.h = h;
 }
 
 // ================================================ //
@@ -57,7 +74,7 @@ void ObjectImpl::render(void)
 {
 	//! I hope it's safe to const_cast the renderer pointer
 	SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 
-		m_pTexture, nullptr, &m_pos, 0, nullptr, m_flip);
+		m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
 }
 
 // ================================================ //

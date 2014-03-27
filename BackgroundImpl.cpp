@@ -10,8 +10,8 @@ BackgroundImpl::BackgroundImpl(const char* textureFilename)
 {
 	if(m_pTexture){
 		// set background to fill entire screen as default
-		m_pos.w = Engine::getSingletonPtr()->getWindowWidth();
-		m_pos.h = Engine::getSingletonPtr()->getWindowHeight();
+		m_dst.w = Engine::getSingletonPtr()->getWindowWidth();
+		m_dst.h = Engine::getSingletonPtr()->getWindowHeight();
 	}
 }
 

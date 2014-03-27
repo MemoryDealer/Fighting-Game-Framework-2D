@@ -23,6 +23,7 @@ public:
 
 	// Setter functions
 	virtual bool setTextureFile(const char* filename);
+	virtual void setTextureCoordinates(int x, int y, int w = 0, int h = 0);
 
 	virtual void setPosition(const int x, const int y);
 	virtual void setPosition(const SDL_Rect& pos);
