@@ -45,7 +45,19 @@
 *Was having trouble with getting the player object to render, but I was rendering it before the background. I must remember that z-ordering in the game loop is important. 
 -So either the background object should always be added to the ObjectManager first, or it can have its own pointer in the AppState. And the Player objects should be always come last. 
 
+#4/1/14
+-Added a timer in the main loop of AppStateManager which limits the maximum frame rate to 60 (a value in Engine). This eliminates the problem with vsync being off. 
+-Create Config class for parsing/writing config files. I've given it a basic .ini parser (the function parseValue() will find any value in the ini file). This can be used for most development stuff. 
+	Later, it may have a metadata parser and/or a binary parser. 
+
+
 #TODO
--Should each state have its own SDL_Renderer? Or is using one for all sufficient?
+-LoadResources in Engine
+-GUILayer
+-Get input working
 -Create Hitbox, Rect? 
--Fix frame time when vsync is off
+-Should each state have its own SDL_Renderer? Or is using one for all sufficient?
+
+
+
+

@@ -42,7 +42,7 @@ PlayerImpl::~PlayerImpl(void)
 
 void PlayerImpl::update(double dt)
 {
-	printf("PlayerState: %d\n", m_pFSM->getCurrentStateID());
+	//printf("PlayerState: %d\n", m_pFSM->getCurrentStateID());
 	this->setTextureCoordinates(m_src.x + 1, m_src.y);
 	this->render();
 }

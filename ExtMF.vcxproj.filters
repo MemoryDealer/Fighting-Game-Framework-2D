@@ -76,6 +76,9 @@
     <Filter Include="Header Files\Engine\Input">
       <UniqueIdentifier>{89641ba3-feef-4aa3-9390-bd5eec63331f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Config">
+      <UniqueIdentifier>{38595cad-23c3-485f-b1e9-75863da06530}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -140,6 +143,9 @@
     </ClCompile>
     <ClCompile Include="PlayerManager.cpp">
       <Filter>Source Files\Engine\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="PlayerManager.hpp">
       <Filter>Header Files\Engine\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.hpp">
+      <Filter>Header Files\Engine\Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

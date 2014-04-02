@@ -31,12 +31,14 @@ public:
 
 	// Setter functions
 	void setWindowFocused(const bool focused);
+	void setMaxFrameRate(const unsigned int max);
 
 	// Getter functions
 	const SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
+	const int getMaxFrameRate(void) const;
 
 	// Some other functions
 	template<typename T>

@@ -5,6 +5,7 @@
 #include "PlayerManager.hpp"
 #include "Background.hpp"
 #include "Input.hpp"
+#include "Config.hpp"
 
 // ================================================ //
 
@@ -32,6 +33,11 @@ void MenuStateImpl::enter(void)
 
 	new PlayerManager("Data/SpriteSheets/glacius.png", "");
 	PlayerManager::getSingletonPtr()->getRedPlayer()->setTextureCoordinates(3, 4, 66, 108);
+
+	Config cfg("Data/Config/varg.fighter");
+	if(cfg.isLoaded()){
+		printf("f=%s\n", cfg.parseValue("frames", "f").c_str());
+	}
 }
 
 // ================================================ //

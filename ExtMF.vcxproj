@@ -85,6 +85,7 @@
     <ClCompile Include="AppStateManager.cpp" />
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="BackgroundImpl.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
     <ClCompile Include="FSM.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="AppStateManager.hpp" />
     <ClInclude Include="Background.hpp" />
     <ClInclude Include="BackgroundImpl.hpp" />
+    <ClInclude Include="Config.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="EngineImpl.hpp" />
     <ClInclude Include="FSM.hpp" />

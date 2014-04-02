@@ -2,6 +2,7 @@
 
 #include "AppStateManager.hpp"
 #include "Engine.hpp"
+#include "Timer.hpp"
 
 // ================================================ //
 
@@ -74,20 +75,28 @@ void AppStateManager::start(AppState* pState)
 
 	double dt = 1.0;
 	Uint32 newTime = 0, currentTime = 0;
+	Timer capTimer;
+	const int TICKS_PER_FRAME = 1000 / Engine::getSingletonPtr()->getMaxFrameRate();
 
 	Log::getSingletonPtr()->logMessage("Entering main loop...");
 
 	for(;!m_bShutdown;){
-		
+
 		if(Engine::getSingletonPtr()->isWindowFocused()){
+			capTimer.restart();
+
 			newTime = SDL_GetTicks();
 			dt = static_cast<double>(newTime - currentTime) / 1000.0;
-			if(dt == 0.0)
-				dt = 0.02; // ...for vsync off?
 			currentTime = newTime;
 
 			// Update the active state
 			m_activeStateStack.back()->update(dt);
+
+			// Regulate the maximum frame rate (in case VSync is off)
+			int frameTicks = capTimer.getTicks();
+			if(frameTicks < TICKS_PER_FRAME){
+				SDL_Delay(TICKS_PER_FRAME - frameTicks);
+			}
 		}
 		else{
 			SDL_Event e;

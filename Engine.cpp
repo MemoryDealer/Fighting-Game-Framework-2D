@@ -60,6 +60,13 @@ void Engine::setWindowFocused(const bool focused)
 }
 
 // ================================================ //
+
+void Engine::setMaxFrameRate(const unsigned int max)
+{
+	return m_pImpl->setMaxFrameRate(max);
+}
+
+// ================================================ //
 // Getter functions
 // ================================================ //
 
@@ -87,6 +94,13 @@ const int Engine::getWindowHeight(void) const
 const bool Engine::isWindowFocused(void) const
 { 
 	return m_pImpl->isWindowFocused();
+}
+
+// ================================================ //
+
+const int Engine::getMaxFrameRate(void) const
+{
+	return m_pImpl->getMaxFrameRate();
 }
 
 // ================================================ //
