@@ -4,12 +4,19 @@
 #include "PlayerStates.hpp"
 #include "Config.hpp"
 #include "Engine.hpp"
+#include "Input.hpp"
 
 // ================================================ //
 
 PlayerImpl::PlayerImpl(unsigned int fighter)
 	:	ObjectImpl(fighter),
-		m_fighter(fighter)
+		m_fighter(fighter),
+		m_xVel(0), 
+		m_yVel(0),
+		m_maxXVel(0),
+		m_maxYVel(0),
+		m_currentXVel(0),
+		m_currentYVel(0)
 {
 	// Load configuration settings
 	this->loadFighterData();
@@ -48,7 +55,7 @@ PlayerImpl::~PlayerImpl(void)
 
 void PlayerImpl::loadFighterData(void)
 {
-	Config c;
+	Config c, e;
 
 	//! Add a fighter data file integrity check here?
 
@@ -68,24 +75,71 @@ void PlayerImpl::loadFighterData(void)
 	// Load spritesheet
 	this->setTextureFile(c.parseValue("core", "spriteSheet").c_str());
 
-	
-
 	// Load src rect
-	m_src.x = c.parseIntValue("src", "x");
-	m_src.y = c.parseIntValue("src", "y");
-	m_src.w = m_dst.w = c.parseIntValue("src", "w");
-	m_src.h = m_dst.h = c.parseIntValue("src", "h");
-	/*m_dst.w = 106;
-	m_dst.h = 138;*/
-	//m_dst.w = Engine::getSingletonPtr()->getWindowWidth() - 734;
+	m_src.x = c.parseIntValue("cell", "x");
+	m_src.y = c.parseIntValue("cell", "y");
+	m_src.w = c.parseIntValue("cell", "w");
+	m_src.h = c.parseIntValue("cell", "h");
+
+	// Load size
+	m_dst.w = c.parseIntValue("size", "w");
+	m_dst.h = c.parseIntValue("size", "h");
+
+	// Movement
+	m_xVel = c.parseIntValue("movement", "xVel");
+	m_yVel = c.parseIntValue("movement", "yVel");
+	m_maxXVel = c.parseIntValue("movement", "xMax");
+	m_maxYVel = c.parseIntValue("movement", "yMax");
+
+	// set floor (temporary)
+	e.loadFile("Data/Config/game.cfg");
+	m_dst.y = e.parseIntValue("game", "floor");
+}
+
+// ================================================ //
+
+void PlayerImpl::processInput(const int input)
+{
+	switch(input){
+	default:
+		break;
+
+	case Input::EPSILON:
+		m_currentXVel = 0;
+		printf("EPSILON!!!\n");
+		break;
+
+	case Input::BUTTON_LEFT_PUSHED:
+		m_currentXVel -= m_xVel;
+		if(std::abs(m_currentXVel) > m_maxXVel)
+			m_currentXVel = -m_maxXVel;
+		break;
+
+	case Input::BUTTON_LEFT_RELEASED:
+		if(m_currentXVel < 0)
+			m_currentXVel += m_xVel;
+		break;
+
+	case Input::BUTTON_RIGHT_PUSHED:
+		m_currentXVel += m_xVel;
+		if(m_currentXVel > m_maxXVel)
+			m_currentXVel = m_maxXVel;
+		break;
+
+	case Input::BUTTON_RIGHT_RELEASED:
+		if(m_currentXVel > 0)
+			m_currentXVel -= m_xVel;
+		break;
+	}
 }
 
 // ================================================ //
 
 void PlayerImpl::update(double dt)
 {
-	//printf("PlayerState: %d\n", m_pFSM->getCurrentStateID());
-	this->setTextureCoordinates(m_src.x + 1, m_src.y);
+	m_dst.x += static_cast<int>(m_currentXVel * dt);
+	printf("Vel: %d\n", m_currentXVel);
+
 	this->render();
 }
 

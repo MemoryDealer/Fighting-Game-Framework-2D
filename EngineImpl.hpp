@@ -32,6 +32,8 @@ public:
 	const SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
+	const int getLogicalWindowWidth(void) const;
+	const int getLogicalWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
 	const int getMaxFrameRate(void) const;
 
@@ -41,6 +43,7 @@ private:
 	SDL_Renderer*		m_pRenderer;
 
 	unsigned int		m_width, m_height;
+	unsigned int		m_logicalWidth, m_logicalHeight;
 	bool				m_windowFocused;
 	unsigned int		m_maxFrameRate;
 };
@@ -66,6 +69,12 @@ inline const int EngineImpl::getWindowWidth(void) const
 
 inline const int EngineImpl::getWindowHeight(void) const
 { return m_height; }
+
+inline const int EngineImpl::getLogicalWindowWidth(void) const
+{ return m_logicalWidth; }
+
+inline const int EngineImpl::getLogicalWindowHeight(void) const
+{ return m_logicalHeight; }
 
 inline const int EngineImpl::getMaxFrameRate(void) const
 { return m_maxFrameRate; }

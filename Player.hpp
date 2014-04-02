@@ -20,6 +20,7 @@ public:
 	virtual ~Player(void);
 
 	void loadFighterData(void);
+	void processInput(const int input = 0);
 
 	// Getter functions
 	

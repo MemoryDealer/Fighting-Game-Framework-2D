@@ -44,6 +44,7 @@ public:
 	virtual void exit(void) = 0;
 	virtual bool pause(void){ return true; }
 	virtual void resume(void){};
+	virtual void handleInput(SDL_Event& e) = 0;
 	virtual void update(double dt) = 0;
 
 	const std::string& getName(void){ return m_name; }

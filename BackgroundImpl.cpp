@@ -33,10 +33,8 @@ bool BackgroundImpl::setTextureFile(const char* filename)
 
 	if(m_pTexture){
 		// set background to fill entire screen as default
-		/*m_dst.w = Engine::getSingletonPtr()->getWindowWidth();
-		m_dst.h = Engine::getSingletonPtr()->getWindowHeight();*/
-		m_dst.w = 854;
-		m_dst.h = 480;
+		m_dst.w = Engine::getSingletonPtr()->getLogicalWindowWidth();
+		m_dst.h = Engine::getSingletonPtr()->getLogicalWindowHeight();
 
 		return true;
 	}

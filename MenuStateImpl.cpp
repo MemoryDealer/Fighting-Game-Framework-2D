@@ -12,7 +12,8 @@
 
 MenuStateImpl::MenuStateImpl(void)
 	:	m_bQuit(false),
-		m_pObjectManager(new ObjectManager())
+		m_pObjectManager(new ObjectManager()),
+		m_input(0)
 {
 
 }
@@ -34,7 +35,6 @@ void MenuStateImpl::enter(void)
 	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
 
 	new PlayerManager(Fighter::LORD_GRISHNAKH, Fighter::LORD_GRISHNAKH);
-	PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(0, 215);
 }
 
 // ================================================ //
@@ -64,10 +64,49 @@ void MenuStateImpl::resume(void)
 
 // ================================================ //
 
+void MenuStateImpl::handleInput(SDL_Event& e)
+{
+	if(e.type == SDL_KEYDOWN){
+		switch(e.key.keysym.sym){
+		default:
+			m_input = Input::EPSILON;
+			break;
+
+		case SDLK_LEFT:
+			m_input = Input::BUTTON_LEFT_PUSHED;
+			break;
+
+		case SDLK_RIGHT:
+			m_input = Input::BUTTON_RIGHT_PUSHED;
+			break;
+
+		case SDLK_ESCAPE:
+			m_bQuit = true;
+			break;
+		}
+	}
+	else if(e.type == SDL_KEYUP){
+		switch(e.key.keysym.sym){
+		default:
+			m_input = Input::EPSILON;
+			break;
+
+		case SDLK_LEFT:
+			m_input = Input::BUTTON_LEFT_RELEASED;
+			break;
+
+		case SDLK_RIGHT:
+			m_input = Input::BUTTON_RIGHT_RELEASED;
+			break;
+		}
+	}
+}
+
+// ================================================ //
+
 void MenuStateImpl::update(double dt)
 {
 	SDL_Event e;
-	unsigned int input;
 
 	while(SDL_PollEvent(&e)){
 		switch(e.type){
@@ -79,10 +118,8 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_KEYDOWN:
-			if(e.key.keysym.sym == SDLK_ESCAPE)
-				m_bQuit = true;
-			if(e.key.keysym.sym == SDLK_LEFT)
-				input = Input::BUTTON_LEFT;
+		case SDL_KEYUP:
+			this->handleInput(e);
 			break;
 
 		case SDL_WINDOWEVENT:
@@ -95,8 +132,7 @@ void MenuStateImpl::update(double dt)
 	Engine::getSingletonPtr()->clearRenderer();
 
 	m_pObjectManager->update(dt);
-	PlayerManager::getSingletonPtr()->getRedPlayer()->update(dt);
-	PlayerManager::getSingletonPtr()->getBluePlayer()->update(dt);
+	PlayerManager::getSingletonPtr()->update(dt, m_input);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

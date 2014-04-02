@@ -19,6 +19,8 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <complex>
+#include <algorithm>
 
 // SDL
 #include <SDL.h>

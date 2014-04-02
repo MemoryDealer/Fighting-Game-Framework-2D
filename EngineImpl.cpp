@@ -9,8 +9,10 @@
 EngineImpl::EngineImpl(void)
 	:	m_pWindow(nullptr),
 		m_pRenderer(nullptr),
-		m_width(640),
+		m_width(854),
 		m_height(480),
+		m_logicalWidth(854),
+		m_logicalHeight(480),
 		m_maxFrameRate(60)
 {
 	// Initialize SDL

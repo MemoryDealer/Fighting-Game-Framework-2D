@@ -22,14 +22,14 @@ MenuState::~MenuState(void)
 
 void MenuState::enter(void)
 {
-	m_pImpl->enter();
+	return m_pImpl->enter();
 }
 
 // ================================================ //
 
 void MenuState::exit(void)
 {
-	m_pImpl->exit();
+	return m_pImpl->exit();
 }
 
 // ================================================ //
@@ -43,7 +43,14 @@ bool MenuState::pause(void)
 
 void MenuState::resume(void)
 {
-	m_pImpl->resume();
+	return m_pImpl->resume();
+}
+
+// ================================================ //
+
+void MenuState::handleInput(SDL_Event& e)
+{
+	return m_pImpl->handleInput(e);
 }
 
 // ================================================ //

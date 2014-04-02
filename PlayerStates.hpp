@@ -35,6 +35,9 @@ namespace PlayerState{
 namespace PlayerAction{
 	enum{
 		NONE = 0,
+		MOVE_LEFT, MOVE_RIGHT,
+		CROUCH,
+		JUMP,
 		LIGHT_PUNCH, MEDIUM_PUNCH, HEAVY_PUNCH,
 		LIGHT_KICK, MEDIUM_KICK, HEAVY_KICK,
 		SPECIAL1,
@@ -42,9 +45,7 @@ namespace PlayerAction{
 		SPECIAL3,
 		SPECIAL4,
 		SPECIAL5,
-		CROUCH,
-		JUMP,
-
+		
 		__
 	};
 }

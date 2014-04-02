@@ -91,6 +91,20 @@ const int Engine::getWindowHeight(void) const
 
 // ================================================ //
 
+const int Engine::getLogicalWindowWidth(void) const
+{
+	return m_pImpl->getLogicalWindowWidth();
+}
+
+// ================================================ //
+
+const int Engine::getLogicalWindowHeight(void) const
+{
+	return m_pImpl->getLogicalWindowHeight();
+}
+
+// ================================================ //
+
 const bool Engine::isWindowFocused(void) const
 { 
 	return m_pImpl->isWindowFocused();

@@ -20,14 +20,16 @@ public:
 	void exit(void);
 	bool pause(void);
 	void resume(void);
+	void handleInput(SDL_Event& e);
 	void update(double dt);
 
 	const bool shouldQuit(void) const;
 
 private:
-	bool m_bQuit;
+	bool	m_bQuit;
 
 	std::tr1::shared_ptr<ObjectManager> m_pObjectManager;
+	int		m_input;
 };
 
 // ================================================ //

@@ -26,6 +26,13 @@ void Player::loadFighterData(void)
 }
 
 // ================================================ //
+
+void Player::processInput(const int input)
+{
+	return m_pImpl->processInput(input);
+}
+
+// ================================================ //
 // Getter functions
 // ================================================ //
 
