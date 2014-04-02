@@ -79,6 +79,9 @@
     <Filter Include="Header Files\Engine\Config">
       <UniqueIdentifier>{38595cad-23c3-485f-b1e9-75863da06530}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Config">
+      <UniqueIdentifier>{9eb931e6-bdda-4e3d-ba5e-487184c15962}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -145,7 +148,7 @@
       <Filter>Source Files\Engine\Player</Filter>
     </ClCompile>
     <ClCompile Include="Config.cpp">
-      <Filter>Source Files\Engine</Filter>
+      <Filter>Source Files\Engine\Config</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

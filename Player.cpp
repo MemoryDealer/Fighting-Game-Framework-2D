@@ -5,8 +5,8 @@
 
 // ================================================ //
 
-Player::Player(const char* textureFilename)
-	:	m_pImpl(new PlayerImpl(textureFilename))
+Player::Player(unsigned int fighter)
+	:	m_pImpl(new PlayerImpl(fighter))
 {
 	Object::setPImpl(m_pImpl);
 }
@@ -16,6 +16,13 @@ Player::Player(const char* textureFilename)
 Player::~Player(void)
 {
 
+}
+
+// ================================================ //
+
+void Player::loadFighterData(void)
+{
+	return m_pImpl->loadFighterData();
 }
 
 // ================================================ //

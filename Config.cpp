@@ -4,6 +4,16 @@
 
 // ================================================ //
 
+Config::Config(ConfigType type)
+	:	m_file(),
+		m_type(type),
+		m_loaded(false)
+{
+
+}
+
+// ================================================ //
+
 Config::Config(const char* file, ConfigType type)
 	:	m_file(),
 		m_type(type),
@@ -27,8 +37,29 @@ Config::~Config(void)
 
 // ================================================ //
 
+void Config::loadFile(const char* file)
+{
+	if(m_loaded){
+		m_file.close();
+		m_loaded = false;
+	}
+
+	m_file.open(file);
+
+	if(m_file.is_open()){
+		m_loaded = true;
+	}
+}
+
+// ================================================ //
+
 std::string& Config::parseValue(const char* section, const char* value)
 {
+	if(!m_loaded){
+		m_buffer.clear();
+		return m_buffer;
+	}
+
 	// Reset file pointer to beginning
 	m_file.clear();
 	m_file.seekg(0, m_file.beg);
@@ -47,14 +78,17 @@ std::string& Config::parseValue(const char* section, const char* value)
 				m_file >> m_buffer;
 				while(m_buffer[0] != '['){
 					
-					// Find location of assignment operator
-					size_t assign = m_buffer.find_first_of('=');
+					// Skip comments
+					if(m_buffer[0] != '#'){
+						// Find location of assignment operator
+						size_t assign = m_buffer.find_first_of('=');
 
-					// See if pos 0 to the assignment operator matches value name
-					if(m_buffer.compare(0, assign, value) == 0){
-						m_buffer = m_buffer.substr(assign + 1, m_buffer.size());
+						// See if pos 0 to the assignment operator matches value name
+						if(m_buffer.compare(0, assign, value) == 0){
+							m_buffer = m_buffer.substr(assign + 1, m_buffer.size());
 
-						return m_buffer;
+							return m_buffer;
+						}
 					}
 
 					m_file >> m_buffer;
@@ -64,7 +98,7 @@ std::string& Config::parseValue(const char* section, const char* value)
 	}
 
 	// Value not found, return empty string
-	m_buffer.erase();
+	m_buffer.clear();
 	return m_buffer;
 }
 

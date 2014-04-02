@@ -2,12 +2,17 @@
 
 #include "PlayerImpl.hpp"
 #include "PlayerStates.hpp"
+#include "Config.hpp"
 
 // ================================================ //
 
-PlayerImpl::PlayerImpl(const char* textureFilename)
-	:	ObjectImpl(textureFilename)
+PlayerImpl::PlayerImpl(unsigned int fighter)
+	:	ObjectImpl(fighter),
+		m_fighter(fighter)
 {
+	// Load configuration settings
+	this->loadFighterData();
+
 	// Add states to core FSM
 	FState* state = new FState(PlayerState::IDLE);
 
@@ -36,6 +41,37 @@ PlayerImpl::PlayerImpl(const char* textureFilename)
 PlayerImpl::~PlayerImpl(void)
 {
 
+}
+
+// ================================================ //
+
+void PlayerImpl::loadFighterData(void)
+{
+	Config c;
+
+	//! Add a fighter data file integrity check here?
+
+	switch(m_fighter){
+	default:
+		break;
+
+	case Fighter::LORD_GRISHNAKH:
+		c.loadFile("Data/Config/varg.fighter");
+		break;
+	}
+
+	if(!c.isLoaded()){
+		throw std::exception("Failed to load fighter file!");
+	}
+
+	// Load spritesheet
+	this->setTextureFile(c.parseValue("core", "spriteSheet").c_str());
+
+	// Load src rect
+	m_src.x = c.parseIntValue("src", "x");
+	m_src.y = c.parseIntValue("src", "y");
+	m_src.w = m_dst.w = c.parseIntValue("src", "w");
+	m_src.h = m_dst.h = c.parseIntValue("src", "h");
 }
 
 // ================================================ //

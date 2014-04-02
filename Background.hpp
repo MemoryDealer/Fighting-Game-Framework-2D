@@ -16,7 +16,7 @@ class BackgroundImpl;
 class Background : public Object
 {
 public:
-	explicit Background(const char* textureFilename);
+	explicit Background(unsigned int type);
 	virtual ~Background(void);
 
 	virtual void update(double dt);

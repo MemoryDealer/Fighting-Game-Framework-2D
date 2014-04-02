@@ -12,13 +12,15 @@
 class PlayerImpl : public ObjectImpl
 {
 public:
-	explicit PlayerImpl(const char* textureFilename);
+	explicit PlayerImpl(unsigned int fighter);
 	virtual ~PlayerImpl(void);
+
+	void loadFighterData(void);
 
 	virtual void update(double dt);
 
 private:
-
+	unsigned int	m_fighter;
 };
 
 // ================================================ //

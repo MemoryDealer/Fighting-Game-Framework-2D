@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-Object::Object(const char* textureFilename)
+Object::Object(const unsigned int type)
 	:	m_pImpl(nullptr)
 {
 	

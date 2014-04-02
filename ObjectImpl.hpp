@@ -13,7 +13,7 @@
 class ObjectImpl
 {
 public:
-	explicit ObjectImpl(const char* textureFilename);
+	explicit ObjectImpl(const unsigned int type);
 	virtual ~ObjectImpl(void);
 
 	// Setter functions

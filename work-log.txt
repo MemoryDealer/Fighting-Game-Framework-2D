@@ -50,6 +50,8 @@
 -Create Config class for parsing/writing config files. I've given it a basic .ini parser (the function parseValue() will find any value in the ini file). This can be used for most development stuff. 
 	Later, it may have a metadata parser and/or a binary parser. 
 -Added config file support for basic engine componenets in EngineImpl.cpp (constructor). 
+-Re-organized Object constructor to take unsigned int, this way child objects can use enumerated types, such as the Player object taking in the fighter's enumerated type. Then the Player object itself will handle loading the character etc. 
+
 
 #TODO
 -LoadResources in Engine

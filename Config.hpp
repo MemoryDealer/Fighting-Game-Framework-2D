@@ -17,9 +17,11 @@ public:
 		META
 	};
 
-	explicit Config(const char* file, ConfigType = INI);
+	explicit Config(ConfigType type = INI);
+	explicit Config(const char* file, ConfigType type = INI);
 	~Config(void);
 
+	void loadFile(const char* file);
 	std::string& parseValue(const char* section, const char* value);
 	const int parseIntValue(const char* section, const char* value);
 

@@ -3,6 +3,7 @@
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
 #include "PlayerManager.hpp"
+#include "PlayerStates.hpp"
 #include "Background.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
@@ -29,15 +30,10 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	m_pObjectManager->addObject(new Background("D:/2D/B/cave.jpg"));
+	m_pObjectManager->addObject(new Background(0));
+	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
 
-	new PlayerManager("Data/SpriteSheets/glacius.png", "");
-	PlayerManager::getSingletonPtr()->getRedPlayer()->setTextureCoordinates(3, 4, 66, 108);
-
-	Config cfg("Data/Config/varg.fighter");
-	if(cfg.isLoaded()){
-		printf("f=%s\n", cfg.parseValue("frames", "f").c_str());
-	}
+	new PlayerManager(Fighter::LORD_GRISHNAKH, Fighter::LORD_GRISHNAKH);
 }
 
 // ================================================ //

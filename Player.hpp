@@ -16,8 +16,10 @@ class PlayerImpl;
 class Player : public Object
 {
 public:
-	explicit Player(const char* textureFilename);
+	explicit Player(unsigned int fighter);
 	virtual ~Player(void);
+
+	void loadFighterData(void);
 
 	// Getter functions
 	

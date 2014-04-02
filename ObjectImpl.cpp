@@ -6,7 +6,7 @@
 
 // ================================================ //
 
-ObjectImpl::ObjectImpl(const char* textureFilename)
+ObjectImpl::ObjectImpl(const unsigned int type)
 	:	m_pTexture(nullptr),
 		m_src(),
 		m_dst(),
@@ -17,13 +17,7 @@ ObjectImpl::ObjectImpl(const char* textureFilename)
 	static int nameCtr = 0;
 	m_name += std::to_string(static_cast<long long>(nameCtr++));
 
-	m_dst.x = m_dst.y = 0;
-
-	if(textureFilename != ""){
-		this->setTextureFile(textureFilename);
-		m_src.x = m_src.y = 0;
-		SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
-	}
+	m_src.x = m_src.y = m_dst.x = m_dst.y = 0;
 
 	Log::getSingletonPtr()->logMessage("Object \"" + m_name + "\" created!");
 }

@@ -15,7 +15,7 @@
 class PlayerManager : public Singleton<PlayerManager>
 {
 public:
-	explicit PlayerManager(const char* redTexture, const char* blueTexture);
+	explicit PlayerManager(unsigned int redFighter, unsigned int blueFighter);
 	~PlayerManager(void);
 
 	Player* getRedPlayer(void) const;

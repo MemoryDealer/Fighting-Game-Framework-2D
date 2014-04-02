@@ -5,8 +5,8 @@
 
 // ================================================ //
 
-Background::Background(const char* textureFilename)
-	:	m_pImpl(new BackgroundImpl(textureFilename))
+Background::Background(unsigned int type)
+	:	m_pImpl(new BackgroundImpl(type))
 {
 	Object::setPImpl(m_pImpl);
 }

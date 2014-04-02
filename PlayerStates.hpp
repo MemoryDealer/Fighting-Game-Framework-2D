@@ -5,6 +5,16 @@
 
 // ================================================ //
 
+namespace Fighter{
+	enum{
+		DUMMY = 50,
+		LORD_GRISHNAKH,
+		CORPSE_EXPLOSION
+	};
+};
+
+// ================================================ //
+
 namespace PlayerState{
 	enum{
 		IDLE = 0,

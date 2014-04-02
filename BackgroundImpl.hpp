@@ -12,13 +12,16 @@
 class BackgroundImpl : public ObjectImpl
 {
 public:
-	explicit BackgroundImpl(const char* textureFilename);
+	explicit BackgroundImpl(unsigned int type);
 	virtual ~BackgroundImpl(void);
+
+	// Setter functions
+	virtual bool setTextureFile(const char* filename);
 
 	virtual void update(double dt);
 
 private:
-	// additional textures...
+	unsigned int m_type;
 };
 
 // ================================================ //
