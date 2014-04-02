@@ -34,6 +34,7 @@ void MenuStateImpl::enter(void)
 	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
 
 	new PlayerManager(Fighter::LORD_GRISHNAKH, Fighter::LORD_GRISHNAKH);
+	PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(0, 215);
 }
 
 // ================================================ //

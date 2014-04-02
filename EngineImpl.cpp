@@ -3,6 +3,7 @@
 #include "EngineImpl.hpp"
 #include "Config.hpp"
 
+
 // ================================================ //
 
 EngineImpl::EngineImpl(void)
@@ -62,10 +63,17 @@ EngineImpl::EngineImpl(void)
 	if(m_pRenderer == nullptr)
 		throw std::exception("SDL_CreateRenderer() failed.");
 
-	Log::getSingletonPtr()->logMessage("SDL_Renderer created successfully");
+	// Set the render scale quality
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, cfg.parseValue("core", "renderScaleQuality").c_str());
+
+	// Set logical size for rendering
+	SDL_RenderSetLogicalSize(m_pRenderer, cfg.parseIntValue("window", "logicalWidth"), 
+		cfg.parseIntValue("window", "logicalHeight"));
 
 	// Get the max frame rate
 	m_maxFrameRate = cfg.parseIntValue("window", "maxFPS");
+	
+	Log::getSingletonPtr()->logMessage("SDL_Renderer created successfully");
 }
 
 // ================================================ //

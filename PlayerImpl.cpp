@@ -3,6 +3,7 @@
 #include "PlayerImpl.hpp"
 #include "PlayerStates.hpp"
 #include "Config.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -67,11 +68,16 @@ void PlayerImpl::loadFighterData(void)
 	// Load spritesheet
 	this->setTextureFile(c.parseValue("core", "spriteSheet").c_str());
 
+	
+
 	// Load src rect
 	m_src.x = c.parseIntValue("src", "x");
 	m_src.y = c.parseIntValue("src", "y");
 	m_src.w = m_dst.w = c.parseIntValue("src", "w");
 	m_src.h = m_dst.h = c.parseIntValue("src", "h");
+	/*m_dst.w = 106;
+	m_dst.h = 138;*/
+	//m_dst.w = Engine::getSingletonPtr()->getWindowWidth() - 734;
 }
 
 // ================================================ //

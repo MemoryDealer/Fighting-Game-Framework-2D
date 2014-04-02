@@ -51,7 +51,10 @@
 	Later, it may have a metadata parser and/or a binary parser. 
 -Added config file support for basic engine componenets in EngineImpl.cpp (constructor). 
 -Re-organized Object constructor to take unsigned int, this way child objects can use enumerated types, such as the Player object taking in the fighter's enumerated type. Then the Player object itself will handle loading the character etc. 
-
+-I've realized that changing the resolution will cause the sprite sizes to be inaccurate, a very big problem for a fighting game. I've tried using SDL_RenderSetLogicalSize() which is supposed to scale things automatically, but I may have to manually
+	add scaling because it might be better in the long run. 
+-I think I will just use SDL_RenderSetLogicalSize() for now. Later on, to avoid letterboxing, I can set a base value for each aspect ratio and allow a config file to alter the values. http://en.wikipedia.org/wiki/File:Vector_Video_Standards5.svg
+	16:9 (1920x1080) is the most common for steam users so I'm working with that. 
 
 #TODO
 -LoadResources in Engine
