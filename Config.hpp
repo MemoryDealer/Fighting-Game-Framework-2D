@@ -21,6 +21,7 @@ public:
 	~Config(void);
 
 	std::string& parseValue(const char* section, const char* value);
+	const int parseIntValue(const char* section, const char* value);
 
 	// Getter functions
 	const bool isLoaded(void) const;

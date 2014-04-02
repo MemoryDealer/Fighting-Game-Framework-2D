@@ -30,6 +30,7 @@ Config::~Config(void)
 std::string& Config::parseValue(const char* section, const char* value)
 {
 	// Reset file pointer to beginning
+	m_file.clear();
 	m_file.seekg(0, m_file.beg);
 
 	while(!m_file.eof()){
@@ -65,6 +66,18 @@ std::string& Config::parseValue(const char* section, const char* value)
 	// Value not found, return empty string
 	m_buffer.erase();
 	return m_buffer;
+}
+
+// ================================================ //
+
+const int Config::parseIntValue(const char* section, const char* value)
+{
+	std::string str = this->parseValue(section, value);
+	if(!str.empty()){
+		return std::stoi(str);
+	}
+
+	return -1;
 }
 
 // ================================================ //

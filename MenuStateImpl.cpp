@@ -99,6 +99,7 @@ void MenuStateImpl::update(double dt)
 
 	m_pObjectManager->update(dt);
 	PlayerManager::getSingletonPtr()->getRedPlayer()->update(dt);
+	PlayerManager::getSingletonPtr()->getBluePlayer()->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

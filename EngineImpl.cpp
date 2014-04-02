@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "EngineImpl.hpp"
+#include "Config.hpp"
 
 // ================================================ //
 
@@ -29,13 +30,24 @@ EngineImpl::EngineImpl(void)
 
 	Log::getSingletonPtr()->logMessage("SDL_ttf initialized");
 
+	// Load engine config file
+	Config cfg("Data/Config/engine.cfg");
+	if(!cfg.isLoaded()){
+		// Generate a default config file?
+		throw std::exception("Failed to load engine.cfg");
+	}
+
 	// Initialize SDL_net
-	if(SDLNet_Init() < 0)
-		throw std::exception(("SDLNet_Init() failed."));
+	if(cfg.parseIntValue("core", "net")){
+		if(SDLNet_Init() < 0)
+			throw std::exception(("SDLNet_Init() failed."));
+	}
 
 	Log::getSingletonPtr()->logMessage("SDL_net initialized");
 
 	// Create the window
+	m_width = cfg.parseIntValue("window", "width");
+	m_height = cfg.parseIntValue("window", "height");
 	m_pWindow = SDL_CreateWindow("Extreme Metal Fighter", SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, m_width, m_height, 0);
 	if(m_pWindow == nullptr)
@@ -44,12 +56,16 @@ EngineImpl::EngineImpl(void)
 	Log::getSingletonPtr()->logMessage("SDL_Window created successfully");
 
 	// Create the renderer
-	m_pRenderer = SDL_CreateRenderer(m_pWindow, -1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	Uint32 flags = (cfg.parseIntValue("window", "vsync")) ? SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC :
+		SDL_RENDERER_ACCELERATED;
+	m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, flags);
 	if(m_pRenderer == nullptr)
 		throw std::exception("SDL_CreateRenderer() failed.");
 
 	Log::getSingletonPtr()->logMessage("SDL_Renderer created successfully");
+
+	// Get the max frame rate
+	m_maxFrameRate = cfg.parseIntValue("window", "maxFPS");
 }
 
 // ================================================ //

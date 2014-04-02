@@ -49,7 +49,7 @@
 -Added a timer in the main loop of AppStateManager which limits the maximum frame rate to 60 (a value in Engine). This eliminates the problem with vsync being off. 
 -Create Config class for parsing/writing config files. I've given it a basic .ini parser (the function parseValue() will find any value in the ini file). This can be used for most development stuff. 
 	Later, it may have a metadata parser and/or a binary parser. 
-
+-Added config file support for basic engine componenets in EngineImpl.cpp (constructor). 
 
 #TODO
 -LoadResources in Engine
@@ -58,6 +58,7 @@
 -Create Hitbox, Rect? 
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
 
+#Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 
 
 
