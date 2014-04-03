@@ -158,10 +158,15 @@ Animation* Config::parseAnimation(const int id)
 						parse >> pAnimation->y1; 
 
 						// Extract x2 and y2
-						parse.str(m_buffer.substr(m_buffer.find_first_of('(', ++index)));
+						index = m_buffer.find_first_of('(', ++index);
+						parse.str(m_buffer.substr(++index));
 						parse >> pAnimation->x2;
 						parse >> c;
 						parse >> pAnimation->y2;
+
+						pAnimation->numXFrames = pAnimation->x2 - pAnimation->x1;
+						pAnimation->numYFrames = pAnimation->y2 - pAnimation->y1;
+						pAnimation->currentXFrame = pAnimation->currentYFrame = 0;
 					}catch(std::exception& e){
 						Log::getSingletonPtr()->logMessage("ERROR: Invalid animation data in fighter file (" + std::string(e.what()) + ")");
 						delete pAnimation;

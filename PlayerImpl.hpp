@@ -9,6 +9,7 @@
 #include "PlayerData.hpp"
 #include "Animation.hpp"
 #include "Config.hpp"
+#include "Timer.hpp"
 
 // ================================================ //
 
@@ -43,7 +44,9 @@ private:
 	int		m_currentAction;
 	int		m_playerSide;
 
-	AnimationList m_animations;
+	AnimationList	m_animations;
+	Animation*		m_pCurrentAnimation;
+	Timer			m_animationTimer;
 };
 
 // ================================================ //

@@ -17,7 +17,9 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 		m_yMax(0),
 		m_currentAction(PlayerAction::NONE),
 		m_playerSide(PlayerSide::LEFT),
-		m_animations()
+		m_animations(),
+		m_pCurrentAnimation(nullptr),
+		m_animationTimer()
 {
 	// Load configuration settings
 	this->loadFighterData();
@@ -127,6 +129,8 @@ void PlayerImpl::loadAnimations(Config& c)
 	for(int i=0; i<AnimationID::END_ANIMATIONS; ++i){
 		m_animations.push_back(c.parseAnimation(i));
 	}
+
+	m_animationTimer.restart();
 }
 
 // ================================================ //
@@ -184,21 +188,34 @@ void PlayerImpl::updateAnimation(double dt)
 			break;
 
 		case PlayerState::IDLE:
-		
+			m_pCurrentAnimation = m_animations[AnimationID::IDLE];
 			break;
 
 		case PlayerState::WALKING_FORWARD:
-			printf("WALKING FORWARD\n");
+			m_pCurrentAnimation = m_animations[AnimationID::WALKING_FORWARD];
 			break;
 
 		case PlayerState::WALKING_BACK:
-			printf("WALKING BACK\n");
+			m_pCurrentAnimation = m_animations[AnimationID::WALKING_BACK];
 			break;
 
 		case PlayerState::BLOCKING:
 			printf("BLOCKING\n");
 			break;
+	}
 
+	// Update frame
+	if(m_animationTimer.getTicks() > 250){
+		m_src.x = m_src.w * (m_pCurrentAnimation->x1 + m_pCurrentAnimation->currentXFrame);
+		m_src.y = m_src.h * (m_pCurrentAnimation->y1 + m_pCurrentAnimation->currentYFrame) - m_src.h;
+		if((++m_pCurrentAnimation->currentXFrame) >= m_pCurrentAnimation->numXFrames){
+			m_pCurrentAnimation->currentXFrame = 0;
+		}
+		if((++m_pCurrentAnimation->currentYFrame) >= m_pCurrentAnimation->numYFrames){
+			m_pCurrentAnimation->currentYFrame = 0;
+		}
+
+		m_animationTimer.restart();
 	}
 }
 
