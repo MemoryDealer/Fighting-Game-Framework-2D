@@ -11,13 +11,25 @@ namespace Fighter{
 		LORD_GRISHNAKH,
 		CORPSE_EXPLOSION
 	};
-};
+}
+
+// ================================================ //
+
+namespace PlayerSide{
+	enum{
+		LEFT = 0,
+		RIGHT
+	};
+}
 
 // ================================================ //
 
 namespace PlayerState{
+	// These along with PlayerAction may seem redundant, but they may be needed for AI/network player input
 	enum{
 		IDLE = 0,
+		WALKING_FORWARD,
+		WALKING_BACK,
 		BLOCKING,
 		ATTACKING,
 		SPECIAL_OPENER,
@@ -35,7 +47,7 @@ namespace PlayerState{
 namespace PlayerAction{
 	enum{
 		NONE = 0,
-		MOVE_LEFT, MOVE_RIGHT,
+		WALK_BACK, WALK_FORWARD,
 		CROUCH,
 		JUMP,
 		LIGHT_PUNCH, MEDIUM_PUNCH, HEAVY_PUNCH,

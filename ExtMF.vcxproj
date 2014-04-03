@@ -105,6 +105,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.hpp" />
     <ClInclude Include="App.hpp" />
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="AppStateManager.hpp" />
@@ -126,7 +127,7 @@
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="PlayerImpl.hpp" />
     <ClInclude Include="PlayerManager.hpp" />
-    <ClInclude Include="PlayerStates.hpp" />
+    <ClInclude Include="PlayerData.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="Timer.hpp" />

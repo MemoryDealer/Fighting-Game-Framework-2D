@@ -23,7 +23,10 @@ public:
 	void processInput(const int input = 0);
 
 	// Getter functions
-	
+	const int getSide(void) const;
+
+	// Setter functions
+	void setSide(const int side);
 
 	virtual void update(double dt);
 

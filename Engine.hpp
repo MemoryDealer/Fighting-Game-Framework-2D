@@ -44,7 +44,7 @@ public:
 
 	// Some other functions
 	template<typename T>
-	static std::string& toString(const T& value)
+	static std::string toString(const T& value)
 	{
 		std::ostringstream oss;
 		oss << value;

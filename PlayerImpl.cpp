@@ -1,8 +1,6 @@
 // ================================================ //
 
 #include "PlayerImpl.hpp"
-#include "PlayerStates.hpp"
-#include "Config.hpp"
 #include "Engine.hpp"
 #include "Input.hpp"
 
@@ -11,12 +9,15 @@
 PlayerImpl::PlayerImpl(unsigned int fighter)
 	:	ObjectImpl(fighter),
 		m_fighter(fighter),
+		m_xAccel(0),
+		m_yAccel(0),
 		m_xVel(0), 
 		m_yVel(0),
-		m_maxXVel(0),
-		m_maxYVel(0),
-		m_currentXVel(0),
-		m_currentYVel(0)
+		m_xMax(0),
+		m_yMax(0),
+		m_currentAction(PlayerAction::NONE),
+		m_playerSide(PlayerSide::LEFT),
+		m_animations()
 {
 	// Load configuration settings
 	this->loadFighterData();
@@ -26,12 +27,26 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 
 	// State Idle
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
+	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
+	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
 	state->addTransition(PlayerAction::LIGHT_PUNCH, PlayerState::ATTACKING);
 	state->addTransition(PlayerAction::MEDIUM_PUNCH, PlayerState::ATTACKING);
 	state->addTransition(PlayerAction::HEAVY_PUNCH, PlayerState::ATTACKING);
 	state->addTransition(PlayerAction::LIGHT_KICK, PlayerState::ATTACKING);
 	state->addTransition(PlayerAction::MEDIUM_KICK, PlayerState::ATTACKING);
 	state->addTransition(PlayerAction::HEAVY_KICK, PlayerState::ATTACKING);
+	m_pFSM->addState(state);
+
+	// State Walking
+	state = new FState(PlayerState::WALKING_FORWARD);
+	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
+	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
+	m_pFSM->addState(state);
+
+	// State Blocking
+	state = new FState(PlayerState::WALKING_BACK);
+	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
+	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
 	m_pFSM->addState(state);
 
 	// State Attacking
@@ -48,14 +63,21 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 
 PlayerImpl::~PlayerImpl(void)
 {
+	Log::getSingletonPtr()->logMessage("Clearing animation list for \"" + m_name + "\"");
+	for(AnimationList::iterator itr = m_animations.begin();
+		itr != m_animations.end();
+		++itr){
+		delete *itr;
+	}
 
+	m_animations.clear();
 }
 
 // ================================================ //
 
 void PlayerImpl::loadFighterData(void)
 {
-	Config c, e;
+	Config c(Config::FIGHTER), e;
 
 	//! Add a fighter data file integrity check here?
 
@@ -86,50 +108,97 @@ void PlayerImpl::loadFighterData(void)
 	m_dst.h = c.parseIntValue("size", "h");
 
 	// Movement
-	m_xVel = c.parseIntValue("movement", "xVel");
-	m_yVel = c.parseIntValue("movement", "yVel");
-	m_maxXVel = c.parseIntValue("movement", "xMax");
-	m_maxYVel = c.parseIntValue("movement", "yMax");
+	m_xAccel = c.parseIntValue("movement", "xAccel");
+	m_yAccel = c.parseIntValue("movement", "yAccel");
+	m_xMax = c.parseIntValue("movement", "xMax");
+	m_yMax = c.parseIntValue("movement", "yMax");
 
 	// set floor (temporary)
 	e.loadFile("Data/Config/game.cfg");
 	m_dst.y = e.parseIntValue("game", "floor");
+
+	this->loadAnimations(c);
+}
+
+// ================================================ //
+
+void PlayerImpl::loadAnimations(Config& c)
+{
+	for(int i=0; i<AnimationID::END_ANIMATIONS; ++i){
+		m_animations.push_back(c.parseAnimation(i));
+	}
 }
 
 // ================================================ //
 
 void PlayerImpl::processInput(const int input)
 {
+	m_currentAction = PlayerAction::NONE;
+
 	switch(input){
 	default:
 		break;
 
-	case Input::EPSILON:
-		m_currentXVel = 0;
-		printf("EPSILON!!!\n");
+	case Input::NONE:
+		// This is currently blocked by PlayerManager::update()
 		break;
 
 	case Input::BUTTON_LEFT_PUSHED:
-		m_currentXVel -= m_xVel;
-		if(std::abs(m_currentXVel) > m_maxXVel)
-			m_currentXVel = -m_maxXVel;
+		m_xVel -= m_xAccel;
+		if(m_xVel < -m_xMax)
+			m_xVel = -m_xMax;
+
+		m_currentAction = (m_playerSide == PlayerSide::LEFT) ?
+			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
 		break;
 
 	case Input::BUTTON_LEFT_RELEASED:
-		if(m_currentXVel < 0)
-			m_currentXVel += m_xVel;
+		if(m_xVel < 0)
+			m_xVel += m_xAccel;
 		break;
 
 	case Input::BUTTON_RIGHT_PUSHED:
-		m_currentXVel += m_xVel;
-		if(m_currentXVel > m_maxXVel)
-			m_currentXVel = m_maxXVel;
+		m_xVel += m_xAccel;
+		if(m_xVel > m_xMax)
+			m_xVel = m_xMax;
+
+		m_currentAction = (m_playerSide == PlayerSide::RIGHT) ?
+			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
 		break;
 
 	case Input::BUTTON_RIGHT_RELEASED:
-		if(m_currentXVel > 0)
-			m_currentXVel -= m_xVel;
+		if(m_xVel > 0)
+			m_xVel -= m_xAccel;
 		break;
+	}
+
+	m_pFSM->stateTransition(m_currentAction);
+}
+
+// ================================================ //
+
+void PlayerImpl::updateAnimation(double dt)
+{
+	switch(m_pFSM->getCurrentStateID()){
+		default:
+			break;
+
+		case PlayerState::IDLE:
+		
+			break;
+
+		case PlayerState::WALKING_FORWARD:
+			printf("WALKING FORWARD\n");
+			break;
+
+		case PlayerState::WALKING_BACK:
+			printf("WALKING BACK\n");
+			break;
+
+		case PlayerState::BLOCKING:
+			printf("BLOCKING\n");
+			break;
+
 	}
 }
 
@@ -137,9 +206,9 @@ void PlayerImpl::processInput(const int input)
 
 void PlayerImpl::update(double dt)
 {
-	m_dst.x += static_cast<int>(m_currentXVel * dt);
-	printf("Vel: %d\n", m_currentXVel);
+	m_dst.x += static_cast<int>(m_xVel * dt);
 
+	this->updateAnimation(dt);
 	this->render();
 }
 

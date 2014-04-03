@@ -56,10 +56,21 @@
 -I think I will just use SDL_RenderSetLogicalSize() for now. Later on, to avoid letterboxing, I can set a base value for each aspect ratio and allow a config file to alter the values. http://en.wikipedia.org/wiki/File:Vector_Video_Standards5.svg
 	16:9 (1920x1080) is the most common for steam users so I'm working with that. 
 
+#4/2/14
+-Added handleInput to AppState class and implemented it in MenuState (GameState will eventually replace these testing stages). Also added processInput() to Player.
+-Each character will have their own x-velocity & y-velocity, and max x-velocity/y-velocity. These are set in the .fighter file and are read as the character is loaded.  
+*Note that when adding (velocity * dt) to the player position it must be casted to an int, or strange things happen like moving left is twice as fast. 
+-Added basic state machine transitions for walking/blocking. 
+-Players flip the rendering direction horizontally based on their playerSide variable. 
+-Added Animation class, not complete yet as it's being used for testing in the PlayerImpl object. 
+-Added Config::parseAnimation() which will find the x1,y1 and x2,y2 values for the animation (i.e. where it starts and where it ends). Other information can be added
+	such as repeats and reversals. 
+
 #TODO
+-NET
+-Camera class? 
 -LoadResources in Engine
 -GUILayer
--Get input working
 -Create Hitbox, Rect? 
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
 

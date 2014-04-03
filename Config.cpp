@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "Config.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -20,12 +21,7 @@ Config::Config(const char* file, ConfigType type)
 		m_loaded(false)
 {
 	// Open file
-	m_file.open(file);
-
-	if(m_file.is_open()){
-		m_loaded = true;
-
-	}
+	this->loadFile(file);
 }
 
 // ================================================ //
@@ -39,6 +35,7 @@ Config::~Config(void)
 
 void Config::loadFile(const char* file)
 {
+	Log::getSingletonPtr()->logMessage("Opening file \"" + std::string(file) + "\"");
 	if(m_loaded){
 		m_file.close();
 		m_loaded = false;
@@ -48,7 +45,16 @@ void Config::loadFile(const char* file)
 
 	if(m_file.is_open()){
 		m_loaded = true;
+		Log::getSingletonPtr()->logMessage("File loaded!");
 	}
+}
+
+// ================================================ //
+
+void Config::resetFilePointer(void)
+{
+	m_file.clear();
+	m_file.seekg(0, m_file.beg);
 }
 
 // ================================================ //
@@ -61,8 +67,7 @@ std::string& Config::parseValue(const char* section, const char* value)
 	}
 
 	// Reset file pointer to beginning
-	m_file.clear();
-	m_file.seekg(0, m_file.beg);
+	this->resetFilePointer();
 
 	while(!m_file.eof()){
 		m_file >> m_buffer;
@@ -112,6 +117,65 @@ const int Config::parseIntValue(const char* section, const char* value)
 	}
 
 	return -1;
+}
+
+// ================================================ //
+
+Animation* Config::parseAnimation(const int id)
+{
+	if(m_type != FIGHTER){
+		Log::getSingletonPtr()->logMessage("ERROR: Can't parse animation from a non-fighter file");
+		return nullptr;
+	}
+
+	Animation* pAnimation = nullptr;
+
+	// Reset file pointer to beginning
+	this->resetFilePointer();
+
+	while(!m_file.eof() && pAnimation == nullptr){
+		m_file >> m_buffer;
+
+		// Find the animations section
+		if(m_buffer.compare("[animations]") == 0){
+			// Look for the id of the animation to load
+			do{
+				m_file >> m_buffer;
+				if((m_buffer[0] - '0') == id){
+					// Animation id found, load it
+					pAnimation = new Animation();
+					pAnimation->id = id;
+
+					// Extract x1 and y1
+					size_t index = m_buffer.find_first_of('(');
+					std::istringstream parse(m_buffer.substr(++index));
+					char c;
+
+					try{
+						// Extract x1 and y1
+						parse >> pAnimation->x1;
+						parse >> c;
+						parse >> pAnimation->y1; 
+
+						// Extract x2 and y2
+						parse.str(m_buffer.substr(m_buffer.find_first_of('(', ++index)));
+						parse >> pAnimation->x2;
+						parse >> c;
+						parse >> pAnimation->y2;
+					}catch(std::exception& e){
+						Log::getSingletonPtr()->logMessage("ERROR: Invalid animation data in fighter file (" + std::string(e.what()) + ")");
+						delete pAnimation;
+						return nullptr;
+					}
+
+					return pAnimation;
+				}
+				
+			} while(m_buffer[0] != '/');
+		}
+	}
+
+	return pAnimation;
 }
 
 // ================================================ //

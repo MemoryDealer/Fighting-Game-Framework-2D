@@ -82,6 +82,12 @@
     <Filter Include="Source Files\Engine\Config">
       <UniqueIdentifier>{9eb931e6-bdda-4e3d-ba5e-487184c15962}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Animation">
+      <UniqueIdentifier>{3083f71b-4787-4a8d-90cf-cbb3be75b723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Animation">
+      <UniqueIdentifier>{2218d799-2a47-4e47-919d-08a29129e238}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -215,9 +221,6 @@
     <ClInclude Include="FState.hpp">
       <Filter>Header Files\Engine\FSM</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerStates.hpp">
-      <Filter>Header Files\Engine\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Input.hpp">
       <Filter>Header Files\Engine\Input</Filter>
     </ClInclude>
@@ -226,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="Config.hpp">
       <Filter>Header Files\Engine\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerData.hpp">
+      <Filter>Header Files\Engine\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.hpp">
+      <Filter>Header Files\Engine\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

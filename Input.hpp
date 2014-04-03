@@ -7,7 +7,7 @@
 
 namespace Input{
 	enum{
-		EPSILON = 0,
+		NONE = 0,
 		BUTTON_LEFT_PUSHED,
 		BUTTON_LEFT_RELEASED,
 		BUTTON_DOWN_PUSHED,

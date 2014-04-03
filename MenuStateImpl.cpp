@@ -3,7 +3,7 @@
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
 #include "PlayerManager.hpp"
-#include "PlayerStates.hpp"
+#include "PlayerData.hpp"
 #include "Background.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
@@ -13,7 +13,7 @@
 MenuStateImpl::MenuStateImpl(void)
 	:	m_bQuit(false),
 		m_pObjectManager(new ObjectManager()),
-		m_input(0)
+		m_input(Input::NONE)
 {
 
 }
@@ -66,10 +66,12 @@ void MenuStateImpl::resume(void)
 
 void MenuStateImpl::handleInput(SDL_Event& e)
 {
+	m_input = Input::NONE;
+
 	if(e.type == SDL_KEYDOWN){
 		switch(e.key.keysym.sym){
 		default:
-			m_input = Input::EPSILON;
+			
 			break;
 
 		case SDLK_LEFT:
@@ -88,7 +90,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 	else if(e.type == SDL_KEYUP){
 		switch(e.key.keysym.sym){
 		default:
-			m_input = Input::EPSILON;
+			
 			break;
 
 		case SDLK_LEFT:
