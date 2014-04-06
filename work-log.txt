@@ -66,6 +66,9 @@
 -Added Config::parseAnimation() which will find the x1,y1 and x2,y2 values for the animation (i.e. where it starts and where it ends). Other information can be added
 	such as repeats and reversals. 
 
+#4/6/14
+-Created Move class (actually, it's a struct for simplicity right now). Each PlayerImpl holds a list of Move objects, which are loaded when they are parsed by the FighterMetadata class, which is derived from Config. 
+
 #TODO
 -NET
 -Camera class? 
@@ -73,6 +76,7 @@
 -GUILayer
 -Create Hitbox, Rect? 
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
+-switch const char* to std::string
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 

@@ -17,9 +17,9 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 		m_yMax(0),
 		m_currentAction(PlayerAction::NONE),
 		m_playerSide(PlayerSide::LEFT),
-		m_animations(),
-		m_pCurrentAnimation(nullptr),
-		m_animationTimer()
+		m_moves(),
+		m_pCurrentMove(nullptr),
+		m_moveTimer()
 {
 	// Load configuration settings
 	this->loadFighterData();
@@ -65,21 +65,22 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 
 PlayerImpl::~PlayerImpl(void)
 {
-	Log::getSingletonPtr()->logMessage("Clearing animation list for \"" + m_name + "\"");
-	for(AnimationList::iterator itr = m_animations.begin();
-		itr != m_animations.end();
+	Log::getSingletonPtr()->logMessage("Clearing move list for \"" + m_name + "\"");
+	for(MoveList::iterator itr = m_moves.begin();
+		itr != m_moves.end();
 		++itr){
 		delete *itr;
 	}
 
-	m_animations.clear();
+	m_moves.clear();
 }
 
 // ================================================ //
 
 void PlayerImpl::loadFighterData(void)
 {
-	Config c(Config::FIGHTER), e;
+	FighterMetadata m;
+	Config e;
 
 	//! Add a fighter data file integrity check here?
 
@@ -88,49 +89,50 @@ void PlayerImpl::loadFighterData(void)
 		break;
 
 	case Fighter::LORD_GRISHNAKH:
-		c.loadFile("Data/Config/varg.fighter");
+		m.loadFile("Data/Config/varg.fighter");
 		break;
 	}
 
-	if(!c.isLoaded()){
+	if(!m.isLoaded()){
 		throw std::exception("Failed to load fighter file!");
 	}
 
 	// Load spritesheet
-	this->setTextureFile(c.parseValue("core", "spriteSheet").c_str());
+	this->setTextureFile(m.parseValue("core", "spriteSheet").c_str());
 
-	// Load src rect
-	m_src.x = c.parseIntValue("cell", "x");
-	m_src.y = c.parseIntValue("cell", "y");
-	m_src.w = c.parseIntValue("cell", "w");
-	m_src.h = c.parseIntValue("cell", "h");
-
-	// Load size
-	m_dst.w = c.parseIntValue("size", "w");
-	m_dst.h = c.parseIntValue("size", "h");
+	// Size
+	m_dst.w = m.parseIntValue("size", "w");
+	m_dst.h = m.parseIntValue("size", "h");
 
 	// Movement
-	m_xAccel = c.parseIntValue("movement", "xAccel");
-	m_yAccel = c.parseIntValue("movement", "yAccel");
-	m_xMax = c.parseIntValue("movement", "xMax");
-	m_yMax = c.parseIntValue("movement", "yMax");
+	m_xAccel = m.parseIntValue("movement", "xAccel");
+	m_yAccel = m.parseIntValue("movement", "yAccel");
+	m_xMax = m.parseIntValue("movement", "xMax");
+	m_yMax = m.parseIntValue("movement", "yMax");
 
 	// set floor (temporary)
 	e.loadFile("Data/Config/game.cfg");
 	m_dst.y = e.parseIntValue("game", "floor");
 
-	this->loadAnimations(c);
+	this->loadMoves(m);
+
+	m_src = m_moves[0]->frames[0];
 }
 
 // ================================================ //
 
-void PlayerImpl::loadAnimations(Config& c)
+void PlayerImpl::loadMoves(FighterMetadata& m)
 {
-	for(int i=0; i<AnimationID::END_ANIMATIONS; ++i){
-		m_animations.push_back(c.parseAnimation(i));
+	for(int i=0; i<MoveID::END_MOVES; ++i){
+		m_moves.push_back(m.parseMove(MoveID::Name[i]));
+		if(m_moves.back() == nullptr){
+			std::string exc = "Unable to load move \"" + std::string(MoveID::Name[i]) + 
+				"\" for fighter " + Engine::toString(m_fighter);
+			throw std::exception(exc.c_str());
+		}
 	}
 
-	m_animationTimer.restart();
+	m_moveTimer.restart();
 }
 
 // ================================================ //
@@ -181,22 +183,22 @@ void PlayerImpl::processInput(const int input)
 
 // ================================================ //
 
-void PlayerImpl::updateAnimation(double dt)
+void PlayerImpl::updateMove(double dt)
 {
 	switch(m_pFSM->getCurrentStateID()){
 		default:
 			break;
 
 		case PlayerState::IDLE:
-			m_pCurrentAnimation = m_animations[AnimationID::IDLE];
+			m_pCurrentMove = m_moves[MoveID::IDLE];
 			break;
 
 		case PlayerState::WALKING_FORWARD:
-			m_pCurrentAnimation = m_animations[AnimationID::WALKING_FORWARD];
+			m_pCurrentMove = m_moves[MoveID::WALKING_FORWARD];
 			break;
 
 		case PlayerState::WALKING_BACK:
-			m_pCurrentAnimation = m_animations[AnimationID::WALKING_BACK];
+			m_pCurrentMove = m_moves[MoveID::WALKING_BACK];
 			break;
 
 		case PlayerState::BLOCKING:
@@ -205,17 +207,19 @@ void PlayerImpl::updateAnimation(double dt)
 	}
 
 	// Update frame
-	if(m_animationTimer.getTicks() > 250){
-		m_src.x = m_src.w * (m_pCurrentAnimation->x1 + m_pCurrentAnimation->currentXFrame);
-		m_src.y = m_src.h * (m_pCurrentAnimation->y1 + m_pCurrentAnimation->currentYFrame) - m_src.h;
-		if((++m_pCurrentAnimation->currentXFrame) >= m_pCurrentAnimation->numXFrames){
-			m_pCurrentAnimation->currentXFrame = 0;
-		}
-		if((++m_pCurrentAnimation->currentYFrame) >= m_pCurrentAnimation->numYFrames){
-			m_pCurrentAnimation->currentYFrame = 0;
+	if((m_moveTimer.getTicks() * dt) > 15){
+		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame];
+		/*m_dst.w = m_src.w * 2;
+		m_dst.h = m_src.h * 2;*/
+		printf("src: (%d, %d, %d, %d)\n", m_src.x, m_src.y, m_src.w, m_src.h);
+
+		if(++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+			if(m_pCurrentMove->repeat){
+				m_pCurrentMove->currentFrame = 0;
+			}
 		}
 
-		m_animationTimer.restart();
+		m_moveTimer.restart();
 	}
 }
 
@@ -225,7 +229,7 @@ void PlayerImpl::update(double dt)
 {
 	m_dst.x += static_cast<int>(m_xVel * dt);
 
-	this->updateAnimation(dt);
+	this->updateMove(dt);
 	this->render();
 }
 

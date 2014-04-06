@@ -120,6 +120,8 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_KEYDOWN:
+			if(e.key.keysym.sym == SDLK_f)
+				dt *= 0.2;
 		case SDL_KEYUP:
 			this->handleInput(e);
 			break;

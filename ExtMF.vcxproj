@@ -88,6 +88,7 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
+    <ClCompile Include="FighterMetadata.cpp" />
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="FState.cpp" />
     <ClCompile Include="Log.cpp" />
@@ -95,6 +96,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MenuStateImpl.cpp" />
+    <ClCompile Include="Move.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectImpl.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -105,7 +107,8 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.hpp" />
+    <ClInclude Include="FighterMetadata.hpp" />
+    <ClInclude Include="Move.hpp" />
     <ClInclude Include="App.hpp" />
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="AppStateManager.hpp" />

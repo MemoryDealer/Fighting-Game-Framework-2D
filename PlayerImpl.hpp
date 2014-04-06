@@ -7,13 +7,13 @@
 
 #include "ObjectImpl.hpp"
 #include "PlayerData.hpp"
-#include "Animation.hpp"
-#include "Config.hpp"
+#include "Move.hpp"
+#include "FighterMetadata.hpp"
 #include "Timer.hpp"
 
 // ================================================ //
 
-typedef std::vector<Animation*> AnimationList;
+typedef std::vector<Move*> MoveList;
 
 // ================================================ //
 
@@ -24,9 +24,9 @@ public:
 	virtual ~PlayerImpl(void);
 
 	void loadFighterData(void);
-	void loadAnimations(Config& c);
+	void loadMoves(FighterMetadata& c);
 	void processInput(const int input);
-	void updateAnimation(double dt);
+	void updateMove(double dt);
 
 	// Getter functions
 	const int getSide(void) const;
@@ -44,9 +44,9 @@ private:
 	int		m_currentAction;
 	int		m_playerSide;
 
-	AnimationList	m_animations;
-	Animation*		m_pCurrentAnimation;
-	Timer			m_animationTimer;
+	MoveList		m_moves;
+	Move*			m_pCurrentMove;
+	Timer			m_moveTimer;
 };
 
 // ================================================ //

@@ -9,30 +9,42 @@
 
 // ================================================ //
 
-namespace AnimationID{
+namespace MoveID{
 	enum{
 		IDLE = 0,
 		WALKING_FORWARD,
 		WALKING_BACK,
 
-		END_ANIMATIONS
+		END_MOVES
 	};
+
+	extern const char* Name[];
 }
 
 // ================================================ //
 
-class Animation
-{
-public:
-	explicit Animation(void){}
-	virtual ~Animation(void){}
+typedef SDL_Rect Frame;
+typedef std::vector<Frame> FrameList;
 
-//private:
+// ================================================ //
+
+struct Move
+{
+	explicit Move(void);
+	virtual ~Move(void);
+
 	int id;
-	int x1, y1;
-	int x2, y2;
-	int numXFrames, numYFrames;
-	int currentXFrame, currentYFrame;
+	std::string name;
+	int numFrames;
+	int startupFrames, hitFrames, recoveryFrames;
+	int damage;
+	int knockback;
+	bool repeat, reverse;
+	std::vector<int> cancels; // list of moves this move cancels into
+	int xVel, yVel;
+
+	int currentFrame;
+	FrameList frames;
 };
 
 // ================================================ //

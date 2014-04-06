@@ -6,7 +6,6 @@
 // ================================================ //
 
 #include "stdafx.hpp"
-#include "Animation.hpp"
 
 // ================================================ //
 
@@ -15,18 +14,17 @@ class Config
 public:
 	enum ConfigType{
 		INI = 0,
-		FIGHTER
+		FIGHTER_METADATA
 	};
 
 	explicit Config(ConfigType type = INI);
 	explicit Config(const char* file, ConfigType type = INI);
-	~Config(void);
+	virtual ~Config(void);
 
-	void loadFile(const char* file);
-	void resetFilePointer(void);
-	std::string& parseValue(const char* section, const char* value);
-	const int parseIntValue(const char* section, const char* value);
-	Animation* parseAnimation(const int id);
+	virtual void loadFile(const char* file);
+	virtual void resetFilePointer(void);
+	virtual std::string& parseValue(const char* section, const char* value);
+	virtual const int parseIntValue(const char* section, const char* value);
 
 	// Getter functions
 	const bool isLoaded(void) const;
@@ -34,7 +32,7 @@ public:
 	// Setter functions
 
 
-private:
+protected:
 	std::ifstream	m_file;
 	ConfigType		m_type;
 	bool			m_loaded;

@@ -156,6 +156,12 @@
     <ClCompile Include="Config.cpp">
       <Filter>Source Files\Engine\Config</Filter>
     </ClCompile>
+    <ClCompile Include="Move.cpp">
+      <Filter>Source Files\Engine\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="FighterMetadata.cpp">
+      <Filter>Source Files\Engine\Config</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.hpp">
@@ -233,8 +239,11 @@
     <ClInclude Include="PlayerData.hpp">
       <Filter>Header Files\Engine\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.hpp">
+    <ClInclude Include="Move.hpp">
       <Filter>Header Files\Engine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="FighterMetadata.hpp">
+      <Filter>Header Files\Engine\Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
