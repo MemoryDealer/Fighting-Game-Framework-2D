@@ -2,6 +2,7 @@
 
 #include "ObjectManager.hpp"
 #include "Engine.hpp"
+#include "MessageRouter.hpp"
 
 // ================================================ //
 
@@ -29,7 +30,7 @@ ObjectManager::~ObjectManager(void)
 bool ObjectManager::addObject(Object* pObject)
 {
 	m_objects.push_back(pObject);
-
+	
 	return true;
 }
 

@@ -6,7 +6,11 @@
 // ================================================ //
 
 #include "stdafx.hpp"
-#include "FSM.hpp"
+
+// ================================================ //
+
+class FSM;
+struct Message;
 
 // ================================================ //
 
@@ -18,7 +22,7 @@ public:
 
 	// Setter functions
 	virtual bool setTextureFile(const char* filename);
-	virtual void setTextureCoordinates(int x, int y, int w = 0, int h = 0);
+	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
 
 	virtual void setPosition(const int x, const int y);
 	virtual void setPosition(const SDL_Rect& pos);
@@ -27,7 +31,10 @@ public:
 	virtual SDL_Texture* getTexturePtr(void) const;
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
+	virtual const int getID(void) const;
 
+	// Other functions
+	virtual void sendMessage(const Message& msg);
 	virtual void render(void);
 	virtual void update(double dt) = 0;
 
@@ -39,6 +46,7 @@ protected:
 	SDL_RendererFlip	m_flip;
 
 	std::string			m_name;
+	int					m_id;
 
 	std::tr1::shared_ptr<FSM> m_pFSM; // the core state machine
 };
@@ -61,6 +69,9 @@ inline const SDL_Rect& ObjectImpl::getPosition(void) const
 
 inline const std::string& ObjectImpl::getName(void) const
 { return m_name; }
+
+inline const int ObjectImpl::getID(void) const
+{ return m_id; }
 
 // ================================================ //
 

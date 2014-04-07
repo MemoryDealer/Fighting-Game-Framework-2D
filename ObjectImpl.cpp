@@ -3,6 +3,8 @@
 #include "ObjectImpl.hpp"
 #include "Engine.hpp"
 #include "Log.hpp"
+#include "FSM.hpp"
+#include "MessageRouter.hpp"
 
 // ================================================ //
 
@@ -11,11 +13,12 @@ ObjectImpl::ObjectImpl(const unsigned int type)
 		m_src(),
 		m_dst(),
 		m_flip(SDL_FLIP_NONE),
-		m_name("Object"),
+		m_name("ObjectID "),
 		m_pFSM(new FSM(0))
 {
 	static int nameCtr = 0;
-	m_name += std::to_string(static_cast<long long>(nameCtr++));
+	m_id = nameCtr++;
+	m_name += std::to_string(static_cast<long long>(m_id));
 
 	m_src.x = m_src.y = m_dst.x = m_dst.y = 0;
 
@@ -53,13 +56,20 @@ bool ObjectImpl::setTextureFile(const char* filename)
 
 // ================================================ //
 
-void ObjectImpl::setTextureCoordinates(int x, int y, int w, int h)
+void ObjectImpl::setTextureCoordinates(const int x, const int y, const int w, const int h)
 { 
 	m_src.x = x; m_src.y = y; 
 	if(w != 0)
 		m_src.w = m_dst.w = w;
 	if(h != 0)
 		m_src.h = m_dst.h = h;
+}
+
+// ================================================ //
+
+void ObjectImpl::sendMessage(const Message& msg)
+{
+	printf("Received message type %d\n", msg.type);
 }
 
 // ================================================ //

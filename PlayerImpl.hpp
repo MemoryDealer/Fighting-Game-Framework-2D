@@ -34,6 +34,8 @@ public:
 	// Setter functions
 	void setSide(const int side);
 
+	// Other functions
+	virtual void sendMessage(Message& msg);
 	virtual void update(double dt);
 
 private:

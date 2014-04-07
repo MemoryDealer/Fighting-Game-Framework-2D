@@ -41,6 +41,7 @@ public:
 	const int getLogicalWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
 	const int getMaxFrameRate(void) const;
+	Uint32 getTicks(void) const;
 
 	// Some other functions
 	template<typename T>
@@ -63,6 +64,11 @@ public:
 private:
 	std::tr1::shared_ptr<EngineImpl> m_pImpl;
 };
+
+// ================================================ //
+
+inline Uint32 Engine::getTicks(void) const
+{ return SDL_GetTicks(); }
 
 // ================================================ //
 

@@ -73,6 +73,9 @@
 -Added the ability to reverse an animation, so it can go frames 1-5 for example, and then 5-1 and repeat. I thought this might fix the walking animation but it didn't, it may take something more complex like a sequence of three different repeats. 
 	This of course depends on the sprite sheet, really. 
 
+#4/7/14
+-Added MessageRouter, which holds a global list of pointers to all Objects in the game (across each state). It is a singleton and allows easy communcation between objects, by using their unique object ID. 
+
 #TODO
 -NET
 -Camera class? 

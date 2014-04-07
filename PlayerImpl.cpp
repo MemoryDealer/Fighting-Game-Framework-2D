@@ -3,6 +3,7 @@
 #include "PlayerImpl.hpp"
 #include "Engine.hpp"
 #include "Input.hpp"
+#include "FSM.hpp"
 
 // ================================================ //
 
@@ -202,6 +203,7 @@ void PlayerImpl::updateMove(double dt)
 			if(m_pCurrentMove != m_moves[MoveID::IDLE]){
 				if(m_pCurrentMove != nullptr) m_pCurrentMove->currentFrame = 0;
 				m_pCurrentMove = m_moves[MoveID::IDLE];
+				m_moveTimer.setStartTicks(0);
 			}
 			break;
 
@@ -250,6 +252,13 @@ void PlayerImpl::updateMove(double dt)
 
 		m_moveTimer.restart();
 	}
+}
+
+// ================================================ //
+
+void PlayerImpl::sendMessage(Message& msg)
+{
+	ObjectImpl::sendMessage(msg);
 }
 
 // ================================================ //

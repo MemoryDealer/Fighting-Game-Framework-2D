@@ -88,6 +88,12 @@
     <Filter Include="Header Files\Engine\Animation">
       <UniqueIdentifier>{2218d799-2a47-4e47-919d-08a29129e238}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Object\MessageRouter">
+      <UniqueIdentifier>{1285cfb3-4a25-45a8-8012-a67ea6281ad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Object\MessageRouter">
+      <UniqueIdentifier>{d8764590-ca8a-4a43-a49b-f15377c1d19b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -161,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="FighterMetadata.cpp">
       <Filter>Source Files\Engine\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageRouter.cpp">
+      <Filter>Source Files\Engine\Object\MessageRouter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="FighterMetadata.hpp">
       <Filter>Header Files\Engine\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageRouter.hpp">
+      <Filter>Header Files\Engine\Object\MessageRouter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

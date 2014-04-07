@@ -2,20 +2,21 @@
 
 #include "Object.hpp"
 #include "ObjectImpl.hpp"
+#include "MessageRouter.hpp"
 
 // ================================================ //
 
 Object::Object(const unsigned int type)
 	:	m_pImpl(nullptr)
 {
-	
+	MessageRouter::getSingletonPtr()->addObject(this);
 }
 
 // ================================================ //
 
 Object::~Object(void)
 {
-
+	MessageRouter::getSingletonPtr()->removeObject(m_pImpl->getID());
 }
 
 // ================================================ //
@@ -27,7 +28,7 @@ bool Object::setTextureFile(const char* filename)
 	return m_pImpl->setTextureFile(filename);
 }
 
-void Object::setTextureCoordinates(int x, int y, int w, int h)
+void Object::setTextureCoordinates(const int x, const int y, const int w, const int h)
 {
 	return m_pImpl->setTextureCoordinates(x, y, w, h);
 }
@@ -67,6 +68,22 @@ const SDL_Rect& Object::getPosition(void) const
 const std::string& Object::getName(void) const
 {
 	return m_pImpl->getName();
+}
+
+// ================================================ //
+
+const int Object::getID(void) const
+{
+	return m_pImpl->getID();
+}
+
+// ================================================ //
+// Other functions
+// ================================================ //
+
+void Object::sendMessage(const Message& msg)
+{
+	return m_pImpl->sendMessage(msg);
 }
 
 // ================================================ //

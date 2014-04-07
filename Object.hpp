@@ -10,6 +10,7 @@
 // ================================================ //
 
 class ObjectImpl;
+struct Message;
 
 // ================================================ //
 
@@ -23,7 +24,7 @@ public:
 
 	// Setter functions
 	virtual bool setTextureFile(const char* filename);
-	virtual void setTextureCoordinates(int x, int y, int w = 0, int h = 0);
+	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
 
 	virtual void setPosition(const int x, const int y);
 	virtual void setPosition(const SDL_Rect& pos);
@@ -32,7 +33,10 @@ public:
 	virtual SDL_Texture* getTexturePtr(void) const;
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
+	virtual const int getID(void) const;
 
+	// Other functions
+	virtual void sendMessage(const Message& msg);
 	virtual void render(void);
 	virtual void update(double dt) = 0;
 
