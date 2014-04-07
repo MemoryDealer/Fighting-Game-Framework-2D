@@ -32,9 +32,6 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	// Initialize the message router in the starting state
-	new MessageRouter();
-
 	m_pObjectManager->addObject(new Background(0));
 	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
 
@@ -47,7 +44,6 @@ void MenuStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 
-	delete MessageRouter::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
 }
 

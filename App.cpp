@@ -2,6 +2,7 @@
 
 #include "App.hpp"
 #include "Engine.hpp"
+#include "MessageRouter.hpp"
 #include "MenuState.hpp"
 
 // ================================================ //
@@ -11,6 +12,9 @@ App::App(void)
 {
 	// Initialize log singleton
 	new Log();
+
+	// Initialize message router singleton
+	new MessageRouter();
 
 	// Initialize engine singleton
 	Log::getSingletonPtr()->logMessage("Initializing engine...");
@@ -34,6 +38,7 @@ App::~App(void)
 {
 	delete m_pAppStateManager;
 	delete Engine::getSingletonPtr(); // Engine must be available for AppState's destruction (ObjectManager)
+	delete MessageRouter::getSingletonPtr();
 
 	Log::getSingletonPtr()->logMessage("Exiting app...");
 }

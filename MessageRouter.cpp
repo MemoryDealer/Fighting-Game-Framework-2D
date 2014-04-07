@@ -33,9 +33,12 @@ void MessageRouter::removeObject(const int id)
 	for(itr = m_objects.begin();
 		itr != m_objects.end();
 		++itr){
-		Assert(static_cast<int>((*itr) == nullptr), "nullptr in MessageRouter ObjectList");
 
-		if((*itr)->getID() == id){
+		// Remove pointer from list
+		if((*itr) == nullptr){
+			itr = m_objects.erase(itr);
+		}
+		else if((*itr)->getID() == id){
 			itr = m_objects.erase(itr);
 			return;
 		}
