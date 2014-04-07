@@ -76,7 +76,7 @@
 -GUILayer
 -Create Hitbox, Rect? 
 -Should each state have its own SDL_Renderer? Or is using one for all sufficient?
--switch const char* to std::string
+-use const char* for all string parameters unless an std::string is absolutely necessary. 
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 

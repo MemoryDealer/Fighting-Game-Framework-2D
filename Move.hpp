@@ -36,6 +36,7 @@ struct Move
 	int id;
 	std::string name;
 	int numFrames;
+	int frameGap;	// how long to wait between frames (ms)
 	int startupFrames, hitFrames, recoveryFrames;
 	int damage;
 	int knockback;

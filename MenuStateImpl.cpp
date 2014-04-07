@@ -34,7 +34,7 @@ void MenuStateImpl::enter(void)
 	m_pObjectManager->addObject(new Background(0));
 	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
 
-	new PlayerManager(Fighter::LORD_GRISHNAKH, Fighter::LORD_GRISHNAKH);
+	new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
 }
 
 // ================================================ //
@@ -120,8 +120,6 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_KEYDOWN:
-			if(e.key.keysym.sym == SDLK_f)
-				dt *= 0.2;
 		case SDL_KEYUP:
 			this->handleInput(e);
 			break;

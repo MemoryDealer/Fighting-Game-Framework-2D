@@ -91,6 +91,10 @@ void PlayerImpl::loadFighterData(void)
 	case Fighter::LORD_GRISHNAKH:
 		m.loadFile("Data/Config/varg.fighter");
 		break;
+
+	case Fighter::CORPSE_EXPLOSION:
+		m.loadFile("Data/Config/corpse-explosion.fighter");
+		break;
 	}
 
 	if(!m.isLoaded()){
@@ -99,6 +103,8 @@ void PlayerImpl::loadFighterData(void)
 
 	// Load spritesheet
 	this->setTextureFile(m.parseValue("core", "spriteSheet").c_str());
+	//SDL_SetTextureBlendMode(this->m_pTexture, SDL_BLENDMODE_ADD);
+	//SDL_SetTextureAlphaMod(this->m_pTexture, 255);
 
 	// Size
 	m_dst.w = m.parseIntValue("size", "w");
@@ -116,7 +122,8 @@ void PlayerImpl::loadFighterData(void)
 
 	this->loadMoves(m);
 
-	m_src = m_moves[0]->frames[0];
+	// Default the source rect to the first frame of IDLE
+	m_src = m_moves[MoveID::IDLE]->frames[0];
 }
 
 // ================================================ //
@@ -124,6 +131,8 @@ void PlayerImpl::loadFighterData(void)
 void PlayerImpl::loadMoves(FighterMetadata& m)
 {
 	for(int i=0; i<MoveID::END_MOVES; ++i){
+		Log::getSingletonPtr()->logMessage("Parsing move \"" + std::string(MoveID::Name[i]) + "\" for " + m_name);
+
 		m_moves.push_back(m.parseMove(MoveID::Name[i]));
 		if(m_moves.back() == nullptr){
 			std::string exc = "Unable to load move \"" + std::string(MoveID::Name[i]) + 
@@ -185,12 +194,17 @@ void PlayerImpl::processInput(const int input)
 
 void PlayerImpl::updateMove(double dt)
 {
+	static StateID lastState = 0;
+
 	switch(m_pFSM->getCurrentStateID()){
 		default:
 			break;
 
 		case PlayerState::IDLE:
-			m_pCurrentMove = m_moves[MoveID::IDLE];
+			if(m_pCurrentMove != m_moves[MoveID::IDLE]){
+				if(m_pCurrentMove != nullptr) m_pCurrentMove->currentFrame = 0;
+				m_pCurrentMove = m_moves[MoveID::IDLE];
+			}
 			break;
 
 		case PlayerState::WALKING_FORWARD:
@@ -207,7 +221,7 @@ void PlayerImpl::updateMove(double dt)
 	}
 
 	// Update frame
-	if((m_moveTimer.getTicks() * dt) > 15){
+	if(m_moveTimer.getTicks() > m_pCurrentMove->frameGap){
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame];
 		/*m_dst.w = m_src.w * 2;
 		m_dst.h = m_src.h * 2;*/
@@ -227,9 +241,10 @@ void PlayerImpl::updateMove(double dt)
 
 void PlayerImpl::update(double dt)
 {
+	this->updateMove(dt);
+
 	m_dst.x += static_cast<int>(m_xVel * dt);
 
-	this->updateMove(dt);
 	this->render();
 }
 

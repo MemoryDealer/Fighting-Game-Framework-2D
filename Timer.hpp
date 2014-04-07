@@ -18,6 +18,8 @@ public:
 
 	int getTicks(void);
 
+	void setStartTicks(const int ticks);
+
 	bool isStarted(void) const;
 	bool isPaused(void) const;
 
@@ -29,6 +31,9 @@ private:
 };
 
 // ================================================ //
+
+inline void Timer::setStartTicks(const int ticks)
+{ m_startTicks = ticks; }
 
 inline bool Timer::isStarted(void) const
 { return m_started; }

@@ -48,6 +48,7 @@ Move* FighterMetadata::parseMove(const char* name)
 
 							// Get the main data for the move
 							pMove->numFrames = this->parseMoveIntValue("core", "numFrames");
+							pMove->frameGap = this->parseMoveIntValue("core", "frameGap");
 
 							// frame data
 							m_buffer = this->parseMoveValue("core", "frameData");
