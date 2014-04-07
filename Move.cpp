@@ -22,6 +22,7 @@ Move::Move(void)
 		knockback(0),
 		repeat(false),
 		reverse(false),
+		repeatFrame(0),
 		cancels(),
 		xVel(0),
 		yVel(0),

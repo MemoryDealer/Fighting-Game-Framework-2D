@@ -41,6 +41,7 @@ struct Move
 	int damage;
 	int knockback;
 	bool repeat, reverse;
+	int repeatFrame;
 	std::vector<int> cancels; // list of moves this move cancels into
 	int xVel, yVel;
 

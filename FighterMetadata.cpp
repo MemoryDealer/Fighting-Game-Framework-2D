@@ -63,6 +63,8 @@ Move* FighterMetadata::parseMove(const char* name)
 							pMove->damage = this->parseMoveIntValue("core", "damage");
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
+							if(pMove->repeat)
+								pMove->repeatFrame = this->parseMoveIntValue("core", "repeatFrame");
 							pMove->reverse = this->parseMoveBoolValue("core", "reverse");
 
 							// Parse any cancels

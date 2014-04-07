@@ -103,8 +103,6 @@ void PlayerImpl::loadFighterData(void)
 
 	// Load spritesheet
 	this->setTextureFile(m.parseValue("core", "spriteSheet").c_str());
-	//SDL_SetTextureBlendMode(this->m_pTexture, SDL_BLENDMODE_ADD);
-	//SDL_SetTextureAlphaMod(this->m_pTexture, 255);
 
 	// Size
 	m_dst.w = m.parseIntValue("size", "w");
@@ -225,11 +223,28 @@ void PlayerImpl::updateMove(double dt)
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame];
 		/*m_dst.w = m_src.w * 2;
 		m_dst.h = m_src.h * 2;*/
-		printf("src: (%d, %d, %d, %d)\n", m_src.x, m_src.y, m_src.w, m_src.h);
+		if(m_name == "Object1")
+			printf("Frame: %d\n", m_pCurrentMove->currentFrame);
 
-		if(++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+		if(m_pCurrentMove->reverse){
+			static bool dir = true;
+
+			if(dir){
+				if(++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+					--m_pCurrentMove->currentFrame;
+					dir = false;
+				}
+			}
+			else{
+				if(--m_pCurrentMove->currentFrame < m_pCurrentMove->repeatFrame){
+					++m_pCurrentMove->currentFrame;
+					dir = true;
+				}
+			}
+		}
+		else if(++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
 			if(m_pCurrentMove->repeat){
-				m_pCurrentMove->currentFrame = 0;
+				m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
 			}
 		}
 

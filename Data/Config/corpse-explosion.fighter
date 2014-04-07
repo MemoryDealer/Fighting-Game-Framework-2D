@@ -1,6 +1,6 @@
 [core]
 useSpriteSheet=true
-spriteSheet=Data/SpriteSheets/g.bmp
+spriteSheet=Data/SpriteSheets/corpse.png
 
 # The default clipping rectangle for the frame in the sprite sheet
 [cell]
@@ -25,10 +25,11 @@ yMax=10
 	[core]{
 		numFrames=4
 		frameGap=400
-		frameData=1/2/3
+		frameData=0/0/0
 		damage=0
 		knockback=0
 		repeat=1
+		repeatFrame=0
 		reverse=0
 		xScale=1
 		yScale=1
@@ -44,22 +45,22 @@ yMax=10
 	}
 	
 	[frame1]{
-		x=0
-		y=0
-		w=60
-		h=104
+		x=1
+		y=1
+		w=63
+		h=107
 	}
 	
 	[frame2]{
-		x=59
+		x=65
 	}
 	
 	[frame3]{
-		x=120
+		x=129
 	}
 	
 	[frame4]{
-		x=179
+		x=192
 	}
 }
 
@@ -71,6 +72,7 @@ yMax=10
 		damage=0
 		knockback=0
 		repeat=1
+		repeatFrame=1
 		reverse=0
 	}
 	
@@ -84,27 +86,26 @@ yMax=10
 	}
 	
 	[frame1]{
-		x=0
-		y=105
-		w=60
-		h=104
+		x=1
+		y=107
+		w=64
+		h=107
 	}
 	
 	[frame2]{
-		x=60
-		w=62
+		x=65
 	}
 	
 	[frame3]{
-		x=122
+		x=129
 	}
 	
 	[frame4]{
-		x=184
+		x=192
 	}
 	
 	[frame5]{
-		x=244
+		x=256
 	}
 }
 
@@ -116,6 +117,7 @@ yMax=10
 		damage=0
 		knockback=0
 		repeat=1
+		repeatFrame=0
 		reverse=0
 	}
 	
@@ -129,25 +131,25 @@ yMax=10
 	}
 	
 	[frame1]{
-		x=432
-		y=105
-		w=62
-		h=104
+		x=448
+		y=107
+		w=63
+		h=107
 	}
 	
 	[frame2]{
-		x=370
+		x=384
 	}
 	
 	[frame3]{
-		x=308
+		x=320
 	}
 	
 	[frame4]{
-		x=246
+		x=256
 	}
 	
 	[frame5]{
-		x=184
+		x=192
 	}
 }

@@ -68,6 +68,10 @@
 
 #4/6/14
 -Created Move class (actually, it's a struct for simplicity right now). Each PlayerImpl holds a list of Move objects, which are loaded when they are parsed by the FighterMetadata class, which is derived from Config. 
+-I've been recreating the sprite sheet for glacius so that it's even by rectangle-selecting a frame in paint.NET and copying it to a new file. Each frame should overlap adjacent frames to there are no png artifacts in the rendering. 
+	It seems the very edges of the png file produce artifacts, so using starting x and y coordinates of 1 solves that problem. 
+-Added the ability to reverse an animation, so it can go frames 1-5 for example, and then 5-1 and repeat. I thought this might fix the walking animation but it didn't, it may take something more complex like a sequence of three different repeats. 
+	This of course depends on the sprite sheet, really. 
 
 #TODO
 -NET
