@@ -11,7 +11,7 @@ template<> MessageRouter* Singleton<MessageRouter>::msSingleton = 0;
 // ================================================ //
 
 Message::Message(void)
-	:	type(Type::TYPE_NOTHING),
+	:	type(MessageType::TYPE_NOTHING),
 		senderID(0),
 		receiverID(0),
 		delay(0),
@@ -66,7 +66,7 @@ void MessageRouter::removeObject(const int id)
 
 // ================================================ //
 
-void MessageRouter::routeMessage(const Message::Type type, const int senderID, const int receiverID, const int delay, void* pData)
+void MessageRouter::routeMessage(const int type, const int senderID, const int receiverID, const int delay, void* pData)
 {
 	Message msg;
 	msg.type = type;

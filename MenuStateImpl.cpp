@@ -85,7 +85,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_UP:
 			MessageRouter::getSingletonPtr()->routeMessage(
-				Message::Type::TYPE_ACTIVATE, PlayerManager::getSingletonPtr()->getRedPlayer()->getID(),
+				MessageType::TYPE_ACTIVATE, PlayerManager::getSingletonPtr()->getRedPlayer()->getID(),
 				PlayerManager::getSingletonPtr()->getBluePlayer()->getID(),
 				1000);
 			break;

@@ -10,18 +10,20 @@
 
 // ================================================ //
 
-typedef struct Message{
-	enum Type{
+namespace MessageType{
+	enum{
 		TYPE_NOTHING = 0,
 		TYPE_ACTIVATE,
 
 		TYPE_END__
 	};
+}
 
+typedef struct Message{
 	explicit Message(void);
 	~Message(void);
 
-	Type type;
+	int type;
 	int senderID;
 	int receiverID;
 	Uint32 delay;
@@ -41,7 +43,7 @@ public:
 
 	void addObject(Object* pObject);
 	void removeObject(const int id);
-	void routeMessage(const Message::Type type, const int senderID, 
+	void routeMessage(const int type, const int senderID, 
 		const int receiverID, const int delay = 0, void* pData = nullptr);
 	void routeMessage(Message msg);
 

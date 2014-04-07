@@ -35,6 +35,9 @@ PlayerManager::~PlayerManager(void)
 
 void PlayerManager::update(double dt, const int redInput, const int blueInput)
 {
+	// Check for K.O.
+	// ...
+
 	// Process input for each player
 	if(redInput != Input::NONE)
 		m_pRedPlayer->processInput(redInput);

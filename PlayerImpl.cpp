@@ -2,9 +2,11 @@
 
 #include "PlayerImpl.hpp"
 #include "Engine.hpp"
-#include "Input.hpp"
 #include "FSM.hpp"
 #include "MessageRouter.hpp"
+#include "Move.hpp"
+#include "FighterMetadata.hpp"
+#include "Timer.hpp"
 
 // ================================================ //
 
@@ -19,9 +21,10 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 		m_yMax(0),
 		m_currentAction(PlayerAction::NONE),
 		m_playerSide(PlayerSide::LEFT),
+		m_input(),
 		m_moves(),
 		m_pCurrentMove(nullptr),
-		m_moveTimer()
+		m_pMoveTimer(new Timer())
 {
 	// Load configuration settings
 	this->loadFighterData();
@@ -124,6 +127,7 @@ void PlayerImpl::loadFighterData(void)
 
 	// Default the source rect to the first frame of IDLE
 	m_src = m_moves[MoveID::IDLE]->frames[0];
+	m_pCurrentMove = m_moves[MoveID::IDLE];
 }
 
 // ================================================ //
@@ -141,7 +145,7 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 		}
 	}
 
-	m_moveTimer.restart();
+	m_pMoveTimer->restart();
 }
 
 // ================================================ //
@@ -196,16 +200,18 @@ void PlayerImpl::updateMove(double dt)
 {
 	static StateID lastState = 0;
 
+	// Force the current animation to stop instantly if it has changed to a new one
+	if(m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
+		m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
+		m_pMoveTimer->setStartTicks(0);
+	}
+
 	switch(m_pFSM->getCurrentStateID()){
 		default:
 			break;
 
 		case PlayerState::IDLE:
-			if(m_pCurrentMove != m_moves[MoveID::IDLE]){
-				if(m_pCurrentMove != nullptr) m_pCurrentMove->currentFrame = 0;
-				m_pCurrentMove = m_moves[MoveID::IDLE];
-				m_moveTimer.setStartTicks(0);
-			}
+			m_pCurrentMove = m_moves[MoveID::IDLE];
 			break;
 
 		case PlayerState::WALKING_FORWARD:
@@ -222,7 +228,7 @@ void PlayerImpl::updateMove(double dt)
 	}
 
 	// Update frame
-	if(m_moveTimer.getTicks() > m_pCurrentMove->frameGap){
+	if(m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame];
 		/*m_dst.w = m_src.w * 2;
 		m_dst.h = m_src.h * 2;*/
@@ -251,7 +257,7 @@ void PlayerImpl::updateMove(double dt)
 			}
 		}
 
-		m_moveTimer.restart();
+		m_pMoveTimer->restart();
 	}
 }
 
@@ -260,6 +266,8 @@ void PlayerImpl::updateMove(double dt)
 void PlayerImpl::sendMessage(const Message& msg)
 {
 	printf("Received message %d\n", msg.type);
+	if(msg.type == MessageType::TYPE_ACTIVATE)
+		m_dead = true;
 }
 
 // ================================================ //

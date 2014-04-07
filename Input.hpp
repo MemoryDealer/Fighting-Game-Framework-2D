@@ -6,6 +6,9 @@
 // ================================================ //
 
 namespace Input{
+
+	static const int NUM_INPUTS = 64;
+
 	enum{
 		NONE = 0,
 		BUTTON_LEFT_PUSHED,

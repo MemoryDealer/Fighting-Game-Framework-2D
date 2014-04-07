@@ -7,9 +7,13 @@
 
 #include "ObjectImpl.hpp"
 #include "PlayerData.hpp"
-#include "Move.hpp"
-#include "FighterMetadata.hpp"
-#include "Timer.hpp"
+#include "Input.hpp"
+
+// ================================================ //
+
+struct Move;
+class FighterMetadata;
+class Timer;
 
 // ================================================ //
 
@@ -46,9 +50,11 @@ private:
 	int		m_currentAction;
 	int		m_playerSide;
 
+	bool	m_input[Input::NUM_INPUTS];
+
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;
-	Timer			m_moveTimer;
+	std::tr1::shared_ptr<Timer> m_pMoveTimer;
 };
 
 // ================================================ //
