@@ -32,6 +32,7 @@ public:
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
 	virtual const int getID(void) const;
+	virtual const bool isDead(void) const;
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);
@@ -47,6 +48,8 @@ protected:
 
 	std::string			m_name;
 	int					m_id;
+
+	bool				m_dead;
 
 	std::tr1::shared_ptr<FSM> m_pFSM; // the core state machine
 };
@@ -72,6 +75,9 @@ inline const std::string& ObjectImpl::getName(void) const
 
 inline const int ObjectImpl::getID(void) const
 { return m_id; }
+
+inline const bool ObjectImpl::isDead(void) const
+{ return m_dead; }
 
 // ================================================ //
 

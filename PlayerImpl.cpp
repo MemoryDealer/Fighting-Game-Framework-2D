@@ -4,6 +4,7 @@
 #include "Engine.hpp"
 #include "Input.hpp"
 #include "FSM.hpp"
+#include "MessageRouter.hpp"
 
 // ================================================ //
 
@@ -256,9 +257,9 @@ void PlayerImpl::updateMove(double dt)
 
 // ================================================ //
 
-void PlayerImpl::sendMessage(Message& msg)
+void PlayerImpl::sendMessage(const Message& msg)
 {
-	ObjectImpl::sendMessage(msg);
+	printf("Received message %d\n", msg.type);
 }
 
 // ================================================ //

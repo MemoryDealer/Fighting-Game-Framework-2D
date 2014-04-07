@@ -53,10 +53,17 @@ void ObjectManager::update(double dt, bool render)
 	for(ObjectList::iterator itr = m_objects.begin();
 		itr != m_objects.end();
 		++itr){
-		(*itr)->update(dt);
 
-		if(render)
-			(*itr)->render();
+		if((*itr)->isDead()){
+			delete *itr;
+			m_objects.erase(itr++);
+		}
+		else{
+			(*itr)->update(dt);
+
+			if(render)
+				(*itr)->render();
+		}
 	}
 }
 

@@ -9,7 +9,7 @@
 Object::Object(const unsigned int type)
 	:	m_pImpl(nullptr)
 {
-	MessageRouter::getSingletonPtr()->addObject(this);
+	MessageRouter::getSingletonPtr()->addObject(static_cast<Object*>(this));
 }
 
 // ================================================ //
@@ -75,6 +75,13 @@ const std::string& Object::getName(void) const
 const int Object::getID(void) const
 {
 	return m_pImpl->getID();
+}
+
+// ================================================ //
+
+const bool Object::isDead(void) const
+{ 
+	return m_pImpl->isDead();
 }
 
 // ================================================ //

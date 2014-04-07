@@ -12,10 +12,14 @@
 
 typedef struct Message{
 	enum Type{
-		TYPE_ACTIVATE = 0,
+		TYPE_NOTHING = 0,
+		TYPE_ACTIVATE,
 
 		TYPE_END__
 	};
+
+	explicit Message(void);
+	~Message(void);
 
 	Type type;
 	int senderID;
@@ -42,6 +46,7 @@ public:
 	void routeMessage(Message msg);
 
 	void update(void);
+	void dispatchMessageToObject(const Message msg, Object* pObject);
 
 private:
 	ObjectList m_objects;

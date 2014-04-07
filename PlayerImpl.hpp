@@ -35,7 +35,7 @@ public:
 	void setSide(const int side);
 
 	// Other functions
-	virtual void sendMessage(Message& msg);
+	virtual void sendMessage(const Message& msg);
 	virtual void update(double dt);
 
 private:

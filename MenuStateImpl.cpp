@@ -83,6 +83,13 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			m_input = Input::BUTTON_RIGHT_PUSHED;
 			break;
 
+		case SDLK_UP:
+			MessageRouter::getSingletonPtr()->routeMessage(
+				Message::Type::TYPE_ACTIVATE, PlayerManager::getSingletonPtr()->getRedPlayer()->getID(),
+				PlayerManager::getSingletonPtr()->getBluePlayer()->getID(),
+				1000);
+			break;
+
 		case SDLK_ESCAPE:
 			m_bQuit = true;
 			break;

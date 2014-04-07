@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "ObjectImpl.hpp"
+#include "PlayerImpl.hpp"
 #include "Engine.hpp"
 #include "Log.hpp"
 #include "FSM.hpp"
@@ -14,6 +15,7 @@ ObjectImpl::ObjectImpl(const unsigned int type)
 		m_dst(),
 		m_flip(SDL_FLIP_NONE),
 		m_name("ObjectID "),
+		m_dead(false),
 		m_pFSM(new FSM(0))
 {
 	static int nameCtr = 0;
@@ -69,7 +71,7 @@ void ObjectImpl::setTextureCoordinates(const int x, const int y, const int w, co
 
 void ObjectImpl::sendMessage(const Message& msg)
 {
-	printf("Received message type %d\n", msg.type);
+	
 }
 
 // ================================================ //

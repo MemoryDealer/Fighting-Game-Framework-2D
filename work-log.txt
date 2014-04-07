@@ -77,6 +77,8 @@
 -Added MessageRouter, which holds a global list of pointers to all Objects in the game (across each state). It is a singleton and allows easy communcation between objects, by using their unique object ID. 
 	It is initialized and destroyed in App.cpp.
 	In the Object's constructor and destructor, it calls MessageRouter to add/remove the object's pointer.
+	It is updated automatically in AppStateManager::start().
+
 
 #TODO
 -NET

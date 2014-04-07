@@ -34,6 +34,7 @@ public:
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
 	virtual const int getID(void) const;
+	virtual const bool isDead(void) const;
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);

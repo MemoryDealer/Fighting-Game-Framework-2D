@@ -10,6 +10,25 @@ template<> MessageRouter* Singleton<MessageRouter>::msSingleton = 0;
 
 // ================================================ //
 
+Message::Message(void)
+	:	type(Type::TYPE_NOTHING),
+		senderID(0),
+		receiverID(0),
+		delay(0),
+		pData(nullptr)
+{
+
+}
+
+// ================================================ //
+
+Message::~Message(void)
+{
+
+}
+
+// ================================================ //
+
 MessageRouter::MessageRouter(void)
 	:	m_objects(),
 		m_messages()
@@ -36,10 +55,10 @@ void MessageRouter::removeObject(const int id)
 
 		// Remove pointer from list
 		if((*itr) == nullptr){
-			itr = m_objects.erase(itr);
+			m_objects.erase(itr++);
 		}
 		else if((*itr)->getID() == id){
-			itr = m_objects.erase(itr);
+			m_objects.erase(itr++);
 			return;
 		}
 	}
@@ -72,33 +91,49 @@ void MessageRouter::routeMessage(Message msg)
 
 void MessageRouter::update(void)
 {
-	MessageList::iterator msgItr;
-
 	// Loop through each message in the list
-	for(msgItr = m_messages.begin(); msgItr != m_messages.end(); ++msgItr){
+	MessageList::iterator msgItr;
+	bool shouldIterate;
+
+	for(msgItr = m_messages.begin(); msgItr != m_messages.end();){
+		shouldIterate = true;
+
+		// See if this message's receive ID is found in the list of objects
 		ObjectList::iterator objItr;
+		for(objItr = m_objects.begin(); objItr != m_objects.end(); ++objItr){
 
-		// Test the message ID against each object in the router's list
-		for(objItr = m_objects.begin();
-			objItr != m_objects.end();
-			++objItr){
-			Assert(static_cast<int>((*objItr) == nullptr), "nullptr in MessageRouter ObjectList");
-
-			// Does this object match the message receiver ID?
+			// Test the ID
 			if((*objItr)->getID() == msgItr->receiverID){
 
-				// Proceed if there is no further delay
+				// See if a delay should be applied
 				if(msgItr->delay < Engine::getSingletonPtr()->getTicks()){
-					Log::getSingletonPtr()->logMessage("Routing message type " + Engine::toString(msgItr->type) + 
-						" from sender " + Engine::toString(m_messages.front().senderID) + " to receiver " + Engine::toString(m_messages.front().receiverID));
-					(*objItr)->sendMessage(*msgItr);
-				
-					// Remove this message from the list
+
+					// Correct object found, send the message
+					this->dispatchMessageToObject(*msgItr, *objItr);
+
+					// Now delete this message from the message list
 					msgItr = m_messages.erase(msgItr);
+					shouldIterate = false;
 				}
 			}
 		}
+
+		// We didn't find the object or there was still a delay, so move on to the next
+		if(shouldIterate){
+			++msgItr;
+			//! TODO: handle object not found...
+		}
 	}
+}
+
+// ================================================ //
+
+void MessageRouter::dispatchMessageToObject(Message msg, Object* pObject)
+{
+	Log::getSingletonPtr()->logMessage("Routing message type " + Engine::toString(msg.type) + 
+						" from sender " + Engine::toString(msg.senderID) + " to receiver " + Engine::toString(msg.receiverID));
+
+	pObject->sendMessage(msg);
 }
 
 // ================================================ //

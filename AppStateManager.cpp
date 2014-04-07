@@ -2,6 +2,7 @@
 
 #include "AppStateManager.hpp"
 #include "Engine.hpp"
+#include "MessageRouter.hpp"
 #include "Timer.hpp"
 
 // ================================================ //
@@ -88,6 +89,9 @@ void AppStateManager::start(AppState* pState)
 			newTime = SDL_GetTicks();
 			dt = static_cast<double>(newTime - currentTime) / 1000.0;
 			currentTime = newTime;
+
+			// Automatically update the global message router
+			MessageRouter::getSingletonPtr()->update();
 
 			// Update the active state
 			m_activeStateStack.back()->update(dt);
