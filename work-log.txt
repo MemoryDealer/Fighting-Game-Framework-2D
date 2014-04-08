@@ -81,10 +81,13 @@
 -Was having issues with holding both left/right and switching between them--the player state would not update correctly and the walking forward animation would play when walking back and vice versa. 
 	Fix by adding another transition for states WALKING_FORWARD (WALK_BACK -> WALKING_BACK) and WALKING_BACK(WALK_FORWARD -> WALKING_FORWARD). I previously thought this would be automatically handled
 	when the state machine switched back to IDLE since the IDLE state has proper transitions for WALK_BACK and WALK_FORWARD. So each state will need to be completely transitive. 
+	This also fixed the issue when switching sides that involved the player state not updating correctly. 
 -Since writing all the code for each state added to the state machine will take much time, I can use macros to shorten the code and automate it as much as possible. 
+-Created Server object which sets up a basic UDP socket and listens for incoming UDP packets. Test with UDP Unicorn and it works. 
 
 #TODO
 -NET
+-Scaling for sprites
 -Camera class? 
 -LoadResources in Engine
 -GUILayer

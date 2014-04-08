@@ -94,6 +94,12 @@
     <Filter Include="Source Files\Engine\Object\MessageRouter">
       <UniqueIdentifier>{d8764590-ca8a-4a43-a49b-f15377c1d19b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Network">
+      <UniqueIdentifier>{d0a42cda-64fd-42c1-a427-aa7148877fa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Network">
+      <UniqueIdentifier>{88ba9dc5-08d9-412c-93a0-e0181bafd03a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="MessageRouter.cpp">
       <Filter>Source Files\Engine\Object\MessageRouter</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>Source Files\Engine\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="MessageRouter.hpp">
       <Filter>Header Files\Engine\Object\MessageRouter</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.hpp">
+      <Filter>Header Files\Engine\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

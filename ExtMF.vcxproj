@@ -104,6 +104,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerImpl.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -133,6 +134,7 @@
     <ClInclude Include="PlayerImpl.hpp" />
     <ClInclude Include="PlayerManager.hpp" />
     <ClInclude Include="PlayerData.hpp" />
+    <ClInclude Include="Server.hpp" />
     <ClInclude Include="Singleton.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="Timer.hpp" />

@@ -8,6 +8,7 @@
 #include "Input.hpp"
 #include "Config.hpp"
 #include "MessageRouter.hpp"
+#include "Server.hpp"
 
 // ================================================ //
 
@@ -35,6 +36,8 @@ void MenuStateImpl::enter(void)
 	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
 
 	new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
+
+	new Server();
 }
 
 // ================================================ //
@@ -44,6 +47,8 @@ void MenuStateImpl::exit(void)
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 
 	delete PlayerManager::getSingletonPtr();
+
+	delete Server::getSingletonPtr();
 }
 
 // ================================================ //
@@ -135,6 +140,8 @@ void MenuStateImpl::update(double dt)
 			break;
 		}
 	}
+
+	Server::getSingletonPtr()->testRecv();
 
 	Engine::getSingletonPtr()->clearRenderer();
 

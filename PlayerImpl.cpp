@@ -85,6 +85,8 @@ PlayerImpl::~PlayerImpl(void)
 	}
 
 	m_moves.clear();
+
+	delete[] m_input;
 }
 
 // ================================================ //
