@@ -6,6 +6,7 @@
 // ================================================ //
 
 #include "Object.hpp"
+#include "PlayerData.hpp"
 
 // ================================================ //
 
@@ -16,17 +17,17 @@ class PlayerImpl;
 class Player : public Object
 {
 public:
-	explicit Player(unsigned int fighter);
+	explicit Player(const int fighter, const int inputType = PlayerInputType::LOCAL);
 	virtual ~Player(void);
 
 	void loadFighterData(void);
-	void processInput(const int input = 0);
 
 	// Getter functions
 	const int getSide(void) const;
 
 	// Setter functions
 	void setSide(const int side);
+	void setInput(const int input, const bool down = true);
 
 	virtual void update(double dt);
 

@@ -33,16 +33,10 @@ PlayerManager::~PlayerManager(void)
 
 // ================================================ //
 
-void PlayerManager::update(double dt, const int redInput, const int blueInput)
+void PlayerManager::update(double dt)
 {
 	// Check for K.O.
 	// ...
-
-	// Process input for each player
-	if(redInput != Input::NONE)
-		m_pRedPlayer->processInput(redInput);
-	if(blueInput != Input::NONE)
-		m_pBluePlayer->processInput(blueInput);
 
 	// Switch player sides if necessary
 	SDL_Rect red, blue;

@@ -7,7 +7,6 @@
 
 #include "ObjectImpl.hpp"
 #include "PlayerData.hpp"
-#include "Input.hpp"
 
 // ================================================ //
 
@@ -24,12 +23,12 @@ typedef std::vector<Move*> MoveList;
 class PlayerImpl : public ObjectImpl
 {
 public:
-	explicit PlayerImpl(unsigned int fighter);
+	explicit PlayerImpl(const int fighter, const int inputType);
 	virtual ~PlayerImpl(void);
 
 	void loadFighterData(void);
 	void loadMoves(FighterMetadata& c);
-	void processInput(const int input);
+	void updateLocalInput(void);
 	void updateMove(double dt);
 
 	// Getter functions
@@ -37,6 +36,7 @@ public:
 
 	// Setter functions
 	void setSide(const int side);
+	void setInput(const int input, const bool down);
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);
@@ -50,7 +50,8 @@ private:
 	int		m_currentAction;
 	int		m_playerSide;
 
-	bool	m_input[Input::NUM_INPUTS];
+	int		m_inputType;
+	bool*	m_input; // dynamically allocated array of current inputs
 
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;
@@ -64,12 +65,14 @@ inline const int PlayerImpl::getSide(void) const
 { return m_playerSide; }
 
 // Setter functions
-
 inline void PlayerImpl::setSide(const int side)
 { 
 	m_playerSide = side; 
 	m_flip = (side == PlayerSide::LEFT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL; 
 }
+
+inline void PlayerImpl::setInput(const int input, const bool down)
+{ m_input[input] = down; }
 
 // ================================================ //
 

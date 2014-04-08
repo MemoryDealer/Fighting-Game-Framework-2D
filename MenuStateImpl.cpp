@@ -13,8 +13,7 @@
 
 MenuStateImpl::MenuStateImpl(void)
 	:	m_bQuit(false),
-		m_pObjectManager(new ObjectManager()),
-		m_input(Input::NONE)
+		m_pObjectManager(new ObjectManager())
 {
 
 }
@@ -67,20 +66,18 @@ void MenuStateImpl::resume(void)
 
 void MenuStateImpl::handleInput(SDL_Event& e)
 {
-	m_input = Input::NONE;
-
 	if(e.type == SDL_KEYDOWN){
 		switch(e.key.keysym.sym){
 		default:
 			
 			break;
 
-		case SDLK_LEFT:
-			m_input = Input::BUTTON_LEFT_PUSHED;
+		case SDLK_LEFT: // this value should eventually be retrieved from the Player class
+			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, true);
 			break;
 
 		case SDLK_RIGHT:
-			m_input = Input::BUTTON_RIGHT_PUSHED;
+			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, true);
 			break;
 
 		case SDLK_UP:
@@ -102,11 +99,11 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_LEFT:
-			m_input = Input::BUTTON_LEFT_RELEASED;
+			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, false);
 			break;
 
 		case SDLK_RIGHT:
-			m_input = Input::BUTTON_RIGHT_RELEASED;
+			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, false);
 			break;
 		}
 	}
@@ -142,7 +139,7 @@ void MenuStateImpl::update(double dt)
 	Engine::getSingletonPtr()->clearRenderer();
 
 	m_pObjectManager->update(dt);
-	PlayerManager::getSingletonPtr()->update(dt, m_input);
+	PlayerManager::getSingletonPtr()->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

@@ -1,16 +1,18 @@
 // ================================================ //
 
 #include "PlayerImpl.hpp"
+#include "Player.hpp"
 #include "Engine.hpp"
 #include "FSM.hpp"
 #include "MessageRouter.hpp"
 #include "Move.hpp"
 #include "FighterMetadata.hpp"
 #include "Timer.hpp"
+#include "Input.hpp"
 
 // ================================================ //
 
-PlayerImpl::PlayerImpl(unsigned int fighter)
+PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 	:	ObjectImpl(fighter),
 		m_fighter(fighter),
 		m_xAccel(0),
@@ -21,17 +23,20 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 		m_yMax(0),
 		m_currentAction(PlayerAction::NONE),
 		m_playerSide(PlayerSide::LEFT),
-		m_input(),
+		m_inputType(inputType),
+		m_input(new bool[Input::NUM_INPUTS]),
 		m_moves(),
 		m_pCurrentMove(nullptr),
 		m_pMoveTimer(new Timer())
 {
+	// Set all input to false
+	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
+	
 	// Load configuration settings
 	this->loadFighterData();
-
 	// Add states to core FSM
 	FState* state = new FState(PlayerState::IDLE);
-
+	
 	// State Idle
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
 	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
@@ -48,12 +53,14 @@ PlayerImpl::PlayerImpl(unsigned int fighter)
 	state = new FState(PlayerState::WALKING_FORWARD);
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
 	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
+	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
 	m_pFSM->addState(state);
 
 	// State Blocking
 	state = new FState(PlayerState::WALKING_BACK);
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
 	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
+	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
 	m_pFSM->addState(state);
 
 	// State Attacking
@@ -150,56 +157,45 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 
 // ================================================ //
 
-void PlayerImpl::processInput(const int input)
+void PlayerImpl::updateLocalInput(void)
 {
 	m_currentAction = PlayerAction::NONE;
 
-	switch(input){
-	default:
-		break;
-
-	case Input::NONE:
-		// This is currently blocked by PlayerManager::update()
-		break;
-
-	case Input::BUTTON_LEFT_PUSHED:
+	// Movement
+	// Checking both right now will force the player to cancel out movement if both are held
+	// thus preventing the character from sliding when holding both down
+	if(m_input[Input::BUTTON_LEFT] && !m_input[Input::BUTTON_RIGHT]){
 		m_xVel -= m_xAccel;
 		if(m_xVel < -m_xMax)
 			m_xVel = -m_xMax;
 
-		m_currentAction = (m_playerSide == PlayerSide::LEFT) ?
+		m_currentAction = (m_playerSide == PlayerSide::LEFT) ? 
 			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
-		break;
-
-	case Input::BUTTON_LEFT_RELEASED:
-		if(m_xVel < 0)
-			m_xVel += m_xAccel;
-		break;
-
-	case Input::BUTTON_RIGHT_PUSHED:
+	}
+	else if(m_input[Input::BUTTON_RIGHT] && !m_input[Input::BUTTON_LEFT]){
 		m_xVel += m_xAccel;
 		if(m_xVel > m_xMax)
 			m_xVel = m_xMax;
 
 		m_currentAction = (m_playerSide == PlayerSide::RIGHT) ?
 			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
-		break;
-
-	case Input::BUTTON_RIGHT_RELEASED:
-		if(m_xVel > 0)
+	}
+	else{
+		// Zero out left/right movement
+		if(m_xVel < 0)
+			m_xVel += m_xAccel;
+		else if(m_xVel > 0)
 			m_xVel -= m_xAccel;
-		break;
 	}
 
 	m_pFSM->stateTransition(m_currentAction);
+	printf("State: %d\n", m_pFSM->getCurrentStateID());
 }
 
 // ================================================ //
 
 void PlayerImpl::updateMove(double dt)
 {
-	static StateID lastState = 0;
-
 	// Force the current animation to stop instantly if it has changed to a new one
 	if(m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
 		m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
@@ -232,8 +228,8 @@ void PlayerImpl::updateMove(double dt)
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame];
 		/*m_dst.w = m_src.w * 2;
 		m_dst.h = m_src.h * 2;*/
-		if(m_name == "Object1")
-			printf("Frame: %d\n", m_pCurrentMove->currentFrame);
+		/*if(m_name == "ObjectID 1")
+			printf("Frame: %d\n", m_pCurrentMove->currentFrame);*/
 
 		if(m_pCurrentMove->reverse){
 			static bool dir = true;
@@ -274,6 +270,10 @@ void PlayerImpl::sendMessage(const Message& msg)
 
 void PlayerImpl::update(double dt)
 {
+	if(m_inputType == PlayerInputType::LOCAL){
+		this->updateLocalInput();
+	}
+
 	this->updateMove(dt);
 
 	m_dst.x += static_cast<int>(m_xVel * dt);

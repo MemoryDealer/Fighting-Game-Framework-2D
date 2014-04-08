@@ -21,7 +21,7 @@ public:
 	Player* getRedPlayer(void) const;
 	Player* getBluePlayer(void) const;
 
-	void update(double dt, const int redInput = 0, const int blueInput = 0);
+	void update(double dt);
 
 private:
 	std::tr1::shared_ptr<Player> m_pRedPlayer;

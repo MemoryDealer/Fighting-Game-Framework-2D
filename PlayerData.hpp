@@ -24,6 +24,16 @@ namespace PlayerSide{
 
 // ================================================ //
 
+namespace PlayerInputType{
+	enum{
+		LOCAL = 0,
+		AI,
+		NET
+	};
+}
+
+// ================================================ //
+
 namespace PlayerState{
 	// These along with PlayerAction may seem redundant, but they may be needed for AI/network player input
 	enum{

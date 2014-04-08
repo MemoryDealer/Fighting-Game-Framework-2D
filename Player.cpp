@@ -5,8 +5,8 @@
 
 // ================================================ //
 
-Player::Player(unsigned int fighter)
-	:	m_pImpl(new PlayerImpl(fighter))
+Player::Player(const int fighter, const int inputType)
+	:	m_pImpl(new PlayerImpl(fighter, inputType))
 {
 	Object::setPImpl(m_pImpl);
 }
@@ -26,13 +26,6 @@ void Player::loadFighterData(void)
 }
 
 // ================================================ //
-
-void Player::processInput(const int input)
-{
-	return m_pImpl->processInput(input);
-}
-
-// ================================================ //
 // Getter functions
 // ================================================ //
 
@@ -48,6 +41,13 @@ const int Player::getSide(void) const
 void Player::setSide(const int side)
 {
 	return m_pImpl->setSide(side);
+}
+
+// ================================================ //
+
+void Player::setInput(const int input, const bool down)
+{
+	return m_pImpl->setInput(input, down);
 }
 
 // ================================================ //
