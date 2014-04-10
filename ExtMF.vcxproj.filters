@@ -100,6 +100,12 @@
     <Filter Include="Source Files\Engine\Network">
       <UniqueIdentifier>{88ba9dc5-08d9-412c-93a0-e0181bafd03a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Object\Hitbox">
+      <UniqueIdentifier>{fcbb057a-d4be-406b-87a6-091b52ff018b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Object\Hitbox">
+      <UniqueIdentifier>{eba81fe0-8870-4ded-bc19-21275ab32550}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -179,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="Server.cpp">
       <Filter>Source Files\Engine\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Hitbox.cpp">
+      <Filter>Source Files\Engine\Object\Hitbox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="Server.hpp">
       <Filter>Header Files\Engine\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Hitbox.hpp">
+      <Filter>Header Files\Engine\Object\Hitbox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

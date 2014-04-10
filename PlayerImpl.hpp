@@ -7,6 +7,7 @@
 
 #include "ObjectImpl.hpp"
 #include "PlayerData.hpp"
+#include "Hitbox.hpp"
 
 // ================================================ //
 
@@ -52,6 +53,8 @@ private:
 
 	int		m_inputType;
 	bool*	m_input; // dynamically allocated array of current inputs
+
+	Hitbox	m_hitbox;
 
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;

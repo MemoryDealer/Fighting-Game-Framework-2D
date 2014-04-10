@@ -25,6 +25,7 @@ PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 		m_playerSide(PlayerSide::LEFT),
 		m_inputType(inputType),
 		m_input(new bool[Input::NUM_INPUTS]),
+		m_hitbox(HitboxType::NORMAL),
 		m_moves(),
 		m_pCurrentMove(nullptr),
 		m_pMoveTimer(new Timer())
@@ -127,6 +128,14 @@ void PlayerImpl::loadFighterData(void)
 	m_yAccel = m.parseIntValue("movement", "yAccel");
 	m_xMax = m.parseIntValue("movement", "xMax");
 	m_yMax = m.parseIntValue("movement", "yMax");
+
+	// Hitboxes
+	SDL_Rect h;
+	h.x = m.parseIntValue("hitbox", "x");
+	h.y = m.parseIntValue("hitbox", "y");
+	h.w = m.parseIntValue("hitbox", "w");
+	h.h = m.parseIntValue("hitbox", "h");
+	m_hitbox.setRect(h);
 
 	// set floor (temporary)
 	e.loadFile("Data/Config/game.cfg");
@@ -281,6 +290,9 @@ void PlayerImpl::update(double dt)
 	m_dst.x += static_cast<int>(m_xVel * dt);
 
 	this->render();
+
+	m_hitbox.setRect(m_dst.x, m_dst.y, m_dst.w, m_dst.h);
+	m_hitbox.render();
 }
 
 // ================================================ //

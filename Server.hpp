@@ -21,6 +21,7 @@ private:
 	Uint32		m_port;
 	UDPsocket	m_sock;
 	UDPpacket*	m_packet;
+	bool		m_active;
 };
 
 // ================================================ //

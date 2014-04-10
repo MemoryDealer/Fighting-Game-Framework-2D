@@ -19,6 +19,12 @@ yAccel=5
 xMax=200
 yMax=10
 
+[hitbox]
+x=3
+y=0
+w=170
+h=107
+
 [moves]
 
 +(IDLE){
@@ -40,7 +46,9 @@ yMax=10
 	}
 	
 	[locomotion]{
-		xVel=0
+		untilAdjacent=1
+		freezeFrame=2
+		xVel=1
 		yVel=0
 	}
 	
