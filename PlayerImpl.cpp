@@ -12,6 +12,10 @@
 
 // ================================================ //
 
+const int MAX_HITBOXES = 7;
+
+// ================================================ //
+
 PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 	:	ObjectImpl(fighter),
 		m_fighter(fighter),
@@ -25,10 +29,10 @@ PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 		m_playerSide(PlayerSide::LEFT),
 		m_inputType(inputType),
 		m_input(new bool[Input::NUM_INPUTS]),
-		m_hitbox(HitboxType::NORMAL),
 		m_moves(),
 		m_pCurrentMove(nullptr),
-		m_pMoveTimer(new Timer())
+		m_pMoveTimer(new Timer()),
+		m_hitboxes()
 {
 	// Set all input to false
 	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
@@ -129,14 +133,6 @@ void PlayerImpl::loadFighterData(void)
 	m_xMax = m.parseIntValue("movement", "xMax");
 	m_yMax = m.parseIntValue("movement", "yMax");
 
-	// Hitboxes
-	SDL_Rect h;
-	h.x = m.parseIntValue("hitbox", "x");
-	h.y = m.parseIntValue("hitbox", "y");
-	h.w = m.parseIntValue("hitbox", "w");
-	h.h = m.parseIntValue("hitbox", "h");
-	m_hitbox.setRect(h);
-
 	// set floor (temporary)
 	e.loadFile("Data/Config/game.cfg");
 	m_dst.y = e.parseIntValue("game", "floor");
@@ -144,7 +140,7 @@ void PlayerImpl::loadFighterData(void)
 	this->loadMoves(m);
 
 	// Default the source rect to the first frame of IDLE
-	m_src = m_moves[MoveID::IDLE]->frames[0];
+	m_src = m_moves[MoveID::IDLE]->frames[0].toSDLRect();
 	m_pCurrentMove = m_moves[MoveID::IDLE];
 }
 
@@ -162,6 +158,19 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 			throw std::exception(exc.c_str());
 		}
 	}
+
+	// Reserve four normal hitboxes
+	for(int i=0; i<4; ++i){
+		m_hitboxes.push_back(Hitbox(HitboxType::NORMAL));
+	}
+	// Reserve one throw hitbox
+	m_hitboxes.push_back(Hitbox(HitboxType::THROW));
+	// Reserve two damage hitboxes
+	m_hitboxes.push_back(Hitbox(HitboxType::DAMAGE));
+	m_hitboxes.push_back(Hitbox(HitboxType::DAMAGE));
+	// Reserve two counter hitboxes
+	m_hitboxes.push_back(Hitbox(HitboxType::COUNTER));
+	m_hitboxes.push_back(Hitbox(HitboxType::COUNTER));
 
 	m_pMoveTimer->restart();
 }
@@ -236,7 +245,7 @@ void PlayerImpl::updateMove(double dt)
 
 	// Update frame
 	if(m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
-		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame];
+		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
 		/*m_dst.w = m_src.w * 2;
 		m_dst.h = m_src.h * 2;*/
 		/*if(m_name == "ObjectID 1")
@@ -265,6 +274,26 @@ void PlayerImpl::updateMove(double dt)
 		}
 
 		m_pMoveTimer->restart();
+
+		this->updateHitboxes();
+	}
+}
+
+// ================================================ //
+
+void PlayerImpl::updateHitboxes(void)
+{
+	// Assign each hitbox to originate from the character's center
+	// So a hitbox of (50, 0, 50, 50) will be 50x50 and 50 units to the right
+	// of the character's center
+
+	for(int i=0; i<m_pCurrentMove->numHitboxes; ++i){
+		SDL_Rect offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
+		int xCenter = m_dst.x + (m_dst.w / 2);
+		int yCenter = m_dst.y + (m_dst.h / 2);
+
+		m_hitboxes[i].setRect( (xCenter - (offset.w / 2) + offset.x), (yCenter - (offset.h / 2) + offset.y),
+			offset.w, offset.h);
 	}
 }
 
@@ -291,8 +320,10 @@ void PlayerImpl::update(double dt)
 
 	this->render();
 
-	m_hitbox.setRect(m_dst.x, m_dst.y, m_dst.w, m_dst.h);
-	m_hitbox.render();
+	// Render hitboxes
+	for(int i=0; i<m_pCurrentMove->numHitboxes; ++i){
+		m_hitboxes[i].render();
+	}
 }
 
 // ================================================ //

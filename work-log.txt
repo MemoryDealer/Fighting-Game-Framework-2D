@@ -83,11 +83,16 @@
 	when the state machine switched back to IDLE since the IDLE state has proper transitions for WALK_BACK and WALK_FORWARD. So each state will need to be completely transitive. 
 	This also fixed the issue when switching sides that involved the player state not updating correctly. 
 -Since writing all the code for each state added to the state machine will take much time, I can use macros to shorten the code and automate it as much as possible. 
--Created Server object which sets up a basic UDP socket and listens for incoming UDP packets. Test with UDP Unicorn and it works. 
+-Created Server object which sets up a basic UDP socket and listens for incoming UDP packets. Tested with UDP Unicorn and it works. 
 
 #4/9/13
 -Created Hitbox class. So far it has intersection functions to detect if it intersects with another hitbox and a static function to detect if two hitboxes intersect.
 	It also has a render function which will render the hitbox itself (alpha blended with an outline), which the PlayerImpl class can use to show the hitboxes. 
+
+#4/10/13
+-Added ability for the FighterMetadata class to parse hitbox data in each frame section. Also modified Move--Frame is now a struct which holds the rect of the frame
+	and all corresponding hitboxes. These are then retrieved in PlayerImpl::updateHitboxes() and rendered in the main loop. PlayerImpl now holds a vector of Hitboxes.
+-You can now press R to reload all fighter data, so the .fighter file and be edited and the game will reload it on the fly. 
 
 #TODO
 -In the frame data for each character, hitbox dimensions could be added there. 

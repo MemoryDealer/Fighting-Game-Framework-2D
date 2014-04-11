@@ -92,6 +92,12 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				1000);
 			break;
 
+		case SDLK_r:
+			// Reload fighter settings
+			delete PlayerManager::getSingletonPtr();
+			new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
+			break;
+
 		case SDLK_ESCAPE:
 			m_bQuit = true;
 			break;

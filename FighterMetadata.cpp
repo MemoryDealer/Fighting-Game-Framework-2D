@@ -2,6 +2,8 @@
 
 #include "FighterMetadata.hpp"
 #include "Engine.hpp"
+#include "Move.hpp"
+#include "Hitbox.hpp"
 
 // ================================================ //
 
@@ -60,6 +62,7 @@ Move* FighterMetadata::parseMove(const char* name)
 							parse >> c;
 							parse >> pMove->recoveryFrames;
 
+							pMove->numHitboxes = this->parseMoveIntValue("core", "hitboxes");
 							pMove->damage = this->parseMoveIntValue("core", "damage");
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
@@ -81,6 +84,7 @@ Move* FighterMetadata::parseMove(const char* name)
 							frame1.w = this->parseMoveIntValue("frame1", "w");
 							frame1.h = this->parseMoveIntValue("frame1", "h");
 							pMove->frames.push_back(frame1);
+							this->parseHitboxes(pMove, "frame1");
 
 							// Parse the rest of the frames
 							for(int i=2; i<=pMove->numFrames; ++i){
@@ -102,6 +106,7 @@ Move* FighterMetadata::parseMove(const char* name)
 									frame.h = pMove->frames.back().h;
 
 								pMove->frames.push_back(frame);
+								this->parseHitboxes(pMove, frameSection.c_str());
 							}
 
 							// Finished parsing move
@@ -173,6 +178,53 @@ const int FighterMetadata::parseMoveIntValue(const char* section, const char* va
 const bool FighterMetadata::parseMoveBoolValue(const char* section, const char* value)
 {
 	return (this->parseMoveIntValue(section, value) >= 1);
+}
+
+// ================================================ //
+
+SDL_Rect FighterMetadata::parseRect(const std::string& str)
+{
+	SDL_Rect rc;
+	memset(&rc, 0, sizeof(rc));
+	
+	if(str.empty()){
+		Log::getSingletonPtr()->logMessage("Failed to parse hitbox \"" + str + "\"");
+		return rc;
+	}
+		
+	// Should look like "(0,0,100,100)
+	char c;
+	std::istringstream parse(str);
+	parse >> c; // eat (
+	parse >> rc.x;
+	parse >> c; // eat ,
+	parse >> rc.y;
+	parse >> c;
+	parse >> rc.w;
+	parse >> c;
+	parse >> rc.h;
+
+	return rc;
+}
+
+// ================================================ //
+
+void FighterMetadata::parseHitboxes(Move* pMove, const char* frame)
+{
+	// Load all hitbox rects into the frame's hitbox list
+	for(int i=1; i<=pMove->numHitboxes; ++i){
+		std::string hbox = this->parseMoveValue(frame, std::string("hbox" + Engine::toString(i)).c_str());
+		pMove->frames.back().hitboxes.push_back(this->parseRect(hbox));
+		
+		// Find the type of this hitbox
+		std::string typeAssignment = hbox.substr(hbox.find_first_of('=') + 1);
+		if(typeAssignment != ""){
+			pMove->frames.back().hitboxTypes.push_back(std::stoi(typeAssignment));
+		}
+		else{
+			pMove->frames.back().hitboxTypes.push_back(HitboxType::NORMAL);
+		}
+	}
 }
 
 // ================================================ //

@@ -18,6 +18,7 @@ class Timer;
 // ================================================ //
 
 typedef std::vector<Move*> MoveList;
+typedef std::vector<Hitbox> HitboxList;
 
 // ================================================ //
 
@@ -29,8 +30,7 @@ public:
 
 	void loadFighterData(void);
 	void loadMoves(FighterMetadata& c);
-	void updateLocalInput(void);
-	void updateMove(double dt);
+	
 
 	// Getter functions
 	const int getSide(void) const;
@@ -44,6 +44,10 @@ public:
 	virtual void update(double dt);
 
 private:
+	void updateLocalInput(void);
+	void updateMove(double dt);
+	void updateHitboxes(void);
+
 	int		m_fighter;
 	int		m_xAccel, m_yAccel;
 	int		m_xVel, m_yVel;
@@ -54,11 +58,11 @@ private:
 	int		m_inputType;
 	bool*	m_input; // dynamically allocated array of current inputs
 
-	Hitbox	m_hitbox;
-
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;
 	std::tr1::shared_ptr<Timer> m_pMoveTimer;
+
+	HitboxList	m_hitboxes;
 };
 
 // ================================================ //

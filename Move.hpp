@@ -23,7 +23,28 @@ namespace MoveID{
 
 // ================================================ //
 
-typedef SDL_Rect Frame;
+typedef std::vector<SDL_Rect> HitboxRectList;
+
+struct Frame{
+	int x;
+	int y;
+	int w;
+	int h;
+
+	SDL_Rect toSDLRect(void){
+		SDL_Rect r;
+		r.x = this->x;
+		r.y = this->y;
+		r.w = this->w;
+		r.h = this->h;
+		return r;
+	}
+
+	// Holds each hitbox for a single frame
+	HitboxRectList hitboxes;
+	std::vector<int> hitboxTypes;
+};
+
 typedef std::vector<Frame> FrameList;
 
 // ================================================ //
@@ -38,6 +59,7 @@ struct Move
 	int numFrames;
 	int frameGap;	// how long to wait between frames (ms)
 	int startupFrames, hitFrames, recoveryFrames;
+	int numHitboxes;
 	int damage;
 	int knockback;
 	bool repeat, reverse;

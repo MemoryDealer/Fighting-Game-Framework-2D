@@ -6,7 +6,10 @@
 // ================================================ //
 
 #include "Config.hpp"
-#include "Move.hpp"
+
+// ================================================ //
+
+struct Move;
 
 // ================================================ //
 
@@ -16,6 +19,7 @@ public:
 	explicit FighterMetadata(void);
 	virtual ~FighterMetadata(void);
 
+	// Currently this is shit, probably O(n^3) or something
 	virtual Move* parseMove(const char* name);
 	
 
@@ -25,6 +29,8 @@ private:
 	virtual std::string parseMoveValue(const char* section, const char* value);
 	virtual const int parseMoveIntValue(const char* section, const char* value);
 	virtual const bool parseMoveBoolValue(const char* section, const char* value);
+	virtual SDL_Rect parseRect(const std::string& str);
+	virtual void parseHitboxes(Move* pMove, const char* frame);
 
 	std::streampos m_moveBeg;
 };

@@ -11,7 +11,7 @@ h=104
 
 [size]
 w=180
-h=208
+h=214
 
 [movement]
 xAccel=50
@@ -26,12 +26,12 @@ w=170
 h=107
 
 [moves]
-
 +(IDLE){
 	[core]{
 		numFrames=4
 		frameGap=400
 		frameData=0/0/0
+		hitboxes=5
 		damage=0
 		knockback=0
 		repeat=1
@@ -39,6 +39,13 @@ h=107
 		reverse=0
 		xScale=1
 		yScale=1
+	}
+	
+	[input]{
+		sequence=0
+		#example Special seq: BACK,BACK,LP
+		#timeout is the maximum time(ms) between inputs in the sequence
+		timeout=500
 	}
 	
 	[cancels]{
@@ -53,22 +60,31 @@ h=107
 	}
 	
 	[frame1]{
+		#src
 		x=1
 		y=1
 		w=63
 		h=107
+		
+		hbox1=(0,0,160,200)/t=0
 	}
 	
 	[frame2]{
 		x=65
+		
+		hbox1=(0,0,160,200)/t=0
 	}
 	
 	[frame3]{
 		x=129
+		
+		hbox1=(0,0,160,200)/t=0
 	}
 	
 	[frame4]{
 		x=192
+		
+		hbox1=(0,0,160,200)/t=0
 	}
 }
 
