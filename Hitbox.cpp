@@ -38,8 +38,31 @@ Hitbox::~Hitbox(void)
 
 const bool Hitbox::intersects(const Hitbox& b)
 {
-	return (std::abs(this->getRect().x - b.getRect().x) * 2 < (this->getRect().w + b.getRect().w)) &&
-		(std::abs(this->getRect().y - b.getRect().y) * 2 < (this->getRect().h + b.getRect().h));
+	int leftA = this->getRect().x;
+	int leftB = b.getRect().x;
+	int rightA = this->getRect().x + this->getRect().w;
+	int rightB = b.getRect().x + b.getRect().w;
+	int topA = this->getRect().y;
+	int topB = b.getRect().y;
+	int bottomA = this->getRect().y + this->getRect().h;
+	int bottomB = b.getRect().y + b.getRect().h;
+
+	if( bottomA < topB )
+		return false;
+	if(topA > bottomB)
+		return false;
+	if(rightA < leftB)
+		return false;
+	if(leftA > rightB)
+		return false;
+
+	return true;
+
+	return (std::abs((this->getRect().x + this->getRect().w) - (b.getRect().x + b.getRect().w)) * 2 < (this->getRect().w + b.getRect().w)) &&
+		(std::abs((this->getRect().y + this->getRect().h) - (b.getRect().y + b.getRect().h)) * 2 < (this->getRect().h + b.getRect().h));
+
+	/*return (std::abs(this->getRect().x - b.getRect().x) * 2 < (this->getRect().w + b.getRect().w)) &&
+		(std::abs(this->getRect().y - b.getRect().y) * 2 < (this->getRect().h + b.getRect().h));*/
 }
 
 // ================================================ //

@@ -8,6 +8,7 @@
 #include "ObjectImpl.hpp"
 #include "PlayerData.hpp"
 #include "Hitbox.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -34,10 +35,13 @@ public:
 
 	// Getter functions
 	const int getSide(void) const;
+	Hitbox& getHitbox(const int index = 0);
+	const int getNumberOfHitboxes(void) const;
 
 	// Setter functions
 	void setSide(const int side);
 	void setInput(const int input, const bool down);
+	void setColliding(const bool colliding);
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);
@@ -63,6 +67,7 @@ private:
 	std::tr1::shared_ptr<Timer> m_pMoveTimer;
 
 	HitboxList	m_hitboxes;
+	bool		m_colliding; // control for x-axis movement
 };
 
 // ================================================ //
@@ -70,6 +75,12 @@ private:
 // Getter functions
 inline const int PlayerImpl::getSide(void) const
 { return m_playerSide; }
+
+inline Hitbox& PlayerImpl::getHitbox(const int index)
+{ 
+	Assert(static_cast<size_t>(index) <= m_hitboxes.size(), "Index out of bounds"); 
+	return m_hitboxes[index]; 
+}
 
 // Setter functions
 inline void PlayerImpl::setSide(const int side)
@@ -80,6 +91,9 @@ inline void PlayerImpl::setSide(const int side)
 
 inline void PlayerImpl::setInput(const int input, const bool down)
 { m_input[input] = down; }
+
+inline void PlayerImpl::setColliding(const bool colliding)
+{ m_colliding = colliding; }
 
 // ================================================ //
 

@@ -59,6 +59,28 @@ void PlayerManager::update(double dt)
 	// Update each player
 	m_pRedPlayer->update(dt);
 	m_pBluePlayer->update(dt);
+
+	for(int i=0; i<m_pRedPlayer->getNumberOfHitboxes(); ++i){
+		for(int j=0; j<m_pBluePlayer->getNumberOfHitboxes(); ++j){
+			if((m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j)))){
+				printf("INTERSECTION!!!!!!!!!!!!!!\t%d && %d\n", i, j);
+				m_pRedPlayer->setColliding();
+			}
+		}
+	}
+
+	/*printf("(%d,%d,%d,%d) => (%d,%d,%d,%d)\n",
+		m_pRedPlayer->getHitbox(3).getRect().x,
+		m_pRedPlayer->getHitbox(3).getRect().y,
+		m_pRedPlayer->getHitbox(3).getRect().w,
+		m_pRedPlayer->getHitbox(3).getRect().h,
+		m_pBluePlayer->getHitbox(2).getRect().x,
+		m_pBluePlayer->getHitbox(2).getRect().y,
+		m_pBluePlayer->getHitbox(2).getRect().w,
+		m_pBluePlayer->getHitbox(2).getRect().h);
+	if(m_pRedPlayer->getHitbox(0).intersects(m_pBluePlayer->getHitbox(1))){
+		printf("INTERSECTION!!!!!!!!!!!!!!\n");
+	}*/
 }
 
 // ================================================ //

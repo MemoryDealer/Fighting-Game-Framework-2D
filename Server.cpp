@@ -54,9 +54,9 @@ void Server::testRecv(void)
 		printf("\tStatus:  %d\n", m_packet->status);
 		printf("\tAddress: %x %x\n", m_packet->address.host, m_packet->address.port);
 	}
-	else{
+	/*else{
 		printf("No incoming UDP packet.\n");
-	}
+	}*/
 }
 
 // ================================================ //

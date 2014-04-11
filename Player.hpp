@@ -7,6 +7,7 @@
 
 #include "Object.hpp"
 #include "PlayerData.hpp"
+#include "Hitbox.hpp"
 
 // ================================================ //
 
@@ -24,10 +25,13 @@ public:
 
 	// Getter functions
 	const int getSide(void) const;
+	Hitbox& getHitbox(const int index);
+	const int getNumberOfHitboxes(void) const;
 
 	// Setter functions
 	void setSide(const int side);
 	void setInput(const int input, const bool down = true);
+	void setColliding(const bool colliding = true);
 
 	virtual void update(double dt);
 

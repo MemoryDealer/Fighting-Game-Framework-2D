@@ -35,6 +35,20 @@ const int Player::getSide(void) const
 }
 
 // ================================================ //
+
+Hitbox& Player::getHitbox(const int index)
+{
+	return m_pImpl->getHitbox(index);
+}
+
+// ================================================ //
+
+const int Player::getNumberOfHitboxes(void) const
+{
+	return m_pImpl->getNumberOfHitboxes();
+}
+
+// ================================================ //
 // Setter functions
 // ================================================ //
 
@@ -48,6 +62,13 @@ void Player::setSide(const int side)
 void Player::setInput(const int input, const bool down)
 {
 	return m_pImpl->setInput(input, down);
+}
+
+// ================================================ //
+
+void Player::setColliding(const bool colliding)
+{
+	return m_pImpl->setColliding(colliding);
 }
 
 // ================================================ //

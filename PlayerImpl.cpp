@@ -2,13 +2,14 @@
 
 #include "PlayerImpl.hpp"
 #include "Player.hpp"
-#include "Engine.hpp"
 #include "FSM.hpp"
 #include "MessageRouter.hpp"
 #include "Move.hpp"
 #include "FighterMetadata.hpp"
 #include "Timer.hpp"
 #include "Input.hpp"
+
+#include "PlayerManager.hpp"
 
 // ================================================ //
 
@@ -32,7 +33,8 @@ PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 		m_moves(),
 		m_pCurrentMove(nullptr),
 		m_pMoveTimer(new Timer()),
-		m_hitboxes()
+		m_hitboxes(),
+		m_colliding(false)
 {
 	// Set all input to false
 	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
@@ -177,6 +179,13 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 
 // ================================================ //
 
+const int PlayerImpl::getNumberOfHitboxes(void) const
+{
+	return m_pCurrentMove->numHitboxes;
+}
+
+// ================================================ //
+
 void PlayerImpl::updateLocalInput(void)
 {
 	m_currentAction = PlayerAction::NONE;
@@ -209,7 +218,7 @@ void PlayerImpl::updateLocalInput(void)
 	}
 
 	m_pFSM->stateTransition(m_currentAction);
-	printf("State: %d\n", m_pFSM->getCurrentStateID());
+	//printf("State: %d\n", m_pFSM->getCurrentStateID());
 }
 
 // ================================================ //
@@ -248,8 +257,8 @@ void PlayerImpl::updateMove(double dt)
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
 		/*m_dst.w = m_src.w * 2;
 		m_dst.h = m_src.h * 2;*/
-		/*if(m_name == "ObjectID 1")
-			printf("Frame: %d\n", m_pCurrentMove->currentFrame);*/
+		if(m_name == "ObjectID 1")
+			printf("Frame: %d\n", m_pCurrentMove->currentFrame);
 
 		if(m_pCurrentMove->reverse){
 			static bool dir = true;
@@ -274,9 +283,9 @@ void PlayerImpl::updateMove(double dt)
 		}
 
 		m_pMoveTimer->restart();
-
-		this->updateHitboxes();
 	}
+
+	this->updateHitboxes();
 }
 
 // ================================================ //
@@ -291,6 +300,9 @@ void PlayerImpl::updateHitboxes(void)
 		SDL_Rect offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
 		int xCenter = m_dst.x + (m_dst.w / 2);
 		int yCenter = m_dst.y + (m_dst.h / 2);
+
+		if(m_playerSide == PlayerSide::RIGHT)
+			offset.x = -offset.x;
 
 		m_hitboxes[i].setRect( (xCenter - (offset.w / 2) + offset.x), (yCenter - (offset.h / 2) + offset.y),
 			offset.w, offset.h);
@@ -315,6 +327,11 @@ void PlayerImpl::update(double dt)
 	}
 
 	this->updateMove(dt);
+
+	if(m_colliding){
+		m_xVel = (m_playerSide == PlayerSide::LEFT) ? -m_xMax : m_xMax;
+		m_colliding = false;
+	}
 
 	m_dst.x += static_cast<int>(m_xVel * dt);
 

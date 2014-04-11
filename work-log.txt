@@ -93,9 +93,12 @@
 -Added ability for the FighterMetadata class to parse hitbox data in each frame section. Also modified Move--Frame is now a struct which holds the rect of the frame
 	and all corresponding hitboxes. These are then retrieved in PlayerImpl::updateHitboxes() and rendered in the main loop. PlayerImpl now holds a vector of Hitboxes.
 -You can now press R to reload all fighter data, so the .fighter file and be edited and the game will reload it on the fly. 
+-My hitbox collision function was for hitbox with their origin at the center, where my hitboxes have a top-left origin, lulz. Must fix now. 
+-Used LazyFoo's code for rectangle collision, now it works. 
+-PlayerManager::update() is currently handling collisions. It sets the m_colliding flag in PlayerImpl when there is a collision. Then in PlayerImpl::update() the player's	
+	x velocity is reversed to the maximum upon collision, causing them to bounce off the other player. 
 
 #TODO
--In the frame data for each character, hitbox dimensions could be added there. 
 -NET
 -Scaling for sprites
 -Camera class? 
