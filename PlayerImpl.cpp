@@ -179,13 +179,6 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 
 // ================================================ //
 
-const int PlayerImpl::getNumberOfHitboxes(void) const
-{
-	return m_pCurrentMove->numHitboxes;
-}
-
-// ================================================ //
-
 void PlayerImpl::updateLocalInput(void)
 {
 	m_currentAction = PlayerAction::NONE;
@@ -296,8 +289,10 @@ void PlayerImpl::updateHitboxes(void)
 	// So a hitbox of (50, 0, 50, 50) will be 50x50 and 50 units to the right
 	// of the character's center
 
-	for(int i=0; i<m_pCurrentMove->numHitboxes; ++i){
-		SDL_Rect offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
+	for(int i=0; i<m_hitboxes.size(); ++i){
+		SDL_Rect offset = {0, 0, 0, 0};
+		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
+
 		int xCenter = m_dst.x + (m_dst.w / 2);
 		int yCenter = m_dst.y + (m_dst.h / 2);
 
@@ -329,7 +324,14 @@ void PlayerImpl::update(double dt)
 	this->updateMove(dt);
 
 	if(m_colliding){
-		m_xVel = (m_playerSide == PlayerSide::LEFT) ? -m_xMax : m_xMax;
+		// Move player back upon collision
+		if(m_playerSide == PlayerSide::LEFT){
+			m_dst.x = m_dst.x - static_cast<int>(m_xMax * dt);
+		}
+		else{
+			m_dst.x = m_dst.x + static_cast<int>(m_xMax * dt);
+		}
+
 		m_colliding = false;
 	}
 
@@ -338,7 +340,7 @@ void PlayerImpl::update(double dt)
 	this->render();
 
 	// Render hitboxes
-	for(int i=0; i<m_pCurrentMove->numHitboxes; ++i){
+	for(int i=0; i<m_hitboxes.size(); ++i){
 		m_hitboxes[i].render();
 	}
 }

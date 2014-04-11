@@ -23,10 +23,22 @@ public:
 
 	void loadFighterData(void);
 
+	// Hitbox indices
+	enum{
+		HBOX_LOWER = 0,
+		HBOX_MIDDLE,
+		HBOX_UPPER,
+		HBOX_HEAD,
+		TBOX,
+		DBOX1,
+		DBOX2,
+		CBOX1,
+		CBOX2,
+	};
+
 	// Getter functions
 	const int getSide(void) const;
 	Hitbox& getHitbox(const int index);
-	const int getNumberOfHitboxes(void) const;
 
 	// Setter functions
 	void setSide(const int side);

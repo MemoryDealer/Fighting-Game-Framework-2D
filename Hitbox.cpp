@@ -24,6 +24,15 @@ Hitbox::Hitbox(const int type)
 
 		m_outline.b = 255;
 		break;
+
+	case HitboxType::DAMAGE:
+		m_color.r = m_outline.r = 200;
+		m_color.g = m_outline.g = 0;
+		m_color.b = m_outline.b = 0;
+		m_color.a = 50;
+
+		m_outline.r = 255;
+		break;
 	}
 }
 
@@ -47,13 +56,13 @@ const bool Hitbox::intersects(const Hitbox& b)
 	int bottomA = this->getRect().y + this->getRect().h;
 	int bottomB = b.getRect().y + b.getRect().h;
 
-	if( bottomA < topB )
+	if( bottomA <= topB )
 		return false;
-	if(topA > bottomB)
+	if(topA >= bottomB)
 		return false;
-	if(rightA < leftB)
+	if(rightA <= leftB)
 		return false;
-	if(leftA > rightB)
+	if(leftA >= rightB)
 		return false;
 
 	return true;

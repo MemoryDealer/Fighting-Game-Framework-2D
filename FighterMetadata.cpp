@@ -4,6 +4,7 @@
 #include "Engine.hpp"
 #include "Move.hpp"
 #include "Hitbox.hpp"
+#include "Player.hpp"
 
 // ================================================ //
 
@@ -39,11 +40,12 @@ Move* FighterMetadata::parseMove(const char* name)
 					m_file >> m_buffer;
 
 					if(m_buffer[0] == '+'){
-						// Found a move, see if it's the right one (example buffer: "+(IDLE){")
-						if(m_buffer.compare(2, m_buffer.size() - 4, name) == 0){
+						// Found a move, see if it's the right one (example buffer: "+(IDLE)")
+						if(m_buffer.compare(2, m_buffer.size() - 3, name) == 0){
 
 							// Allocate Move object for this move
 							Move* pMove = new Move();
+							pMove->name = name;
 
 							// Store beginning of this move's data
 							m_moveBeg = m_file.tellg();
@@ -62,7 +64,6 @@ Move* FighterMetadata::parseMove(const char* name)
 							parse >> c;
 							parse >> pMove->recoveryFrames;
 
-							pMove->numHitboxes = this->parseMoveIntValue("core", "hitboxes");
 							pMove->damage = this->parseMoveIntValue("core", "damage");
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
@@ -155,6 +156,9 @@ std::string FighterMetadata::parseMoveValue(const char* section, const char* val
 				}
 			}
 		}
+		else if(m_buffer[0] == '-'){
+			break;
+		}
 	}
 
 	m_file.clear();
@@ -188,7 +192,7 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 	memset(&rc, 0, sizeof(rc));
 	
 	if(str.empty()){
-		Log::getSingletonPtr()->logMessage("Failed to parse hitbox \"" + str + "\"");
+		Log::getSingletonPtr()->logMessage("No hitbox found for \"" + str + "\"");
 		return rc;
 	}
 		
@@ -212,18 +216,26 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 void FighterMetadata::parseHitboxes(Move* pMove, const char* frame)
 {
 	// Load all hitbox rects into the frame's hitbox list
-	for(int i=1; i<=pMove->numHitboxes; ++i){
-		std::string hbox = this->parseMoveValue(frame, std::string("hbox" + Engine::toString(i)).c_str());
+	// Normal hitboxes
+	for(int i=Player::HBOX_LOWER, num=1; i<=Player::HBOX_HEAD; ++i, ++num){
+		std::string hbox = this->parseMoveValue(frame, std::string("hbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(hbox));
-		
-		// Find the type of this hitbox
-		std::string typeAssignment = hbox.substr(hbox.find_first_of('=') + 1);
-		if(typeAssignment != ""){
-			pMove->frames.back().hitboxTypes.push_back(std::stoi(typeAssignment));
-		}
-		else{
-			pMove->frames.back().hitboxTypes.push_back(HitboxType::NORMAL);
-		}
+	}
+
+	// Throw box
+	std::string tbox = this->parseMoveValue(frame, "tbox");
+	pMove->frames.back().hitboxes.push_back(this->parseRect(tbox));
+
+	// Damage boxes
+	for(int i=Player::DBOX1, num=1; i<=Player::DBOX2; ++i, ++num){
+		std::string dbox = this->parseMoveValue(frame, std::string("dbox" + Engine::toString(num)).c_str());
+		pMove->frames.back().hitboxes.push_back(this->parseRect(dbox));
+	}
+
+	// Counter boxes
+	for(int i=Player::CBOX1, num=1; i<=Player::CBOX2; ++i, ++num){
+		std::string cbox = this->parseMoveValue(frame, std::string("cbox" + Engine::toString(num)).c_str());
+		pMove->frames.back().hitboxes.push_back(this->parseRect(cbox));
 	}
 }
 

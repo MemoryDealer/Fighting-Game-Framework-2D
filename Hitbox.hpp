@@ -65,10 +65,7 @@ inline void Hitbox::setActive(const bool active)
 inline void Hitbox::setRect(const int x, const int y, const int w , const int h)
 { 
 	m_rc.x = x; m_rc.y = y; 
-	if(w != 0)
-		m_rc.w = w;
-	if(h != 0)
-		m_rc.h = h;
+	m_rc.w = w; m_rc.h = h;
 }
 
 inline void Hitbox::setRect(const SDL_Rect& pos)

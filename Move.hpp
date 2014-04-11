@@ -42,7 +42,6 @@ struct Frame{
 
 	// Holds each hitbox for a single frame
 	HitboxRectList hitboxes;
-	std::vector<int> hitboxTypes;
 };
 
 typedef std::vector<Frame> FrameList;
@@ -59,7 +58,6 @@ struct Move
 	int numFrames;
 	int frameGap;	// how long to wait between frames (ms)
 	int startupFrames, hitFrames, recoveryFrames;
-	int numHitboxes;
 	int damage;
 	int knockback;
 	bool repeat, reverse;

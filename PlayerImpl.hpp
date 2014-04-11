@@ -36,7 +36,6 @@ public:
 	// Getter functions
 	const int getSide(void) const;
 	Hitbox& getHitbox(const int index = 0);
-	const int getNumberOfHitboxes(void) const;
 
 	// Setter functions
 	void setSide(const int side);

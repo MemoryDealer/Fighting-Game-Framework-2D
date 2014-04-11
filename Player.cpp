@@ -42,13 +42,6 @@ Hitbox& Player::getHitbox(const int index)
 }
 
 // ================================================ //
-
-const int Player::getNumberOfHitboxes(void) const
-{
-	return m_pImpl->getNumberOfHitboxes();
-}
-
-// ================================================ //
 // Setter functions
 // ================================================ //
 

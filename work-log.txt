@@ -98,7 +98,13 @@
 -PlayerManager::update() is currently handling collisions. It sets the m_colliding flag in PlayerImpl when there is a collision. Then in PlayerImpl::update() the player's	
 	x velocity is reversed to the maximum upon collision, causing them to bounce off the other player. 
 
+#4/11/13
+-Fixed bug in metadata parser (parseMoveValue()). 
+-Changed the way hitboxes are handled in PlayerImpl. 
+-Added damage box to the WALKING_FORWARD animation to test it, the PlayerManager detects when it collides with any of the opponent's hitboxes. 
+
 #TODO
+-Code feels sloppy, clean it up
 -NET
 -Scaling for sprites
 -Camera class? 
