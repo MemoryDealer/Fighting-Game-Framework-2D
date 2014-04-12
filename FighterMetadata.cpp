@@ -157,6 +157,7 @@ std::string FighterMetadata::parseMoveValue(const char* section, const char* val
 			}
 		}
 		else if(m_buffer[0] == '-'){
+			// end of move found
 			break;
 		}
 	}

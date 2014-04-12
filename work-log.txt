@@ -103,8 +103,13 @@
 -Changed the way hitboxes are handled in PlayerImpl. 
 -Added damage box to the WALKING_FORWARD animation to test it, the PlayerManager detects when it collides with any of the opponent's hitboxes. 
 
+#4/12/13
+-Replaced Hitbox::intersects() code with SDL_HasIntersection().
+
 #TODO
 -Code feels sloppy, clean it up
+-Make backing up speed slower
+-When colliding make the forward moving player push the other one into a walking back state
 -NET
 -Scaling for sprites
 -Camera class? 
