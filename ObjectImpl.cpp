@@ -78,15 +78,6 @@ void ObjectImpl::sendMessage(const Message& msg)
 
 void ObjectImpl::render(void)
 {
-	/*SDL_Rect dst;
-	float fWidth = Engine::getSingletonPtr()->getWindowWidth() / 800;
-	float fHeight = Engine::getSingletonPtr()->getWindowHeight() / 600;
-
-	dst.x = (m_dst.x * fWidth) - ((m_dst.w * 1.0) * fWidth / 2);
-	dst.y = (m_dst.y * fWidth) - ((m_dst.h * 1.0) * fHeight / 2);
-	dst.w = m_dst.w * fWidth;
-	dst.h = m_dst.h * fHeight;*/
-
 	//! I hope it's safe to const_cast the renderer pointer
 	SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 
 		m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);

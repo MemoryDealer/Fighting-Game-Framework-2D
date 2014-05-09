@@ -17,8 +17,8 @@ public:
 		FIGHTER_METADATA
 	};
 
-	explicit Config(ConfigType type = INI);
-	explicit Config(const char* file, ConfigType type = INI);
+	explicit Config(const ConfigType type = INI);
+	explicit Config(const char* file, const ConfigType type = INI);
 	virtual ~Config(void);
 
 	virtual void loadFile(const char* file);

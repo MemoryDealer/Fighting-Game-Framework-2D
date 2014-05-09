@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-Config::Config(ConfigType type)
+Config::Config(const ConfigType type)
 	:	m_file(),
 		m_type(type),
 		m_loaded(false)
@@ -15,7 +15,7 @@ Config::Config(ConfigType type)
 
 // ================================================ //
 
-Config::Config(const char* file, ConfigType type)
+Config::Config(const char* file, const ConfigType type)
 	:	m_file(),
 		m_type(type),
 		m_loaded(false)
@@ -116,7 +116,7 @@ const int Config::parseIntValue(const char* section, const char* value)
 		return std::stoi(str);
 	}
 
-	return -1;
+	return 0;
 }
 
 // ================================================ //

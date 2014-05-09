@@ -33,6 +33,20 @@ Hitbox::Hitbox(const int type)
 
 		m_outline.r = 255;
 		break;
+
+	case HitboxType::THROW:
+
+		break;
+
+	case HitboxType::COUNTER:
+		m_color.r = m_outline.r = 0;
+		m_color.g = 255;
+		m_color.b = 200;
+		m_color.a = 50;
+
+		m_outline.g = 255;
+		m_outline.b = 255;
+		break;
 	}
 }
 
@@ -68,8 +82,7 @@ void Hitbox::render(void)
 
 const bool Hitbox::HitboxIntersect(const Hitbox& a, const Hitbox& b)
 {
-	return (std::abs(a.getRect().x - b.getRect().x) * 2 < (a.getRect().w + b.getRect().w)) &&
-		(std::abs(a.getRect().y - b.getRect().y) * 2 < (a.getRect().h + b.getRect().h));
+	return SDL_HasIntersection(&a.getRect(), &b.getRect());
 }
 
 // ================================================ //

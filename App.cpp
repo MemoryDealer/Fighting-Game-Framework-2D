@@ -14,6 +14,7 @@ App::App(void)
 	new Log();
 
 	// Initialize message router singleton
+	Log::getSingletonPtr()->logMessage("Initializing MessageRouter...");
 	new MessageRouter();
 
 	// Initialize engine singleton
@@ -21,14 +22,17 @@ App::App(void)
 	new Engine();
 
 	// Create our state manager
+	Log::getSingletonPtr()->logMessage("Creating AppStateManager...");
 	m_pAppStateManager = new AppStateManager();
 
 	// Create states
+	Log::getSingletonPtr()->logMessage("Creating game states...");
 	MenuState::create(m_pAppStateManager, MENU_STATE);
 
 	Log::getSingletonPtr()->logMessage("App initialized!");
 
 	// Start entry state
+	Log::getSingletonPtr()->logMessage("Starting with MENU_STATE...");
 	m_pAppStateManager->start(m_pAppStateManager->findByName(MENU_STATE));
 }
 

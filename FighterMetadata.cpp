@@ -175,6 +175,9 @@ const int FighterMetadata::parseMoveIntValue(const char* section, const char* va
 		return std::stoi(str);
 	}
 
+	/* The reason FighterMetadata::parseMoveIntValue() returns -1 on failure is to let FighterMetadata::parseMove() know if a frame of animation should be inherited
+	from the previous frame, rather than assigning its corresponding value(s) to zero. This will no longer be necessary once a tool is developed to visually 
+	edit fighter data. */
 	return -1;
 }
 

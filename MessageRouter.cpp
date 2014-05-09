@@ -53,10 +53,11 @@ void MessageRouter::removeObject(const int id)
 		itr != m_objects.end();
 		++itr){
 
-		// Remove pointer from list
+		// Remove empty pointers from list
 		if((*itr) == nullptr){
 			m_objects.erase(itr++);
 		}
+		// Remove the desired object
 		else if((*itr)->getID() == id){
 			m_objects.erase(itr++);
 			return;

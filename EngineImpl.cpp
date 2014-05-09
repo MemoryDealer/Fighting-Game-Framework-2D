@@ -3,7 +3,6 @@
 #include "EngineImpl.hpp"
 #include "Config.hpp"
 
-
 // ================================================ //
 
 EngineImpl::EngineImpl(void)

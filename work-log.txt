@@ -106,17 +106,22 @@
 #4/12/13
 -Replaced Hitbox::intersects() code with SDL_HasIntersection().
 
+#5/8/13
+-The reason FighterMetadata::parseMoveIntValue() returns -1 on failure is to let FighterMetadata::parseMove() know if a frame of animation should be inherited
+	from the previous frame, rather than assigning its corresponding value(s) to zero. This will no longer be necessary once a tool is developed to visually 
+	edit fighter data. 
+-Did some basic cleanup of the code. 
+
 #TODO
--Code feels sloppy, clean it up
+-Code feels sloppy, clean it up (logging, error handling)
 -Make backing up speed slower
 -When colliding make the forward moving player push the other one into a walking back state
 -NET
--Scaling for sprites
+-Background objects should have configuration files just like fighters, with animation data and such
+--Replace Background with Stage
 -Camera class? 
 -LoadResources in Engine
 -GUILayer
--Create Hitbox, Rect? 
--Should each state have its own SDL_Renderer? Or is using one for all sufficient?
 -use const char* for all string parameters unless an std::string is absolutely necessary. 
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0

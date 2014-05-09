@@ -21,7 +21,7 @@
 int SDL_main(int argc, char** argv)
 {
 	try{
-		// Initialize application log
+		// Initialize application
 		App app;
 		
 	} 
