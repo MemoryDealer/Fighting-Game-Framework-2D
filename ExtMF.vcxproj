@@ -83,8 +83,6 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AppStateManager.cpp" />
-    <ClCompile Include="Background.cpp" />
-    <ClCompile Include="BackgroundImpl.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
@@ -106,6 +104,8 @@
     <ClCompile Include="PlayerImpl.cpp" />
     <ClCompile Include="PlayerManager.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="StageImpl.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -117,8 +117,6 @@
     <ClInclude Include="App.hpp" />
     <ClInclude Include="AppState.hpp" />
     <ClInclude Include="AppStateManager.hpp" />
-    <ClInclude Include="Background.hpp" />
-    <ClInclude Include="BackgroundImpl.hpp" />
     <ClInclude Include="Config.hpp" />
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="EngineImpl.hpp" />
@@ -138,6 +136,9 @@
     <ClInclude Include="PlayerData.hpp" />
     <ClInclude Include="Server.hpp" />
     <ClInclude Include="Singleton.hpp" />
+    <ClInclude Include="Stage.hpp" />
+    <ClInclude Include="StageEffect.hpp" />
+    <ClInclude Include="StageImpl.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="Timer.hpp" />
   </ItemGroup>

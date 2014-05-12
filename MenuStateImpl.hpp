@@ -8,6 +8,8 @@
 #include "stdafx.hpp"
 #include "ObjectManager.hpp"
 
+class Stage;
+
 // ================================================ //
 
 class MenuStateImpl
@@ -29,6 +31,7 @@ private:
 	bool	m_bQuit;
 
 	std::tr1::shared_ptr<ObjectManager> m_pObjectManager;
+	Stage*	m_pStage;
 };
 
 // ================================================ //

@@ -1,26 +1,26 @@
 // ================================================ //
 
-#include "Background.hpp"
-#include "BackgroundImpl.hpp"
+#include "Stage.hpp"
+#include "StageImpl.hpp"
 
 // ================================================ //
 
-Background::Background(unsigned int type)
-	:	m_pImpl(new BackgroundImpl(type))
+Stage::Stage(const char* stageFile)
+	:	m_pImpl(new StageImpl(stageFile))
 {
 	Object::setPImpl(m_pImpl);
 }
 
 // ================================================ //
 
-Background::~Background(void)
+Stage::~Stage(void)
 {
 
 }
 
 // ================================================ //
 
-void Background::update(double dt)
+void Stage::update(double dt)
 {
 	return m_pImpl->update(dt);
 }

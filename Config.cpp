@@ -81,7 +81,7 @@ std::string& Config::parseValue(const char* section, const char* value)
 				
 				// Section found, now find the value
 				m_file >> m_buffer;
-				while(m_buffer[0] != '['){
+				while(m_buffer[0] != '[' && !m_file.eof()){ // NOTE: There must always be a \n at the end of a config file
 					
 					// Skip comments
 					if(m_buffer[0] != '#'){

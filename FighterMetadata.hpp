@@ -29,8 +29,8 @@ private:
 	virtual std::string parseMoveValue(const char* section, const char* value);
 	virtual const int parseMoveIntValue(const char* section, const char* value);
 	virtual const bool parseMoveBoolValue(const char* section, const char* value);
-	virtual SDL_Rect parseRect(const std::string& str);
 	virtual void parseHitboxes(Move* pMove, const char* frame);
+	virtual SDL_Rect FighterMetadata::parseRect(const std::string& str);
 
 	std::streampos m_moveBeg;
 };

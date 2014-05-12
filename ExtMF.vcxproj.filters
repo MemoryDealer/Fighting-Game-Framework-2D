@@ -55,12 +55,6 @@
     <Filter Include="Source Files\Engine\Player">
       <UniqueIdentifier>{857ce1b6-d103-494b-ba9d-216fbe86b61a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\Background">
-      <UniqueIdentifier>{42cc48de-b28e-48cf-942d-7509d62fd9c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Background">
-      <UniqueIdentifier>{cf0c8cd6-da98-453c-823c-8ca955542b08}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Engine\Object\ObjectManager">
       <UniqueIdentifier>{8db76e8c-94f0-4ea1-baea-62d818851b58}</UniqueIdentifier>
     </Filter>
@@ -105,6 +99,12 @@
     </Filter>
     <Filter Include="Source Files\Engine\Object\Hitbox">
       <UniqueIdentifier>{eba81fe0-8870-4ded-bc19-21275ab32550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Stage">
+      <UniqueIdentifier>{35cafed4-791f-42d9-a306-e2950b5d978b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Stage">
+      <UniqueIdentifier>{7cad57bf-585b-4642-933b-43afcf4de021}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -153,12 +153,6 @@
     <ClCompile Include="PlayerImpl.cpp">
       <Filter>Source Files\Engine\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Background.cpp">
-      <Filter>Source Files\Engine\Background</Filter>
-    </ClCompile>
-    <ClCompile Include="BackgroundImpl.cpp">
-      <Filter>Source Files\Engine\Background</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Source Files\Engine\Object\ObjectManager</Filter>
     </ClCompile>
@@ -188,6 +182,12 @@
     </ClCompile>
     <ClCompile Include="Hitbox.cpp">
       <Filter>Source Files\Engine\Object\Hitbox</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>Source Files\Engine\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="StageImpl.cpp">
+      <Filter>Source Files\Engine\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -239,12 +239,6 @@
     <ClInclude Include="PlayerImpl.hpp">
       <Filter>Header Files\Engine\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Background.hpp">
-      <Filter>Header Files\Engine\Background</Filter>
-    </ClInclude>
-    <ClInclude Include="BackgroundImpl.hpp">
-      <Filter>Header Files\Engine\Background</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectManager.hpp">
       <Filter>Header Files\Engine\Object\ObjectManager</Filter>
     </ClInclude>
@@ -280,6 +274,15 @@
     </ClInclude>
     <ClInclude Include="Hitbox.hpp">
       <Filter>Header Files\Engine\Object\Hitbox</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.hpp">
+      <Filter>Header Files\Engine\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="StageImpl.hpp">
+      <Filter>Header Files\Engine\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="StageEffect.hpp">
+      <Filter>Header Files\Engine\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

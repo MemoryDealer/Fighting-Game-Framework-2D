@@ -112,9 +112,11 @@
 	edit fighter data. 
 -Did some basic cleanup of the code. 
 
+#5/12/14
+-When backing up the player's x-velocity is multiplied by 0.85 to reduce the speed and make it more realistic. 
+
 #TODO
 -Code feels sloppy, clean it up (logging, error handling)
--Make backing up speed slower
 -When colliding make the forward moving player push the other one into a walking back state
 -NET
 -Background objects should have configuration files just like fighters, with animation data and such

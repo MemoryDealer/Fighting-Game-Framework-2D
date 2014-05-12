@@ -1,27 +1,26 @@
 // ================================================ //
 
-#ifndef __BACKGROUNDIMPL_HPP__
-#define __BACKGROUNDIMPL_HPP__
+#ifndef __STAGE_IMPL_HPP__
+#define __STAGE_IMPL_HPP__
 
 // ================================================ //
 
 #include "ObjectImpl.hpp"
+#include "StageEffect.hpp"
 
 // ================================================ //
 
-class BackgroundImpl : public ObjectImpl
+class StageImpl : public ObjectImpl
 {
 public:
-	explicit BackgroundImpl(unsigned int type);
-	virtual ~BackgroundImpl(void);
-
-	// Setter functions
-	virtual bool setTextureFile(const char* filename);
+	explicit StageImpl(const char* stageFile);
+	virtual ~StageImpl(void);
 
 	virtual void update(double dt);
 
 private:
-	unsigned int m_type;
+	StageLayerList m_layers;
+	int m_stageWidth, m_stageHeight;
 };
 
 // ================================================ //

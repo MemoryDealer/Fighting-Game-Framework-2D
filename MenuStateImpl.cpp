@@ -4,7 +4,7 @@
 #include "Engine.hpp"
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
-#include "Background.hpp"
+#include "Stage.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
 #include "MessageRouter.hpp"
@@ -32,8 +32,8 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	m_pObjectManager->addObject(new Background(0));
-	m_pObjectManager->getObject(0)->setTextureFile("D:/2D/B/cave.jpg");
+	//m_pObjectManager->addObject(new Stage("Data/Stages/test.stage"));
+	m_pStage = new Stage("Data/Stages/test.stage");
 
 	new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
 
@@ -45,6 +45,10 @@ void MenuStateImpl::enter(void)
 void MenuStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
+
+	// m_pObjectManager destructed automatically
+
+	delete m_pStage;
 
 	delete PlayerManager::getSingletonPtr();
 
@@ -96,6 +100,8 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			// Reload fighter settings
 			delete PlayerManager::getSingletonPtr();
 			new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
+			delete m_pStage;
+			m_pStage = new Stage("Data/Stages/test.stage");
 			break;
 
 		case SDLK_ESCAPE:
@@ -151,6 +157,8 @@ void MenuStateImpl::update(double dt)
 
 	Engine::getSingletonPtr()->clearRenderer();
 
+	// Update and render all game objects and players
+	m_pStage->update(dt);
 	m_pObjectManager->update(dt);
 	PlayerManager::getSingletonPtr()->update(dt);
 

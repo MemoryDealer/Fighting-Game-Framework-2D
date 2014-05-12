@@ -41,6 +41,7 @@ PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 	
 	// Load configuration settings
 	this->loadFighterData();
+
 	// Add states to core FSM
 	FState* state = new FState(PlayerState::IDLE);
 	
@@ -238,6 +239,7 @@ void PlayerImpl::updateMove(double dt)
 
 		case PlayerState::WALKING_BACK:
 			m_pCurrentMove = m_moves[MoveID::WALKING_BACK];
+			m_xVel = static_cast<int>(m_xVel * 0.85);
 			break;
 
 		case PlayerState::BLOCKING:
