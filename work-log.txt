@@ -114,8 +114,11 @@
 
 #5/12/14
 -When backing up the player's x-velocity is multiplied by 0.85 to reduce the speed and make it more realistic. 
+-Removed Background class and replaced it with the more versatile Stage class. It holds a list of StageLayer's which hold a texture and any effect data. The stage layers
+	are rendered in order, with layer 1 being behind all succeeding layers. 
 
 #TODO
+-Stage floor, size, camera, etc.
 -Code feels sloppy, clean it up (logging, error handling)
 -When colliding make the forward moving player push the other one into a walking back state
 -NET
