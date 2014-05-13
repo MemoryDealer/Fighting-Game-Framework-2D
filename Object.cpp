@@ -6,7 +6,7 @@
 
 // ================================================ //
 
-Object::Object(const unsigned int type)
+Object::Object(void)
 	:	m_pImpl(nullptr)
 {
 	MessageRouter::getSingletonPtr()->addObject(static_cast<Object*>(this));

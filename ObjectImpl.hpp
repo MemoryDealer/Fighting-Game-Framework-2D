@@ -17,7 +17,7 @@ struct Message;
 class ObjectImpl
 {
 public:
-	explicit ObjectImpl(const unsigned int type);
+	explicit ObjectImpl(void);
 	virtual ~ObjectImpl(void);
 
 	// Setter functions

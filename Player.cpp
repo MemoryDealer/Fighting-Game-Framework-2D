@@ -5,8 +5,8 @@
 
 // ================================================ //
 
-Player::Player(const int fighter, const int inputType)
-	:	m_pImpl(new PlayerImpl(fighter, inputType))
+Player::Player(const char* fighterFile, const int inputType)
+	:	m_pImpl(new PlayerImpl(fighterFile, inputType))
 {
 	Object::setPImpl(m_pImpl);
 }
@@ -16,13 +16,6 @@ Player::Player(const int fighter, const int inputType)
 Player::~Player(void)
 {
 
-}
-
-// ================================================ //
-
-void Player::loadFighterData(void)
-{
-	return m_pImpl->loadFighterData();
 }
 
 // ================================================ //

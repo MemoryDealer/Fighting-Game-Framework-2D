@@ -57,7 +57,6 @@ void ObjectManager::update(double dt, bool render)
 		if((*itr)->isDead()){
 			delete *itr;
 			m_objects.erase(itr++);
-			printf("ERASED OBJECT\n");
 		}
 		else{
 			(*itr)->update(dt);

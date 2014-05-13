@@ -16,6 +16,7 @@ struct Move;
 class FighterMetadata : public Config
 {
 public:
+	explicit FighterMetadata(const char* file);
 	explicit FighterMetadata(void);
 	virtual ~FighterMetadata(void);
 

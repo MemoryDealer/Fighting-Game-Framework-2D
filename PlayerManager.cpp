@@ -4,6 +4,7 @@
 #include "PlayerData.hpp"
 #include "Config.hpp"
 #include "Input.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -11,11 +12,44 @@ template<> PlayerManager* Singleton<PlayerManager>::msSingleton = 0;
 
 // ================================================ //
 
-PlayerManager::PlayerManager(unsigned int redFighter, unsigned int blueFighter)
-	:	m_pRedPlayer(new Player(redFighter)),
-		m_pBluePlayer(new Player(blueFighter))
+PlayerManager::PlayerManager(void)
+	:	m_pRedPlayer(nullptr),
+		m_pBluePlayer(nullptr),
+		m_fighters()
 {
 	Log::getSingletonPtr()->logMessage("Initializing PlayerManager...");
+
+	Config c("Data/Fighters/fighters.cfg");
+	const int numFighters = c.parseIntValue("core", "numFighters");
+
+	for(int i=1; i<=numFighters; ++i){
+		FighterEntry fighter;
+		std::string fighterName = "fighter" + Engine::toString(i);
+
+		fighter.name = c.parseValue(fighterName.c_str(), "name");
+		fighter.file = c.parseValue(fighterName.c_str(), "file");
+
+		// portrait...
+
+		m_fighters.push_back(fighter);
+
+		Log::getSingletonPtr()->logMessage("Fighter entry loaded => Name: " + fighter.name + "\tFile: " + fighter.file);
+	}
+}
+
+// ================================================ //
+
+PlayerManager::~PlayerManager(void)
+{
+	 
+}
+
+// ================================================ //
+
+bool PlayerManager::load(const char* redFighterFile, const char* blueFighterFile)
+{
+	m_pRedPlayer.reset(new Player(redFighterFile));
+	m_pBluePlayer.reset(new Player(blueFighterFile));
 
 	m_pRedPlayer->setSide(PlayerSide::LEFT);
 	m_pBluePlayer->setSide(PlayerSide::RIGHT);
@@ -25,13 +59,8 @@ PlayerManager::PlayerManager(unsigned int redFighter, unsigned int blueFighter)
 	// Should be dependent on Stage data and fighter height (TODO: query Stage singleton)
 	m_pRedPlayer->setPosition(game.parseIntValue("game", "redX"), m_pRedPlayer->getPosition().y);
 	m_pBluePlayer->setPosition(game.parseIntValue("game", "blueX"), m_pBluePlayer->getPosition().y);
-}
 
-// ================================================ //
-
-PlayerManager::~PlayerManager(void)
-{
-	 
+	return( (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr) );
 }
 
 // ================================================ //

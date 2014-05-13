@@ -117,13 +117,14 @@
 -Removed Background class and replaced it with the more versatile Stage class. It holds a list of StageLayer's which hold a texture and any effect data. The stage layers
 	are rendered in order, with layer 1 being behind all succeeding layers. 
 
+#5/13/14
+-Added StageManager which is a singleton and keeps stage management more organized and clean. 
+
 #TODO
 -Stage floor, size, camera, etc.
--Code feels sloppy, clean it up (logging, error handling)
+-Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
 -NET
--Background objects should have configuration files just like fighters, with animation data and such
---Replace Background with Stage
 -Camera class? 
 -LoadResources in Engine
 -GUILayer

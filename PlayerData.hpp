@@ -5,16 +5,6 @@
 
 // ================================================ //
 
-namespace Fighter{
-	enum{
-		DUMMY = 50,
-		LORD_GRISHNAKH,
-		CORPSE_EXPLOSION
-	};
-}
-
-// ================================================ //
-
 namespace PlayerSide{
 	enum{
 		LEFT = 0,
@@ -46,9 +36,7 @@ namespace PlayerState{
 		SPECIAL_NONOPENER,
 		AUTO_DOUBLE,
 		LINKER,
-		ENDER,
-
-		_
+		ENDER
 	};
 }
 
@@ -66,9 +54,7 @@ namespace PlayerAction{
 		SPECIAL2,
 		SPECIAL3,
 		SPECIAL4,
-		SPECIAL5,
-		
-		__
+		SPECIAL5
 	};
 }
 

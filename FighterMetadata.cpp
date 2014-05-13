@@ -8,6 +8,15 @@
 
 // ================================================ //
 
+FighterMetadata::FighterMetadata(const char* file)
+	:	Config(Config::FIGHTER_METADATA),
+		m_moveBeg()
+{
+	this->loadFile(file);
+}
+
+// ================================================ //
+
 FighterMetadata::FighterMetadata(void)
 	:	Config(Config::FIGHTER_METADATA),
 		m_moveBeg()

@@ -37,7 +37,8 @@ void MenuStateImpl::enter(void)
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
 	// Allocate PlayerManager
-	new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
+	new PlayerManager();
+	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 
 	// Allocate Network
 	new Server();
@@ -51,6 +52,7 @@ void MenuStateImpl::exit(void)
 
 	// m_pObjectManager destructed automatically
 
+	// Free all singletons
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
 	delete Server::getSingletonPtr();
@@ -99,8 +101,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_r:
 			// Reload fighter settings
-			delete PlayerManager::getSingletonPtr();
-			new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
+			PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 			StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 			break;
 

@@ -18,10 +18,8 @@ class PlayerImpl;
 class Player : public Object
 {
 public:
-	explicit Player(const int fighter, const int inputType = PlayerInputType::LOCAL);
+	explicit Player(const char* fighterFile, const int inputType = PlayerInputType::LOCAL);
 	virtual ~Player(void);
-
-	void loadFighterData(void);
 
 	// Hitbox indices
 	enum{

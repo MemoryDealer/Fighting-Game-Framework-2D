@@ -9,7 +9,7 @@
 // ================================================ //
 
 StageImpl::StageImpl(const char* stageFile)
-	:	ObjectImpl(0),
+	:	ObjectImpl(),
 		m_layers(),
 		m_stageWidth(0),
 		m_stageHeight(0)
@@ -64,7 +64,7 @@ StageImpl::~StageImpl(void)
 
 void StageImpl::update(double dt)
 {
-	for(int i=0; i<m_layers.size(); ++i){
+	for(unsigned int i=0; i<m_layers.size(); ++i){
 
 		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
 			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);

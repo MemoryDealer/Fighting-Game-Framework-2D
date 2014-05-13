@@ -17,9 +17,8 @@ const int MAX_HITBOXES = 7;
 
 // ================================================ //
 
-PlayerImpl::PlayerImpl(const int fighter, const int inputType)
-	:	ObjectImpl(fighter),
-		m_fighter(fighter),
+PlayerImpl::PlayerImpl(const char* fighterFile, const int inputType)
+	:	ObjectImpl(),
 		m_xAccel(0),
 		m_yAccel(0),
 		m_xVel(0), 
@@ -40,7 +39,7 @@ PlayerImpl::PlayerImpl(const int fighter, const int inputType)
 	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
 	
 	// Load configuration settings
-	this->loadFighterData();
+	this->loadFighterData(fighterFile);
 
 	// Add states to core FSM
 	FState* state = new FState(PlayerState::IDLE);
@@ -99,28 +98,15 @@ PlayerImpl::~PlayerImpl(void)
 
 // ================================================ //
 
-void PlayerImpl::loadFighterData(void)
+void PlayerImpl::loadFighterData(const char* fighterFile)
 {
-	FighterMetadata m;
+	FighterMetadata m(fighterFile);
 	Config e;
 
 	//! Add a fighter data file integrity check here?
 
-	switch(m_fighter){
-	default:
-		break;
-
-	case Fighter::LORD_GRISHNAKH:
-		m.loadFile("Data/Config/varg.fighter");
-		break;
-
-	case Fighter::CORPSE_EXPLOSION:
-		m.loadFile("Data/Config/corpse-explosion.fighter");
-		break;
-	}
-
 	if(!m.isLoaded()){
-		throw std::exception("Failed to load fighter file!");
+		throw std::exception((std::string("Failed to load fighter file ") + std::string(fighterFile)).c_str());
 	}
 
 	// Load spritesheet
@@ -157,7 +143,7 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 		m_moves.push_back(m.parseMove(MoveID::Name[i]));
 		if(m_moves.back() == nullptr){
 			std::string exc = "Unable to load move \"" + std::string(MoveID::Name[i]) + 
-				"\" for fighter " + Engine::toString(m_fighter);
+				"\" for fighter " + m_name;
 			throw std::exception(exc.c_str());
 		}
 	}
@@ -291,7 +277,7 @@ void PlayerImpl::updateHitboxes(void)
 	// So a hitbox of (50, 0, 50, 50) will be 50x50 and 50 units to the right
 	// of the character's center
 
-	for(int i=0; i<m_hitboxes.size(); ++i){
+	for(unsigned int i=0; i<m_hitboxes.size(); ++i){
 		SDL_Rect offset = {0, 0, 0, 0};
 		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
 
@@ -342,7 +328,7 @@ void PlayerImpl::update(double dt)
 	this->render();
 
 	// Render hitboxes
-	for(int i=0; i<m_hitboxes.size(); ++i){
+	for(unsigned int i=0; i<m_hitboxes.size(); ++i){
 		m_hitboxes[i].render();
 	}
 }

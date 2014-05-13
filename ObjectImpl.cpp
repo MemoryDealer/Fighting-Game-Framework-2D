@@ -9,7 +9,7 @@
 
 // ================================================ //
 
-ObjectImpl::ObjectImpl(const unsigned int type)
+ObjectImpl::ObjectImpl(void)
 	:	m_pTexture(nullptr),
 		m_src(),
 		m_dst(),
