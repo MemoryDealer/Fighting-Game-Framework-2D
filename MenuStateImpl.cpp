@@ -4,7 +4,7 @@
 #include "Engine.hpp"
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
-#include "Stage.hpp"
+#include "StageManager.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
 #include "MessageRouter.hpp"
@@ -32,11 +32,14 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	//m_pObjectManager->addObject(new Stage("Data/Stages/test.stage"));
-	m_pStage = new Stage("Data/Stages/test.stage");
+	// Allocate StageManager
+	new StageManager();
+	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
+	// Allocate PlayerManager
 	new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
 
+	// Allocate Network
 	new Server();
 }
 
@@ -48,10 +51,8 @@ void MenuStateImpl::exit(void)
 
 	// m_pObjectManager destructed automatically
 
-	delete m_pStage;
-
+	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
-
 	delete Server::getSingletonPtr();
 }
 
@@ -100,8 +101,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			// Reload fighter settings
 			delete PlayerManager::getSingletonPtr();
 			new PlayerManager(Fighter::CORPSE_EXPLOSION, Fighter::CORPSE_EXPLOSION);
-			delete m_pStage;
-			m_pStage = new Stage("Data/Stages/test.stage");
+			StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 			break;
 
 		case SDLK_ESCAPE:
@@ -158,7 +158,7 @@ void MenuStateImpl::update(double dt)
 	Engine::getSingletonPtr()->clearRenderer();
 
 	// Update and render all game objects and players
-	m_pStage->update(dt);
+	StageManager::getSingletonPtr()->update(dt);
 	m_pObjectManager->update(dt);
 	PlayerManager::getSingletonPtr()->update(dt);
 

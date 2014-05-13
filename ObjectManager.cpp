@@ -27,11 +27,11 @@ ObjectManager::~ObjectManager(void)
 
 // ================================================ //
 
-bool ObjectManager::addObject(Object* pObject)
+Object* ObjectManager::addObject(Object* pObject)
 {
 	m_objects.push_back(pObject);
 	
-	return true;
+	return pObject;
 }
 
 // ================================================ //
@@ -57,6 +57,7 @@ void ObjectManager::update(double dt, bool render)
 		if((*itr)->isDead()){
 			delete *itr;
 			m_objects.erase(itr++);
+			printf("ERASED OBJECT\n");
 		}
 		else{
 			(*itr)->update(dt);

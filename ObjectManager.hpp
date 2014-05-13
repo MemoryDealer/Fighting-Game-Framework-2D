@@ -20,7 +20,7 @@ public:
 	explicit ObjectManager(void);
 	~ObjectManager(void);
 
-	bool addObject(Object* pObject);
+	Object* addObject(Object* pObject);
 
 	Object* getObject(const int index);
 

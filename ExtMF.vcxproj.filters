@@ -189,6 +189,9 @@
     <ClCompile Include="StageImpl.cpp">
       <Filter>Source Files\Engine\Stage</Filter>
     </ClCompile>
+    <ClCompile Include="StageManager.cpp">
+      <Filter>Source Files\Engine\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.hpp">
@@ -282,6 +285,9 @@
       <Filter>Header Files\Engine\Stage</Filter>
     </ClInclude>
     <ClInclude Include="StageEffect.hpp">
+      <Filter>Header Files\Engine\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="StageManager.hpp">
       <Filter>Header Files\Engine\Stage</Filter>
     </ClInclude>
   </ItemGroup>

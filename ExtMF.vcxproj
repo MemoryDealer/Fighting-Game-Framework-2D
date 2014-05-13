@@ -106,6 +106,7 @@
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StageImpl.cpp" />
+    <ClCompile Include="StageManager.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
@@ -139,6 +140,7 @@
     <ClInclude Include="Stage.hpp" />
     <ClInclude Include="StageEffect.hpp" />
     <ClInclude Include="StageImpl.hpp" />
+    <ClInclude Include="StageManager.hpp" />
     <ClInclude Include="stdafx.hpp" />
     <ClInclude Include="Timer.hpp" />
   </ItemGroup>
