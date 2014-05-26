@@ -8,7 +8,7 @@
 
 // ================================================ //
 
-FighterMetadata::FighterMetadata(const char* file)
+FighterMetadata::FighterMetadata(const std::string& file)
 	:	Config(Config::FIGHTER_METADATA),
 		m_moveBeg()
 {
@@ -33,7 +33,7 @@ FighterMetadata::~FighterMetadata(void)
 
 // ================================================ //
 
-Move* FighterMetadata::parseMove(const char* name)
+Move* FighterMetadata::parseMove(const std::string& name)
 {
 	this->resetFilePointer();
 
@@ -133,7 +133,7 @@ Move* FighterMetadata::parseMove(const char* name)
 
 // ================================================ //
 
-std::string FighterMetadata::parseMoveValue(const char* section, const char* value)
+std::string FighterMetadata::parseMoveValue(const std::string& section, const std::string& value)
 {
 	// Reset file pointer to beginning of this move
 	m_file.clear();
@@ -177,7 +177,7 @@ std::string FighterMetadata::parseMoveValue(const char* section, const char* val
 
 // ================================================ //
 
-const int FighterMetadata::parseMoveIntValue(const char* section, const char* value)
+const int FighterMetadata::parseMoveIntValue(const std::string& section, const std::string& value)
 {
 	std::string str = this->parseMoveValue(section, value);
 	if(!str.empty()){
@@ -192,7 +192,7 @@ const int FighterMetadata::parseMoveIntValue(const char* section, const char* va
 
 // ================================================ //
 
-const bool FighterMetadata::parseMoveBoolValue(const char* section, const char* value)
+const bool FighterMetadata::parseMoveBoolValue(const std::string& section, const std::string& value)
 {
 	return (this->parseMoveIntValue(section, value) >= 1);
 }
@@ -226,7 +226,7 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 
 // ================================================ //
 
-void FighterMetadata::parseHitboxes(Move* pMove, const char* frame)
+void FighterMetadata::parseHitboxes(Move* pMove, const std::string& frame)
 {
 	// Load all hitbox rects into the frame's hitbox list
 	// Normal hitboxes

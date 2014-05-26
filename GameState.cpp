@@ -1,66 +1,67 @@
 // ================================================ //
 
-#include "MenuState.hpp"
-#include "MenuStateImpl.hpp"
-#include "App.hpp"
+#include "GameState.hpp"
+#include "GameStateImpl.hpp"
 
 // ================================================ //
 
-MenuState::MenuState(void)
-	:	m_pImpl(nullptr)
-{
-	// Assign this pointer here, due to warning C4355: 'this' : used in base member initializer list
-	// The compiler assumes that "this" is not fully constructed in the initialization list and it can result in undefined behavior
-	m_pImpl.reset(new MenuStateImpl(this));
-}
-
-// ================================================ //
-
-MenuState::~MenuState(void)
+GameState::GameState(void)
+	:	m_pImpl(new GameStateImpl())
 {
 
 }
 
 // ================================================ //
 
-void MenuState::enter(void)
+GameState::~GameState(void)
+{
+
+}
+
+// ================================================ //
+
+void GameState::enter(void)
 {
 	return m_pImpl->enter();
 }
 
 // ================================================ //
 
-void MenuState::exit(void)
+void GameState::exit(void)
 {
 	return m_pImpl->exit();
 }
 
 // ================================================ //
 
-bool MenuState::pause(void)
+bool GameState::pause(void)
 {
 	return m_pImpl->pause();
 }
 
 // ================================================ //
 
-void MenuState::resume(void)
+void GameState::resume(void)
 {
 	return m_pImpl->resume();
 }
 
 // ================================================ //
 
-void MenuState::handleInput(SDL_Event& e)
+void GameState::handleInput(SDL_Event& e)
 {
 	return m_pImpl->handleInput(e);
 }
 
 // ================================================ //
 
-void MenuState::update(double dt)
+void GameState::update(double dt)
 {
-	return m_pImpl->update(dt);
+	m_pImpl->update(dt);
+
+	if(m_pImpl->shouldPop()){
+		this->popAppState();
+	}
 }
 
 // ================================================ //

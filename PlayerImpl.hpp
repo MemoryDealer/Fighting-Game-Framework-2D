@@ -26,10 +26,10 @@ typedef std::vector<Hitbox> HitboxList;
 class PlayerImpl : public ObjectImpl
 {
 public:
-	explicit PlayerImpl(const char* fighterFile, const int inputType);
+	explicit PlayerImpl(const std::string& fighterFile, const int inputType);
 	virtual ~PlayerImpl(void);
 
-	void loadFighterData(const char* fighterFile);
+	void loadFighterData(const std::string& fighterFile);
 	void loadMoves(FighterMetadata& c);
 	
 

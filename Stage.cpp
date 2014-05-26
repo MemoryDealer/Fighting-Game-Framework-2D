@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-Stage::Stage(const char* stageFile)
+Stage::Stage(const std::string& stageFile)
 	:	m_pImpl(new StageImpl(stageFile))
 {
 	Object::setPImpl(m_pImpl);

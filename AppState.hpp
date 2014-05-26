@@ -49,13 +49,14 @@ public:
 
 	const std::string& getName(void){ return m_name; }
 
+	AppState*	findByName(const std::string& stateName){ return m_pParent->findByName(stateName); }
+	bool		pushAppState(AppState* pState){ return m_pParent->pushAppState(pState); }
+	void		popAppState(void){ m_pParent->popAppState(); }
+
 protected:
 	explicit AppState(void){}
 	
-	AppState*	findByName(const std::string& stateName){ return m_pParent->findByName(stateName); }
 	void		changeAppState(AppState* pState){ m_pParent->changeAppState(pState); }
-	bool		pushAppState(AppState* pState){ return m_pParent->pushAppState(pState); }
-	void		popAppState(void){ m_pParent->popAppState(); }
 	void		shutdown(void){ m_pParent->shutdown(); }
 
 	AppStateListener* m_pParent;

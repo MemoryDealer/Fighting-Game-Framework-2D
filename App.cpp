@@ -4,6 +4,7 @@
 #include "Engine.hpp"
 #include "MessageRouter.hpp"
 #include "MenuState.hpp"
+#include "GameState.hpp"
 
 // ================================================ //
 
@@ -28,6 +29,7 @@ App::App(void)
 	// Create states
 	Log::getSingletonPtr()->logMessage("Creating game states...");
 	MenuState::create(m_pAppStateManager, MENU_STATE);
+	GameState::create(m_pAppStateManager, GAME_STATE);
 
 	Log::getSingletonPtr()->logMessage("App initialized!");
 

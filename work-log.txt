@@ -119,6 +119,14 @@
 
 #5/13/14
 -Added StageManager which is a singleton and keeps stage management more organized and clean. 
+-Re-organized PlayerManager to stay consistent with StageManager.
+-Added GameState and put all the game code so far into it. MenuState allocates PlayerManager and StageManager, etc. 
+-Modified MenuStateImpl's constructor to take a pointer to MenuState, so AppState::pushAppState() and AppState::popAppState() can be accessed from within MenuStateImpl.
+	Also had to modify the access of those functions in AppState.hpp from protected to public. This will also be done for succeeding states. 
+
+#5/26/14
+-Replaced many uses of const char* in function parameters with const std::string&. I will do this wherever possible to keep the use of std::string consistent. When the time
+	comes to integrate other languages this will make it much easier. 
 
 #TODO
 -Stage floor, size, camera, etc.

@@ -17,7 +17,7 @@ const int MAX_HITBOXES = 7;
 
 // ================================================ //
 
-PlayerImpl::PlayerImpl(const char* fighterFile, const int inputType)
+PlayerImpl::PlayerImpl(const std::string& fighterFile, const int inputType)
 	:	ObjectImpl(),
 		m_xAccel(0),
 		m_yAccel(0),
@@ -37,6 +37,7 @@ PlayerImpl::PlayerImpl(const char* fighterFile, const int inputType)
 {
 	// Set all input to false
 	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
+	//std::fill(m_input, m_input + (sizeof(bool)*Input::NUM_INPUTS), false);
 	
 	// Load configuration settings
 	this->loadFighterData(fighterFile);
@@ -98,7 +99,7 @@ PlayerImpl::~PlayerImpl(void)
 
 // ================================================ //
 
-void PlayerImpl::loadFighterData(const char* fighterFile)
+void PlayerImpl::loadFighterData(const std::string& fighterFile)
 {
 	FighterMetadata m(fighterFile);
 	Config e;

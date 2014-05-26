@@ -16,7 +16,7 @@ class StageImpl;
 class Stage : public Object
 {
 public:
-	explicit Stage(const char* stageFile);
+	explicit Stage(const std::string& stageFile);
 	virtual ~Stage(void);
 
 	virtual void update(double dt);

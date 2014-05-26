@@ -24,7 +24,7 @@ public:
 	void renderPresent(void);
 
 	// Factory functions
-	SDL_Texture* loadTexture(const char* filename);
+	SDL_Texture* loadTexture(const std::string& filename);
 
 	// Destroy functions
 	void destroyTexture(SDL_Texture* pTexture);

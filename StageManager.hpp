@@ -16,12 +16,14 @@ public:
 	explicit StageManager(void);
 	~StageManager(void);
 
-	bool load(const char* stageFile);
+	bool load(const std::string& stageFile);
+	bool reload(void);
 
 	void update(double dt);
 
 private:
 	std::tr1::shared_ptr<Stage> m_pStage;
+	std::string m_stageFile;
 };
 
 // ================================================ //

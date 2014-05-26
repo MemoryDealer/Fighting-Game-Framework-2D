@@ -109,11 +109,11 @@ void EngineImpl::renderPresent(void)
 
 // ================================================ //
 
-SDL_Texture* EngineImpl::loadTexture(const char* filename)
+SDL_Texture* EngineImpl::loadTexture(const std::string& filename)
 {
 	SDL_Texture* tex = nullptr;
 
-	tex = IMG_LoadTexture(m_pRenderer, filename);
+	tex = IMG_LoadTexture(m_pRenderer, filename.c_str());
 	if(tex == nullptr)
 		Log::getSingletonPtr()->logMessage("Failed to load texture from file: \"" + std::string(filename) + "\"");
 

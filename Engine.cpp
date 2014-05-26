@@ -38,7 +38,7 @@ void Engine::renderPresent(void)
 
 // ================================================ //
 
-SDL_Texture* Engine::loadTexture(const char* filename)
+SDL_Texture* Engine::loadTexture(const std::string& filename)
 {
 	return m_pImpl->loadTexture(filename);
 }

@@ -1,23 +1,25 @@
 // ================================================ //
 
-#ifndef __MENUSTATEIMPL_HPP__
-#define __MENUSTATEIMPL_HPP__
+#ifndef __GAMESTATE_HPP__
+#define __GAMESTATE_HPP__
 
 // ================================================ //
 
-#include "stdafx.hpp"
+#include "AppState.hpp"
 
 // ================================================ //
 
-class AppState;
+class GameStateImpl;
 
 // ================================================ //
 
-class MenuStateImpl
+class GameState : public AppState
 {
 public:
-	explicit MenuStateImpl(AppState* pMenuState);
-	~MenuStateImpl(void);
+	explicit GameState(void);
+	~GameState(void);
+
+	DECLARE_APPSTATE_CLASS(GameState);
 
 	void enter(void);
 	void exit(void);
@@ -27,8 +29,7 @@ public:
 	void update(double dt);
 
 private:
-	bool	m_bQuit;
-	AppState* m_pMenuState;
+	std::tr1::shared_ptr<GameStateImpl> m_pImpl;
 };
 
 // ================================================ //

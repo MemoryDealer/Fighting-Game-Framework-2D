@@ -8,7 +8,7 @@
 
 // ================================================ //
 
-StageImpl::StageImpl(const char* stageFile)
+StageImpl::StageImpl(const std::string& stageFile)
 	:	ObjectImpl(),
 		m_layers(),
 		m_stageWidth(0),
@@ -29,7 +29,7 @@ StageImpl::StageImpl(const char* stageFile)
 		std::string layerName = (std::string("layer") + Engine::toString(i));
 		
 		// TODO: Change all functions to use std::string or const char*
-		layer.pTexture = Engine::getSingletonPtr()->loadTexture(c.parseValue(layerName.c_str(), "texture").c_str());
+		layer.pTexture = Engine::getSingletonPtr()->loadTexture(c.parseValue(layerName, "texture"));
 
 		// Set up default rect values
 		layer.src.x = layer.src.y = 0;
@@ -38,8 +38,8 @@ StageImpl::StageImpl(const char* stageFile)
 		layer.dst.w = Engine::getSingletonPtr()->getWindowWidth();
 		layer.dst.h = Engine::getSingletonPtr()->getWindowHeight();
 
-		layer.Effect.scrollX = c.parseIntValue(layerName.c_str(), "scrollX");
-		layer.Effect.scrollY = c.parseIntValue(layerName.c_str(), "scrollY");
+		layer.Effect.scrollX = c.parseIntValue(layerName, "scrollX");
+		layer.Effect.scrollY = c.parseIntValue(layerName, "scrollY");
 
 		m_layers.push_back(layer);
 	}

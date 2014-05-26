@@ -1,7 +1,7 @@
 // ================================================ //
 
-#ifndef __MENUSTATEIMPL_HPP__
-#define __MENUSTATEIMPL_HPP__
+#ifndef __GAMESTATEIMPL_HPP__
+#define __GAMESTATEIMPL_HPP__
 
 // ================================================ //
 
@@ -9,15 +9,15 @@
 
 // ================================================ //
 
-class AppState;
+class ObjectManager;
 
 // ================================================ //
 
-class MenuStateImpl
+class GameStateImpl
 {
 public:
-	explicit MenuStateImpl(AppState* pMenuState);
-	~MenuStateImpl(void);
+	explicit GameStateImpl(void);
+	~GameStateImpl(void);
 
 	void enter(void);
 	void exit(void);
@@ -26,10 +26,18 @@ public:
 	void handleInput(SDL_Event& e);
 	void update(double dt);
 
+	const bool shouldPop(void) const;
+
 private:
 	bool	m_bQuit;
-	AppState* m_pMenuState;
+
+	std::tr1::shared_ptr<ObjectManager> m_pObjectManager;
 };
+
+// ================================================ //
+
+inline const bool GameStateImpl::shouldPop(void) const
+{ return m_bQuit; }
 
 // ================================================ //
 

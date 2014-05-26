@@ -15,6 +15,8 @@ template<> PlayerManager* Singleton<PlayerManager>::msSingleton = 0;
 PlayerManager::PlayerManager(void)
 	:	m_pRedPlayer(nullptr),
 		m_pBluePlayer(nullptr),
+		m_redFighterFile(),
+		m_blueFighterFile(),
 		m_fighters()
 {
 	Log::getSingletonPtr()->logMessage("Initializing PlayerManager...");
@@ -46,8 +48,12 @@ PlayerManager::~PlayerManager(void)
 
 // ================================================ //
 
-bool PlayerManager::load(const char* redFighterFile, const char* blueFighterFile)
+bool PlayerManager::load(const std::string& redFighterFile, const std::string& blueFighterFile)
 {
+	// Store fighter file names in PlayerManager
+	m_redFighterFile.assign(redFighterFile);
+	m_blueFighterFile.assign(blueFighterFile);
+
 	m_pRedPlayer.reset(new Player(redFighterFile));
 	m_pBluePlayer.reset(new Player(blueFighterFile));
 
@@ -61,6 +67,13 @@ bool PlayerManager::load(const char* redFighterFile, const char* blueFighterFile
 	m_pBluePlayer->setPosition(game.parseIntValue("game", "blueX"), m_pBluePlayer->getPosition().y);
 
 	return( (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr) );
+}
+
+// ================================================ //
+
+bool PlayerManager::reload(void)
+{
+	return this->load(m_redFighterFile.c_str(), m_blueFighterFile.c_str());
 }
 
 // ================================================ //

@@ -18,7 +18,7 @@ class PlayerImpl;
 class Player : public Object
 {
 public:
-	explicit Player(const char* fighterFile, const int inputType = PlayerInputType::LOCAL);
+	explicit Player(const std::string& fighterFile, const int inputType = PlayerInputType::LOCAL);
 	virtual ~Player(void);
 
 	// Hitbox indices
@@ -40,7 +40,7 @@ public:
 
 	// Setter functions
 	void setSide(const int side);
-	void setInput(const int input, const bool down = true);
+	void setInput(const int input, const bool down);
 	void setColliding(const bool colliding = true);
 
 	virtual void update(double dt);

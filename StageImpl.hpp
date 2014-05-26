@@ -13,7 +13,7 @@
 class StageImpl : public ObjectImpl
 {
 public:
-	explicit StageImpl(const char* stageFile);
+	explicit StageImpl(const std::string& stageFile);
 	virtual ~StageImpl(void);
 
 	virtual void update(double dt);

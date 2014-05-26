@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-Player::Player(const char* fighterFile, const int inputType)
+Player::Player(const std::string& fighterFile, const int inputType)
 	:	m_pImpl(new PlayerImpl(fighterFile, inputType))
 {
 	Object::setPImpl(m_pImpl);

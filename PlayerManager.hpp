@@ -31,13 +31,15 @@ public:
 	Player* getRedPlayer(void) const;
 	Player* getBluePlayer(void) const;
 
-	bool load(const char* redFighterFile, const char* blueFighterFile);
+	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
+	bool reload(void);
 
 	void update(double dt);
 
 private:
 	std::tr1::shared_ptr<Player> m_pRedPlayer;
 	std::tr1::shared_ptr<Player> m_pBluePlayer;
+	std::string m_redFighterFile, m_blueFighterFile;
 
 	FighterEntryList m_fighters;
 };

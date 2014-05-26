@@ -18,13 +18,13 @@ public:
 	};
 
 	explicit Config(const ConfigType type = INI);
-	explicit Config(const char* file, const ConfigType type = INI);
+	explicit Config(const std::string& file, const ConfigType type = INI);
 	virtual ~Config(void);
 
-	virtual void loadFile(const char* file);
+	virtual void loadFile(const std::string& file);
 	virtual void resetFilePointer(void);
-	virtual std::string& parseValue(const char* section, const char* value);
-	virtual const int parseIntValue(const char* section, const char* value);
+	virtual std::string& parseValue(const std::string& section, const std::string& value);
+	virtual const int parseIntValue(const std::string& section, const std::string& value);
 
 	// Getter functions
 	const bool isLoaded(void) const;

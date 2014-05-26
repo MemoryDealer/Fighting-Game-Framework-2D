@@ -15,7 +15,7 @@ Config::Config(const ConfigType type)
 
 // ================================================ //
 
-Config::Config(const char* file, const ConfigType type)
+Config::Config(const std::string& file, const ConfigType type)
 	:	m_file(),
 		m_type(type),
 		m_loaded(false)
@@ -33,7 +33,7 @@ Config::~Config(void)
 
 // ================================================ //
 
-void Config::loadFile(const char* file)
+void Config::loadFile(const std::string& file)
 {
 	Log::getSingletonPtr()->logMessage("Opening file \"" + std::string(file) + "\"");
 	if(m_loaded){
@@ -59,7 +59,7 @@ void Config::resetFilePointer(void)
 
 // ================================================ //
 
-std::string& Config::parseValue(const char* section, const char* value)
+std::string& Config::parseValue(const std::string& section, const std::string& value)
 {
 	if(!m_loaded){
 		m_buffer.clear();
@@ -109,7 +109,7 @@ std::string& Config::parseValue(const char* section, const char* value)
 
 // ================================================ //
 
-const int Config::parseIntValue(const char* section, const char* value)
+const int Config::parseIntValue(const std::string& section, const std::string& value)
 {
 	std::string str = this->parseValue(section, value);
 	if(!str.empty()){
