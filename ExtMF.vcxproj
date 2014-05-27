@@ -83,6 +83,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AppStateManager.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineImpl.cpp" />
@@ -113,6 +114,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.hpp" />
     <ClInclude Include="FighterMetadata.hpp" />
     <ClInclude Include="GameState.hpp" />
     <ClInclude Include="GameStateImpl.hpp" />

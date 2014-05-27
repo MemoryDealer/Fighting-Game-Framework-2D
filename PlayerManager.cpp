@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "PlayerManager.hpp"
+#include "StageManager.hpp"
 #include "PlayerData.hpp"
 #include "Config.hpp"
 #include "Input.hpp"
@@ -73,7 +74,7 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 
 bool PlayerManager::reload(void)
 {
-	return this->load(m_redFighterFile.c_str(), m_blueFighterFile.c_str());
+	return this->load(m_redFighterFile, m_blueFighterFile);
 }
 
 // ================================================ //

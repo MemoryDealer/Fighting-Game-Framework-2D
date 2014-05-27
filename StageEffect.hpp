@@ -12,6 +12,7 @@
 struct StageLayer{
 	SDL_Texture* pTexture;
 	SDL_Rect src, dst;
+	int w, h;
 
 	struct{
 		int scrollX, scrollY;

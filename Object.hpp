@@ -23,7 +23,7 @@ public:
 	virtual ~Object(void);
 
 	// Setter functions
-	virtual bool setTextureFile(const char* filename);
+	virtual bool setTextureFile(const std::string& filename);
 	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
 
 	virtual void setPosition(const int x, const int y);

@@ -106,6 +106,12 @@
     <Filter Include="Source Files\Engine\Stage">
       <UniqueIdentifier>{7cad57bf-585b-4642-933b-43afcf4de021}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Engine\Camera">
+      <UniqueIdentifier>{ed00e92c-09d7-4c93-8a4d-bf1b3d90d4de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Camera">
+      <UniqueIdentifier>{8388f438-86cf-4b12-90d8-5dbcf93fbd89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -197,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="GameStateImpl.cpp">
       <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Engine\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="GameStateImpl.hpp">
       <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Header Files\Engine\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

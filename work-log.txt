@@ -127,8 +127,11 @@
 #5/26/14
 -Replaced many uses of const char* in function parameters with const std::string&. I will do this wherever possible to keep the use of std::string consistent. When the time
 	comes to integrate other languages this will make it much easier. 
+-Added reload() function to PlayerManager and StageManager. 
+-Created Camera class which does basic left/right scrolling. It only holds values for where the camera is moving, and StageImpl::update() uses those values to move. 
 
 #TODO
+-Remove c_str() on std::strings where feasible
 -Stage floor, size, camera, etc.
 -Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
@@ -136,7 +139,6 @@
 -Camera class? 
 -LoadResources in Engine
 -GUILayer
--use const char* for all string parameters unless an std::string is absolutely necessary. 
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 

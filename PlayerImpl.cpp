@@ -111,7 +111,7 @@ void PlayerImpl::loadFighterData(const std::string& fighterFile)
 	}
 
 	// Load spritesheet
-	this->setTextureFile(m.parseValue("core", "spriteSheet").c_str());
+	this->setTextureFile(m.parseValue("core", "spriteSheet"));
 
 	// Size
 	m_dst.w = m.parseIntValue("size", "w");

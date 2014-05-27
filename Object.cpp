@@ -23,7 +23,7 @@ Object::~Object(void)
 // Setter functions
 // ================================================ //
 
-bool Object::setTextureFile(const char* filename)
+bool Object::setTextureFile(const std::string& filename)
 {
 	return m_pImpl->setTextureFile(filename);
 }

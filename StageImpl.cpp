@@ -2,6 +2,7 @@
 
 #include "stdafx.hpp"
 #include "StageImpl.hpp"
+#include "Camera.hpp"
 #include "Engine.hpp"
 #include "Config.hpp"
 #include "Log.hpp"
@@ -10,9 +11,7 @@
 
 StageImpl::StageImpl(const std::string& stageFile)
 	:	ObjectImpl(),
-		m_layers(),
-		m_stageWidth(0),
-		m_stageHeight(0)
+		m_layers()
 {
 	Config c(stageFile);
 
@@ -20,8 +19,6 @@ StageImpl::StageImpl(const std::string& stageFile)
 
 	// Load the stage configuration file
 	const int numLayers = c.parseIntValue("core", "layers");
-	m_stageWidth = c.parseIntValue("core", "stageWidth");
-	m_stageHeight = c.parseIntValue("core", "stageHeight");
 
 	// Parse layer data one by one
 	for(int i=1; i<=numLayers; ++i){
@@ -32,11 +29,16 @@ StageImpl::StageImpl(const std::string& stageFile)
 		layer.pTexture = Engine::getSingletonPtr()->loadTexture(c.parseValue(layerName, "texture"));
 
 		// Set up default rect values
-		layer.src.x = layer.src.y = 0;
-		SDL_QueryTexture(layer.pTexture, nullptr, nullptr, &layer.src.w, &layer.src.h);
+		layer.src.w = c.parseIntValue(layerName, "w");
+		layer.src.h = c.parseIntValue(layerName, "h");
+
+		SDL_QueryTexture(layer.pTexture, nullptr, nullptr, &layer.w, &layer.h);
+		layer.src.x = layer.w - layer.src.w;
+		layer.src.y = layer.h - layer.src.h;
+		
 		layer.dst.x = layer.dst.y = 0;
-		layer.dst.w = Engine::getSingletonPtr()->getWindowWidth();
-		layer.dst.h = Engine::getSingletonPtr()->getWindowHeight();
+		layer.dst.w = Engine::getSingletonPtr()->getLogicalWindowWidth();
+		layer.dst.h = Engine::getSingletonPtr()->getLogicalWindowHeight();
 
 		layer.Effect.scrollX = c.parseIntValue(layerName, "scrollX");
 		layer.Effect.scrollY = c.parseIntValue(layerName, "scrollY");
@@ -65,20 +67,38 @@ StageImpl::~StageImpl(void)
 void StageImpl::update(double dt)
 {
 	for(unsigned int i=0; i<m_layers.size(); ++i){
+		
+		// Update background source based on camera movement
+		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
+		m_layers[i].src.x += Camera::getSingletonPtr()->moveX;
+		
+		if(m_layers[i].src.x < 0){
+			m_layers[i].src.x = 0;
+		}
+		else if(m_layers[i].src.x > rightEdge){
+			m_layers[i].src.x = rightEdge;
+		}
 
+		// Render the background
 		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
 			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
 
+		// Process stage effects
 		if(m_layers[i].Effect.scrollX){
 
+			// Scroll the layer
 			m_layers[i].dst.x += static_cast<int>(m_layers[i].Effect.scrollX * dt);
-			SDL_Rect dst = m_layers[i].dst;
-			dst.x -= dst.w;
 
+			// Calculate offset for second rendering for seamless scrolling
+			SDL_Rect dst2 = m_layers[i].dst;
+			dst2.x -= dst2.w;
+
+			// Render a second time with offset
 			SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
-				m_layers[i].pTexture, &m_layers[i].src, &dst, 0, nullptr, SDL_FLIP_NONE);
+				m_layers[i].pTexture, &m_layers[i].src, &dst2, 0, nullptr, SDL_FLIP_NONE);
 
-			if(dst.x == 0)
+			// Wrap back ground to beginning
+			if(dst2.x >= 0)
 				m_layers[i].dst.x = 0;
 		}
 	}

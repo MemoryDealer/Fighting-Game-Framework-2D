@@ -6,6 +6,7 @@
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
+#include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
 #include "MessageRouter.hpp"
@@ -88,6 +89,14 @@ void GameStateImpl::handleInput(SDL_Event& e)
 			StageManager::getSingletonPtr()->reload();
 			break;
 
+		case SDLK_j:
+			Camera::getSingletonPtr()->moveX = -1;
+			break;
+
+		case SDLK_k:
+			Camera::getSingletonPtr()->moveX = 1;
+			break;
+
 		case SDLK_ESCAPE:
 			m_bQuit = true;
 			break;
@@ -105,6 +114,14 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_RIGHT:
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, false);
+			break;
+
+		case SDLK_j:
+			Camera::getSingletonPtr()->moveX = 0;
+			break;
+
+		case SDLK_k:
+			Camera::getSingletonPtr()->moveX = 0;
 			break;
 		}
 	}

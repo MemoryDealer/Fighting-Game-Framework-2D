@@ -39,7 +39,7 @@ ObjectImpl::~ObjectImpl(void)
 
 // ================================================ //
 
-bool ObjectImpl::setTextureFile(const char* filename)
+bool ObjectImpl::setTextureFile(const std::string& filename)
 {
 	if(m_pTexture != nullptr)
 		Engine::getSingletonPtr()->destroyTexture(m_pTexture);

@@ -5,6 +5,7 @@
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
+#include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
 #include "MessageRouter.hpp"
@@ -42,6 +43,9 @@ void MenuStateImpl::enter(void)
 	new PlayerManager();
 	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 
+	// Allocate Camera singleton
+	new Camera();
+
 	// Allocate Network
 	new Server();
 
@@ -60,6 +64,7 @@ void MenuStateImpl::exit(void)
 	// Free all singletons
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
+	delete Camera::getSingletonPtr();
 	delete Server::getSingletonPtr();
 }
 

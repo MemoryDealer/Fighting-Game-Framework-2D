@@ -1,25 +1,24 @@
 // ================================================ //
 
-#ifndef __STAGE_IMPL_HPP__
-#define __STAGE_IMPL_HPP__
+#ifndef __CAMERA_HPP__
+#define __CAMERA_HPP__
 
 // ================================================ //
 
-#include "ObjectImpl.hpp"
-#include "StageEffect.hpp"
+#include "stdafx.hpp"
 
 // ================================================ //
 
-class StageImpl : public ObjectImpl
+class Camera : public Singleton<Camera>
 {
 public:
-	explicit StageImpl(const std::string& stageFile);
-	virtual ~StageImpl(void);
+	Camera(void);
+	~Camera(void);
 
-	virtual void update(double dt);
+	int moveX, moveY;
 
 private:
-	StageLayerList m_layers;
+
 };
 
 // ================================================ //
