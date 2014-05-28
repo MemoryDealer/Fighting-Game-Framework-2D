@@ -25,21 +25,23 @@ StageImpl::StageImpl(const std::string& stageFile)
 		StageLayer layer;
 		std::string layerName = (std::string("layer") + Engine::toString(i));
 		
-		// TODO: Change all functions to use std::string or const char*
+		// Get texture filename
 		layer.pTexture = Engine::getSingletonPtr()->loadTexture(c.parseValue(layerName, "texture"));
 
 		// Set up default rect values
 		layer.src.w = c.parseIntValue(layerName, "w");
 		layer.src.h = c.parseIntValue(layerName, "h");
 
+		// Get texture data
 		SDL_QueryTexture(layer.pTexture, nullptr, nullptr, &layer.w, &layer.h);
-		layer.src.x = layer.w - layer.src.w;
+		layer.src.x = (layer.w / 2) - (layer.src.w / 2); // set starting point to center of stage
 		layer.src.y = layer.h - layer.src.h;
 		
 		layer.dst.x = layer.dst.y = 0;
 		layer.dst.w = Engine::getSingletonPtr()->getLogicalWindowWidth();
 		layer.dst.h = Engine::getSingletonPtr()->getLogicalWindowHeight();
 
+		// Get layer effects
 		layer.Effect.scrollX = c.parseIntValue(layerName, "scrollX");
 		layer.Effect.scrollY = c.parseIntValue(layerName, "scrollY");
 
@@ -69,7 +71,7 @@ void StageImpl::update(double dt)
 	for(unsigned int i=0; i<m_layers.size(); ++i){		
 		// Update background source based on camera movement
 		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
-		m_layers[i].src.x += static_cast<int>(Camera::getSingletonPtr()->moveX);
+		m_layers[i].src.x += Camera::getSingletonPtr()->getMoveX();
 
 		// Don't allow stage view to go out of bounds
 		if (m_layers[i].src.x <= 0){

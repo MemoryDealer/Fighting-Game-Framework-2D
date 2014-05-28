@@ -33,7 +33,8 @@ PlayerImpl::PlayerImpl(const std::string& fighterFile, const int inputType)
 		m_pCurrentMove(nullptr),
 		m_pMoveTimer(new Timer()),
 		m_hitboxes(),
-		m_colliding(false)
+		m_colliding(false),
+		m_drawHitboxes(false)
 {
 	// Set all input to false
 	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
@@ -321,9 +322,11 @@ void PlayerImpl::update(double dt)
 	this->render();
 
 	// Render hitboxes
-	/*for(unsigned int i=0; i<m_hitboxes.size(); ++i){
-		m_hitboxes[i].render();
-	}*/
+	if (m_drawHitboxes){
+		for (unsigned int i = 0; i < m_hitboxes.size(); ++i){
+			m_hitboxes[i].render();
+		}
+	}
 }
 
 // ================================================ //

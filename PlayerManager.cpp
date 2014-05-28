@@ -87,17 +87,10 @@ bool PlayerManager::reload(void)
 
 // ================================================ //
 
-void PlayerManager::update(double dt)
+void PlayerManager::updateCamera(double dt)
 {
-	// Update each player
-	m_pRedPlayer->update(dt);
-	m_pBluePlayer->update(dt);
-
 	// Clear camera movement
 	Camera::getSingletonPtr()->clear();
-
-	// Check for K.O.
-	// ...
 
 	SDL_Rect red, blue;
 	red = m_pRedPlayer->getPosition();
@@ -117,11 +110,11 @@ void PlayerManager::update(double dt)
 				// Check if blue player is not at the right edge
 				if (blue.x < m_blueMax){
 					// Move the camera
-					Camera::getSingletonPtr()->moveX = -static_cast<int>(std::abs(m_pRedPlayer->getVelocityX()) * dt * 0.25);
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * 0.25));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
 						// Make the blue player "stand still" with camera movement (this feels like a shitty hack)
-						m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->moveX * 2, blue.y);
+						m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->getMoveX() * 2, blue.y);
 					}
 				}
 			}
@@ -144,10 +137,10 @@ void PlayerManager::update(double dt)
 				// See if blue player is at left edge
 				if (blue.x > 0){
 					// Move camera
-					Camera::getSingletonPtr()->moveX = static_cast<int>(m_pRedPlayer->getVelocityX() * dt * 0.25);
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * 0.25));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
-						m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->moveX * 2, blue.y);
+						m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->getMoveX() * 2, blue.y);
 					}
 				}
 			}
@@ -170,14 +163,14 @@ void PlayerManager::update(double dt)
 
 				if (red.x < m_redMax){
 					// Move camera
-					Camera::getSingletonPtr()->moveX = -static_cast<int>(std::abs(m_pBluePlayer->getVelocityX()) * dt * 0.25);
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * 0.25));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
-						m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->moveX * 2, red.y);
+						m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->getMoveX() * 2, red.y);
 					}
 				}
 			}
-		}		
+		}
 	}
 	else{
 		if (blue.x > m_blueMax){
@@ -189,10 +182,10 @@ void PlayerManager::update(double dt)
 				// See if red player is at left edge
 				if (red.x > 0){
 					// Move camera
-					Camera::getSingletonPtr()->moveX = static_cast<int>(std::abs(m_pBluePlayer->getVelocityX()) * dt * 0.25);
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * 0.25));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
-						m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->moveX * 2, red.y);
+						m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->getMoveX() * 2, red.y);
 					}
 				}
 			}
@@ -201,13 +194,24 @@ void PlayerManager::update(double dt)
 
 	// Clear any locks on the camera after it's needed above
 	Camera::getSingletonPtr()->unlock();
+}
+
+// ================================================ //
+
+void PlayerManager::update(double dt)
+{
+	// Update each player
+	m_pRedPlayer->update(dt);
+	m_pBluePlayer->update(dt);
+
+	this->updateCamera(dt);
 
 	// Test hitbox collisions
 	// Damage boxes to opponent hitbox
 	for(int i=Player::DBOX1; i<=Player::DBOX2; ++i){
 		for(int j=Player::HBOX_LOWER; j<=Player::HBOX_HEAD; ++j){
 			if (m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j))){
-				printf("DAMAGE!!!!!!\n");
+				printf("DAMAGE!\n");
 			}
 		}
 	}
@@ -225,6 +229,9 @@ void PlayerManager::update(double dt)
 			}
 		}
 	}
+
+	// Check for K.O.
+	// ...
 }
 
 // ================================================ //

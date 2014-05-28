@@ -142,9 +142,14 @@
 -Got proper camera movement for red player moving left. The blue player's position is manually adjusted in PlayerManager::update() so that he stands still, rather than moving
 	with the camera. This may be cheap but it works for now. 
 
+#5/28/14
+-Updated Camera class to use proper getter/setter functions. 
+-Added PlayerManager::updateCamera() and moved most of the code from update() to it and removed a few unnecessary std::abs() calls. 
+-Added Player::toggleDrawHitboxes(). 
+-Made the stage start in the exact middle rather than the far right side. 
+
 #TODO
 -Remove c_str() on std::strings where feasible
--Stage floor, size, camera, etc.
 -Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
 -NET

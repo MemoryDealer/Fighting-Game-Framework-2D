@@ -46,6 +46,7 @@ public:
 	void setSide(const int side);
 	void setInput(const int input, const bool down);
 	void setColliding(const bool colliding);
+	void toggleDrawHitboxes(void);
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);
@@ -71,6 +72,7 @@ private:
 
 	HitboxList	m_hitboxes;
 	bool		m_colliding; // control for x-axis movement
+	bool		m_drawHitboxes;
 };
 
 // ================================================ //
@@ -113,6 +115,10 @@ inline void PlayerImpl::setInput(const int input, const bool down){
 
 inline void PlayerImpl::setColliding(const bool colliding){ 
 	m_colliding = colliding; 
+}
+
+inline void PlayerImpl::toggleDrawHitboxes(void){
+	m_drawHitboxes = !m_drawHitboxes;
 }
 
 // ================================================ //

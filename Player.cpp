@@ -88,6 +88,14 @@ void Player::setColliding(const bool colliding)
 
 // ================================================ //
 
+void Player::toggleDrawHitboxes(void)
+{
+	return m_pImpl->toggleDrawHitboxes();
+}
+
+// ================================================ //
+// ================================================ //
+
 void Player::update(double dt)
 {
 	return m_pImpl->update(dt);

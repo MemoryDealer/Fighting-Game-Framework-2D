@@ -97,6 +97,11 @@ void GameStateImpl::handleInput(SDL_Event& e)
 			PlayerManager::getSingletonPtr()->reload();
 			break;
 
+		case SDLK_p:
+			PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
+			PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
+			break;
+
 		case SDLK_ESCAPE:
 			m_bQuit = true;
 			break;
@@ -122,14 +127,6 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_RIGHT:
 			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_RIGHT, false);
-			break;
-
-		case SDLK_j:
-			Camera::getSingletonPtr()->moveX = 0;
-			break;
-
-		case SDLK_k:
-			Camera::getSingletonPtr()->moveX = 0;
 			break;
 		}
 	}

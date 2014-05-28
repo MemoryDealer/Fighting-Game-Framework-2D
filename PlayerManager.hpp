@@ -34,6 +34,7 @@ public:
 	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
 	bool reload(void);
 
+	void updateCamera(double dt);
 	void update(double dt);
 
 private:

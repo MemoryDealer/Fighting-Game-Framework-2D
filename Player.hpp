@@ -45,7 +45,8 @@ public:
 	// Setter functions
 	void setSide(const int side);
 	void setInput(const int input, const bool down);
-	void setColliding(const bool colliding = true);
+	void setColliding(const bool colliding);
+	void toggleDrawHitboxes(void);
 
 	virtual void update(double dt);
 
