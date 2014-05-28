@@ -102,7 +102,6 @@ PlayerImpl::~PlayerImpl(void)
 void PlayerImpl::loadFighterData(const std::string& fighterFile)
 {
 	FighterMetadata m(fighterFile);
-	Config e;
 
 	//! Add a fighter data file integrity check here?
 
@@ -113,7 +112,7 @@ void PlayerImpl::loadFighterData(const std::string& fighterFile)
 	// Load spritesheet
 	this->setTextureFile(m.parseValue("core", "spriteSheet"));
 
-	// Size
+	// Get player rendering size
 	m_dst.w = m.parseIntValue("size", "w");
 	m_dst.h = m.parseIntValue("size", "h");
 
@@ -123,10 +122,10 @@ void PlayerImpl::loadFighterData(const std::string& fighterFile)
 	m_xMax = m.parseIntValue("movement", "xMax");
 	m_yMax = m.parseIntValue("movement", "yMax");
 
-	// set floor (temporary)
-	e.loadFile("Data/Config/game.cfg");
-	m_dst.y = e.parseIntValue("game", "floor");
+	// Set player Y position 26 units from bottom, adjusting for player height
+	m_dst.y = Engine::getSingletonPtr()->getLogicalWindowHeight() - m_dst.h - 26;
 
+	// Load move set
 	this->loadMoves(m);
 
 	// Default the source rect to the first frame of IDLE
@@ -322,9 +321,9 @@ void PlayerImpl::update(double dt)
 	this->render();
 
 	// Render hitboxes
-	for(unsigned int i=0; i<m_hitboxes.size(); ++i){
+	/*for(unsigned int i=0; i<m_hitboxes.size(); ++i){
 		m_hitboxes[i].render();
-	}
+	}*/
 }
 
 // ================================================ //

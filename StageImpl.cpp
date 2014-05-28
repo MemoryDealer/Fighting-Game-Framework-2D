@@ -66,12 +66,11 @@ StageImpl::~StageImpl(void)
 
 void StageImpl::update(double dt)
 {
-	for(unsigned int i=0; i<m_layers.size(); ++i){
-		
+	for(unsigned int i=0; i<m_layers.size(); ++i){		
 		// Update background source based on camera movement
 		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
-		m_layers[i].src.x += Camera::getSingletonPtr()->moveX;
-		
+		m_layers[i].src.x += static_cast<int>(Camera::getSingletonPtr()->moveX);
+		printf("x: %d\n", m_layers[i].src.x);
 		if (m_layers[i].src.x < 0){
 			m_layers[i].src.x = 0;
 		}

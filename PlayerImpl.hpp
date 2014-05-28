@@ -39,6 +39,8 @@ public:
 	Hitbox& getHitbox(const int index = 0);
 	const int getCurrentState(void) const;
 	const bool isColliding(void) const;
+	const int getVelocityX(void) const;
+	const int getVelocityY(void) const;
 
 	// Setter functions
 	void setSide(const int side);
@@ -89,6 +91,14 @@ inline const int PlayerImpl::getCurrentState(void) const{
 
 inline const bool PlayerImpl::isColliding(void) const{
 	return m_colliding;
+}
+
+inline const int PlayerImpl::getVelocityX(void) const{
+	return m_xVel;
+}
+
+inline const int PlayerImpl::getVelocityY(void) const{
+	return m_yVel;
 }
 
 // Setter functions

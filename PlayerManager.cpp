@@ -59,17 +59,17 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_redFighterFile.assign(redFighterFile);
 	m_blueFighterFile.assign(blueFighterFile);
 
+	// Free any previously allocated pointers and allocate new ones
 	m_pRedPlayer.reset(new Player(redFighterFile));
 	m_pBluePlayer.reset(new Player(blueFighterFile));
 
+	// Set default starting sides and positions
 	m_pRedPlayer->setSide(PlayerSide::LEFT);
 	m_pBluePlayer->setSide(PlayerSide::RIGHT);
-
-	Config game("Data/Config/game.cfg");
-
-	// Should be dependent on Stage data and fighter height (TODO: query Stage singleton)
-	m_pRedPlayer->setPosition(game.parseIntValue("game", "redX"), m_pRedPlayer->getPosition().y);
-	m_pBluePlayer->setPosition(game.parseIntValue("game", "blueX"), m_pBluePlayer->getPosition().y);
+	const int startingOffset = 40;
+	m_pRedPlayer->setPosition(startingOffset, m_pRedPlayer->getPosition().y);
+	m_pBluePlayer->setPosition(Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w - startingOffset, 
+		m_pBluePlayer->getPosition().y);
 
 	// Calculate the far right edge at which player movement should stop or move the camera
 	m_redMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pRedPlayer->getPosition().w;
@@ -89,6 +89,10 @@ bool PlayerManager::reload(void)
 
 void PlayerManager::update(double dt)
 {
+	// Update each player
+	m_pRedPlayer->update(dt);
+	m_pBluePlayer->update(dt);
+
 	// Clear camera movement
 	Camera::getSingletonPtr()->clear();
 
@@ -110,8 +114,11 @@ void PlayerManager::update(double dt)
 				m_pRedPlayer->setPosition(0, red.y);
 				// Check if blue player is not at the right edge
 				if (blue.x < m_blueMax){
-					Camera::getSingletonPtr()->moveX = -1;
-					m_pBluePlayer->setPosition(blue.x + 1, blue.y);
+					// Move the camera
+					Camera::getSingletonPtr()->moveX = -static_cast<int>(std::abs(m_pRedPlayer->getVelocityX()) * dt * 0.25);
+
+					// Make the blue player "stand still" with camera movement (this feels like a shitty hack)
+					m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->moveX * 2, blue.y);
 				}
 			}
 		}
@@ -128,7 +135,7 @@ void PlayerManager::update(double dt)
 			m_pBluePlayer->setSide(PlayerSide::RIGHT);
 		}
 	}
-	printf("blue.x: %d, %d\n", blue.x, blueState);
+
 	// Blue player checks
 	if (m_pBluePlayer->getSide() == PlayerSide::LEFT){
 		if (blue.x < 0){
@@ -168,10 +175,6 @@ void PlayerManager::update(double dt)
 			}
 		}
 	}
-
-	// Update each player
-	m_pRedPlayer->update(dt);
-	m_pBluePlayer->update(dt);
 }
 
 // ================================================ //

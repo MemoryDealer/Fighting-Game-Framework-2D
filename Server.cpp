@@ -2,6 +2,7 @@
 
 #include "Server.hpp"
 #include "Engine.hpp"
+#include "Config.hpp"
 #include "Log.hpp"
 
 // ================================================ //
@@ -16,7 +17,9 @@ Server::Server(void)
 		m_active(false)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");	
+
 	m_sock = SDLNet_UDP_Open(m_port);
+
 	if (!m_sock){
 		throw std::exception("Failed to open UDP server socket");
 	}

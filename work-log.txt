@@ -136,15 +136,18 @@
 	moves. Organizing this in some "correct" manner has proven confusing. 
 -Previously the m_colliding value was set to false after collisions were handled in PlayerImpl::update(). It is now reset in PlayerManager::update() right before
 	collisions are tested between normal hitboxes. This allows camera movement to be processed for when one player is pushing the other past the edge. 
+-Hard coded the starting positions for the players. There is no longer a need for the game.cfg file and it is in the process of being terminated. 
+-Also removed network.cfg and just created a [net] section in engine.cfg. 
+-In PlayerManager::update(), moved the code to update both players to the beginning of the loop, so that the velocity will be updated before the following code uses it. 
+-Got proper camera movement for red player moving left. The blue player's position is manually adjusted in PlayerManager::update() so that he stands still, rather than moving
+	with the camera. This may be cheap but it works for now. 
 
 #TODO
 -Remove c_str() on std::strings where feasible
 -Stage floor, size, camera, etc.
--Remove game.cfg and put all that data in stage files etc. 
 -Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
 -NET
--Camera class? 
 -LoadResources in Engine
 -GUILayer
 

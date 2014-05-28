@@ -50,6 +50,20 @@ const bool Player::isColliding(void) const
 }
 
 // ================================================ //
+
+const int Player::getVelocityX(void) const
+{
+	return m_pImpl->getVelocityX();
+}
+
+// ================================================ //
+
+const int Player::getVelocityY(void) const
+{
+	return m_pImpl->getVelocityY();
+}
+
+// ================================================ //
 // Setter functions
 // ================================================ //
 

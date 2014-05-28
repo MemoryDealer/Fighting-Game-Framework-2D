@@ -39,6 +39,8 @@ public:
 	Hitbox& getHitbox(const int index);
 	const int getCurrentState(void) const;
 	const bool isColliding(void) const;
+	const int getVelocityX(void) const;
+	const int getVelocityY(void) const;
 
 	// Setter functions
 	void setSide(const int side);
