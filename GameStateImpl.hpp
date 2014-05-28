@@ -31,7 +31,7 @@ public:
 private:
 	bool	m_bQuit;
 
-	std::tr1::shared_ptr<ObjectManager> m_pObjectManager;
+	std::shared_ptr<ObjectManager> m_pObjectManager;
 };
 
 // ================================================ //

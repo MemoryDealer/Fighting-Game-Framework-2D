@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-template<> Engine* Singleton<Engine>::msSingleton = 0;
+template<> Engine* Singleton<Engine>::msSingleton = nullptr;
 
 // ================================================ //
 

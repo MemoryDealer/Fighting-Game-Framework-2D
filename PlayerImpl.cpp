@@ -8,7 +8,7 @@
 #include "FighterMetadata.hpp"
 #include "Timer.hpp"
 #include "Input.hpp"
-
+#include "Camera.hpp"
 #include "PlayerManager.hpp"
 
 // ================================================ //

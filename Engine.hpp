@@ -62,7 +62,7 @@ public:
 #endif
 
 private:
-	std::tr1::shared_ptr<EngineImpl> m_pImpl;
+	std::shared_ptr<EngineImpl> m_pImpl;
 };
 
 // ================================================ //

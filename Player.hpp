@@ -46,7 +46,7 @@ public:
 	virtual void update(double dt);
 
 private:
-	std::tr1::shared_ptr<PlayerImpl> m_pImpl;
+	std::shared_ptr<PlayerImpl> m_pImpl;
 };
 
 // ================================================ //

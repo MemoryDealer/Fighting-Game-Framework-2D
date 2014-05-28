@@ -29,7 +29,7 @@ public:
 	void update(double dt);
 
 private:
-	std::tr1::shared_ptr<MenuStateImpl> m_pImpl;
+	std::shared_ptr<MenuStateImpl> m_pImpl;
 };
 
 // ================================================ //

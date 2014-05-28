@@ -37,8 +37,8 @@ public:
 	void update(double dt);
 
 private:
-	std::tr1::shared_ptr<Player> m_pRedPlayer;
-	std::tr1::shared_ptr<Player> m_pBluePlayer;
+	std::shared_ptr<Player> m_pRedPlayer;
+	std::shared_ptr<Player> m_pBluePlayer;
 	std::string m_redFighterFile, m_blueFighterFile;
 
 	FighterEntryList m_fighters;

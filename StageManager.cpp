@@ -4,7 +4,7 @@
 
 // ================================================ //
 
-template<> StageManager* Singleton<StageManager>::msSingleton = 0;
+template<> StageManager* Singleton<StageManager>::msSingleton = nullptr;
 
 // ================================================ //
 

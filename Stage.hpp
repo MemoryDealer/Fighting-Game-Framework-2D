@@ -22,7 +22,7 @@ public:
 	virtual void update(double dt);
 
 private:
-	std::tr1::shared_ptr<StageImpl>	m_pImpl;
+	std::shared_ptr<StageImpl>	m_pImpl;
 };
 
 // ================================================ //

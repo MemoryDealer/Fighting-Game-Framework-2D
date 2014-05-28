@@ -24,7 +24,7 @@ public:
 	void logTime(const bool time = true, const bool date = false);
 
 private:
-	std::tr1::shared_ptr<LogImpl> m_pImpl;
+	std::shared_ptr<LogImpl> m_pImpl;
 };
 
 // ================================================ //

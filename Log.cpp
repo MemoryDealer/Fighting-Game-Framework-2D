@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-template<> Log* Singleton<Log>::msSingleton = 0;
+template<> Log* Singleton<Log>::msSingleton = nullptr;
 
 // ================================================ //
 

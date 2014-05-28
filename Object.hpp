@@ -45,15 +45,15 @@ protected:
 	/** \brief This should be called in the constructor of any child class of Object,
 		passing the local m_pImpl of the child class as the argument. This basically
 		allows "pointer to implementation" polymorphism. */
-	virtual void setPImpl(std::tr1::shared_ptr<ObjectImpl> pImpl);
+	virtual void setPImpl(std::shared_ptr<ObjectImpl> pImpl);
 
 private:
-	std::tr1::shared_ptr<ObjectImpl> m_pImpl;
+	std::shared_ptr<ObjectImpl> m_pImpl;
 };
 
 // ================================================ //
 
-inline void Object::setPImpl(std::tr1::shared_ptr<ObjectImpl> pImpl)
+inline void Object::setPImpl(std::shared_ptr<ObjectImpl> pImpl)
 { m_pImpl = pImpl; }
 
 // ================================================ //

@@ -62,7 +62,7 @@ private:
 
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;
-	std::tr1::shared_ptr<Timer> m_pMoveTimer;
+	std::shared_ptr<Timer> m_pMoveTimer;
 
 	HitboxList	m_hitboxes;
 	bool		m_colliding; // control for x-axis movement

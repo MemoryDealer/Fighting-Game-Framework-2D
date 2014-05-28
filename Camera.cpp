@@ -4,7 +4,7 @@
 
 // ================================================ //
 
-template<> Camera* Singleton<Camera>::msSingleton = 0;
+template<> Camera* Singleton<Camera>::msSingleton = nullptr;
 
 // ================================================ //
 

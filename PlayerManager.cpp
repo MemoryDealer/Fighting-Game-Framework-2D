@@ -9,7 +9,7 @@
 
 // ================================================ //
 
-template<> PlayerManager* Singleton<PlayerManager>::msSingleton = 0;
+template<> PlayerManager* Singleton<PlayerManager>::msSingleton = nullptr;
 
 // ================================================ //
 

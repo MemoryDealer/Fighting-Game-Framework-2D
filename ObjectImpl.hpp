@@ -51,7 +51,7 @@ protected:
 
 	bool				m_dead;
 
-	std::tr1::shared_ptr<FSM> m_pFSM; // the core state machine
+	std::shared_ptr<FSM> m_pFSM; // the core state machine
 };
 
 // ================================================ //

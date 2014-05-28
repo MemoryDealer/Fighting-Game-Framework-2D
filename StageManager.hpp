@@ -22,7 +22,7 @@ public:
 	void update(double dt);
 
 private:
-	std::tr1::shared_ptr<Stage> m_pStage;
+	std::shared_ptr<Stage> m_pStage;
 	std::string m_stageFile;
 };
 
