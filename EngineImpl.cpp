@@ -15,33 +15,33 @@ EngineImpl::EngineImpl(void)
 		m_maxFrameRate(60)
 {
 	// Initialize SDL
-	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		throw std::exception("SDL_Init() failed.");
 
 	Log::getSingletonPtr()->logMessage("SDL initialized with SDL_INIT_EVERYTHING");
 
 	// Initialize SDL_image 
-	if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) < 0)
+	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) < 0)
 		throw std::exception("IMG_Init() failed.");
 
 	Log::getSingletonPtr()->logMessage("SDL_image initialized with IMG_INIT_JPG | IMG_INIT_PNG");
 
 	// Initialize SDL_ttf
-	if(TTF_Init() != 0)
+	if (TTF_Init() != 0)
 		throw std::exception("TTF_Init() failed.");
 
 	Log::getSingletonPtr()->logMessage("SDL_ttf initialized");
 
 	// Load engine config file
 	Config cfg("Data/Config/engine.cfg");
-	if(!cfg.isLoaded()){
+	if (!cfg.isLoaded()){
 		// Generate a default config file?
 		throw std::exception("Failed to load engine.cfg");
 	}
 
 	// Initialize SDL_net
-	if(cfg.parseIntValue("core", "net")){
-		if(SDLNet_Init() < 0)
+	if (cfg.parseIntValue("core", "net")){
+		if (SDLNet_Init() < 0)
 			throw std::exception(("SDLNet_Init() failed."));
 	}
 
@@ -52,7 +52,7 @@ EngineImpl::EngineImpl(void)
 	m_height = cfg.parseIntValue("window", "height");
 	m_pWindow = SDL_CreateWindow("Extreme Metal Fighter", SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, m_width, m_height, 0);
-	if(m_pWindow == nullptr)
+	if (m_pWindow == nullptr)
 		throw std::exception("SDL_CreateWindow() failed.");
 
 	Log::getSingletonPtr()->logMessage("SDL_Window created successfully");
@@ -61,7 +61,7 @@ EngineImpl::EngineImpl(void)
 	Uint32 flags = (cfg.parseIntValue("window", "vsync")) ? SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC :
 		SDL_RENDERER_ACCELERATED;
 	m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, flags);
-	if(m_pRenderer == nullptr)
+	if (m_pRenderer == nullptr)
 		throw std::exception("SDL_CreateRenderer() failed.");
 
 	// Set the render scale quality
@@ -114,7 +114,7 @@ SDL_Texture* EngineImpl::loadTexture(const std::string& filename)
 	SDL_Texture* tex = nullptr;
 
 	tex = IMG_LoadTexture(m_pRenderer, filename.c_str());
-	if(tex == nullptr)
+	if (tex == nullptr)
 		Log::getSingletonPtr()->logMessage("Failed to load texture from file: \"" + std::string(filename) + "\"");
 
 	Log::getSingletonPtr()->logMessage("Texture \"" + std::string(filename) + "\" loaded!");

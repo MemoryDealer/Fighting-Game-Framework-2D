@@ -20,12 +20,12 @@ FSM::~FSM(void)
 	FState* pState = nullptr;
 	StateMap::iterator itr;
 
-	if(!m_stateMap.empty()){
+	if (!m_stateMap.empty()){
 		for(itr = m_stateMap.begin();
 			itr != m_stateMap.end();
 			++itr){
 			pState = static_cast<FState*>(itr->second);
-			if(pState != nullptr)
+			if (pState != nullptr)
 				delete pState;
 		}
 	}
@@ -53,7 +53,7 @@ void FSM::addState(FState* pState)
 	// See if this state already exists
 	existingState = this->getStatePtr(pState->getID());
 
-	if(existingState != nullptr)
+	if (existingState != nullptr)
 		return;
 
 	m_stateMap.insert(SM_VT(pState->getID(), pState));
@@ -68,8 +68,8 @@ void FSM::deleteState(const StateID id)
 
 	pState = this->getStatePtr(id);
 
-	if(pState != nullptr){
-		if(pState->getID() == id){
+	if (pState != nullptr){
+		if (pState->getID() == id){
 			m_stateMap.erase(itr);
 			delete pState;
 		}
@@ -83,9 +83,9 @@ FState* FSM::getStatePtr(const StateID id)
 	FState* pState = nullptr;
 	StateMap::iterator itr;
 
-	if(!m_stateMap.empty()){
+	if (!m_stateMap.empty()){
 		itr = m_stateMap.find(id);
-		if(itr != m_stateMap.end()){
+		if (itr != m_stateMap.end()){
 			pState = static_cast<FState*>(itr->second);
 		}
 	}

@@ -106,7 +106,7 @@ void PlayerImpl::loadFighterData(const std::string& fighterFile)
 
 	//! Add a fighter data file integrity check here?
 
-	if(!m.isLoaded()){
+	if (!m.isLoaded()){
 		throw std::exception((std::string("Failed to load fighter file ") + std::string(fighterFile)).c_str());
 	}
 
@@ -142,7 +142,7 @@ void PlayerImpl::loadMoves(FighterMetadata& m)
 		Log::getSingletonPtr()->logMessage("Parsing move \"" + std::string(MoveID::Name[i]) + "\" for " + m_name);
 
 		m_moves.push_back(m.parseMove(MoveID::Name[i]));
-		if(m_moves.back() == nullptr){
+		if (m_moves.back() == nullptr){
 			std::string exc = "Unable to load move \"" + std::string(MoveID::Name[i]) + 
 				"\" for fighter " + m_name;
 			throw std::exception(exc.c_str());
@@ -174,17 +174,17 @@ void PlayerImpl::updateLocalInput(void)
 	// Movement
 	// Checking both right now will force the player to cancel out movement if both are held
 	// thus preventing the character from sliding when holding both down
-	if(m_input[Input::BUTTON_LEFT] && !m_input[Input::BUTTON_RIGHT]){
+	if (m_input[Input::BUTTON_LEFT] && !m_input[Input::BUTTON_RIGHT]){
 		m_xVel -= m_xAccel;
-		if(m_xVel < -m_xMax)
+		if (m_xVel < -m_xMax)
 			m_xVel = -m_xMax;
 
 		m_currentAction = (m_playerSide == PlayerSide::LEFT) ? 
 			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
 	}
-	else if(m_input[Input::BUTTON_RIGHT] && !m_input[Input::BUTTON_LEFT]){
+	else if (m_input[Input::BUTTON_RIGHT] && !m_input[Input::BUTTON_LEFT]){
 		m_xVel += m_xAccel;
-		if(m_xVel > m_xMax)
+		if (m_xVel > m_xMax)
 			m_xVel = m_xMax;
 
 		m_currentAction = (m_playerSide == PlayerSide::RIGHT) ?
@@ -192,14 +192,13 @@ void PlayerImpl::updateLocalInput(void)
 	}
 	else{
 		// Zero out left/right movement
-		if(m_xVel < 0)
+		if (m_xVel < 0)
 			m_xVel += m_xAccel;
-		else if(m_xVel > 0)
+		else if (m_xVel > 0)
 			m_xVel -= m_xAccel;
 	}
 
 	m_pFSM->stateTransition(m_currentAction);
-	//printf("State: %d\n", m_pFSM->getCurrentStateID());
 }
 
 // ================================================ //
@@ -207,7 +206,7 @@ void PlayerImpl::updateLocalInput(void)
 void PlayerImpl::updateMove(double dt)
 {
 	// Force the current animation to stop instantly if it has changed to a new one
-	if(m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
+	if (m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
 		m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
 		m_pMoveTimer->setStartTicks(0);
 	}
@@ -235,31 +234,27 @@ void PlayerImpl::updateMove(double dt)
 	}
 
 	// Update frame
-	if(m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
+	if (m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
-		/*m_dst.w = m_src.w * 2;
-		m_dst.h = m_src.h * 2;*/
-		if(m_name == "ObjectID 1")
-			printf("Frame: %d\n", m_pCurrentMove->currentFrame);
 
-		if(m_pCurrentMove->reverse){
+		if (m_pCurrentMove->reverse){
 			static bool dir = true;
 
-			if(dir){
-				if(++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+			if (dir){
+				if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
 					--m_pCurrentMove->currentFrame;
 					dir = false;
 				}
 			}
 			else{
-				if(--m_pCurrentMove->currentFrame < m_pCurrentMove->repeatFrame){
+				if (--m_pCurrentMove->currentFrame < m_pCurrentMove->repeatFrame){
 					++m_pCurrentMove->currentFrame;
 					dir = true;
 				}
 			}
 		}
-		else if(++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
-			if(m_pCurrentMove->repeat){
+		else if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+			if (m_pCurrentMove->repeat){
 				m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
 			}
 		}
@@ -285,7 +280,7 @@ void PlayerImpl::updateHitboxes(void)
 		int xCenter = m_dst.x + (m_dst.w / 2);
 		int yCenter = m_dst.y + (m_dst.h / 2);
 
-		if(m_playerSide == PlayerSide::RIGHT)
+		if (m_playerSide == PlayerSide::RIGHT)
 			offset.x = -offset.x;
 
 		m_hitboxes[i].setRect( (xCenter - (offset.w / 2) + offset.x), (yCenter - (offset.h / 2) + offset.y),
@@ -298,7 +293,7 @@ void PlayerImpl::updateHitboxes(void)
 void PlayerImpl::sendMessage(const Message& msg)
 {
 	printf("Received message %d\n", msg.type);
-	if(msg.type == MessageType::TYPE_ACTIVATE)
+	if (msg.type == MessageType::TYPE_ACTIVATE)
 		m_dead = true;
 }
 
@@ -306,22 +301,20 @@ void PlayerImpl::sendMessage(const Message& msg)
 
 void PlayerImpl::update(double dt)
 {
-	if(m_inputType == PlayerInputType::LOCAL){
+	if (m_inputType == PlayerInputType::LOCAL){
 		this->updateLocalInput();
 	}
 
 	this->updateMove(dt);
 
-	if(m_colliding){
+	if (m_colliding){
 		// Move player back upon collision
-		if(m_playerSide == PlayerSide::LEFT){
+		if (m_playerSide == PlayerSide::LEFT){
 			m_dst.x = m_dst.x - static_cast<int>(m_xMax * dt);
 		}
 		else{
 			m_dst.x = m_dst.x + static_cast<int>(m_xMax * dt);
 		}
-
-		m_colliding = false;
 	}
 
 	m_dst.x += static_cast<int>(m_xVel * dt);

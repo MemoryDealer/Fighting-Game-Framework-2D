@@ -59,7 +59,7 @@ AppState* AppStateManager::findByName(const std::string& stateName)
 	std::vector<STATE_INFO>::iterator itr;
 
 	for(itr=m_states.begin(); itr!=m_states.end(); ++itr){
-		if(itr->name == stateName){
+		if (itr->name == stateName){
 			return itr->pState;
 		}
 	}
@@ -83,7 +83,7 @@ void AppStateManager::start(AppState* pState)
 
 	for(;!m_bShutdown;){
 
-		if(Engine::getSingletonPtr()->isWindowFocused()){
+		if (Engine::getSingletonPtr()->isWindowFocused()){
 			capTimer.restart();
 
 			newTime = SDL_GetTicks();
@@ -98,15 +98,15 @@ void AppStateManager::start(AppState* pState)
 
 			// Regulate the maximum frame rate (in case VSync is off)
 			int frameTicks = capTimer.getTicks();
-			if(frameTicks < TICKS_PER_FRAME){
+			if (frameTicks < TICKS_PER_FRAME){
 				SDL_Delay(TICKS_PER_FRAME - frameTicks);
 			}
 		}
 		else{
 			SDL_Event e;
 			while(SDL_PollEvent(&e)){
-				if(e.type == SDL_WINDOWEVENT){
-					if(e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+				if (e.type == SDL_WINDOWEVENT){
+					if (e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 						Engine::getSingletonPtr()->setWindowFocused(true);
 				}
 			}
@@ -122,7 +122,7 @@ void AppStateManager::start(AppState* pState)
 
 void AppStateManager::changeAppState(AppState* pState)
 {
-	if(!m_activeStateStack.empty()){
+	if (!m_activeStateStack.empty()){
 		m_activeStateStack.back()->exit();
 		m_activeStateStack.pop_back();
 	}
@@ -137,8 +137,8 @@ void AppStateManager::changeAppState(AppState* pState)
 
 bool AppStateManager::pushAppState(AppState* pState)
 {
-	if(!m_activeStateStack.empty()){
-		if(!m_activeStateStack.back()->pause())
+	if (!m_activeStateStack.empty()){
+		if (!m_activeStateStack.back()->pause())
 			return false;
 	}
 
@@ -154,13 +154,13 @@ bool AppStateManager::pushAppState(AppState* pState)
 
 void AppStateManager::popAppState(void)
 {
-	if(!m_activeStateStack.empty()){
+	if (!m_activeStateStack.empty()){
 		Log::getSingletonPtr()->logMessage("Popping state \"" + m_activeStateStack.back()->getName() + "\"...");
 		m_activeStateStack.back()->exit();
 		m_activeStateStack.pop_back();
 	}
 
-	if(!m_activeStateStack.empty()){
+	if (!m_activeStateStack.empty()){
 		this->init(m_activeStateStack.back());
 		m_activeStateStack.back()->resume();
 	}
@@ -173,11 +173,11 @@ void AppStateManager::popAppState(void)
 
 void AppStateManager::pauseAppState(void)
 {
-	if(!m_activeStateStack.empty()){
+	if (!m_activeStateStack.empty()){
 		m_activeStateStack.back()->pause();
 	}
 
-	if(m_activeStateStack.size() > 2){
+	if (m_activeStateStack.size() > 2){
 		this->init(m_activeStateStack.at(m_activeStateStack.size() - 2));
 		m_activeStateStack.at(m_activeStateStack.size() - 2)->resume();
 	}

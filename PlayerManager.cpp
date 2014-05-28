@@ -3,6 +3,8 @@
 #include "PlayerManager.hpp"
 #include "StageManager.hpp"
 #include "PlayerData.hpp"
+#include "Camera.hpp"
+#include "Hitbox.hpp"
 #include "Config.hpp"
 #include "Input.hpp"
 #include "Engine.hpp"
@@ -18,6 +20,8 @@ PlayerManager::PlayerManager(void)
 		m_pBluePlayer(nullptr),
 		m_redFighterFile(),
 		m_blueFighterFile(),
+		m_redMax(0),
+		m_blueMax(0),
 		m_fighters()
 {
 	Log::getSingletonPtr()->logMessage("Initializing PlayerManager...");
@@ -67,6 +71,10 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_pRedPlayer->setPosition(game.parseIntValue("game", "redX"), m_pRedPlayer->getPosition().y);
 	m_pBluePlayer->setPosition(game.parseIntValue("game", "blueX"), m_pBluePlayer->getPosition().y);
 
+	// Calculate the far right edge at which player movement should stop or move the camera
+	m_redMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pRedPlayer->getPosition().w;
+	m_blueMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w;
+
 	return( (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr) );
 }
 
@@ -81,24 +89,59 @@ bool PlayerManager::reload(void)
 
 void PlayerManager::update(double dt)
 {
+	// Clear camera movement
+	Camera::getSingletonPtr()->clear();
+
 	// Check for K.O.
 	// ...
 
-	// Switch player sides if necessary
 	SDL_Rect red, blue;
 	red = m_pRedPlayer->getPosition();
 	blue = m_pBluePlayer->getPosition();
+	const int redState = m_pRedPlayer->getCurrentState();
+	const int blueState = m_pBluePlayer->getCurrentState();
 
-	if(m_pRedPlayer->getSide() == PlayerSide::LEFT){
-		if(red.x > (blue.x + (blue.w / 2))){
+	// Red player checks
+	if (m_pRedPlayer->getSide() == PlayerSide::LEFT){
+		// Test for stage edge and camera movement
+		if (red.x < 0){
+			if (redState == PlayerState::WALKING_BACK ||
+				m_pRedPlayer->isColliding()){
+				m_pRedPlayer->setPosition(0, red.y);
+				// Check if blue player is not at the right edge
+				if (blue.x < m_blueMax){
+					Camera::getSingletonPtr()->moveX = -1;
+					m_pBluePlayer->setPosition(blue.x + 1, blue.y);
+				}
+			}
+		}
+
+		// Switch player sides if necessary
+		if (red.x > (blue.x + (blue.w / 2))){
 			m_pRedPlayer->setSide(PlayerSide::RIGHT);
 			m_pBluePlayer->setSide(PlayerSide::LEFT);
 		}
 	}
 	else{
-		if(blue.x > (red.x + (red.w / 2))){
+		if (blue.x > (red.x + (red.w / 2))){
 			m_pRedPlayer->setSide(PlayerSide::LEFT);
 			m_pBluePlayer->setSide(PlayerSide::RIGHT);
+		}
+	}
+	printf("blue.x: %d, %d\n", blue.x, blueState);
+	// Blue player checks
+	if (m_pBluePlayer->getSide() == PlayerSide::LEFT){
+		if (blue.x < 0){
+
+		}		
+	}
+	else{
+		if (blue.x > m_blueMax){
+			if (blueState == PlayerState::WALKING_BACK ||
+				m_pBluePlayer->isColliding()){
+				Camera::getSingletonPtr()->moveX = 1;
+				m_pBluePlayer->setPosition(m_blueMax, blue.y);
+			}
 		}
 	}
 
@@ -106,18 +149,22 @@ void PlayerManager::update(double dt)
 	// Damage boxes to opponent hitbox
 	for(int i=Player::DBOX1; i<=Player::DBOX2; ++i){
 		for(int j=Player::HBOX_LOWER; j<=Player::HBOX_HEAD; ++j){
-			if(m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j))){
+			if (m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j))){
 				printf("DAMAGE!!!!!!\n");
 			}
 		}
 	}
 
+	// Reset collisions before testing
+	m_pRedPlayer->setColliding(false);
+	m_pBluePlayer->setColliding(false);
+
 	// Normal hitbox collision
 	for(int i=0; i<4; ++i){
 		for(int j=0; j<4; ++j){
-			if((m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j)))){
-				m_pRedPlayer->setColliding();
-				m_pBluePlayer->setColliding();
+			if ((m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j)))){
+				m_pRedPlayer->setColliding(true);
+				m_pBluePlayer->setColliding(true);
 			}
 		}
 	}

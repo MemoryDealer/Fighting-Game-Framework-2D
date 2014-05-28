@@ -72,10 +72,10 @@ void StageImpl::update(double dt)
 		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
 		m_layers[i].src.x += Camera::getSingletonPtr()->moveX;
 		
-		if(m_layers[i].src.x < 0){
+		if (m_layers[i].src.x < 0){
 			m_layers[i].src.x = 0;
 		}
-		else if(m_layers[i].src.x > rightEdge){
+		else if (m_layers[i].src.x > rightEdge){
 			m_layers[i].src.x = rightEdge;
 		}
 
@@ -84,21 +84,24 @@ void StageImpl::update(double dt)
 			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
 
 		// Process stage effects
-		if(m_layers[i].Effect.scrollX){
+		if (m_layers[i].Effect.scrollX || m_layers[i].Effect.scrollY){
 
 			// Scroll the layer
 			m_layers[i].dst.x += static_cast<int>(m_layers[i].Effect.scrollX * dt);
+			//m_layers[i].dst.y += static_cast<int>(m_layers[i].Effect.scrollY * dt);
 
 			// Calculate offset for second rendering for seamless scrolling
 			SDL_Rect dst2 = m_layers[i].dst;
-			dst2.x -= dst2.w;
+			//dst2.x -= dst2.w;
+			dst2.x = dst2.x - dst2.w - m_layers[i].src.x + rightEdge;
+			//dst2.y = dst2.y - dst2.h - m_layers[i].src.y;
 
 			// Render a second time with offset
 			SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
 				m_layers[i].pTexture, &m_layers[i].src, &dst2, 0, nullptr, SDL_FLIP_NONE);
 
-			// Wrap back ground to beginning
-			if(dst2.x >= 0)
+			// Wrap back around to beginning
+			if (dst2.x >= 0)
 				m_layers[i].dst.x = 0;
 		}
 	}

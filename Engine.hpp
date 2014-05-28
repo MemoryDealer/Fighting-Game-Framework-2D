@@ -55,7 +55,7 @@ public:
 	static bool CustomAssertFunction(bool, char*, int, char*);
 
 #define Assert(exp, desc)\
-	if(Engine::CustomAssertFunction((int)exp, desc, __LINE__, __FILE__))\
+	if (Engine::CustomAssertFunction((int)exp, desc, __LINE__, __FILE__))\
 	{ _asm { int 3 } } // trigger debugger to break
 #else
 #define Assert(exp, desc);

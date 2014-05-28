@@ -31,7 +31,7 @@ ObjectImpl::ObjectImpl(void)
 
 ObjectImpl::~ObjectImpl(void)
 {
-	if(m_pTexture != nullptr)
+	if (m_pTexture != nullptr)
 		Engine::getSingletonPtr()->destroyTexture(m_pTexture);
 
 	Log::getSingletonPtr()->logMessage("Destroyed Object \"" + m_name + "\"");
@@ -41,7 +41,7 @@ ObjectImpl::~ObjectImpl(void)
 
 bool ObjectImpl::setTextureFile(const std::string& filename)
 {
-	if(m_pTexture != nullptr)
+	if (m_pTexture != nullptr)
 		Engine::getSingletonPtr()->destroyTexture(m_pTexture);
 
 	Log::getSingletonPtr()->logMessage("Setting texture \"" + std::string(filename) + 
@@ -61,9 +61,9 @@ bool ObjectImpl::setTextureFile(const std::string& filename)
 void ObjectImpl::setTextureCoordinates(const int x, const int y, const int w, const int h)
 { 
 	m_src.x = x; m_src.y = y; 
-	if(w != 0)
+	if (w != 0)
 		m_src.w = m_dst.w = w;
-	if(h != 0)
+	if (h != 0)
 		m_src.h = m_dst.h = h;
 }
 

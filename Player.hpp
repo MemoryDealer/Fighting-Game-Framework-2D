@@ -7,11 +7,11 @@
 
 #include "Object.hpp"
 #include "PlayerData.hpp"
-#include "Hitbox.hpp"
 
 // ================================================ //
 
 class PlayerImpl;
+class Hitbox;
 
 // ================================================ //
 
@@ -37,6 +37,8 @@ public:
 	// Getter functions
 	const int getSide(void) const;
 	Hitbox& getHitbox(const int index);
+	const int getCurrentState(void) const;
+	const bool isColliding(void) const;
 
 	// Setter functions
 	void setSide(const int side);

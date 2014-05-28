@@ -2,6 +2,7 @@
 
 #include "Player.hpp"
 #include "PlayerImpl.hpp"
+#include "Hitbox.hpp"
 
 // ================================================ //
 
@@ -32,6 +33,20 @@ const int Player::getSide(void) const
 Hitbox& Player::getHitbox(const int index)
 {
 	return m_pImpl->getHitbox(index);
+}
+
+// ================================================ //
+
+const int Player::getCurrentState(void) const
+{
+	return m_pImpl->getCurrentState();
+}
+
+// ================================================ //
+
+const bool Player::isColliding(void) const
+{
+	return m_pImpl->isColliding();
 }
 
 // ================================================ //

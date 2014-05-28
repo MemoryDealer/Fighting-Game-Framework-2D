@@ -38,7 +38,7 @@ Object* ObjectManager::addObject(Object* pObject)
 
 Object* ObjectManager::getObject(const int index)
 {
-	if(static_cast<size_t>(index) < m_objects.size()){
+	if (static_cast<size_t>(index) < m_objects.size()){
 		return m_objects[index];
 	}
 
@@ -54,14 +54,14 @@ void ObjectManager::update(double dt, bool render)
 		itr != m_objects.end();
 		++itr){
 
-		if((*itr)->isDead()){
+		if ((*itr)->isDead()){
 			delete *itr;
 			m_objects.erase(itr++);
 		}
 		else{
 			(*itr)->update(dt);
 
-			if(render)
+			if (render)
 				(*itr)->render();
 		}
 	}

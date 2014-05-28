@@ -17,14 +17,14 @@ Server::Server(void)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");	
 	m_sock = SDLNet_UDP_Open(m_port);
-	if(!m_sock){
+	if (!m_sock){
 		throw std::exception("Failed to open UDP server socket");
 	}
 	m_active = true;
 
 	m_packet = SDLNet_AllocPacket(66560); // 65 KB
 
-	if(m_active)
+	if (m_active)
 		Log::getSingletonPtr()->logMessage("Server initialized!");
 	else
 		Log::getSingletonPtr()->logMessage("ERROR: Failed to initialized Server!");
@@ -34,7 +34,7 @@ Server::Server(void)
 
 Server::~Server(void)
 {
-	if(m_sock){
+	if (m_sock){
 		SDLNet_UDP_Close(m_sock);
 	}
 
@@ -45,7 +45,7 @@ Server::~Server(void)
 
 void Server::testRecv(void)
 {
-	if(SDLNet_UDP_Recv(m_sock, m_packet)){
+	if (SDLNet_UDP_Recv(m_sock, m_packet)){
 		printf("UDP Packet incoming\n");
 		printf("\tChan:    %d\n", m_packet->channel);
 		printf("\tData:    %s\n", (char*)m_packet->data);

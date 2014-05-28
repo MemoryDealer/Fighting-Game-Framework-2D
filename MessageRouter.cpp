@@ -54,11 +54,11 @@ void MessageRouter::removeObject(const int id)
 		++itr){
 
 		// Remove empty pointers from list
-		if((*itr) == nullptr){
+		if ((*itr) == nullptr){
 			m_objects.erase(itr++);
 		}
 		// Remove the desired object
-		else if((*itr)->getID() == id){
+		else if ((*itr)->getID() == id){
 			m_objects.erase(itr++);
 			return;
 		}
@@ -104,10 +104,10 @@ void MessageRouter::update(void)
 		for(objItr = m_objects.begin(); objItr != m_objects.end(); ++objItr){
 
 			// Test the ID
-			if((*objItr)->getID() == msgItr->receiverID){
+			if ((*objItr)->getID() == msgItr->receiverID){
 
 				// See if a delay should be applied
-				if(msgItr->delay < Engine::getSingletonPtr()->getTicks()){
+				if (msgItr->delay < Engine::getSingletonPtr()->getTicks()){
 
 					// Correct object found, send the message
 					this->dispatchMessageToObject(*msgItr, *objItr);
@@ -120,7 +120,7 @@ void MessageRouter::update(void)
 		}
 
 		// We didn't find the object or there was still a delay, so move on to the next
-		if(shouldIterate){
+		if (shouldIterate){
 			++msgItr;
 			//! TODO: handle object not found...
 		}

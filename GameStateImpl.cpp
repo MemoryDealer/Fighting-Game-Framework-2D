@@ -62,18 +62,26 @@ void GameStateImpl::resume(void)
 
 void GameStateImpl::handleInput(SDL_Event& e)
 {
-	if(e.type == SDL_KEYDOWN){
+	if (e.type == SDL_KEYDOWN){
 		switch(e.key.keysym.sym){
 		default:
 			
 			break;
 
-		case SDLK_LEFT: // this value should eventually be retrieved from the Player class
+		case SDLK_a: // this value should eventually be retrieved from the Player class
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, true);
 			break;
 
-		case SDLK_RIGHT:
+		case SDLK_d:
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, true);
+			break;
+
+		case SDLK_LEFT: 
+			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_LEFT, true);
+			break;
+
+		case SDLK_RIGHT:
+			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_RIGHT, true);
 			break;
 
 		case SDLK_UP:
@@ -85,16 +93,8 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_r:
 			// Reload fighter settings
-			PlayerManager::getSingletonPtr()->reload();
 			StageManager::getSingletonPtr()->reload();
-			break;
-
-		case SDLK_j:
-			Camera::getSingletonPtr()->moveX = -1;
-			break;
-
-		case SDLK_k:
-			Camera::getSingletonPtr()->moveX = 1;
+			PlayerManager::getSingletonPtr()->reload();
 			break;
 
 		case SDLK_ESCAPE:
@@ -102,18 +102,26 @@ void GameStateImpl::handleInput(SDL_Event& e)
 			break;
 		}
 	}
-	else if(e.type == SDL_KEYUP){
+	else if (e.type == SDL_KEYUP){
 		switch(e.key.keysym.sym){
 		default:
 			
 			break;
 
-		case SDLK_LEFT:
+		case SDLK_a: // this value should eventually be retrieved from the Player class
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, false);
 			break;
 
-		case SDLK_RIGHT:
+		case SDLK_d:
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, false);
+			break;
+
+		case SDLK_LEFT:
+			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_LEFT, false);
+			break;
+
+		case SDLK_RIGHT:
+			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_RIGHT, false);
 			break;
 
 		case SDLK_j:
@@ -148,13 +156,13 @@ void GameStateImpl::update(double dt)
 			break;
 
 		case SDL_WINDOWEVENT:
-			if(e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
 				Engine::getSingletonPtr()->setWindowFocused(false);
 			break;
 		}
 	}
 
-	Server::getSingletonPtr()->testRecv();
+	//Server::getSingletonPtr()->testRecv();
 
 	Engine::getSingletonPtr()->clearRenderer();
 

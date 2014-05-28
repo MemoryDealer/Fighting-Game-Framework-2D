@@ -41,6 +41,8 @@ private:
 	std::shared_ptr<Player> m_pBluePlayer;
 	std::string m_redFighterFile, m_blueFighterFile;
 
+	int m_redMax, m_blueMax; // the right edge of the screen minus player width (pixels)
+
 	FighterEntryList m_fighters;
 };
 

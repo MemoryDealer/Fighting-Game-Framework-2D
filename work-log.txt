@@ -132,6 +132,10 @@
 
 #5/27/14
 -Upgraded to Visual Studio 2013 Ultimate and have C++11. So all std::tr1::shared_ptr<>'s are now std::shared_ptr<>. 
+-Put camera movement code in PlayerManager::update(). For now, I will just have to manually check each player according to their side to find out if the camera
+	moves. Organizing this in some "correct" manner has proven confusing. 
+-Previously the m_colliding value was set to false after collisions were handled in PlayerImpl::update(). It is now reset in PlayerManager::update() right before
+	collisions are tested between normal hitboxes. This allows camera movement to be processed for when one player is pushing the other past the edge. 
 
 #TODO
 -Remove c_str() on std::strings where feasible

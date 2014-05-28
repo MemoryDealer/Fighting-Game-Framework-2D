@@ -39,7 +39,7 @@ const StateID FState::getOutput(const int input)
 
 	// Find the input
 	for(size_t i=0; i<m_inputs.size(); ++i){
-		if(m_inputs[i] == input){
+		if (m_inputs[i] == input){
 			outputID = m_outputs[i];
 		}
 	}

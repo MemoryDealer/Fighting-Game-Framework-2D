@@ -8,7 +8,7 @@ LogImpl::LogImpl(void)
 	: m_file()
 {
 	m_file.open("ExtMF.log", std::ios::out);
-	if(!m_file.is_open()){
+	if (!m_file.is_open()){
 		throw std::exception("Failed to open log file");
 	}
 
@@ -42,15 +42,15 @@ void LogImpl::logTime(const bool time, const bool date)
 #ifdef __WIN32__
 	SYSTEMTIME st;
 	GetLocalTime(&st);
-	if(date){
+	if (date){
 		m_file << "[" << st.wMonth << "/" << st.wDay << "/" << st.wYear << "] ";
 	}
-	if(time){
-		if(st.wHour < 10) m_file << "0";
+	if (time){
+		if (st.wHour < 10) m_file << "0";
 		m_file << st.wHour << ":";
-		if(st.wMinute < 10) m_file << "0";
+		if (st.wMinute < 10) m_file << "0";
 		m_file << st.wMinute << ":";
-		if(st.wSecond < 10) m_file << "0";
+		if (st.wSecond < 10) m_file << "0";
 		m_file << st.wSecond << ": ";
 	}
 #elif __linux__

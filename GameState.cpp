@@ -59,7 +59,7 @@ void GameState::update(double dt)
 {
 	m_pImpl->update(dt);
 
-	if(m_pImpl->shouldPop()){
+	if (m_pImpl->shouldPop()){
 		this->popAppState();
 	}
 }

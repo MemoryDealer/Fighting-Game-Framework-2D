@@ -41,16 +41,16 @@ Move* FighterMetadata::parseMove(const std::string& name)
 		m_file >> m_buffer;
 
 		// Look for moves section
-		if(m_buffer[0] == '[' && m_buffer[m_buffer.size() - 1] == ']'){
-			if(m_buffer.compare(1, m_buffer.size() - 2, "moves") == 0){
+		if (m_buffer[0] == '[' && m_buffer[m_buffer.size() - 1] == ']'){
+			if (m_buffer.compare(1, m_buffer.size() - 2, "moves") == 0){
 
 				// In the moves section, now find the move
 				while(!m_file.eof()){
 					m_file >> m_buffer;
 
-					if(m_buffer[0] == '+'){
+					if (m_buffer[0] == '+'){
 						// Found a move, see if it's the right one (example buffer: "+(IDLE)")
-						if(m_buffer.compare(2, m_buffer.size() - 3, name) == 0){
+						if (m_buffer.compare(2, m_buffer.size() - 3, name) == 0){
 
 							// Allocate Move object for this move
 							Move* pMove = new Move();
@@ -76,7 +76,7 @@ Move* FighterMetadata::parseMove(const std::string& name)
 							pMove->damage = this->parseMoveIntValue("core", "damage");
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
-							if(pMove->repeat)
+							if (pMove->repeat)
 								pMove->repeatFrame = this->parseMoveIntValue("core", "repeatFrame");
 							pMove->reverse = this->parseMoveBoolValue("core", "reverse");
 
@@ -106,13 +106,13 @@ Move* FighterMetadata::parseMove(const std::string& name)
 								frame.h = this->parseMoveIntValue(frameSection.c_str(), "h");
 
 								// See if any values should be inherited
-								if(frame.x == -1)
+								if (frame.x == -1)
 									frame.x = pMove->frames.back().x;
-								if(frame.y == -1)
+								if (frame.y == -1)
 									frame.y = pMove->frames.back().y;
-								if(frame.w == -1)
+								if (frame.w == -1)
 									frame.w = pMove->frames.back().w;
-								if(frame.h == -1)
+								if (frame.h == -1)
 									frame.h = pMove->frames.back().h;
 
 								pMove->frames.push_back(frame);
@@ -143,20 +143,20 @@ std::string FighterMetadata::parseMoveValue(const std::string& section, const st
 		// Find the section
 		m_file >> m_buffer;
 
-		if(m_buffer[0] == '[' && m_buffer[m_buffer.size() - 2] == ']'){
+		if (m_buffer[0] == '[' && m_buffer[m_buffer.size() - 2] == ']'){
 			
 			// Does the section name match? 
-			if(m_buffer.compare(1, m_buffer.size() - 3, section) == 0){
+			if (m_buffer.compare(1, m_buffer.size() - 3, section) == 0){
 				while(m_buffer[0] != '}'){
 					m_file >> m_buffer;
 
 					// Skip comments
-					if(m_buffer[0] != '#'){
+					if (m_buffer[0] != '#'){
 						// Find location of assignment operator
 						size_t assign = m_buffer.find_first_of('=');
 
 						// See if this is the value
-						if(m_buffer.compare(0, assign, value) == 0){
+						if (m_buffer.compare(0, assign, value) == 0){
 							m_buffer = m_buffer.substr(assign + 1, m_buffer.size());
 
 							return m_buffer;
@@ -165,7 +165,7 @@ std::string FighterMetadata::parseMoveValue(const std::string& section, const st
 				}
 			}
 		}
-		else if(m_buffer[0] == '-'){
+		else if (m_buffer[0] == '-'){
 			// end of move found
 			break;
 		}
@@ -180,7 +180,7 @@ std::string FighterMetadata::parseMoveValue(const std::string& section, const st
 const int FighterMetadata::parseMoveIntValue(const std::string& section, const std::string& value)
 {
 	std::string str = this->parseMoveValue(section, value);
-	if(!str.empty()){
+	if (!str.empty()){
 		return std::stoi(str);
 	}
 
@@ -204,7 +204,7 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 	SDL_Rect rc;
 	memset(&rc, 0, sizeof(rc));
 	
-	if(str.empty()){
+	if (str.empty()){
 		Log::getSingletonPtr()->logMessage("No hitbox found for \"" + str + "\"");
 		return rc;
 	}

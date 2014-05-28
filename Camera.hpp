@@ -15,6 +15,8 @@ public:
 	Camera(void);
 	~Camera(void);
 
+	void clear(void);
+
 	int moveX, moveY;
 
 private:
