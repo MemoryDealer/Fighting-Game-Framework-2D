@@ -19,6 +19,9 @@ public:
 	explicit Stage(const std::string& stageFile);
 	virtual ~Stage(void);
 
+	// Getter functions
+	const int getSourceX(const int layer) const;
+
 	virtual void update(double dt);
 
 private:

@@ -70,15 +70,18 @@ void StageImpl::update(double dt)
 		// Update background source based on camera movement
 		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
 		m_layers[i].src.x += static_cast<int>(Camera::getSingletonPtr()->moveX);
-		printf("x: %d\n", m_layers[i].src.x);
-		if (m_layers[i].src.x < 0){
+
+		// Don't allow stage view to go out of bounds
+		if (m_layers[i].src.x <= 0){
 			m_layers[i].src.x = 0;
+			Camera::getSingletonPtr()->lock();
 		}
-		else if (m_layers[i].src.x > rightEdge){
+		else if (m_layers[i].src.x >= rightEdge){
 			m_layers[i].src.x = rightEdge;
+			Camera::getSingletonPtr()->lock();
 		}
 
-		// Render the background
+		// Render the layer
 		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
 			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
 

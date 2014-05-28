@@ -16,11 +16,20 @@ public:
 	explicit StageImpl(const std::string& stageFile);
 	virtual ~StageImpl(void);
 
+	// Getter functions
+	const int getSourceX(const int layer) const;
+
 	virtual void update(double dt);
 
 private:
 	StageLayerList m_layers;
 };
+
+// ================================================ //
+
+inline const int StageImpl::getSourceX(const int layer) const{
+	return m_layers[layer].src.x;
+}
 
 // ================================================ //
 

@@ -20,6 +20,13 @@ Stage::~Stage(void)
 
 // ================================================ //
 
+const int Stage::getSourceX(const int layer) const
+{
+	return m_pImpl->getSourceX(layer);
+}
+
+// ================================================ //
+
 void Stage::update(double dt)
 {
 	return m_pImpl->update(dt);
