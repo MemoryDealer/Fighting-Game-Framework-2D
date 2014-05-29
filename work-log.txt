@@ -149,6 +149,8 @@
 -Made the stage start in the exact middle rather than the far right side. 
 -The converted project from Visual Studio 2010 was linking very slowly (7-10 seconds). Tried changing many options to no avail. Created a brand new project in 
 	Visual Studio 2013 and added all files and builded; now it's extremely fast. Linking time is less than a second.
+-Added command line option "/NODEFAULTLIB:msvcrt.lib" in Linker section of project properties. This removed the warning "warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library"
+
 
 #TODO
 -Remove c_str() on std::strings where feasible
