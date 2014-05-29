@@ -14,7 +14,7 @@ Hitbox::Hitbox(const int type)
 {
 	memset(&m_rc, 0, sizeof(m_rc));
 
-	switch(m_type){
+	switch (m_type){
 	default:
 	case HitboxType::NORMAL:
 		m_color.r = m_outline.r = 0;

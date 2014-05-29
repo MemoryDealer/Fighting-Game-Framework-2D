@@ -63,7 +63,7 @@ void GameStateImpl::resume(void)
 void GameStateImpl::handleInput(SDL_Event& e)
 {
 	if (e.type == SDL_KEYDOWN){
-		switch(e.key.keysym.sym){
+		switch (e.key.keysym.sym){
 		default:
 			
 			break;
@@ -108,7 +108,7 @@ void GameStateImpl::handleInput(SDL_Event& e)
 		}
 	}
 	else if (e.type == SDL_KEYUP){
-		switch(e.key.keysym.sym){
+		switch (e.key.keysym.sym){
 		default:
 			
 			break;
@@ -139,7 +139,7 @@ void GameStateImpl::update(double dt)
 	SDL_Event e;
 
 	while(SDL_PollEvent(&e)){
-		switch(e.type){
+		switch (e.type){
 		default:
 			break;
 
@@ -159,7 +159,7 @@ void GameStateImpl::update(double dt)
 		}
 	}
 
-	//Server::getSingletonPtr()->testRecv();
+	Server::getSingletonPtr()->testRecv();
 
 	Engine::getSingletonPtr()->clearRenderer();
 

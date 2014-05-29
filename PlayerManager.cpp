@@ -97,6 +97,7 @@ void PlayerManager::updateCamera(double dt)
 	blue = m_pBluePlayer->getPosition();
 	const int redState = m_pRedPlayer->getCurrentState();
 	const int blueState = m_pBluePlayer->getCurrentState();
+	const double camMultiplier = 0.50;
 
 	// Red player checks
 	if (m_pRedPlayer->getSide() == PlayerSide::LEFT){
@@ -110,7 +111,7 @@ void PlayerManager::updateCamera(double dt)
 				// Check if blue player is not at the right edge
 				if (blue.x < m_blueMax){
 					// Move the camera
-					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * 0.25));
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * camMultiplier));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
 						// Make the blue player "stand still" with camera movement (this feels like a shitty hack)
@@ -137,7 +138,7 @@ void PlayerManager::updateCamera(double dt)
 				// See if blue player is at left edge
 				if (blue.x > 0){
 					// Move camera
-					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * 0.25));
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * camMultiplier));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
 						m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->getMoveX() * 2, blue.y);
@@ -163,7 +164,7 @@ void PlayerManager::updateCamera(double dt)
 
 				if (red.x < m_redMax){
 					// Move camera
-					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * 0.25));
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * camMultiplier));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
 						m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->getMoveX() * 2, red.y);
@@ -182,7 +183,7 @@ void PlayerManager::updateCamera(double dt)
 				// See if red player is at left edge
 				if (red.x > 0){
 					// Move camera
-					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * 0.25));
+					Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * camMultiplier));
 
 					if (!Camera::getSingletonPtr()->isLocked()){
 						m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->getMoveX() * 2, red.y);

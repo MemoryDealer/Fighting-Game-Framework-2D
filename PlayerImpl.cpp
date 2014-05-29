@@ -211,7 +211,7 @@ void PlayerImpl::updateMove(double dt)
 		m_pMoveTimer->setStartTicks(0);
 	}
 
-	switch(m_pFSM->getCurrentStateID()){
+	switch (m_pFSM->getCurrentStateID()){
 		default:
 			break;
 
