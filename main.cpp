@@ -20,6 +20,9 @@
 
 int SDL_main(int argc, char** argv)
 {
+	char buf[MAX_PATH];
+	GetCurrentDirectoryA(sizeof(buf), buf);
+	printf("Dir: %s\n", buf);
 	try{
 		// Initialize application
 		App app;

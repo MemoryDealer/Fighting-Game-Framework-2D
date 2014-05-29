@@ -211,7 +211,10 @@ void PlayerManager::update(double dt)
 	for(int i=Player::DBOX1; i<=Player::DBOX2; ++i){
 		for(int j=Player::HBOX_LOWER; j<=Player::HBOX_HEAD; ++j){
 			if (m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j))){
-				printf("DAMAGE!\n");
+				printf("Damage: Red => Blue\n");
+			} 
+			if (m_pBluePlayer->getHitbox(i).intersects(m_pRedPlayer->getHitbox(j))){
+				printf("Damage: Blue => Red\n");
 			}
 		}
 	}

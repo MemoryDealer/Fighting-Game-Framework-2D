@@ -225,7 +225,7 @@ void PlayerImpl::updateMove(double dt)
 
 		case PlayerState::WALKING_BACK:
 			m_pCurrentMove = m_moves[MoveID::WALKING_BACK];
-			m_xVel = static_cast<int>(m_xVel * 0.85);
+			m_xVel = static_cast<int>(m_xVel * 0.90);
 			break;
 
 		case PlayerState::BLOCKING:
@@ -295,6 +295,20 @@ void PlayerImpl::sendMessage(const Message& msg)
 	printf("Received message %d\n", msg.type);
 	if (msg.type == MessageType::TYPE_ACTIVATE)
 		m_dead = true;
+}
+
+// ================================================ //
+
+void PlayerImpl::setColliding(const bool colliding)
+{
+	m_colliding = colliding;
+
+	if (m_colliding){
+		if (m_pFSM->getCurrentStateID() == PlayerState::IDLE){
+			m_pFSM->setCurrentState(PlayerState::WALKING_BACK);
+			m_xVel = (m_playerSide == PlayerSide::LEFT) ? -m_xMax : m_xMax;
+		}
+	}
 }
 
 // ================================================ //

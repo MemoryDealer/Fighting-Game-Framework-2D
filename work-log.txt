@@ -147,6 +147,8 @@
 -Added PlayerManager::updateCamera() and moved most of the code from update() to it and removed a few unnecessary std::abs() calls. 
 -Added Player::toggleDrawHitboxes(). 
 -Made the stage start in the exact middle rather than the far right side. 
+-The converted project from Visual Studio 2010 was linking very slowly (7-10 seconds). Tried changing many options to no avail. Created a brand new project in 
+	Visual Studio 2013 and added all files and builded; now it's extremely fast. Linking time is less than a second.
 
 #TODO
 -Remove c_str() on std::strings where feasible
@@ -155,6 +157,7 @@
 -NET
 -LoadResources in Engine
 -GUILayer
+-For release builds enable code optimization in Project Options->C/C++->Optimization
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 

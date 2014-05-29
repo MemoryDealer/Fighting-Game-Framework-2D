@@ -106,15 +106,11 @@ inline const int PlayerImpl::getVelocityY(void) const{
 // Setter functions
 inline void PlayerImpl::setSide(const int side){ 
 	m_playerSide = side; 
-	m_flip = (side == PlayerSide::LEFT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL; 
+	m_flip = (side == PlayerSide::LEFT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 }
 
 inline void PlayerImpl::setInput(const int input, const bool down){ 
 	m_input[input] = down; 
-}
-
-inline void PlayerImpl::setColliding(const bool colliding){ 
-	m_colliding = colliding; 
 }
 
 inline void PlayerImpl::toggleDrawHitboxes(void){

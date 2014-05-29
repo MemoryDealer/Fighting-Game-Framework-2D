@@ -115,7 +115,7 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_a: // this value should eventually be retrieved from the Player class
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, false);
-			break;
+			break; 
 
 		case SDLK_d:
 			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, false);
@@ -123,7 +123,7 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_LEFT:
 			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_LEFT, false);
-			break;
+			break; 
 
 		case SDLK_RIGHT:
 			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_RIGHT, false);

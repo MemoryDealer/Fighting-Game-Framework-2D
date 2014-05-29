@@ -1,9 +1,0 @@
-[core]
-layers=1
-
-[layer1]
-texture=D:/2D/B/a.jpg
-w=425
-h=220
-scrollX=0
-scrollY=0

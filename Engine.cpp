@@ -130,7 +130,7 @@ bool Engine::CustomAssertFunction(bool exp, char* desc, int line, char* file)
 			ret = true;
 		}
 
-		delete msg;
+		delete[] msg;
 		return ret;
 #endif
 	}
