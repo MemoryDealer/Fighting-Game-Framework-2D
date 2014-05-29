@@ -1,0 +1,252 @@
+[core]
+useSpriteSheet=true
+spriteSheet=Data/SpriteSheets/corpse.png
+
+# The default clipping rectangle for the frame in the sprite sheet
+[cell]
+x=0
+y=1
+w=60
+h=104
+
+[size]
+w=220
+h=254
+
+[movement]
+xAccel=50
+yAccel=5
+xMax=300
+yMax=10
+
+[hitbox]
+x=3
+y=0
+w=170
+h=107
+
+[moves]
++(IDLE)
+	[core]{
+		numFrames=4
+		frameGap=400
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=1
+		repeatFrame=0
+		reverse=0
+		xScale=1
+		yScale=1
+	}
+	
+	[input]{
+		sequence=0
+		#example Special seq: BACK,BACK,LP
+		#timeout is the maximum time(ms) between inputs in the sequence
+		timeout=500
+	}
+	
+	[cancels]{
+		
+	}
+	
+	[locomotion]{
+		untilAdjacent=1
+		freezeFrame=2
+		xVel=1
+		yVel=0
+	}
+	
+	[frame1]{
+		#src
+		x=1
+		y=1
+		w=63
+		h=107
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame2]{
+		x=65
+		
+		hbox1=(-10,70,111,50)
+		hbox2=(-10,20,100,55)
+		hbox3=(0,-38,160,60)
+		hbox4=(10,-85,53,35)
+	}
+	
+	[frame3]{
+		x=129
+		
+		hbox1=(-10,70,111,50)
+		hbox2=(-10,20,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame4]{
+		x=192
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,60,35)
+	}
+-(IDLE)
+
++(WALKING_FORWARD)
+	[core]{
+		numFrames=5
+		frameGap=150
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=1
+		repeatFrame=0
+		reverse=0
+	}
+	
+	[cancels]{
+		
+	}
+	
+	[locomotion]{
+		xVel=0
+		yVel=0
+	}
+	
+	[frame1]{
+		x=1
+		y=107
+		w=64
+		h=107
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+		dbox1=(100,-50,50,50)
+		cbox2=(100,50,50,50)
+	}
+	
+	[frame2]{
+		x=65
+		
+		hbox1=(-10,70,111,50)
+		hbox2=(-10,20,100,55)
+		hbox3=(0,-38,160,60)
+		hbox4=(10,-85,53,35)
+		dbox1=(100,-50,50,50)
+		cbox2=(100,50,50,50)
+	}
+	
+	[frame3]{
+		x=129
+		
+		hbox1=(-10,70,111,50)
+		hbox2=(-10,20,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+		dbox1=(100,-50,50,50)
+		cbox2=(100,50,50,50)
+	}
+	
+	[frame4]{
+		x=192
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,60,35)
+		dbox1=(100,-50,50,50)
+		dbox2=(100,50,50,50)
+	}
+	
+	[frame5]{
+		x=256
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,60,35)
+		dbox1=(100,-50,50,50)
+		dbox2=(100,50,50,50)
+	}
+-(WALKING_FORWARD)
+
++(WALKING_BACK)
+	[core]{
+		numFrames=5
+		frameGap=150
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=1
+		repeatFrame=0
+		reverse=0
+	}
+	
+	[cancels]{
+		
+	}
+	
+	[locomotion]{
+		xVel=0
+		yVel=0
+	}
+	
+	[frame1]{
+		x=448
+		y=107
+		w=63
+		h=107
+	
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,60,35)
+	}
+	
+	[frame2]{
+		x=384
+		
+		hbox1=(-10,69,111,50)/t=0
+		hbox2=(-10,19,100,55)/t=0
+		hbox3=(0,-38,155,60)/t=0
+		hbox4=(10,-85,60,35)/t=0
+	}
+	
+	[frame3]{
+		x=320
+		
+		hbox1=(-10,69,111,50)/t=0
+		hbox2=(-10,19,100,55)/t=0
+		hbox3=(0,-38,155,60)/t=0
+		hbox4=(10,-85,60,35)/t=0
+	}
+	
+	[frame4]{
+		x=256
+		
+		hbox1=(-10,69,111,50)/t=0
+		hbox2=(-10,19,100,55)/t=0
+		hbox3=(0,-38,155,60)/t=0
+		hbox4=(10,-85,60,35)/t=0
+	}
+	
+	[frame5]{
+		x=192
+		
+		hbox1=(-10,69,111,50)/t=0
+		hbox2=(-10,19,100,55)/t=0
+		hbox3=(0,-38,155,60)/t=0
+		hbox4=(10,-85,60,35)/t=0
+	}
+-(WALKING_BACK)
+
+
