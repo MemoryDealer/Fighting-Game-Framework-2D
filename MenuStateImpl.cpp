@@ -6,6 +6,8 @@
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
+#include "GUIManager.hpp"
+#include "GUIMenuState.hpp"
 #include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
@@ -35,6 +37,9 @@ MenuStateImpl::~MenuStateImpl(void)
 void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
+
+	// This is where the rendering begins, load GUIManager singleton
+	new GUIManager();
 
 	// Allocate GameManager
 	new GameManager();
@@ -68,6 +73,7 @@ void MenuStateImpl::exit(void)
 	// m_pObjectManager destructed automatically
 
 	// Free all singletons
+	delete GUIManager::getSingletonPtr();
 	delete GameManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
@@ -104,6 +110,8 @@ void MenuStateImpl::update(double dt)
 {
 	// As soon as game state is popped exit the menu state (since skipping menu state for now)
 	//m_pMenuState->popAppState();
+
+	GUIManager::getSingletonPtr()->getMenuState()->update(dt);
 }
 
 // ================================================ //

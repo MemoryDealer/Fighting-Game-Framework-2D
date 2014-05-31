@@ -158,7 +158,11 @@
 
 #5/31/14
 -Added Widget class for GUI widgets.
--Subclassed Widget to create a Button. 
+-Subclassed Widget to create a Button.
+-Was considering creating a totally modular GUI system (run completely by config files), but I think it's way too much work for this project. GUI layers for each
+	state will be hard-coded, yet still customizable through config files (textures, positions, etc).  
+-Created GUI and GUILayer class. The GUI class is abstract and holds a dynamically sized list of GUILayer's. It is subclassed for each state's GUI. 
+-Create GUIManager singleton to allocate and hold each GUI per state. 
 
 #TODO
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 

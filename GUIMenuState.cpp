@@ -1,37 +1,27 @@
 // ================================================ //
 
-#include "GUI.hpp"
-#include "Config.hpp"
+#include "GUIMenuState.hpp"
 
 // ================================================ //
 
-GUI::GUI(void) :
-m_layers()
-{
-	
-}
-
-// ================================================ //
-
-GUI::~GUI(void)
-{
-
-}
-
-// ================================================ //
-// ================================================ //
-
-GUILayer::GUILayer(void) :
-m_widgets()
+GUIMenuState::GUIMenuState(const std::string& file) :
+GUI()
 {
 
 }
 
 // ================================================ //
 
-GUILayer::~GUILayer(void)
+GUIMenuState::~GUIMenuState(void)
 {
 
+}
+
+// ================================================ //
+
+void GUIMenuState::update(double dt)
+{
+	printf("Updating menu state...\n");
 }
 
 // ================================================ //

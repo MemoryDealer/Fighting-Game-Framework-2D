@@ -1,37 +1,28 @@
 // ================================================ //
 
+#ifndef __GUIMENUSTATE_HPP__
+#define __GUIMENUSTATE_HPP__
+
+// ================================================ //
+
 #include "GUI.hpp"
-#include "Config.hpp"
 
 // ================================================ //
 
-GUI::GUI(void) :
-m_layers()
+class GUIMenuState : public GUI
 {
-	
-}
+public:
+	explicit GUIMenuState(const std::string& file);
+	virtual ~GUIMenuState(void);
+
+	virtual void update(double dt);
+
+private:
+
+};
 
 // ================================================ //
 
-GUI::~GUI(void)
-{
-
-}
-
-// ================================================ //
-// ================================================ //
-
-GUILayer::GUILayer(void) :
-m_widgets()
-{
-
-}
-
-// ================================================ //
-
-GUILayer::~GUILayer(void)
-{
-
-}
+#endif
 
 // ================================================ //

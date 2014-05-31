@@ -98,6 +98,8 @@
     <ClInclude Include="..\GameState.hpp" />
     <ClInclude Include="..\GameStateImpl.hpp" />
     <ClInclude Include="..\GUI.hpp" />
+    <ClInclude Include="..\GUIManager.hpp" />
+    <ClInclude Include="..\GUIMenuState.hpp" />
     <ClInclude Include="..\Hitbox.hpp" />
     <ClInclude Include="..\Input.hpp" />
     <ClInclude Include="..\Log.hpp" />
@@ -140,6 +142,8 @@
     <ClCompile Include="..\GameState.cpp" />
     <ClCompile Include="..\GameStateImpl.cpp" />
     <ClCompile Include="..\GUI.cpp" />
+    <ClCompile Include="..\GUIManager.cpp" />
+    <ClCompile Include="..\GUIMenuState.cpp" />
     <ClCompile Include="..\Hitbox.cpp" />
     <ClCompile Include="..\Log.cpp" />
     <ClCompile Include="..\LogImpl.cpp" />

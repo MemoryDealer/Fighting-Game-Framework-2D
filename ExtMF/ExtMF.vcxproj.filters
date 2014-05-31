@@ -19,6 +19,12 @@
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{2fb82bbd-8663-4e84-9d22-09b3e140add4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\MenuState">
+      <UniqueIdentifier>{79e6fe9c-a065-411d-afb6-7529ed54ff6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MenuState">
+      <UniqueIdentifier>{d6f8827f-c00c-462e-9b2b-a1129d0677b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\App.hpp">
@@ -67,12 +73,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\LogImpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MenuState.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MenuStateImpl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\MessageRouter.hpp">
@@ -144,6 +144,18 @@
     <ClInclude Include="..\GUI.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\MenuState.hpp">
+      <Filter>Header Files\MenuState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MenuStateImpl.hpp">
+      <Filter>Header Files\MenuState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUIMenuState.hpp">
+      <Filter>Header Files\MenuState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUIManager.hpp">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp">
@@ -189,12 +201,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MenuState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MenuStateImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\MessageRouter.cpp">
@@ -255,6 +261,18 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="..\GUI.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MenuState.cpp">
+      <Filter>Source Files\MenuState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MenuStateImpl.cpp">
+      <Filter>Source Files\MenuState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUIMenuState.cpp">
+      <Filter>Source Files\MenuState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUIManager.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>

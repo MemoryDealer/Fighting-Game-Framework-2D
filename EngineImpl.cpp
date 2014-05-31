@@ -33,7 +33,7 @@ EngineImpl::EngineImpl(void)
 	Log::getSingletonPtr()->logMessage("SDL_ttf initialized");
 
 	// Load engine config file
-	Config cfg("Data/Config/engine.cfg");
+	Config cfg("ExtMF.cfg");
 	if (!cfg.isLoaded()){
 		// Generate a default config file?
 		throw std::exception("Failed to load engine.cfg");
