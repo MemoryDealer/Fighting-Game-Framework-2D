@@ -15,7 +15,7 @@ class GUILayer;
 // ================================================ //
 
 typedef std::list<std::shared_ptr<Widget>> WidgetList;
-typedef std::vector<GUILayer> GUILayerList;
+typedef std::vector<std::shared_ptr<GUILayer>> GUILayerList;
 
 // ================================================ //
 
@@ -25,8 +25,12 @@ public:
 	explicit GUI(void);
 	virtual ~GUI(void);
 
-	void addLayer(GUILayer& layer);
+	void addLayer(std::shared_ptr<GUILayer> layer);
 
+	// Setter functions
+	void setCurrentLayer(const int n);
+
+	// Getter functions
 	GUILayer* getCurrentLayer(void) const;
 
 	virtual void update(double dt) = 0;
@@ -38,8 +42,12 @@ private:
 
 // ================================================ //
 
-inline void GUI::addLayer(GUILayer& layer){
+inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 	m_layers.push_back(layer);
+}
+
+inline void GUI::setCurrentLayer(const int n){
+	m_pCurrentLayer = m_layers[n].get();
 }
 
 inline GUILayer* GUI::getCurrentLayer(void) const{
@@ -55,6 +63,8 @@ public:
 	virtual ~GUILayer(void);
 
 	void addWidget(std::shared_ptr<Widget> widget);
+
+	virtual void update(double dt) = 0;
 
 private:
 	WidgetList m_widgets;

@@ -12,6 +12,8 @@ template<> GUIManager* Singleton<GUIManager>::msSingleton = nullptr;
 
 GUIManager::GUIManager(void) :
 m_pGUIMenuState(nullptr),
+m_pGUILobbyState(nullptr),
+m_pGUIGameState(nullptr),
 m_GUIMenuStateFile(),
 m_GUILobbyStateFile(),
 m_GUIGameStateFile()

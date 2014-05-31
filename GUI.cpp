@@ -6,7 +6,8 @@
 // ================================================ //
 
 GUI::GUI(void) :
-m_layers()
+m_layers(),
+m_pCurrentLayer(nullptr)
 {
 	
 }
