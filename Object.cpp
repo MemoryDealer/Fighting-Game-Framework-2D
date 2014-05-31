@@ -6,8 +6,8 @@
 
 // ================================================ //
 
-Object::Object(void)
-	:	m_pImpl(nullptr)
+Object::Object(void) :
+m_pImpl(nullptr)
 {
 	MessageRouter::getSingletonPtr()->addObject(static_cast<Object*>(this));
 }

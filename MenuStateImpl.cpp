@@ -38,6 +38,7 @@ void MenuStateImpl::enter(void)
 
 	// Allocate GameManager
 	new GameManager();
+	GameManager::getSingletonPtr()->setMode(GameMode::SERVER);
 
 	// Allocate StageManager
 	new StageManager();
@@ -51,10 +52,11 @@ void MenuStateImpl::enter(void)
 	new Camera();
 
 	// Allocate Network
-	new Server();
+	if (GameManager::getSingletonPtr()->getMode() == GameMode::SERVER)
+		new Server();
 
 	// Push game state and start it
-	m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
+	//m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
 }
 
 // ================================================ //
@@ -101,7 +103,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 void MenuStateImpl::update(double dt)
 {
 	// As soon as game state is popped exit the menu state (since skipping menu state for now)
-	m_pMenuState->popAppState();
+	//m_pMenuState->popAppState();
 }
 
 // ================================================ //

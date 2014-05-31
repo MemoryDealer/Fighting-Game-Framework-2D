@@ -208,7 +208,7 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 		Log::getSingletonPtr()->logMessage("No hitbox found for \"" + str + "\"");
 		return rc;
 	}
-		
+	
 	// Should look like "(0,0,100,100)
 	char c;
 	std::istringstream parse(str);

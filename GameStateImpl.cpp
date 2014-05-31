@@ -19,7 +19,7 @@ GameStateImpl::GameStateImpl(void)
 	:	m_bQuit(false),
 		m_pObjectManager(new ObjectManager())
 {
-
+	
 }
 
 // ================================================ //

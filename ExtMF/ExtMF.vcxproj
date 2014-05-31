@@ -85,6 +85,8 @@
     <ClInclude Include="..\App.hpp" />
     <ClInclude Include="..\AppState.hpp" />
     <ClInclude Include="..\AppStateManager.hpp" />
+    <ClInclude Include="..\Button.hpp" />
+    <ClInclude Include="..\ButtonImpl.hpp" />
     <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Config.hpp" />
     <ClInclude Include="..\Engine.hpp" />
@@ -95,6 +97,7 @@
     <ClInclude Include="..\GameManager.hpp" />
     <ClInclude Include="..\GameState.hpp" />
     <ClInclude Include="..\GameStateImpl.hpp" />
+    <ClInclude Include="..\GUI.hpp" />
     <ClInclude Include="..\Hitbox.hpp" />
     <ClInclude Include="..\Input.hpp" />
     <ClInclude Include="..\Log.hpp" />
@@ -118,10 +121,14 @@
     <ClInclude Include="..\StageManager.hpp" />
     <ClInclude Include="..\stdafx.hpp" />
     <ClInclude Include="..\Timer.hpp" />
+    <ClInclude Include="..\Widget.hpp" />
+    <ClInclude Include="..\WidgetImpl.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp" />
     <ClCompile Include="..\AppStateManager.cpp" />
+    <ClCompile Include="..\Button.cpp" />
+    <ClCompile Include="..\ButtonImpl.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />
     <ClCompile Include="..\Engine.cpp" />
@@ -132,6 +139,7 @@
     <ClCompile Include="..\GameManager.cpp" />
     <ClCompile Include="..\GameState.cpp" />
     <ClCompile Include="..\GameStateImpl.cpp" />
+    <ClCompile Include="..\GUI.cpp" />
     <ClCompile Include="..\Hitbox.cpp" />
     <ClCompile Include="..\Log.cpp" />
     <ClCompile Include="..\LogImpl.cpp" />
@@ -152,12 +160,15 @@
     <ClCompile Include="..\StageManager.cpp" />
     <ClCompile Include="..\stdafx.cpp" />
     <ClCompile Include="..\Timer.cpp" />
+    <ClCompile Include="..\Widget.cpp" />
+    <ClCompile Include="..\WidgetImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\work-log.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

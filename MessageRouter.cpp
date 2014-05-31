@@ -46,8 +46,17 @@ MessageRouter::~MessageRouter(void)
 
 // ================================================ //
 
+void MessageRouter::addObject(Object* pObject)
+{
+	m_objects.push_back(pObject);
+}
+
+// ================================================ //
+
 void MessageRouter::removeObject(const int id)
 {
+	Log::getSingletonPtr()->logMessage("Removing object ID " + Engine::toString(id) + " from MessageRouter...");
+
 	ObjectList::iterator itr;
 	for(itr = m_objects.begin();
 		itr != m_objects.end();

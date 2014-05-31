@@ -26,7 +26,7 @@ namespace GameMode{
 class GameManager : public Singleton<GameManager>
 {
 public:
-	GameManager(void);
+	explicit GameManager(void);
 	~GameManager(void);
 
 	// Getter functions

@@ -156,7 +156,13 @@
 #5/30/14
 -Added GameManager singleton class to manage information across all states. 
 
+#5/31/14
+-Added Widget class for GUI widgets.
+-Subclassed Widget to create a Button. 
+
 #TODO
+*Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
+	The lobby can be treated as always being a server, unless connecting to another server. 
 -Remove c_str() on std::strings where feasible
 -Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
