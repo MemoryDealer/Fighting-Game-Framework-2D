@@ -153,6 +153,9 @@
 -So the actual cause of the long linking times was the /FR option being set from generating the dependency graph. It can be disabled by going to Project Properties->C/C++->All Options->Enable Browse Information=No.
 	Still, the new 2013 project is much more clean and efficient. 
 
+#5/30/14
+-Added GameManager singleton class to manage information across all states. 
+
 #TODO
 -Remove c_str() on std::strings where feasible
 -Add doxygen to all code and more logging

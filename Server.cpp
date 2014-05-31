@@ -11,8 +11,8 @@ template<> Server* Singleton<Server>::msSingleton = nullptr;
 
 // ================================================ //
 
-Server::Server(void)
-	:	m_port(666),
+Server::Server(const int port)
+	:	m_port(port),
 		m_sock(nullptr),
 		m_active(false)
 {

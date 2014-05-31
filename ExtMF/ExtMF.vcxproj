@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5EA59ED4-B5C4-4D37-8932-46FC24FF5815}</ProjectGuid>
+    <RootNamespace>ExtMF</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>D:\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>%SDL%\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>D:\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>%SDL%\lib\x86;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <BrowseInformation>false</BrowseInformation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\App.hpp" />
+    <ClInclude Include="..\AppState.hpp" />
+    <ClInclude Include="..\AppStateManager.hpp" />
+    <ClInclude Include="..\Camera.hpp" />
+    <ClInclude Include="..\Config.hpp" />
+    <ClInclude Include="..\Engine.hpp" />
+    <ClInclude Include="..\EngineImpl.hpp" />
+    <ClInclude Include="..\FighterMetadata.hpp" />
+    <ClInclude Include="..\FSM.hpp" />
+    <ClInclude Include="..\FState.hpp" />
+    <ClInclude Include="..\GameManager.hpp" />
+    <ClInclude Include="..\GameState.hpp" />
+    <ClInclude Include="..\GameStateImpl.hpp" />
+    <ClInclude Include="..\Hitbox.hpp" />
+    <ClInclude Include="..\Input.hpp" />
+    <ClInclude Include="..\Log.hpp" />
+    <ClInclude Include="..\LogImpl.hpp" />
+    <ClInclude Include="..\MenuState.hpp" />
+    <ClInclude Include="..\MenuStateImpl.hpp" />
+    <ClInclude Include="..\MessageRouter.hpp" />
+    <ClInclude Include="..\Move.hpp" />
+    <ClInclude Include="..\Object.hpp" />
+    <ClInclude Include="..\ObjectImpl.hpp" />
+    <ClInclude Include="..\ObjectManager.hpp" />
+    <ClInclude Include="..\Player.hpp" />
+    <ClInclude Include="..\PlayerData.hpp" />
+    <ClInclude Include="..\PlayerImpl.hpp" />
+    <ClInclude Include="..\PlayerManager.hpp" />
+    <ClInclude Include="..\Server.hpp" />
+    <ClInclude Include="..\Singleton.hpp" />
+    <ClInclude Include="..\Stage.hpp" />
+    <ClInclude Include="..\StageEffect.hpp" />
+    <ClInclude Include="..\StageImpl.hpp" />
+    <ClInclude Include="..\StageManager.hpp" />
+    <ClInclude Include="..\stdafx.hpp" />
+    <ClInclude Include="..\Timer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\App.cpp" />
+    <ClCompile Include="..\AppStateManager.cpp" />
+    <ClCompile Include="..\Camera.cpp" />
+    <ClCompile Include="..\Config.cpp" />
+    <ClCompile Include="..\Engine.cpp" />
+    <ClCompile Include="..\EngineImpl.cpp" />
+    <ClCompile Include="..\FighterMetadata.cpp" />
+    <ClCompile Include="..\FSM.cpp" />
+    <ClCompile Include="..\FState.cpp" />
+    <ClCompile Include="..\GameManager.cpp" />
+    <ClCompile Include="..\GameState.cpp" />
+    <ClCompile Include="..\GameStateImpl.cpp" />
+    <ClCompile Include="..\Hitbox.cpp" />
+    <ClCompile Include="..\Log.cpp" />
+    <ClCompile Include="..\LogImpl.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\MenuState.cpp" />
+    <ClCompile Include="..\MenuStateImpl.cpp" />
+    <ClCompile Include="..\MessageRouter.cpp" />
+    <ClCompile Include="..\Move.cpp" />
+    <ClCompile Include="..\Object.cpp" />
+    <ClCompile Include="..\ObjectImpl.cpp" />
+    <ClCompile Include="..\ObjectManager.cpp" />
+    <ClCompile Include="..\Player.cpp" />
+    <ClCompile Include="..\PlayerImpl.cpp" />
+    <ClCompile Include="..\PlayerManager.cpp" />
+    <ClCompile Include="..\Server.cpp" />
+    <ClCompile Include="..\Stage.cpp" />
+    <ClCompile Include="..\StageImpl.cpp" />
+    <ClCompile Include="..\StageManager.cpp" />
+    <ClCompile Include="..\stdafx.cpp" />
+    <ClCompile Include="..\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\work-log.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

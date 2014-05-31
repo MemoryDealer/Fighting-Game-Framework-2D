@@ -2,6 +2,7 @@
 
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
+#include "GameManager.hpp"
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
@@ -35,6 +36,9 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
+	// Allocate GameManager
+	new GameManager();
+
 	// Allocate StageManager
 	new StageManager();
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
@@ -62,6 +66,7 @@ void MenuStateImpl::exit(void)
 	// m_pObjectManager destructed automatically
 
 	// Free all singletons
+	delete GameManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();

@@ -12,7 +12,7 @@
 class Server : public Singleton<Server>
 {
 public:
-	explicit Server(void);
+	explicit Server(const int port = 666);
 	~Server(void);
 
 	void testRecv(void);
