@@ -25,6 +25,12 @@
     <Filter Include="Source Files\MenuState">
       <UniqueIdentifier>{d6f8827f-c00c-462e-9b2b-a1129d0677b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Font">
+      <UniqueIdentifier>{fbb3bd02-90f7-4d24-ba34-5bbe71909c61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Font">
+      <UniqueIdentifier>{041f19d4-91ac-4721-89ec-11b82205bd3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\App.hpp">
@@ -156,6 +162,15 @@
     <ClInclude Include="..\GUIManager.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Label.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Font.hpp">
+      <Filter>Header Files\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FontManager.hpp">
+      <Filter>Header Files\Font</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp">
@@ -274,6 +289,15 @@
     </ClCompile>
     <ClCompile Include="..\GUIManager.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Font.cpp">
+      <Filter>Source Files\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FontManager.cpp">
+      <Filter>Source Files\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Label.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

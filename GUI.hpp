@@ -18,7 +18,7 @@ typedef std::list<std::shared_ptr<Widget>> WidgetList;
 typedef std::vector<std::shared_ptr<GUILayer>> GUILayerList;
 
 // ================================================ //
-
+/* An object for each game state to process all GUI operations */
 class GUI
 {
 public:
@@ -55,6 +55,7 @@ inline GUILayer* GUI::getCurrentLayer(void) const{
 }
 
 // ================================================ //
+// ================================================ //
 
 class GUILayer
 {
@@ -64,6 +65,7 @@ public:
 
 	void addWidget(std::shared_ptr<Widget> widget);
 
+	virtual void render(void);
 	virtual void update(double dt) = 0;
 
 private:

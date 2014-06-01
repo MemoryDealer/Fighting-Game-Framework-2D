@@ -37,6 +37,13 @@ namespace GUIMenuStateLayer{
 	{
 	public:
 
+		enum Widget{
+			BUTTON_CAMPAIGN = 0,
+			BUTTON_ARCADE,
+			BUTTON_OPTIONS,
+			BUTTON_QUIT
+		};
+
 		virtual void update(double dt);
 	};
 

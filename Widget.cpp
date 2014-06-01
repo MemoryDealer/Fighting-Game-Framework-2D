@@ -5,7 +5,7 @@
 
 // ================================================ //
 
-Widget::Widget(void) :
+Widget::Widget(const int id) :
 m_pImpl(nullptr) // Widget is abstract so leave m_pImpl nullptr
 {
 	
@@ -20,6 +20,13 @@ Widget::~Widget(void)
 
 // ================================================ //
 // Getter functions
+// ================================================ //
+
+const int Widget::getWidgetID(void) const
+{
+	return m_pImpl->getWidgetID();
+}
+
 // ================================================ //
 
 const bool Widget::isEnabled(void) const

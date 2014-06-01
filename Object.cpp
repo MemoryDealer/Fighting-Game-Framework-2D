@@ -35,9 +35,23 @@ void Object::setTextureCoordinates(const int x, const int y, const int w, const 
 
 // ================================================ //
 
+void Object::setLabel(const std::string& label)
+{
+	return m_pImpl->setLabel(label);
+}
+
+// ================================================ //
+
 void Object::setPosition(const int x, const int y)
 {
 	return m_pImpl->setPosition(x, y);
+}
+
+// ================================================ //
+
+void Object::setPosition(const int x, const int y, const int w, const int h)
+{
+	return m_pImpl->setPosition(x, y, w, h);
 }
 
 // ================================================ //

@@ -25,6 +25,7 @@ public:
 	virtual void resetFilePointer(void);
 	virtual std::string& parseValue(const std::string& section, const std::string& value);
 	virtual const int parseIntValue(const std::string& section, const std::string& value);
+	virtual SDL_Rect parseRect(const std::string& section, const std::string& value);
 
 	// Getter functions
 	const bool isLoaded(void) const;

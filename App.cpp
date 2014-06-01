@@ -5,6 +5,8 @@
 #include "MessageRouter.hpp"
 #include "MenuState.hpp"
 #include "GameState.hpp"
+#include "GUIManager.hpp"
+#include "FontManager.hpp"
 
 // ================================================ //
 
@@ -31,6 +33,13 @@ App::App(void)
 	MenuState::create(m_pAppStateManager, MENU_STATE);
 	GameState::create(m_pAppStateManager, GAME_STATE);
 
+	// Allocate FontManager singleton
+	new FontManager();
+	FontManager::getSingletonPtr()->reloadAll();
+
+	// Allocate GUIManager singleton for use across all states
+	new GUIManager();
+
 	Log::getSingletonPtr()->logMessage("App initialized!");
 
 	// Start entry state
@@ -43,6 +52,8 @@ App::App(void)
 App::~App(void)
 {
 	delete m_pAppStateManager;
+	delete GUIManager::getSingletonPtr();
+	delete FontManager::getSingletonPtr();
 	delete Engine::getSingletonPtr(); // Engine must be available for AppState's destruction (ObjectManager)
 	delete MessageRouter::getSingletonPtr();
 

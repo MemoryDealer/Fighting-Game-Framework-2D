@@ -4,10 +4,11 @@
 
 // ================================================ //
 
-WidgetImpl::WidgetImpl(void) :
+WidgetImpl::WidgetImpl(const int id) :
+m_widgetID(id),
 m_enabled(true)
 {
-
+	
 }
 
 // ================================================ //

@@ -1,29 +1,31 @@
 // ================================================ //
 
-#ifndef __BUTTON_HPP__
-#define __BUTTON_HPP__
+#ifndef __FONT_HPP__
+#define __FONT_HPP__
 
 // ================================================ //
 
-#include "Widget.hpp"
+#include "stdafx.hpp"
 
 // ================================================ //
 
-class ButtonImpl;
-
-// ================================================ //
-
-class Button : public Widget
+class Font
 {
 public:
-	explicit Button(const int id);
-	virtual ~Button(void);
+	explicit Font(const std::string& ttfFile, const int size);
+	~Font(void);
 
-	virtual void update(double dt);
+	TTF_Font* get(void) const;
 
 private:
-	std::shared_ptr<ButtonImpl> m_pImpl;
+	TTF_Font* m_pFont;
 };
+
+// ================================================ //
+
+inline TTF_Font* Font::get(void) const{
+	return m_pFont;
+}
 
 // ================================================ //
 

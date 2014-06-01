@@ -1,0 +1,9 @@
+[core]
+
+[layer.root]
+button.campaign:pos=(10,10,150,100)
+button.campaign:label=Fuck a
+
+
+
+

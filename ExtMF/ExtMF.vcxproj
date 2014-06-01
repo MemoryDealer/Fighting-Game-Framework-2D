@@ -92,6 +92,8 @@
     <ClInclude Include="..\Engine.hpp" />
     <ClInclude Include="..\EngineImpl.hpp" />
     <ClInclude Include="..\FighterMetadata.hpp" />
+    <ClInclude Include="..\Font.hpp" />
+    <ClInclude Include="..\FontManager.hpp" />
     <ClInclude Include="..\FSM.hpp" />
     <ClInclude Include="..\FState.hpp" />
     <ClInclude Include="..\GameManager.hpp" />
@@ -102,6 +104,7 @@
     <ClInclude Include="..\GUIMenuState.hpp" />
     <ClInclude Include="..\Hitbox.hpp" />
     <ClInclude Include="..\Input.hpp" />
+    <ClInclude Include="..\Label.hpp" />
     <ClInclude Include="..\Log.hpp" />
     <ClInclude Include="..\LogImpl.hpp" />
     <ClInclude Include="..\MenuState.hpp" />
@@ -136,6 +139,8 @@
     <ClCompile Include="..\Engine.cpp" />
     <ClCompile Include="..\EngineImpl.cpp" />
     <ClCompile Include="..\FighterMetadata.cpp" />
+    <ClCompile Include="..\Font.cpp" />
+    <ClCompile Include="..\FontManager.cpp" />
     <ClCompile Include="..\FSM.cpp" />
     <ClCompile Include="..\FState.cpp" />
     <ClCompile Include="..\GameManager.cpp" />
@@ -145,6 +150,7 @@
     <ClCompile Include="..\GUIManager.cpp" />
     <ClCompile Include="..\GUIMenuState.cpp" />
     <ClCompile Include="..\Hitbox.cpp" />
+    <ClCompile Include="..\Label.cpp" />
     <ClCompile Include="..\Log.cpp" />
     <ClCompile Include="..\LogImpl.cpp" />
     <ClCompile Include="..\main.cpp" />

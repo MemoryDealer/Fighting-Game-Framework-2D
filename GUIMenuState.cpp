@@ -2,6 +2,7 @@
 
 #include "GUIMenuState.hpp"
 #include "Config.hpp"
+#include "Button.hpp"
 
 // ================================================ //
 
@@ -14,8 +15,26 @@ GUI()
 		throw std::exception("Failed to load GUI config file for MenuState");
 	}
 
-	// Add layers
-	this->addLayer(std::shared_ptr<GUILayer>(new GUIMenuStateLayer::Root()));
+	// Get theme textures
+	std::string buttonTexture;
+	Config e("ExtMF.cfg");
+	Config theme(e.parseValue("GUI", "theme"));
+	if (theme.isLoaded()){
+		buttonTexture = theme.parseValue("button", "tex");
+	}
+
+	/* Add layers */
+	// Root layer
+	std::shared_ptr<GUILayer> root(new GUIMenuStateLayer::Root());
+	
+	// Buttons
+	std::shared_ptr<Button> buttonCampaign(new Button(GUIMenuStateLayer::Root::BUTTON_CAMPAIGN));
+	buttonCampaign->setTextureFile(buttonTexture);
+	buttonCampaign->setPosition(c.parseRect("layer.root", "button.campaign:pos"));
+	buttonCampaign->setLabel(c.parseValue("layer.root", "button.campaign:label"));
+	root->addWidget(buttonCampaign);
+
+	this->addLayer(root);
 
 	this->setCurrentLayer(GUIMenuState::Layer::ROOT);
 }
@@ -34,9 +53,8 @@ void GUIMenuState::update(double dt)
 	printf("Updating menu state...\n");
 
 	// Update the current layer
-	if (this->getCurrentLayer() != nullptr){
-		this->getCurrentLayer()->update(dt);
-	}
+	this->getCurrentLayer()->update(dt);
+	this->getCurrentLayer()->render();
 }
 
 // ================================================ //

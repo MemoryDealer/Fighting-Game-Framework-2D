@@ -1,0 +1,9 @@
+[core]
+
+[font.main]
+file=Data/GUI/Fonts/DejaVuSans.ttf
+size=36
+
+[button]
+tex=Data/GUI/Textures/button1.png
+

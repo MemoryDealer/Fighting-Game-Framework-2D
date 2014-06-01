@@ -38,9 +38,6 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	// This is where the rendering begins, load GUIManager singleton
-	new GUIManager();
-
 	// Allocate GameManager
 	new GameManager();
 	GameManager::getSingletonPtr()->setMode(GameMode::SERVER);
@@ -73,7 +70,6 @@ void MenuStateImpl::exit(void)
 	// m_pObjectManager destructed automatically
 
 	// Free all singletons
-	delete GUIManager::getSingletonPtr();
 	delete GameManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
@@ -101,17 +97,54 @@ void MenuStateImpl::resume(void)
 
 void MenuStateImpl::handleInput(SDL_Event& e)
 {
-	
+	if (e.type == SDL_KEYDOWN){
+		switch (e.key.keysym.sym){
+		default:
+			break;
+
+		case SDLK_ESCAPE:
+			m_pMenuState->popAppState();
+			break;
+
+		case SDLK_r:
+			GUIManager::getSingletonPtr()->reloadAll();
+			break;
+		}
+	}
 }
 
 // ================================================ //
 
 void MenuStateImpl::update(double dt)
 {
-	// As soon as game state is popped exit the menu state (since skipping menu state for now)
-	//m_pMenuState->popAppState();
+	SDL_Event e;
+
+	while (SDL_PollEvent(&e)){
+		switch (e.type){
+		default:
+			break;
+
+		case SDL_QUIT:
+			m_pMenuState->popAppState();
+			break;
+
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			this->handleInput(e);
+			break;
+
+		case SDL_WINDOWEVENT:
+			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+				Engine::getSingletonPtr()->setWindowFocused(false);
+			break;
+		}
+	}
+
+	Engine::getSingletonPtr()->clearRenderer();
 
 	GUIManager::getSingletonPtr()->getMenuState()->update(dt);
+
+	Engine::getSingletonPtr()->renderPresent();
 }
 
 // ================================================ //

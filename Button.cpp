@@ -5,8 +5,9 @@
 
 // ================================================ //
 
-Button::Button(void) :
-m_pImpl(new ButtonImpl())
+Button::Button(const int id) :
+Widget(id),
+m_pImpl(new ButtonImpl(id))
 {
 	Object::setPImpl(m_pImpl);
 }
@@ -22,7 +23,7 @@ Button::~Button(void)
 
 void Button::update(double dt)
 {
-	printf("Updating button...\n");
+	return m_pImpl->update(dt);
 }
 
 // ================================================ //

@@ -36,3 +36,14 @@ GUILayer::~GUILayer(void)
 }
 
 // ================================================ //
+
+void GUILayer::render(void)
+{
+	for (WidgetList::iterator itr = m_widgets.begin();
+		itr != m_widgets.end();
+		++itr){
+		(*itr)->render();
+	}
+}
+
+// ================================================ //

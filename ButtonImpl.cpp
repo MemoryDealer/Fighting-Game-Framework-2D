@@ -4,9 +4,11 @@
 
 // ================================================ //
 
-ButtonImpl::ButtonImpl(void)
+ButtonImpl::ButtonImpl(const int id) :
+WidgetImpl(id)
 {
-
+	m_pLabel.reset(new Label());
+	m_renderLabel = true;
 }
 
 // ================================================ //

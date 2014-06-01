@@ -12,7 +12,7 @@
 class ButtonImpl : public WidgetImpl
 {
 public:
-	explicit ButtonImpl(void);
+	explicit ButtonImpl(const int id);
 	virtual ~ButtonImpl(void);
 
 	virtual void update(double dt);

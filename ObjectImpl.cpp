@@ -6,6 +6,7 @@
 #include "Log.hpp"
 #include "FSM.hpp"
 #include "MessageRouter.hpp"
+#include "Label.hpp"
 
 // ================================================ //
 
@@ -15,6 +16,8 @@ ObjectImpl::ObjectImpl(void)
 		m_dst(),
 		m_flip(SDL_FLIP_NONE),
 		m_name("ObjectID "),
+		m_pLabel(nullptr),
+		m_renderLabel(false),
 		m_dead(false),
 		m_pFSM(new FSM(0))
 {
@@ -81,6 +84,11 @@ void ObjectImpl::render(void)
 	//! I hope it's safe to const_cast the renderer pointer
 	SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 
 		m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+
+	if (m_renderLabel){
+		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), m_pLabel->getTexturePtr(),
+			&m_src, &m_dst, 0, nullptr, m_flip);
+	}
 }
 
 // ================================================ //

@@ -120,3 +120,29 @@ const int Config::parseIntValue(const std::string& section, const std::string& v
 }
 
 // ================================================ //
+
+SDL_Rect Config::parseRect(const std::string& section, const std::string& value)
+{
+	SDL_Rect rc;
+	memset(&rc, 0, sizeof(rc));
+
+	std::string str = this->parseValue(section, value);
+
+	if (!str.empty()){
+		// Should look like "(0,0,100,100)
+		char c;
+		std::istringstream parse(str);
+		parse >> c; // eat (
+		parse >> rc.x;
+		parse >> c; // eat ,
+		parse >> rc.y;
+		parse >> c;
+		parse >> rc.w;
+		parse >> c;
+		parse >> rc.h;
+	}
+
+	return rc;
+}
+
+// ================================================ //

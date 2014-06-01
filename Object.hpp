@@ -22,19 +22,20 @@ public:
 	explicit Object(void);
 	virtual ~Object(void);
 
-	// Setter functions
-	virtual bool setTextureFile(const std::string& filename);
-	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
-
-	virtual void setPosition(const int x, const int y);
-	virtual void setPosition(const SDL_Rect& pos);
-
 	// Getter functions
 	virtual SDL_Texture* getTexturePtr(void) const;
 	virtual const SDL_Rect& getPosition(void) const;
 	virtual const std::string& getName(void) const;
 	virtual const int getID(void) const;
 	virtual const bool isDead(void) const;
+
+	// Setter functions
+	virtual bool setTextureFile(const std::string& filename);
+	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
+	virtual void setLabel(const std::string& label);
+	virtual void setPosition(const int x, const int y);
+	virtual void setPosition(const int x, const int y, const int w, const int h);
+	virtual void setPosition(const SDL_Rect& pos);
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);
@@ -53,8 +54,9 @@ private:
 
 // ================================================ //
 
-inline void Object::setPImpl(std::shared_ptr<ObjectImpl> pImpl)
-{ m_pImpl = pImpl; }
+inline void Object::setPImpl(std::shared_ptr<ObjectImpl> pImpl){ 
+	m_pImpl = pImpl; 
+}
 
 // ================================================ //
 

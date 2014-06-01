@@ -17,10 +17,11 @@ class WidgetImpl;
 class Widget : public Object
 {
 public:
-	explicit Widget(void);
+	explicit Widget(const int id);
 	virtual ~Widget(void);
 
 	// Getter functions
+	const int getWidgetID(void) const; // widget ID must differ from object ID
 	const bool isEnabled(void) const;
 
 	// Setter functions
