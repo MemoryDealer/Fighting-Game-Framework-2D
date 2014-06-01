@@ -34,7 +34,7 @@ public:
 	void setMaxFrameRate(const unsigned int max);
 
 	// Getter functions
-	const SDL_Renderer* getRenderer(void) const;
+	SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
 	const int getLogicalWindowWidth(void) const;

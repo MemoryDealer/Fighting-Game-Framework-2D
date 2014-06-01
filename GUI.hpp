@@ -14,7 +14,7 @@ class GUILayer;
 
 // ================================================ //
 
-typedef std::list<std::shared_ptr<Widget>> WidgetList;
+typedef std::vector<std::shared_ptr<Widget>> WidgetList;
 typedef std::vector<std::shared_ptr<GUILayer>> GUILayerList;
 
 // ================================================ //
@@ -23,21 +23,35 @@ class GUI
 {
 public:
 	explicit GUI(void);
-	virtual ~GUI(void);
+	virtual ~GUI(void) = 0;
+
+	enum NavMode{
+		MOUSE = 0,
+		SELECTOR
+	};
 
 	void addLayer(std::shared_ptr<GUILayer> layer);
+	
 
 	// Setter functions
 	void setCurrentLayer(const int n);
+	void setNavigationMode(const int mode);
+	void setMousePos(const int x, const int y);
 
 	// Getter functions
 	GUILayer* getCurrentLayer(void) const;
+	const int getNavigationMode(void) const;
+	const int getSelectedWidget(void) const;
 
-	virtual void update(double dt) = 0;
+	virtual void renderSelector(void);
+	virtual void update(double dt);
 
 private:
 	GUILayerList m_layers;
 	GUILayer* m_pCurrentLayer;
+	int m_selectedWidget;
+	int m_navMode;
+	int m_mouseX, m_mouseY;
 };
 
 // ================================================ //
@@ -46,12 +60,30 @@ inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 	m_layers.push_back(layer);
 }
 
+// Setters
 inline void GUI::setCurrentLayer(const int n){
 	m_pCurrentLayer = m_layers[n].get();
 }
 
+inline void GUI::setNavigationMode(const int mode){
+	m_navMode = mode;
+}
+
+inline void GUI::setMousePos(const int x, const int y){
+	m_mouseX = x; m_mouseY = y;
+}
+
+// Getters
 inline GUILayer* GUI::getCurrentLayer(void) const{
 	return m_pCurrentLayer;
+}
+
+inline const int GUI::getNavigationMode(void) const{
+	return m_navMode;
+}
+
+inline const int GUI::getSelectedWidget(void) const{
+	return m_selectedWidget;
 }
 
 // ================================================ //
@@ -65,6 +97,10 @@ public:
 
 	void addWidget(std::shared_ptr<Widget> widget);
 
+	// Getter functions
+	Widget* getWidget(const int n) const;
+	const int getNumWidgets(void) const;
+
 	virtual void render(void);
 	virtual void update(double dt) = 0;
 
@@ -76,6 +112,14 @@ private:
 
 inline void GUILayer::addWidget(std::shared_ptr<Widget> widget){
 	m_widgets.push_back(widget);
+}
+
+inline Widget* GUILayer::getWidget(const int n) const{
+	return m_widgets[n].get();
+}
+
+inline const int GUILayer::getNumWidgets(void) const{
+	return m_widgets.size();
 }
 
 // ================================================ //

@@ -1,9 +1,10 @@
 [core]
 
 [layer.root]
-button.campaign:pos=(10,10,150,100)
-button.campaign:label=Fuck a
+button.campaign:pos=(352,100,150,60)
+button.campaign:label=Campaign
 
-
+button.arcade:pos=(352,200,150,60)
+button.arcade:label=Arcade
 
 

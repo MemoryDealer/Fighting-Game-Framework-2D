@@ -41,6 +41,7 @@ void GameStateImpl::enter(void)
 void GameStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting GameState...");
+	m_bQuit = false;
 }
 
 // ================================================ //

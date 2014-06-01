@@ -24,6 +24,7 @@ public:
 	bool pause(void);
 	void resume(void);
 	void handleInput(SDL_Event& e);
+	void processGUIAction(void);
 	void update(double dt);
 
 private:

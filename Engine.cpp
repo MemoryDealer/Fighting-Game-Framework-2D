@@ -70,7 +70,7 @@ void Engine::setMaxFrameRate(const unsigned int max)
 // Getter functions
 // ================================================ //
 
-const SDL_Renderer* Engine::getRenderer(void) const
+SDL_Renderer* Engine::getRenderer(void) const
 {
 	return m_pImpl->getRenderer();
 }

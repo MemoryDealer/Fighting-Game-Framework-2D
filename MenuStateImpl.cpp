@@ -56,9 +56,6 @@ void MenuStateImpl::enter(void)
 	// Allocate Network
 	if (GameManager::getSingletonPtr()->getMode() == GameMode::SERVER)
 		new Server();
-
-	// Push game state and start it
-	//m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
 }
 
 // ================================================ //
@@ -115,6 +112,17 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 // ================================================ //
 
+void MenuStateImpl::processGUIAction(void)
+{
+	switch (GUIManager::getSingletonPtr()->getMenuState()->getSelectedWidget()){
+	case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
+		m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
+		break;
+	}
+}
+
+// ================================================ //
+
 void MenuStateImpl::update(double dt)
 {
 	SDL_Event e;
@@ -131,6 +139,16 @@ void MenuStateImpl::update(double dt)
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
 			this->handleInput(e);
+			break;
+
+		case SDL_MOUSEMOTION:
+			GUIManager::getSingletonPtr()->getMenuState()->setMousePos(e.motion.x, e.motion.y);
+			break;
+
+		case SDL_MOUSEBUTTONUP:
+			if (e.button.button == SDL_BUTTON_LEFT){
+				this->processGUIAction();
+			}
 			break;
 
 		case SDL_WINDOWEVENT:

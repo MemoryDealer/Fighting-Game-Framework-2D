@@ -29,7 +29,7 @@ public:
 	void setMaxFrameRate(const unsigned int max);
 
 	// Getter functions
-	const SDL_Renderer* getRenderer(void) const;
+	SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
 	const int getLogicalWindowWidth(void) const;
@@ -58,7 +58,7 @@ inline void EngineImpl::setMaxFrameRate(const unsigned int max)
 { m_maxFrameRate = max; }
 
 // Getters
-inline const SDL_Renderer* EngineImpl::getRenderer(void) const
+inline SDL_Renderer* EngineImpl::getRenderer(void) const
 { return m_pRenderer; }
 
 inline const bool EngineImpl::isWindowFocused(void) const

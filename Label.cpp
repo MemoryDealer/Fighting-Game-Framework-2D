@@ -32,7 +32,7 @@ void Label::create(const std::string& label)
 	m_label = label;
 
 	Font* pFont = FontManager::getSingletonPtr()->getMainFont();
-	SDL_Color color = { 255, 255, 255 };
+	SDL_Color color = { 200, 200, 200 };
 	SDL_Surface* surf = TTF_RenderText_Blended(pFont->get(), m_label.c_str(), color);
 	if (surf == nullptr){
 		throw std::exception("Failure loading SDL_Surface in Label::create()");

@@ -163,10 +163,13 @@
 	state will be hard-coded, yet still customizable through config files (textures, positions, etc).  
 -Created GUI and GUILayer class. The GUI class is abstract and holds a dynamically sized list of GUILayer's. It is subclassed for each state's GUI. 
 -Create GUIManager singleton to allocate and hold each GUI per state. 
+-Added mouse hovering detection for GUI. 
 
 #TODO
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
+-Make GameState use the same system for popping as MenuState
+-Use SDL_UpdateTexture() to change colors of textures on the fly
 -Remove c_str() on std::strings where feasible
 -Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
