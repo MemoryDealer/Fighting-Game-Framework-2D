@@ -34,7 +34,7 @@ GUI()
 	button->setPosition(c.parseRect("layer.root", "button.campaign:pos"));
 	button->setLabel(c.parseValue("layer.root", "button.campaign:label"), c.parseIntValue("layer.root", "button.campaign:labeloffset"));
 	button->setEnabled(false);
-	button->setLinkID(Widget::Link::DOWN, GUIMenuStateLayer::Root::BUTTON_ARCADE);
+	button->parseLinks(c.parseValue("layer.root", "button.campaign:links"));
 	root->addWidget(button);
 	
 	// Arcade button
@@ -42,8 +42,7 @@ GUI()
 	button->setTextureFile(buttonTexture);
 	button->setPosition(c.parseRect("layer.root", "button.arcade:pos"));
 	button->setLabel(c.parseValue("layer.root", "button.arcade:label"), c.parseIntValue("layer.root", "button.arcade:labeloffset"));
-	button->setLinkID(Widget::Link::UP, GUIMenuStateLayer::Root::BUTTON_CAMPAIGN);
-	button->setLinkID(Widget::Link::DOWN, GUIMenuStateLayer::Root::BUTTON_OPTIONS);
+	button->parseLinks(c.parseValue("layer.root", "button.arcade:links"));
 	root->addWidget(button);
 
 	// Options button
@@ -51,7 +50,7 @@ GUI()
 	button->setTextureFile(buttonTexture);
 	button->setPosition(c.parseRect("layer.root", "button.options:pos"));
 	button->setLabel(c.parseValue("layer.root", "button.options:label"), c.parseIntValue("layer.root", "button.options:labeloffset"));
-	button->setLinkID(Widget::Link::UP, GUIMenuStateLayer::Root::BUTTON_ARCADE);
+	button->parseLinks(c.parseValue("layer.root", "button.options:links"));
 	root->addWidget(button);
 
 	// Quit button
@@ -59,6 +58,7 @@ GUI()
 	button->setTextureFile(buttonTexture);
 	button->setPosition(c.parseRect("layer.root", "button.quit:pos"));
 	button->setLabel(c.parseValue("layer.root", "button.quit:label"), c.parseIntValue("layer.root", "button.quit:labeloffset"));
+	button->parseLinks(c.parseValue("layer.root", "button.quit:links"));
 	root->addWidget(button);
 
 	this->addLayer(root);

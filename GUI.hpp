@@ -32,8 +32,8 @@ public:
 
 	enum Action{
 		NAVIGATE = 0,
-		BEGIN_CLICK,
-		FINISH_CLICK
+		BEGIN_SELECT,
+		FINISH_SELECT
 	};
 
 	void addLayer(std::shared_ptr<GUILayer> layer);

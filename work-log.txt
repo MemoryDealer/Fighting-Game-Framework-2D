@@ -173,11 +173,15 @@
 	This can also be circumvented by allocated WidgetImpl in Widget's constructor, however this means that Widget and Button point to two separate locations in memory.
 	I don't know if this will work, further testing must be conducted within these deep, dark chambers. 
 -Got the GUI selector working. Pressing the arrow keys will switch the GUI in selector mode, and they can be used to navigate the menu. This will be useful for controller
-	input as well. 
+	input as well.
+	
+#6/2/14
+-When trying to allocate a GUI in MenuState's constructor, I forgot the constructor is called in App.cpp before FontManager is allocated, so it couldn't find a font.
+	Solution is to allocate the FontManager right after the engine, before app states are created. 
+-_CRT_SECURE_NO_WARNINGS has been defined in project preprocessor settings to allow for use of strtok(). 
+-Links for widgets are parsed from the .gui file using Widget::parseLinks(), a helper function. 
 
 #TODO
--Remove GUIManager and have a local pointer per state for each GUI
--Parse links from .gui file instead of manually coding them
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Make GameState use the same system for popping as MenuState

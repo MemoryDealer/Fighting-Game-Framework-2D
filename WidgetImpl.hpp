@@ -16,14 +16,17 @@ public:
 	explicit WidgetImpl(const int id);
 	virtual ~WidgetImpl(void);
 
+	// Helper functions
+	void parseLinks(const std::string& links);
+
 	// Getter functions
-	virtual const int getWidgetID(void) const;
-	virtual const bool isEnabled(void) const;
-	virtual const int getLinkID(const int direction) const;
+	const int getWidgetID(void) const;
+	const bool isEnabled(void) const;
+	const int getLinkID(const int direction) const;
 
 	// Setter functions
-	virtual void setEnabled(const bool enabled);
-	virtual void setLinkID(const int direction, const int id);
+	void setEnabled(const bool enabled);
+	void setLinkID(const int direction, const int id);
 
 	virtual void update(double dt);
 
@@ -34,6 +37,17 @@ private:
 };
 
 // ================================================ //
+
+// Helpers
+inline void WidgetImpl::parseLinks(const std::string& links) {
+	char* p = strtok(const_cast<char*>(links.c_str()), ",");
+	int direction = Widget::Link::UP;
+	while (p){
+		int linkID = std::stoi(p);
+		this->setLinkID(direction++, linkID);
+		p = strtok(nullptr, ",");
+	}
+}
 
 // Getters
 inline const bool WidgetImpl::isEnabled(void) const{

@@ -31,14 +31,17 @@ public:
 		NONE = -1 // For no selected widget
 	};
 
+	// Parsing helpers
+	void parseLinks(const std::string& links);
+
 	// Getter functions
-	virtual const int getWidgetID(void) const; // widget ID must differ from object ID
-	virtual const bool isEnabled(void) const;
-	virtual const int getLinkID(const int direction) const;
+	const int getWidgetID(void) const; // widget ID must differ from object ID
+	const bool isEnabled(void) const;
+	const int getLinkID(const int direction) const;
 
 	// Setter functions
-	virtual void setEnabled(const bool enabled);
-	virtual void setLinkID(const int direction, const int id);
+	void setEnabled(const bool enabled);
+	void setLinkID(const int direction, const int id);
 
 	virtual void update(double dt) = 0;
 

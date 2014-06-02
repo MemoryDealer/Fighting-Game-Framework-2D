@@ -6,7 +6,6 @@
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
-#include "GUIManager.hpp"
 #include "GUIMenuState.hpp"
 #include "Camera.hpp"
 #include "Input.hpp"
@@ -108,27 +107,27 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_UP:
 		case SDLK_DOWN:
-			if (GUIManager::getSingletonPtr()->getMenuState()->getNavigationMode()
+			if (m_pGUI->getNavigationMode()
 				== GUI::NavMode::MOUSE){
-				GUIManager::getSingletonPtr()->getMenuState()->setNavigationMode(GUI::NavMode::SELECTOR);
+				m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
 			}
 
 			// Navigate to the widget's link
 			{
-				int widget = GUIManager::getSingletonPtr()->getMenuState()->getSelectedWidget();
+				int widget = m_pGUI->getSelectedWidget();
 				if (widget == Widget::NONE){
-					GUIManager::getSingletonPtr()->getMenuState()->setSelectedWidget(0);
+					m_pGUI->setSelectedWidget(0);
 				}
 				else{
-					Widget* pWidget = GUIManager::getSingletonPtr()->getMenuState()->getCurrentLayer()->getWidget(widget);
+					Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
 					switch (e.key.keysym.sym){
 					default:
 					case SDLK_UP:
-						GUIManager::getSingletonPtr()->getMenuState()->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
 						break;
 
 					case SDLK_DOWN:
-						GUIManager::getSingletonPtr()->getMenuState()->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
 						break;
 					}
 				}
@@ -136,7 +135,11 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_r:
-			GUIManager::getSingletonPtr()->reloadAll();
+			{
+				// Reload GUI
+				Config c("ExtMF.cfg");
+				m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
+			}
 			break;
 		}
 	}
@@ -150,8 +153,8 @@ void MenuStateImpl::processGUIAction(const int type)
 	default:
 		return;
 
-	case GUI::Action::FINISH_CLICK:
-		switch (GUIManager::getSingletonPtr()->getMenuState()->getSelectedWidget()){
+	case GUI::Action::FINISH_SELECT:
+		switch (m_pGUI->getSelectedWidget()){
 		case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
 			m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
 			break;
@@ -185,20 +188,31 @@ void MenuStateImpl::update(double dt)
 		case SDL_QUIT:
 			m_pMenuState->popAppState();
 			break;
+		
+		case SDL_KEYUP:
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+				if (e.key.keysym.sym == SDLK_RETURN){
+					this->processGUIAction(GUI::Action::FINISH_SELECT);
+				}
+			}
+
+			// fall through...
 
 		case SDL_KEYDOWN:
-		case SDL_KEYUP:
 			this->handleInput(e);
 			break;
 
 		case SDL_MOUSEMOTION:
-			GUIManager::getSingletonPtr()->getMenuState()->setMousePos(e.motion.x, e.motion.y);
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+				m_pGUI->setNavigationMode(GUI::NavMode::MOUSE);
+			}
+			m_pGUI->setMousePos(e.motion.x, e.motion.y);
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			if (GUIManager::getSingletonPtr()->getMenuState()->getNavigationMode() == GUI::NavMode::MOUSE){
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
 				if (e.button.button == SDL_BUTTON_LEFT){
-					this->processGUIAction(GUI::Action::FINISH_CLICK);
+					this->processGUIAction(GUI::Action::FINISH_SELECT);
 				}
 			}
 			break;
@@ -212,7 +226,7 @@ void MenuStateImpl::update(double dt)
 
 	Engine::getSingletonPtr()->clearRenderer();
 
-	GUIManager::getSingletonPtr()->getMenuState()->update(dt);
+	m_pGUI->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

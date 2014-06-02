@@ -6,7 +6,7 @@
 // ================================================ //
 
 Widget::Widget(const int id) :
-m_pImpl(new WidgetImpl(id)) // Widget is abstract so leave m_pImpl nullptr
+m_pImpl(new WidgetImpl(id)) // should this be left nullptr and child widgets called Widget::setPImpl()?
 {
 	
 }
@@ -16,6 +16,15 @@ m_pImpl(new WidgetImpl(id)) // Widget is abstract so leave m_pImpl nullptr
 Widget::~Widget(void)
 {
 
+}
+
+// ================================================ //
+// Helper functions
+// ================================================ //
+
+void Widget::parseLinks(const std::string& links)
+{
+	return m_pImpl->parseLinks(links);
 }
 
 // ================================================ //

@@ -159,9 +159,6 @@
     <ClInclude Include="..\GUIMenuState.hpp">
       <Filter>Header Files\MenuState</Filter>
     </ClInclude>
-    <ClInclude Include="..\GUIManager.hpp">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Label.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -286,9 +283,6 @@
     </ClCompile>
     <ClCompile Include="..\GUIMenuState.cpp">
       <Filter>Source Files\MenuState</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GUIManager.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Font.cpp">
       <Filter>Source Files\Font</Filter>
