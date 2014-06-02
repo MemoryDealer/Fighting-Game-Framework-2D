@@ -86,8 +86,12 @@ void ObjectImpl::render(void)
 		m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
 
 	if (m_renderLabel){
+		SDL_Rect dst = m_dst;
+		dst.x += m_pLabel->getOffset();
+		dst.w -= m_pLabel->getOffset() * 2;
+
 		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), m_pLabel->getTexturePtr(),
-			&m_src, &m_dst, 0, nullptr, m_flip);
+			&m_src, &dst, 0, nullptr, m_flip);
 	}
 }
 

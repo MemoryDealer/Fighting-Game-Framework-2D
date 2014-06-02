@@ -19,12 +19,6 @@ yAccel=5
 xMax=300
 yMax=10
 
-[hitbox]
-x=3
-y=0
-w=170
-h=107
-
 [moves]
 +(IDLE)
 	[core]{

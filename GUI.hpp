@@ -30,13 +30,19 @@ public:
 		SELECTOR
 	};
 
+	enum Action{
+		NAVIGATE = 0,
+		BEGIN_CLICK,
+		FINISH_CLICK
+	};
+
 	void addLayer(std::shared_ptr<GUILayer> layer);
 	
-
 	// Setter functions
 	void setCurrentLayer(const int n);
 	void setNavigationMode(const int mode);
 	void setMousePos(const int x, const int y);
+	void setSelectedWidget(const int n);
 
 	// Getter functions
 	GUILayer* getCurrentLayer(void) const;
@@ -71,6 +77,10 @@ inline void GUI::setNavigationMode(const int mode){
 
 inline void GUI::setMousePos(const int x, const int y){
 	m_mouseX = x; m_mouseY = y;
+}
+
+inline void GUI::setSelectedWidget(const int n){
+	if (n != Widget::NONE) m_selectedWidget = n;
 }
 
 // Getters

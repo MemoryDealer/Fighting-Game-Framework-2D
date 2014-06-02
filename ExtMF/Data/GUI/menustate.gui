@@ -1,10 +1,25 @@
 [core]
 
 [layer.root]
+#ID 0
 button.campaign:pos=(352,100,150,60)
 button.campaign:label=Campaign
+button.campaign:labeloffset=10
+button.campaign:links=-1,1,-1,-1
 
+#ID 1
 button.arcade:pos=(352,200,150,60)
 button.arcade:label=Arcade
+button.arcade:labeloffset=10
+button.arcade:links=0,2,-1,-1
 
+#ID 2
+button.options:pos=(352,300,150,60)
+button.options:label=Options
+button.options:labeloffset=10
+
+#ID 3
+button.quit:pos=(352,400,150,60)
+button.quit:label=Quit
+button.quit:labeloffset=30
 

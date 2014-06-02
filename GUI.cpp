@@ -9,8 +9,10 @@
 GUI::GUI(void) :
 m_layers(),
 m_pCurrentLayer(nullptr),
-m_selectedWidget(-1),
-m_navMode(NavMode::MOUSE)
+m_selectedWidget(0),
+m_navMode(NavMode::MOUSE),
+m_mouseX(0),
+m_mouseY(0)
 {
 	
 }
@@ -43,10 +45,10 @@ void GUI::renderSelector(void)
 
 void GUI::update(double dt)
 {
-	// Reset selected widget
-	m_selectedWidget = -1;
-
 	if (m_navMode == NavMode::MOUSE){
+		// Reset selected widget
+		m_selectedWidget = -1;
+
 		SDL_Rect mouse;
 		mouse.x = m_mouseX;
 		mouse.y = m_mouseY;
@@ -60,6 +62,9 @@ void GUI::update(double dt)
 				break;
 			}
 		}
+	}
+	else{
+		this->renderSelector();
 	}
 }
 

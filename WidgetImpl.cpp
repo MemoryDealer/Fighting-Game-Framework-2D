@@ -8,7 +8,8 @@ WidgetImpl::WidgetImpl(const int id) :
 m_widgetID(id),
 m_enabled(true)
 {
-	
+	// Set all links to NONE
+	std::fill_n(m_links, 4, Widget::NONE);
 }
 
 // ================================================ //

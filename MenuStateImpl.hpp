@@ -10,6 +10,7 @@
 // ================================================ //
 
 class AppState;
+class GUIMenuState;
 
 // ================================================ //
 
@@ -24,12 +25,13 @@ public:
 	bool pause(void);
 	void resume(void);
 	void handleInput(SDL_Event& e);
-	void processGUIAction(void);
+	void processGUIAction(const int type);
 	void update(double dt);
 
 private:
 	bool	m_bQuit;
 	AppState* m_pMenuState;
+	std::shared_ptr<GUIMenuState> m_pGUI;
 };
 
 // ================================================ //

@@ -8,7 +8,8 @@
 
 Label::Label(void) :
 m_pTexture(nullptr),
-m_label()
+m_label(),
+m_offset(0)
 {
 
 }

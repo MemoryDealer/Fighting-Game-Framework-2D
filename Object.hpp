@@ -32,7 +32,7 @@ public:
 	// Setter functions
 	virtual bool setTextureFile(const std::string& filename);
 	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
-	virtual void setLabel(const std::string& label);
+	virtual void setLabel(const std::string& label, const int offset = 0);
 	virtual void setPosition(const int x, const int y);
 	virtual void setPosition(const int x, const int y, const int w, const int h);
 	virtual void setPosition(const SDL_Rect& pos);

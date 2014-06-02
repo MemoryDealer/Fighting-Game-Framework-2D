@@ -165,7 +165,19 @@
 -Create GUIManager singleton to allocate and hold each GUI per state. 
 -Added mouse hovering detection for GUI. 
 
+#6/1/14
+-Added offset value to Label class. This "squeezes" the text inward by equal values on both sides, so it may render more neatly. Can be specified in .gui file. 
+-Ran into a cumbsersome error, took some time to figure it out. In GUIMenuState's constructor I tried to call Button::setLinkID() but it crashed in Widget.cpp, saying
+	m_pImpl was empty. Due to two layers of inheritance, the Widget's m_pImpl was null, so I had to override setPImpl() from Object and call Widget::setPImpl() in 
+	Button's constructor all three layers would point to the implementation. This is getting clustered and I may consider removing the PImpl idiom from widgets. 
+	This can also be circumvented by allocated WidgetImpl in Widget's constructor, however this means that Widget and Button point to two separate locations in memory.
+	I don't know if this will work, further testing must be conducted within these deep, dark chambers. 
+-Got the GUI selector working. Pressing the arrow keys will switch the GUI in selector mode, and they can be used to navigate the menu. This will be useful for controller
+	input as well. 
+
 #TODO
+-Remove GUIManager and have a local pointer per state for each GUI
+-Parse links from .gui file instead of manually coding them
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Make GameState use the same system for popping as MenuState

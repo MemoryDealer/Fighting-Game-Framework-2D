@@ -18,11 +18,14 @@
 
 // ================================================ //
 
-MenuStateImpl::MenuStateImpl(AppState* pMenuState)
-	:	m_bQuit(false),
-		m_pMenuState(pMenuState)
+MenuStateImpl::MenuStateImpl(AppState* pMenuState) :	
+m_bQuit(false),
+m_pMenuState(pMenuState),
+m_pGUI(nullptr)
 {
-
+	// Locate GUI file and allocate
+	Config c("ExtMF.cfg");
+	m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
 }
 
 // ================================================ //
@@ -103,6 +106,35 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			m_pMenuState->popAppState();
 			break;
 
+		case SDLK_UP:
+		case SDLK_DOWN:
+			if (GUIManager::getSingletonPtr()->getMenuState()->getNavigationMode()
+				== GUI::NavMode::MOUSE){
+				GUIManager::getSingletonPtr()->getMenuState()->setNavigationMode(GUI::NavMode::SELECTOR);
+			}
+
+			// Navigate to the widget's link
+			{
+				int widget = GUIManager::getSingletonPtr()->getMenuState()->getSelectedWidget();
+				if (widget == Widget::NONE){
+					GUIManager::getSingletonPtr()->getMenuState()->setSelectedWidget(0);
+				}
+				else{
+					Widget* pWidget = GUIManager::getSingletonPtr()->getMenuState()->getCurrentLayer()->getWidget(widget);
+					switch (e.key.keysym.sym){
+					default:
+					case SDLK_UP:
+						GUIManager::getSingletonPtr()->getMenuState()->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+						break;
+
+					case SDLK_DOWN:
+						GUIManager::getSingletonPtr()->getMenuState()->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+						break;
+					}
+				}
+			}
+			break;
+
 		case SDLK_r:
 			GUIManager::getSingletonPtr()->reloadAll();
 			break;
@@ -112,12 +144,30 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 // ================================================ //
 
-void MenuStateImpl::processGUIAction(void)
+void MenuStateImpl::processGUIAction(const int type)
 {
-	switch (GUIManager::getSingletonPtr()->getMenuState()->getSelectedWidget()){
-	case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
-		m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
-		break;
+	switch (type){
+	default:
+		return;
+
+	case GUI::Action::FINISH_CLICK:
+		switch (GUIManager::getSingletonPtr()->getMenuState()->getSelectedWidget()){
+		case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
+			m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
+			break;
+
+		case GUIMenuStateLayer::Root::BUTTON_ARCADE:
+			printf("ARCADE!!!\n");
+			break;
+
+		case GUIMenuStateLayer::Root::BUTTON_OPTIONS:
+			printf("OPTIONS!!!\n");
+			break;
+
+		case GUIMenuStateLayer::Root::BUTTON_QUIT:
+			m_pMenuState->popAppState();
+			break;
+		}
 	}
 }
 
@@ -146,8 +196,10 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			if (e.button.button == SDL_BUTTON_LEFT){
-				this->processGUIAction();
+			if (GUIManager::getSingletonPtr()->getMenuState()->getNavigationMode() == GUI::NavMode::MOUSE){
+				if (e.button.button == SDL_BUTTON_LEFT){
+					this->processGUIAction(GUI::Action::FINISH_CLICK);
+				}
 			}
 			break;
 
