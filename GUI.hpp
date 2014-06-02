@@ -11,6 +11,7 @@
 // ================================================ //
 
 class GUILayer;
+class Config;
 
 // ================================================ //
 
@@ -52,12 +53,15 @@ public:
 	virtual void renderSelector(void);
 	virtual void update(double dt);
 
+	static std::string m_buttonTheme;
+
 private:
 	GUILayerList m_layers;
 	GUILayer* m_pCurrentLayer;
 	int m_selectedWidget;
 	int m_navMode;
 	int m_mouseX, m_mouseY;
+
 };
 
 // ================================================ //
@@ -107,15 +111,22 @@ public:
 
 	void addWidget(std::shared_ptr<Widget> widget);
 
+	template<typename T>
+	void parse(Config& c, const int widgetType, const std::vector<std::string>& names);
+
 	// Getter functions
 	Widget* getWidget(const int n) const;
 	const int getNumWidgets(void) const;
+
+	// Setter functions
+	void setLayerName(const std::string& name);
 
 	virtual void render(void);
 	virtual void update(double dt) = 0;
 
 private:
 	WidgetList m_widgets;
+	std::string m_layerName;
 };
 
 // ================================================ //
@@ -124,12 +135,18 @@ inline void GUILayer::addWidget(std::shared_ptr<Widget> widget){
 	m_widgets.push_back(widget);
 }
 
+// Getters
 inline Widget* GUILayer::getWidget(const int n) const{
 	return m_widgets[n].get();
 }
 
 inline const int GUILayer::getNumWidgets(void) const{
 	return m_widgets.size();
+}
+
+// Setters
+inline void GUILayer::setLayerName(const std::string& name){
+	m_layerName = name;
 }
 
 // ================================================ //

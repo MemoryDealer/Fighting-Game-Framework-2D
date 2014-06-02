@@ -3,6 +3,11 @@
 #include "GUI.hpp"
 #include "Config.hpp"
 #include "Engine.hpp"
+#include "Button.hpp"
+
+// ================================================ //
+
+std::string GUI::m_buttonTheme = "";
 
 // ================================================ //
 
@@ -83,6 +88,43 @@ GUILayer::~GUILayer(void)
 {
 
 }
+
+// ================================================ //
+
+template<typename T>
+void GUILayer::parse(Config& c, const int widgetType, const std::vector<std::string>& names)
+{
+	std::string widgetName;
+	std::string layer = "layer." + m_layerName;
+	switch (widgetType){
+	default:
+	case Widget::Type::STATIC:
+		widgetName = "static.";
+		break;
+
+	case Widget::Type::BUTTON:
+		widgetName = "button.";
+		break;
+	}
+
+	std::string tex = GUI::m_buttonTheme;
+
+	for (unsigned int i = 0; i < names.size(); ++i){
+		// Allocate widget with ID i (the names list should be in order)
+		std::shared_ptr<Widget> pWidget(new T(i));
+		std::string value = widgetName + names[i] + ":";
+
+		pWidget->setTextureFile(tex);
+		pWidget->setPosition(c.parseRect(layer, value + "pos"));
+		pWidget->setLabel(c.parseValue(layer, value + "label"), c.parseIntValue(layer, value + "labeloffset"));
+		pWidget->parseLinks(c.parseValue(layer, value + "links"));
+
+		this->addWidget(pWidget);
+	}
+}
+
+// Explicitly instantiate template functions for each Widget type
+template void GUILayer::parse<Button>(Config& c, const int widgetType, const std::vector<std::string>& names);
 
 // ================================================ //
 

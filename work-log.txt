@@ -180,6 +180,9 @@
 	Solution is to allocate the FontManager right after the engine, before app states are created. 
 -_CRT_SECURE_NO_WARNINGS has been defined in project preprocessor settings to allow for use of strtok(). 
 -Links for widgets are parsed from the .gui file using Widget::parseLinks(), a helper function. 
+-Optimized the layer loading code for a GUI--created a template function GUILayer::parse() which takes the widget type and a vector of names for each widget. This
+	reduced the loading code from ~30 lines to just a few. Quite beautiful, I am satisfied. A template function must be explicitly instantiated for each type of widget
+	below the actual definition of GUILayer::parse() in GUI.cpp, for proper linking to occur. 
 
 #TODO
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 

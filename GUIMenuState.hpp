@@ -36,6 +36,7 @@ namespace GUIMenuStateLayer{
 	class Root : public GUILayer
 	{
 	public:
+		explicit Root(void);
 
 		enum Widget{
 			BUTTON_CAMPAIGN = 0,

@@ -20,46 +20,19 @@ GUI()
 	Config e("ExtMF.cfg");
 	Config theme(e.parseValue("GUI", "theme"));
 	if (theme.isLoaded()){
-		buttonTexture = theme.parseValue("button", "tex");
+		GUI::m_buttonTheme = theme.parseValue("button", "tex");
 	}
 
 	// Add layers
+	std::vector<std::string> names;
+
 	/* Root layer */
 	std::shared_ptr<GUILayer> root(new GUIMenuStateLayer::Root());
 	
 	// Buttons
-	// Campaign button
-	std::shared_ptr<Button> button(new Button(GUIMenuStateLayer::Root::BUTTON_CAMPAIGN));
-	button->setTextureFile(buttonTexture);
-	button->setPosition(c.parseRect("layer.root", "button.campaign:pos"));
-	button->setLabel(c.parseValue("layer.root", "button.campaign:label"), c.parseIntValue("layer.root", "button.campaign:labeloffset"));
-	button->setEnabled(false);
-	button->parseLinks(c.parseValue("layer.root", "button.campaign:links"));
-	root->addWidget(button);
-	
-	// Arcade button
-	button.reset(new Button(GUIMenuStateLayer::Root::BUTTON_ARCADE));
-	button->setTextureFile(buttonTexture);
-	button->setPosition(c.parseRect("layer.root", "button.arcade:pos"));
-	button->setLabel(c.parseValue("layer.root", "button.arcade:label"), c.parseIntValue("layer.root", "button.arcade:labeloffset"));
-	button->parseLinks(c.parseValue("layer.root", "button.arcade:links"));
-	root->addWidget(button);
+	names = std::vector<std::string>{ "campaign", "arcade", "options", "quit" };
+	root->parse<Button>(c, Widget::Type::BUTTON, names);
 
-	// Options button
-	button.reset(new Button(GUIMenuStateLayer::Root::BUTTON_OPTIONS));
-	button->setTextureFile(buttonTexture);
-	button->setPosition(c.parseRect("layer.root", "button.options:pos"));
-	button->setLabel(c.parseValue("layer.root", "button.options:label"), c.parseIntValue("layer.root", "button.options:labeloffset"));
-	button->parseLinks(c.parseValue("layer.root", "button.options:links"));
-	root->addWidget(button);
-
-	// Quit button
-	button.reset(new Button(GUIMenuStateLayer::Root::BUTTON_QUIT));
-	button->setTextureFile(buttonTexture);
-	button->setPosition(c.parseRect("layer.root", "button.quit:pos"));
-	button->setLabel(c.parseValue("layer.root", "button.quit:label"), c.parseIntValue("layer.root", "button.quit:labeloffset"));
-	button->parseLinks(c.parseValue("layer.root", "button.quit:links"));
-	root->addWidget(button);
 
 	this->addLayer(root);
 
@@ -92,6 +65,13 @@ namespace GUIMenuStateLayer{
 
 	// ================================================ //
 	// Root
+	// ================================================ //
+
+	Root::Root(void)
+	{
+		this->setLayerName("root");
+	}
+
 	// ================================================ //
 
 	void Root::update(double dt)

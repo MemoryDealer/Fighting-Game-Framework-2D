@@ -21,10 +21,12 @@ public:
 
 	// Getter functions
 	const int getWidgetID(void) const;
+	const int getType(void) const;
 	const bool isEnabled(void) const;
 	const int getLinkID(const int direction) const;
 
 	// Setter functions
+	void setType(const int type);
 	void setEnabled(const bool enabled);
 	void setLinkID(const int direction, const int id);
 
@@ -32,6 +34,7 @@ public:
 
 private:
 	int m_widgetID;
+	int m_type;
 	bool m_enabled;
 	int m_links[4]; // association between widgets for navigation
 };
@@ -50,12 +53,16 @@ inline void WidgetImpl::parseLinks(const std::string& links) {
 }
 
 // Getters
-inline const bool WidgetImpl::isEnabled(void) const{
-	return m_enabled;
-}
-
 inline const int WidgetImpl::getWidgetID(void) const{
 	return m_widgetID;
+}
+
+inline const int WidgetImpl::getType(void) const{
+	return m_type;
+}
+
+inline const bool WidgetImpl::isEnabled(void) const{
+	return m_enabled;
 }
 
 inline const int WidgetImpl::getLinkID(const int direction) const{
@@ -63,6 +70,10 @@ inline const int WidgetImpl::getLinkID(const int direction) const{
 }
 
 // Setters
+inline void WidgetImpl::setType(const int type){
+	m_type = type;
+}
+
 inline void WidgetImpl::setEnabled(const bool enabled){
 	m_enabled = enabled;
 }

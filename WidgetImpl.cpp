@@ -6,6 +6,7 @@
 
 WidgetImpl::WidgetImpl(const int id) :
 m_widgetID(id),
+m_type(Widget::STATIC),
 m_enabled(true)
 {
 	// Set all links to NONE

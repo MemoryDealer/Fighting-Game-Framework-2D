@@ -20,6 +20,11 @@ public:
 	explicit Widget(const int id);
 	virtual ~Widget(void);
 
+	enum Type{
+		STATIC = 0,
+		BUTTON
+	};
+
 	enum Link{
 		UP = 0,
 		DOWN,
@@ -36,10 +41,12 @@ public:
 
 	// Getter functions
 	const int getWidgetID(void) const; // widget ID must differ from object ID
+	const int getType(void) const;
 	const bool isEnabled(void) const;
 	const int getLinkID(const int direction) const;
 
 	// Setter functions
+	void setType(const int type);
 	void setEnabled(const bool enabled);
 	void setLinkID(const int direction, const int id);
 

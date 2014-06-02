@@ -11,6 +11,8 @@ m_pImpl(new ButtonImpl(id))
 {
 	//Widget::setPImpl(m_pImpl); // Widget allocates its own pimpl
 	Object::setPImpl(m_pImpl);
+
+	this->setType(Widget::Type::BUTTON);
 }
 
 // ================================================ //

@@ -38,6 +38,13 @@ const int Widget::getWidgetID(void) const
 
 // ================================================ //
 
+const int Widget::getType(void) const
+{
+	return m_pImpl->getType();
+}
+
+// ================================================ //
+
 const bool Widget::isEnabled(void) const
 {
 	return m_pImpl->isEnabled();
@@ -52,6 +59,13 @@ const int Widget::getLinkID(const int direction) const
 
 // ================================================ //
 // Setter functions
+// ================================================ //
+
+void Widget::setType(const int type)
+{
+	return m_pImpl->setType(type);
+}
+
 // ================================================ //
 
 void Widget::setEnabled(const bool enabled)
