@@ -49,6 +49,19 @@ namespace GUIMenuStateLayer{
 	};
 
 	// ================================================ //
+	// ================================================ //
+
+	class Options : public GUILayer
+	{
+	public:
+		explicit Options(void);
+
+		enum Widget{
+			BUTTON_BACK = 0
+		};
+
+		virtual void update(double dt);
+	};
 
 }
 

@@ -53,7 +53,8 @@ public:
 	virtual void renderSelector(void);
 	virtual void update(double dt);
 
-	static std::string m_buttonTheme;
+	// Static strings to store theme data across all GUI states (useful within GUILayer::parse())
+	static std::string ButtonTexture;
 
 private:
 	GUILayerList m_layers;
@@ -72,7 +73,7 @@ inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 
 // Setters
 inline void GUI::setCurrentLayer(const int n){
-	m_pCurrentLayer = m_layers[n].get();
+	m_pCurrentLayer = m_layers[n].get(); m_selectedWidget = 0;
 }
 
 inline void GUI::setNavigationMode(const int mode){
@@ -115,16 +116,19 @@ public:
 	void parse(Config& c, const int widgetType, const std::vector<std::string>& names);
 
 	// Getter functions
+	const int getID(void) const;
 	Widget* getWidget(const int n) const;
 	const int getNumWidgets(void) const;
 
 	// Setter functions
+	void setID(const int id);
 	void setLayerName(const std::string& name);
 
 	virtual void render(void);
 	virtual void update(double dt) = 0;
 
 private:
+	int m_id;
 	WidgetList m_widgets;
 	std::string m_layerName;
 };
@@ -136,6 +140,10 @@ inline void GUILayer::addWidget(std::shared_ptr<Widget> widget){
 }
 
 // Getters
+inline const int GUILayer::getID(void) const{
+	return m_id;
+}
+
 inline Widget* GUILayer::getWidget(const int n) const{
 	return m_widgets[n].get();
 }
@@ -145,6 +153,10 @@ inline const int GUILayer::getNumWidgets(void) const{
 }
 
 // Setters
+inline void GUILayer::setID(const int id){
+	m_id = id;
+}
+
 inline void GUILayer::setLayerName(const std::string& name){
 	m_layerName = name;
 }

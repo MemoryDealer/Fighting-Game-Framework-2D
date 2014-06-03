@@ -20,7 +20,8 @@
 MenuStateImpl::MenuStateImpl(AppState* pMenuState) :	
 m_bQuit(false),
 m_pMenuState(pMenuState),
-m_pGUI(nullptr)
+m_pGUI(nullptr),
+m_pBackground(new Stage("Data/Stages/mainmenu.stage"))
 {
 	// Locate GUI file and allocate
 	Config c("ExtMF.cfg");
@@ -66,8 +67,6 @@ void MenuStateImpl::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 
-	// m_pObjectManager destructed automatically
-
 	// Free all singletons
 	delete GameManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
@@ -102,13 +101,14 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_ESCAPE:
-			m_pMenuState->popAppState();
+			m_bQuit = true;
 			break;
 
 		case SDLK_UP:
 		case SDLK_DOWN:
-			if (m_pGUI->getNavigationMode()
-				== GUI::NavMode::MOUSE){
+		case SDLK_LEFT:
+		case SDLK_RIGHT:
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
 				m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
 			}
 
@@ -129,6 +129,14 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 					case SDLK_DOWN:
 						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
 						break;
+
+					case SDLK_LEFT:
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+						break;
+
+					case SDLK_RIGHT:
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+						break;
 					}
 				}
 			}
@@ -136,9 +144,10 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 		case SDLK_r:
 			{
-				// Reload GUI
+				// Reload GUI and background
 				Config c("ExtMF.cfg");
 				m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
+				m_pBackground.reset(new Stage("Data/Stages/mainmenu.stage"));
 			}
 			break;
 		}
@@ -153,22 +162,47 @@ void MenuStateImpl::processGUIAction(const int type)
 	default:
 		return;
 
-	case GUI::Action::FINISH_SELECT:
-		switch (m_pGUI->getSelectedWidget()){
-		case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
-			m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
+	case GUI::Action::FINISH_SELECT: // mouse button or key released
+		
+		// Find the current layer, then look in that layer's widgets
+		switch (m_pGUI->getCurrentLayer()->getID()){
+		default:
 			break;
 
-		case GUIMenuStateLayer::Root::BUTTON_ARCADE:
-			printf("ARCADE!!!\n");
+		// Root layer
+		case GUIMenuState::Layer::ROOT:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
+				m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
+				break;
+
+			case GUIMenuStateLayer::Root::BUTTON_ARCADE:
+				printf("ARCADE!!!\n");
+				break;
+
+			case GUIMenuStateLayer::Root::BUTTON_OPTIONS:
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::OPTIONS);
+				break;
+
+			case GUIMenuStateLayer::Root::BUTTON_QUIT:
+				m_bQuit = true;
+				break;
+			}
 			break;
 
-		case GUIMenuStateLayer::Root::BUTTON_OPTIONS:
-			printf("OPTIONS!!!\n");
-			break;
+		// Options layer
+		case GUIMenuState::Layer::OPTIONS:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
 
-		case GUIMenuStateLayer::Root::BUTTON_QUIT:
-			m_pMenuState->popAppState();
+			case GUIMenuStateLayer::Options::BUTTON_BACK:
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ROOT);
+				break;
+			}
 			break;
 		}
 	}
@@ -178,6 +212,11 @@ void MenuStateImpl::processGUIAction(const int type)
 
 void MenuStateImpl::update(double dt)
 {
+	if (m_bQuit == true){
+		m_pMenuState->popAppState();
+		return;
+	}
+
 	SDL_Event e;
 
 	while (SDL_PollEvent(&e)){
@@ -186,7 +225,7 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_QUIT:
-			m_pMenuState->popAppState();
+			m_bQuit = true;
 			break;
 		
 		case SDL_KEYUP:
@@ -226,6 +265,7 @@ void MenuStateImpl::update(double dt)
 
 	Engine::getSingletonPtr()->clearRenderer();
 
+	m_pBackground->update(dt);
 	m_pGUI->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();

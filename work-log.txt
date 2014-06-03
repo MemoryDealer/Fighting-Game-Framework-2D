@@ -183,6 +183,9 @@
 -Optimized the layer loading code for a GUI--created a template function GUILayer::parse() which takes the widget type and a vector of names for each widget. This
 	reduced the loading code from ~30 lines to just a few. Quite beautiful, I am satisfied. A template function must be explicitly instantiated for each type of widget
 	below the actual definition of GUILayer::parse() in GUI.cpp, for proper linking to occur. 
+-In AppStateManager::start()'s update loop (this is the main game loop), add a line to set the render color to black before updating the MessageRouter and active state. 
+	This will ensure that any background not covered by a texture(needed for the letterboxing that occurs on certain resolutions) will be black. 
+-Used m_bQuit in MenuState to properly exit. Before, after calling m_pMenuState->popAppState() the MenuStateImpl::update() loop would still run. 
 
 #TODO
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 

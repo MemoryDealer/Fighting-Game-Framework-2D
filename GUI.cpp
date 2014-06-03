@@ -7,7 +7,7 @@
 
 // ================================================ //
 
-std::string GUI::m_buttonTheme = "";
+std::string GUI::ButtonTexture = "";
 
 // ================================================ //
 
@@ -41,9 +41,6 @@ void GUI::renderSelector(void)
 
 	SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 155, 255, 255, 255);
 	SDL_RenderDrawRect(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), &selector);
-
-	// ..temporary
-	SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 0, 0, 0, 255);
 }
 
 // ================================================ //
@@ -77,6 +74,7 @@ void GUI::update(double dt)
 // ================================================ //
 
 GUILayer::GUILayer(void) :
+m_id(0),
 m_widgets()
 {
 
@@ -96,6 +94,8 @@ void GUILayer::parse(Config& c, const int widgetType, const std::vector<std::str
 {
 	std::string widgetName;
 	std::string layer = "layer." + m_layerName;
+	std::string tex;
+
 	switch (widgetType){
 	default:
 	case Widget::Type::STATIC:
@@ -104,10 +104,9 @@ void GUILayer::parse(Config& c, const int widgetType, const std::vector<std::str
 
 	case Widget::Type::BUTTON:
 		widgetName = "button.";
+		tex = GUI::ButtonTexture;
 		break;
 	}
-
-	std::string tex = GUI::m_buttonTheme;
 
 	for (unsigned int i = 0; i < names.size(); ++i){
 		// Allocate widget with ID i (the names list should be in order)

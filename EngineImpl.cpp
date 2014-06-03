@@ -50,7 +50,7 @@ EngineImpl::EngineImpl(void)
 	// Create the window
 	m_width = cfg.parseIntValue("window", "width");
 	m_height = cfg.parseIntValue("window", "height");
-	m_pWindow = SDL_CreateWindow("Extreme Metal Fighter", SDL_WINDOWPOS_UNDEFINED,
+	m_pWindow = SDL_CreateWindow("Main Menu Simulator 2014", SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, m_width, m_height, 0);
 	if (m_pWindow == nullptr)
 		throw std::exception("SDL_CreateWindow() failed.");

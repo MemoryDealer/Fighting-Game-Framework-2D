@@ -90,6 +90,8 @@ void AppStateManager::start(AppState* pState)
 			dt = static_cast<double>(newTime - currentTime) / 1000.0;
 			currentTime = newTime;
 
+			SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 0, 0, 0, 255);
+
 			// Automatically update the global message router
 			MessageRouter::getSingletonPtr()->update();
 

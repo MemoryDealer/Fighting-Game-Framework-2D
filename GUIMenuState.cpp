@@ -20,21 +20,30 @@ GUI()
 	Config e("ExtMF.cfg");
 	Config theme(e.parseValue("GUI", "theme"));
 	if (theme.isLoaded()){
-		GUI::m_buttonTheme = theme.parseValue("button", "tex");
+		GUI::ButtonTexture = theme.parseValue("button", "tex");
 	}
 
 	// Add layers
 	std::vector<std::string> names;
 
 	/* Root layer */
-	std::shared_ptr<GUILayer> root(new GUIMenuStateLayer::Root());
+	std::shared_ptr<GUILayer> layer(new GUIMenuStateLayer::Root());
 	
 	// Buttons
 	names = std::vector<std::string>{ "campaign", "arcade", "options", "quit" };
-	root->parse<Button>(c, Widget::Type::BUTTON, names);
+	layer->parse<Button>(c, Widget::Type::BUTTON, names);
 
+	// Add the layer to the GUI
+	this->addLayer(layer);
 
-	this->addLayer(root);
+	/* Options layer */
+	layer.reset(new GUIMenuStateLayer::Options());
+
+	// Buttons
+	names = std::vector<std::string>{ "back" };
+	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	
+	this->addLayer(layer);
 
 	// Set starting layer
 	this->setCurrentLayer(GUIMenuState::Layer::ROOT);
@@ -69,6 +78,7 @@ namespace GUIMenuStateLayer{
 
 	Root::Root(void)
 	{
+		this->setID(GUIMenuState::Layer::ROOT);
 		this->setLayerName("root");
 	}
 
@@ -77,6 +87,23 @@ namespace GUIMenuStateLayer{
 	void Root::update(double dt)
 	{
 		
+	}
+
+	// ================================================ //
+	// Options
+	// ================================================ //
+
+	Options::Options(void)
+	{
+		this->setID(GUIMenuState::Layer::OPTIONS);
+		this->setLayerName("options");
+	}
+
+	// ================================================ //
+
+	void Options::update(double dt)
+	{
+
 	}
 
 	// ================================================ //

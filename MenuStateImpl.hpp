@@ -11,6 +11,7 @@
 
 class AppState;
 class GUIMenuState;
+class Stage;
 
 // ================================================ //
 
@@ -32,6 +33,7 @@ private:
 	bool	m_bQuit;
 	AppState* m_pMenuState;
 	std::shared_ptr<GUIMenuState> m_pGUI;
+	std::shared_ptr<Stage> m_pBackground;
 };
 
 // ================================================ //
