@@ -39,6 +39,7 @@ public:
 	};
 
 	void addLayer(std::shared_ptr<GUILayer> layer);
+	void clearSelector(void);
 	
 	// Setter functions
 	void setCurrentLayer(const int n);
@@ -59,7 +60,7 @@ public:
 private:
 	GUILayerList m_layers;
 	GUILayer* m_pCurrentLayer;
-	int m_selectedWidget;
+	int m_selectedWidget, m_lastSelectedWidget;
 	int m_navMode;
 	int m_mouseX, m_mouseY;
 };
@@ -71,10 +72,6 @@ inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 }
 
 // Setters
-inline void GUI::setCurrentLayer(const int n){
-	m_pCurrentLayer = m_layers[n].get(); m_selectedWidget = 0;
-}
-
 inline void GUI::setNavigationMode(const int mode){
 	m_navMode = mode;
 }

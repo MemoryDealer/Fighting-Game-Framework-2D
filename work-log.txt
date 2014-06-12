@@ -192,6 +192,10 @@
 	textures. Note each smart pointer allocate assigns SDL_DestroyTexture() as the custom deleter. 
 -Added Object::setTexture() which takes a raw SDL_Texture pointer or a smart pointer (overloaded) to assign the Object's texture. It also sets default coordinates. 
 -Removed GUI::renderSelector(), now everything is handled in GUI::setSelectedWidget().
+-Apparently calling Widget::setPImpl() and Object::setPImpl() in Button's constructor is the correct way of setting multiple layers of pImpls. 
+-In MenuStateImpl, when the campaign button is pressed, the game state is pushed onto the stack. When it is popped and menu state runs, the old mouse coordinates are still there,
+	and the campaign button still appears selected even if the mouse is not hovering over it. To remedy this for now, I've set the mouse coordinates to (-1, -1) before pushing the 
+	game state. 
 
 
 #TODO

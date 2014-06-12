@@ -14,7 +14,8 @@ std::shared_ptr<SDL_Texture> GUI::ButtonTexture[] = { nullptr, nullptr, nullptr 
 GUI::GUI(void) :
 m_layers(),
 m_pCurrentLayer(nullptr),
-m_selectedWidget(0),
+m_selectedWidget(Widget::NONE),
+m_lastSelectedWidget(Widget::NONE),
 m_navMode(NavMode::MOUSE),
 m_mouseX(0),
 m_mouseY(0)
@@ -27,6 +28,31 @@ m_mouseY(0)
 GUI::~GUI(void)
 {
 
+}
+
+// ================================================ //
+
+void GUI::clearSelector(void)
+{
+	if (m_selectedWidget != Widget::NONE){
+		m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
+	}
+}
+
+// ================================================ //
+
+void GUI::setCurrentLayer(const int n)
+{
+	if (m_selectedWidget != Widget::NONE){
+		m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
+	}
+
+	m_pCurrentLayer = m_layers[n].get();
+	m_selectedWidget = m_lastSelectedWidget = 0;
+
+	if (m_navMode == GUI::NavMode::SELECTOR){
+		m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+	}
 }
 
 // ================================================ //
@@ -52,8 +78,6 @@ void GUI::setSelectedWidget(const int n)
 void GUI::update(double dt)
 {
 	if (m_navMode == NavMode::MOUSE){
-		static int lastSelectedWidget = 0;
-
 		// Reset selected widget
 		m_selectedWidget = Widget::NONE;
 
@@ -66,14 +90,14 @@ void GUI::update(double dt)
 		for (int i = 0; i < m_pCurrentLayer->getNumWidgets(); ++i){
 			if (SDL_HasIntersection(&mouse, &m_pCurrentLayer->getWidget(i)->getPosition())){
 				this->setSelectedWidget(i);
-				lastSelectedWidget = i;
+				m_lastSelectedWidget = i;
 				break;
 			}
 		}
 
 		// Reset last selected widget's texture if nothing is selected
 		if (m_selectedWidget == Widget::NONE){
-			m_pCurrentLayer->getWidget(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+			m_pCurrentLayer->getWidget(m_lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
 		}
 	}
 

@@ -118,7 +118,8 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				if (widget == Widget::NONE){
 					m_pGUI->setSelectedWidget(0);
 				}
-				else{
+				else
+				{
 					Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
 					switch (e.key.keysym.sym){
 					default:
@@ -176,6 +177,7 @@ void MenuStateImpl::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
+				m_pGUI->setMousePos(-1, -1); // see work-log.txt:line 196
 				m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
 				break;
 
@@ -244,6 +246,7 @@ void MenuStateImpl::update(double dt)
 		case SDL_MOUSEMOTION:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				m_pGUI->setNavigationMode(GUI::NavMode::MOUSE);
+				m_pGUI->clearSelector();
 			}
 			m_pGUI->setMousePos(e.motion.x, e.motion.y);
 			break;
