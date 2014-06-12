@@ -5,6 +5,7 @@ file=Data/GUI/Fonts/DejaVuSans.ttf
 size=36
 
 [button]
-tex=Data/GUI/Textures/button1down.png
-tex.select=Data/GUI/Textures/button1.png
+tex=Data/GUI/Textures/button1.png
+tex.selected=Data/GUI/Textures/button1selected.png
+tex.pressed=Data/GUI/Textures/button1pressed.png
 

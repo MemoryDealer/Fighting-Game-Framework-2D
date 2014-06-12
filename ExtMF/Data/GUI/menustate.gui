@@ -1,5 +1,6 @@
 [core]
 
+#links=UP,DOWN,LEFT,RIGHT
 [layer.root]
 #ID 0
 button.campaign:pos=(152,200,150,60)

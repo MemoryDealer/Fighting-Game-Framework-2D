@@ -6,9 +6,9 @@
 // ================================================ //
 
 Widget::Widget(const int id) :
-m_pImpl(nullptr/*new WidgetImpl(id)*/) // should this be left nullptr and child widgets called Widget::setPImpl()?
+m_pImpl(nullptr) // should this be left nullptr and child widgets called Widget::setPImpl(), I believe
 {
-	//Object::setPImpl(m_pImpl);
+	
 }
 
 // ================================================ //

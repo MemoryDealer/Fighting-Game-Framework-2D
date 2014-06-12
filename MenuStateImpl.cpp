@@ -163,7 +163,13 @@ void MenuStateImpl::processGUIAction(const int type)
 	default:
 		return;
 
-	case GUI::Action::FINISH_SELECT: // mouse button or key released
+	case GUI::Action::BEGIN_PRESS:
+		if (m_pGUI->getSelectedWidget() != Widget::NONE){
+			m_pGUI->getCurrentLayer()->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::PRESSED);
+		}
+		break; // BEGIN_SELECT
+
+	case GUI::Action::FINISH_PRESS: // mouse button or key released
 		
 		// Find the current layer, then look in that layer's widgets
 		switch (m_pGUI->getCurrentLayer()->getID()){
@@ -177,7 +183,7 @@ void MenuStateImpl::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
-				m_pGUI->setMousePos(-1, -1); // see work-log.txt:line 196
+				m_pGUI->setMousePos(-1, -1); // Prevents selector from improperly re-appearing, see work-log.txt:line 196
 				m_pMenuState->pushAppState(m_pMenuState->findByName(GAME_STATE));
 				break;
 
@@ -207,6 +213,7 @@ void MenuStateImpl::processGUIAction(const int type)
 			}
 			break;
 		}
+		break; // FINISH_PRESS
 	}
 }
 
@@ -233,7 +240,7 @@ void MenuStateImpl::update(double dt)
 		case SDL_KEYUP:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.key.keysym.sym == SDLK_RETURN){
-					this->processGUIAction(GUI::Action::FINISH_SELECT);
+					this->processGUIAction(GUI::Action::FINISH_PRESS);
 				}
 			}
 
@@ -251,10 +258,26 @@ void MenuStateImpl::update(double dt)
 			m_pGUI->setMousePos(e.motion.x, e.motion.y);
 			break;
 
+		case SDL_MOUSEBUTTONDOWN:
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
+				if (e.button.button == SDL_BUTTON_LEFT){
+					m_pGUI->setLeftMouseDown(true);
+					this->processGUIAction(GUI::Action::BEGIN_PRESS);
+				}
+				else if (e.button.button == SDL_BUTTON_RIGHT){
+					m_pGUI->setRightMouseDown(true);
+				}
+			}
+			break;
+
 		case SDL_MOUSEBUTTONUP:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
 				if (e.button.button == SDL_BUTTON_LEFT){
-					this->processGUIAction(GUI::Action::FINISH_SELECT);
+					m_pGUI->setLeftMouseDown(false);
+					this->processGUIAction(GUI::Action::FINISH_PRESS);
+				}
+				else{
+					m_pGUI->setRightMouseDown(false);
 				}
 			}
 			break;

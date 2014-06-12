@@ -34,8 +34,8 @@ public:
 
 	enum Action{
 		NAVIGATE = 0,
-		BEGIN_SELECT,
-		FINISH_SELECT
+		BEGIN_PRESS,
+		FINISH_PRESS
 	};
 
 	void addLayer(std::shared_ptr<GUILayer> layer);
@@ -45,6 +45,8 @@ public:
 	void setCurrentLayer(const int n);
 	void setNavigationMode(const int mode);
 	void setMousePos(const int x, const int y);
+	void setLeftMouseDown(const bool down);
+	void setRightMouseDown(const bool down);
 	void setSelectedWidget(const int n);
 
 	// Getter functions
@@ -63,6 +65,7 @@ private:
 	int m_selectedWidget, m_lastSelectedWidget;
 	int m_navMode;
 	int m_mouseX, m_mouseY;
+	bool m_leftMouseDown, m_rightMouseDown;
 };
 
 // ================================================ //
@@ -78,6 +81,14 @@ inline void GUI::setNavigationMode(const int mode){
 
 inline void GUI::setMousePos(const int x, const int y){
 	m_mouseX = x; m_mouseY = y;
+}
+
+inline void GUI::setLeftMouseDown(const bool down){
+	m_leftMouseDown = down;
+}
+
+inline void GUI::setRightMouseDown(const bool down){
+	m_rightMouseDown = down;
 }
 
 // Getters

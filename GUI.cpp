@@ -18,7 +18,9 @@ m_selectedWidget(Widget::NONE),
 m_lastSelectedWidget(Widget::NONE),
 m_navMode(NavMode::MOUSE),
 m_mouseX(0),
-m_mouseY(0)
+m_mouseY(0),
+m_leftMouseDown(false),
+m_rightMouseDown(false)
 {
 	
 }
@@ -69,7 +71,9 @@ void GUI::setSelectedWidget(const int n)
 		m_selectedWidget = n;
 
 		// Set newly selected widget's appearance to selected
-		m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		if (!m_leftMouseDown){
+			m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		}
 	}
 }
 
