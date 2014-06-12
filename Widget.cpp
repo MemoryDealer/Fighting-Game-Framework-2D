@@ -6,9 +6,9 @@
 // ================================================ //
 
 Widget::Widget(const int id) :
-m_pImpl(new WidgetImpl(id)) // should this be left nullptr and child widgets called Widget::setPImpl()?
+m_pImpl(nullptr/*new WidgetImpl(id)*/) // should this be left nullptr and child widgets called Widget::setPImpl()?
 {
-	
+	//Object::setPImpl(m_pImpl);
 }
 
 // ================================================ //
@@ -78,6 +78,13 @@ void Widget::setEnabled(const bool enabled)
 void Widget::setLinkID(const int direction, const int id)
 {
 	return m_pImpl->setLinkID(direction, id);
+}
+
+// ================================================ //
+
+void Widget::setAppearance(const int appearance)
+{
+	return m_pImpl->setAppearance(appearance);
 }
 
 // ================================================ //

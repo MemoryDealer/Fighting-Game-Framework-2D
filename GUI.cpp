@@ -7,7 +7,7 @@
 
 // ================================================ //
 
-std::string GUI::ButtonTexture = "";
+std::shared_ptr<SDL_Texture> GUI::ButtonTexture[] = { nullptr, nullptr, nullptr };
 
 // ================================================ //
 
@@ -31,16 +31,20 @@ GUI::~GUI(void)
 
 // ================================================ //
 
-void GUI::renderSelector(void)
+void GUI::setSelectedWidget(const int n)
 {
-	// Render selector around active widget
-	SDL_Rect selector = m_pCurrentLayer->getWidget(m_selectedWidget)->getPosition();
-	const int offset = 0;
-	selector.x -= offset; selector.y -= offset;
-	selector.w += offset * 2; selector.h += offset * 2;
+	if (n != Widget::NONE){
+		// Reset currently selected widget to idle appearance
+		if (m_selectedWidget != Widget::NONE){
+			m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
+		}
 
-	SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 155, 255, 255, 255);
-	SDL_RenderDrawRect(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), &selector);
+		// Store new selected widget index
+		m_selectedWidget = n;
+
+		// Set newly selected widget's appearance to selected
+		m_pCurrentLayer->getWidget(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+	}
 }
 
 // ================================================ //
@@ -48,8 +52,10 @@ void GUI::renderSelector(void)
 void GUI::update(double dt)
 {
 	if (m_navMode == NavMode::MOUSE){
+		static int lastSelectedWidget = 0;
+
 		// Reset selected widget
-		m_selectedWidget = -1;
+		m_selectedWidget = Widget::NONE;
 
 		SDL_Rect mouse;
 		mouse.x = m_mouseX;
@@ -59,15 +65,21 @@ void GUI::update(double dt)
 		// See if mouse is inside bounds of each widget
 		for (int i = 0; i < m_pCurrentLayer->getNumWidgets(); ++i){
 			if (SDL_HasIntersection(&mouse, &m_pCurrentLayer->getWidget(i)->getPosition())){
-				m_selectedWidget = i;
-				this->renderSelector();
+				this->setSelectedWidget(i);
+				lastSelectedWidget = i;
 				break;
 			}
 		}
+
+		// Reset last selected widget's texture if nothing is selected
+		if (m_selectedWidget == Widget::NONE){
+			m_pCurrentLayer->getWidget(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+		}
 	}
-	else{
-		this->renderSelector();
-	}
+
+	// Update the current layer
+	this->getCurrentLayer()->update(dt);
+	this->getCurrentLayer()->render();
 }
 
 // ================================================ //
@@ -90,11 +102,11 @@ GUILayer::~GUILayer(void)
 // ================================================ //
 
 template<typename T>
-void GUILayer::parse(Config& c, const int widgetType, const std::vector<std::string>& names)
+void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 {
-	std::string widgetName;
+	std::string widgetName("");
 	std::string layer = "layer." + m_layerName;
-	std::string tex;
+	std::shared_ptr<SDL_Texture> pTex = nullptr;
 
 	switch (widgetType){
 	default:
@@ -104,7 +116,7 @@ void GUILayer::parse(Config& c, const int widgetType, const std::vector<std::str
 
 	case Widget::Type::BUTTON:
 		widgetName = "button.";
-		tex = GUI::ButtonTexture;
+		pTex = GUI::ButtonTexture[Widget::Appearance::IDLE];
 		break;
 	}
 
@@ -113,7 +125,7 @@ void GUILayer::parse(Config& c, const int widgetType, const std::vector<std::str
 		std::shared_ptr<Widget> pWidget(new T(i));
 		std::string value = widgetName + names[i] + ":";
 
-		pWidget->setTextureFile(tex);
+		pWidget->setAppearance(Widget::Appearance::IDLE);
 		pWidget->setPosition(c.parseRect(layer, value + "pos"));
 		pWidget->setLabel(c.parseValue(layer, value + "label"), c.parseIntValue(layer, value + "labeloffset"));
 		pWidget->parseLinks(c.parseValue(layer, value + "links"));

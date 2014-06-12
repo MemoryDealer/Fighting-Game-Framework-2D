@@ -29,6 +29,7 @@ public:
 	void setType(const int type);
 	void setEnabled(const bool enabled);
 	void setLinkID(const int direction, const int id);
+	virtual void setAppearance(const int appearance);
 
 	virtual void update(double dt);
 

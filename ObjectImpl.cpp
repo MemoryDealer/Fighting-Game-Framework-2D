@@ -42,6 +42,18 @@ ObjectImpl::~ObjectImpl(void)
 
 // ================================================ //
 
+void ObjectImpl::setTexture(SDL_Texture* pTex)
+{
+	m_pTexture = pTex;
+
+	// Get texture width/height
+	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
+	m_dst.w = m_src.w;
+	m_dst.h = m_src.h;
+}
+
+// ================================================ //
+
 bool ObjectImpl::setTextureFile(const std::string& filename)
 {
 	if (m_pTexture != nullptr)

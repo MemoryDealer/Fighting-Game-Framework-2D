@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "WidgetImpl.hpp"
+#include "GUI.hpp"
 
 // ================================================ //
 
@@ -18,6 +19,26 @@ m_enabled(true)
 WidgetImpl::~WidgetImpl(void)
 {
 
+}
+
+// ================================================ //
+
+void WidgetImpl::setAppearance(const int appearance)
+{
+	// Store current position
+	SDL_Rect pos = this->getPosition();
+
+	switch (this->getType()){
+	default:
+		break;
+
+	case Widget::Type::BUTTON:
+		this->setTexture(GUI::ButtonTexture[appearance]);
+		break;
+	}
+
+	// Restore original position
+	this->setPosition(pos);
 }
 
 // ================================================ //

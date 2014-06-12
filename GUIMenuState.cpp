@@ -3,6 +3,7 @@
 #include "GUIMenuState.hpp"
 #include "Config.hpp"
 #include "Button.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -20,17 +21,19 @@ GUI()
 	Config e("ExtMF.cfg");
 	Config theme(e.parseValue("GUI", "theme"));
 	if (theme.isLoaded()){
-		GUI::ButtonTexture = theme.parseValue("button", "tex");
+		GUI::ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex")), SDL_DestroyTexture);
+		GUI::ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.select")), SDL_DestroyTexture);
+		GUI::ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.down")), SDL_DestroyTexture);
 	}
 
 	// Add layers
-	std::vector<std::string> names;
+	StringList names;
 
 	/* Root layer */
 	std::shared_ptr<GUILayer> layer(new GUIMenuStateLayer::Root());
 	
 	// Buttons
-	names = std::vector<std::string>{ "campaign", "arcade", "options", "quit" };
+	names = StringList{ "campaign", "arcade", "options", "quit" };
 	layer->parse<Button>(c, Widget::Type::BUTTON, names);
 
 	// Add the layer to the GUI
@@ -40,7 +43,7 @@ GUI()
 	layer.reset(new GUIMenuStateLayer::Options());
 
 	// Buttons
-	names = std::vector<std::string>{ "back" };
+	names = StringList{ "back" };
 	layer->parse<Button>(c, Widget::Type::BUTTON, names);
 	
 	this->addLayer(layer);
@@ -61,10 +64,6 @@ GUIMenuState::~GUIMenuState(void)
 void GUIMenuState::update(double dt)
 {
 	GUI::update(dt);
-
-	// Update the current layer
-	this->getCurrentLayer()->update(dt);
-	this->getCurrentLayer()->render();
 }
 
 // ================================================ //

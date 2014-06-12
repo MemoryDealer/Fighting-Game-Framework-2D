@@ -29,6 +29,8 @@ public:
 	virtual const bool isDead(void) const;
 
 	// Setter functions
+	virtual void setTexture(SDL_Texture* pTex);
+	virtual void setTexture(std::shared_ptr<SDL_Texture> pTex);
 	virtual bool setTextureFile(const std::string& filename);
 	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
 	virtual void setLabel(const std::string& label, const int offset);
@@ -82,6 +84,10 @@ inline const bool ObjectImpl::isDead(void) const{
 }
 
 // Setters
+inline void ObjectImpl::setTexture(std::shared_ptr<SDL_Texture> pTex){
+	return this->setTexture(pTex.get());
+}
+
 inline void ObjectImpl::setLabel(const std::string& label, const int offset){
 	m_pLabel->create(label); m_pLabel->setOffset(offset);
 }

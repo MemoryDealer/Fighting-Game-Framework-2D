@@ -30,6 +30,8 @@ public:
 	virtual const bool isDead(void) const;
 
 	// Setter functions
+	virtual void setTexture(SDL_Texture* pTex);
+	virtual void setTexture(std::shared_ptr<SDL_Texture> pTex);
 	virtual bool setTextureFile(const std::string& filename);
 	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
 	virtual void setLabel(const std::string& label, const int offset = 0);

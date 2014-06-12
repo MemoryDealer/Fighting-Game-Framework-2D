@@ -187,7 +187,15 @@
 	This will ensure that any background not covered by a texture(needed for the letterboxing that occurs on certain resolutions) will be black. 
 -Used m_bQuit in MenuState to properly exit. Before, after calling m_pMenuState->popAppState() the MenuStateImpl::update() loop would still run. 
 
+#6/11/14
+-Changed GUI's static strings to smart pointers of SDL_Texture. This way the button's textures (and other widgets eventually) can be swapped without having to reload
+	textures. Note each smart pointer allocate assigns SDL_DestroyTexture() as the custom deleter. 
+-Added Object::setTexture() which takes a raw SDL_Texture pointer or a smart pointer (overloaded) to assign the Object's texture. It also sets default coordinates. 
+-Removed GUI::renderSelector(), now everything is handled in GUI::setSelectedWidget().
+
+
 #TODO
+-Add mouse down reaction for buttons 
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Make GameState use the same system for popping as MenuState
@@ -199,6 +207,10 @@
 -LoadResources in Engine
 -GUILayer
 -For release builds enable code optimization in Project Options->C/C++->Optimization
+
+#BUGS
+-If holding down a movement key when exiting game state, the key is still registered as down when returning. This may resolve itself once PlayerManager
+	is re-allocated per entry to game state. 
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 

@@ -23,6 +23,16 @@ Object::~Object(void)
 // Setter functions
 // ================================================ //
 
+void Object::setTexture(SDL_Texture* pTex)
+{
+	return m_pImpl->setTexture(pTex);
+}
+
+void Object::setTexture(std::shared_ptr<SDL_Texture> pTex)
+{
+	return m_pImpl->setTexture(pTex);
+}
+
 bool Object::setTextureFile(const std::string& filename)
 {
 	return m_pImpl->setTextureFile(filename);

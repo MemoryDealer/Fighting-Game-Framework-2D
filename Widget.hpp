@@ -32,11 +32,17 @@ public:
 		RIGHT
 	};
 
+	enum Appearance{
+		IDLE = 0,
+		SELECTED,
+		PRESSED
+	};
+
 	enum{
 		NONE = -1 // For no selected widget
 	};
 
-	// Parsing helpers
+	// Helper functions
 	void parseLinks(const std::string& links);
 
 	// Getter functions
@@ -49,6 +55,7 @@ public:
 	void setType(const int type);
 	void setEnabled(const bool enabled);
 	void setLinkID(const int direction, const int id);
+	virtual void setAppearance(const int appearance);
 
 	virtual void update(double dt) = 0;
 

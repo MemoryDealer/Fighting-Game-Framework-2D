@@ -17,6 +17,7 @@ class Config;
 
 typedef std::vector<std::shared_ptr<Widget>> WidgetList;
 typedef std::vector<std::shared_ptr<GUILayer>> GUILayerList;
+typedef std::vector<std::string> StringList;
 
 // ================================================ //
 /* An object for each game state to process all GUI operations */
@@ -50,11 +51,10 @@ public:
 	const int getNavigationMode(void) const;
 	const int getSelectedWidget(void) const;
 
-	virtual void renderSelector(void);
 	virtual void update(double dt);
 
 	// Static strings to store theme data across all GUI states (useful within GUILayer::parse())
-	static std::string ButtonTexture;
+	static std::shared_ptr<SDL_Texture> ButtonTexture[3];
 
 private:
 	GUILayerList m_layers;
@@ -62,7 +62,6 @@ private:
 	int m_selectedWidget;
 	int m_navMode;
 	int m_mouseX, m_mouseY;
-
 };
 
 // ================================================ //
@@ -82,10 +81,6 @@ inline void GUI::setNavigationMode(const int mode){
 
 inline void GUI::setMousePos(const int x, const int y){
 	m_mouseX = x; m_mouseY = y;
-}
-
-inline void GUI::setSelectedWidget(const int n){
-	if (n != Widget::NONE) m_selectedWidget = n;
 }
 
 // Getters
@@ -113,7 +108,7 @@ public:
 	void addWidget(std::shared_ptr<Widget> widget);
 
 	template<typename T>
-	void parse(Config& c, const int widgetType, const std::vector<std::string>& names);
+	void parse(Config& c, const int widgetType, const StringList& names);
 
 	// Getter functions
 	const int getID(void) const;
