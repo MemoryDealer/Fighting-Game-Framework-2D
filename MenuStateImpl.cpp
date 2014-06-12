@@ -113,7 +113,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			}
 
 			// Navigate to the widget's link
-			{
+			if(!m_pGUI->getSelectorPressed()){ // prevents user from navigating away while pressing a button
 				int widget = m_pGUI->getSelectedWidget();
 				if (widget == Widget::NONE){
 					m_pGUI->setSelectedWidget(0);
@@ -167,10 +167,15 @@ void MenuStateImpl::processGUIAction(const int type)
 		if (m_pGUI->getSelectedWidget() != Widget::NONE){
 			m_pGUI->getCurrentLayer()->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::PRESSED);
 		}
-		break; // BEGIN_SELECT
+		break; // BEGIN_PRESS
 
 	case GUI::Action::FINISH_PRESS: // mouse button or key released
 		
+		// Switch the button appearance from pressed back to selected
+		if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+			m_pGUI->getCurrentLayer()->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::SELECTED);
+		}
+
 		// Find the current layer, then look in that layer's widgets
 		switch (m_pGUI->getCurrentLayer()->getID()){
 		default:
@@ -240,13 +245,22 @@ void MenuStateImpl::update(double dt)
 		case SDL_KEYUP:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.key.keysym.sym == SDLK_RETURN){
+					m_pGUI->setSelectorPressed(false);
 					this->processGUIAction(GUI::Action::FINISH_PRESS);
 				}
 			}
 
-			// fall through...
+			this->handleInput(e);
+			break;
 
 		case SDL_KEYDOWN:
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+				if (e.key.keysym.sym == SDLK_RETURN){
+					m_pGUI->setSelectorPressed(true);
+					this->processGUIAction(GUI::Action::BEGIN_PRESS);
+				}
+			}
+
 			this->handleInput(e);
 			break;
 

@@ -196,10 +196,12 @@
 -In MenuStateImpl, when the campaign button is pressed, the game state is pushed onto the stack. When it is popped and menu state runs, the old mouse coordinates are still there,
 	and the campaign button still appears selected even if the mouse is not hovering over it. To remedy this for now, I've set the mouse coordinates to (-1, -1) before pushing the 
 	game state. 
+-Added ability for buttons to change their appearance as the mouse button is held down. It stays if the button is held and the mouse is moved elsewhere, just like a normal GUI for an OS, etc.
+	Quite elegant. Also works for keyboard. 
 
 
 #TODO
--Add mouse down reaction for buttons 
+ -Add gamepad support, should be able to use SDL (maybe try http://blog.5pmcasual.com/game-controller-api-in-sdl2.html)
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Make GameState use the same system for popping as MenuState

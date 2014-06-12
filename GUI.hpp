@@ -47,12 +47,14 @@ public:
 	void setMousePos(const int x, const int y);
 	void setLeftMouseDown(const bool down);
 	void setRightMouseDown(const bool down);
+	void setSelectorPressed(const bool pressed);
 	void setSelectedWidget(const int n);
 
 	// Getter functions
 	GUILayer* getCurrentLayer(void) const;
 	const int getNavigationMode(void) const;
 	const int getSelectedWidget(void) const;
+	const bool getSelectorPressed(void) const;
 
 	virtual void update(double dt);
 
@@ -66,6 +68,7 @@ private:
 	int m_navMode;
 	int m_mouseX, m_mouseY;
 	bool m_leftMouseDown, m_rightMouseDown;
+	bool m_selectorPressed; // RETURN on keyboard, A/Start on gamepad, etc. 
 };
 
 // ================================================ //
@@ -91,6 +94,10 @@ inline void GUI::setRightMouseDown(const bool down){
 	m_rightMouseDown = down;
 }
 
+inline void GUI::setSelectorPressed(const bool pressed){
+	m_selectorPressed = pressed;
+}
+
 // Getters
 inline GUILayer* GUI::getCurrentLayer(void) const{
 	return m_pCurrentLayer;
@@ -102,6 +109,10 @@ inline const int GUI::getNavigationMode(void) const{
 
 inline const int GUI::getSelectedWidget(void) const{
 	return m_selectedWidget;
+}
+
+inline const bool GUI::getSelectorPressed(void) const{
+	return m_selectorPressed;
 }
 
 // ================================================ //

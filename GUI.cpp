@@ -20,7 +20,8 @@ m_navMode(NavMode::MOUSE),
 m_mouseX(0),
 m_mouseY(0),
 m_leftMouseDown(false),
-m_rightMouseDown(false)
+m_rightMouseDown(false),
+m_selectorPressed(false)
 {
 	
 }
@@ -101,7 +102,9 @@ void GUI::update(double dt)
 
 		// Reset last selected widget's texture if nothing is selected
 		if (m_selectedWidget == Widget::NONE){
-			m_pCurrentLayer->getWidget(m_lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+			if (!m_leftMouseDown){
+				m_pCurrentLayer->getWidget(m_lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+			}
 		}
 	}
 
