@@ -14,7 +14,7 @@ namespace PlayerSide{
 
 // ================================================ //
 
-namespace PlayerInputType{
+namespace PlayerMode{
 	enum{
 		LOCAL = 0,
 		AI,

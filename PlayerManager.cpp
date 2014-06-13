@@ -60,12 +60,13 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_blueFighterFile.assign(blueFighterFile);
 
 	// Free any previously allocated pointers and allocate new ones
-	m_pRedPlayer.reset(new Player(redFighterFile));
-	m_pBluePlayer.reset(new Player(blueFighterFile));
+	m_pRedPlayer.reset(new Player(redFighterFile, "Data/ButtonMaps/default-redplayer.bmap"));
+	m_pBluePlayer.reset(new Player(blueFighterFile, "Data/ButtonMaps/default-blueplayer.bmap"));
 
 	// Set default starting sides and positions
 	m_pRedPlayer->setSide(PlayerSide::LEFT);
 	m_pBluePlayer->setSide(PlayerSide::RIGHT);
+
 	const int startingOffset = 40;
 	m_pRedPlayer->setPosition(startingOffset, m_pRedPlayer->getPosition().y);
 	m_pBluePlayer->setPosition(Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w - startingOffset, 

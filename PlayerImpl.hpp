@@ -28,7 +28,7 @@ typedef std::vector<Hitbox> HitboxList;
 class PlayerImpl : public ObjectImpl
 {
 public:
-	explicit PlayerImpl(const std::string& fighterFile, const int inputType);
+	explicit PlayerImpl(const std::string& fighterFile, const std::string& buttomMapFile, const int mode);
 	virtual ~PlayerImpl(void);
 
 	void loadFighterData(const std::string& fighterFile);
@@ -42,12 +42,14 @@ public:
 	const bool isColliding(void) const;
 	const int getVelocityX(void) const;
 	const int getVelocityY(void) const;
+	const int getMode(void) const;
 	Input* getInput(void) const;
 
 	// Setter functions
 	void setSide(const int side);
 	void setColliding(const bool colliding);
 	void toggleDrawHitboxes(void);
+	void setMode(const int mode);
 
 	// Other functions
 	virtual void sendMessage(const Message& msg);
@@ -65,6 +67,7 @@ private:
 	int		m_playerSide;
 
 	std::shared_ptr<Input> m_pInput;
+	int		m_mode;
 
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;
@@ -103,6 +106,10 @@ inline const int PlayerImpl::getVelocityY(void) const{
 	return m_yVel;
 }
 
+inline const int PlayerImpl::getMode(void) const{
+	return m_mode;
+}
+
 inline Input* PlayerImpl::getInput(void) const{
 	return m_pInput.get();
 }
@@ -115,6 +122,10 @@ inline void PlayerImpl::setSide(const int side){
 
 inline void PlayerImpl::toggleDrawHitboxes(void){
 	m_drawHitboxes = !m_drawHitboxes;
+}
+
+inline void PlayerImpl::setMode(const int mode){
+	m_mode = mode;
 }
 
 // ================================================ //

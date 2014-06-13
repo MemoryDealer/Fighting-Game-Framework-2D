@@ -6,8 +6,8 @@
 
 // ================================================ //
 
-Player::Player(const std::string& fighterFile, const int inputType)
-	:	m_pImpl(new PlayerImpl(fighterFile, inputType))
+Player::Player(const std::string& fighterFile, const std::string& buttonMapFile, const int mode)
+: m_pImpl(new PlayerImpl(fighterFile, buttonMapFile, mode))
 {
 	Object::setPImpl(m_pImpl);
 }
@@ -65,6 +65,13 @@ const int Player::getVelocityY(void) const
 
 // ================================================ //
 
+const int Player::getMode(void) const
+{
+	return m_pImpl->getMode();
+}
+
+// ================================================ //
+
 Input* Player::getInput(void) const
 {
 	return m_pImpl->getInput();
@@ -91,6 +98,13 @@ void Player::setColliding(const bool colliding)
 void Player::toggleDrawHitboxes(void)
 {
 	return m_pImpl->toggleDrawHitboxes();
+}
+
+// ================================================ //
+
+void Player::setMode(const int mode)
+{
+	return m_pImpl->setMode(mode);
 }
 
 // ================================================ //

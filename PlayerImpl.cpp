@@ -18,7 +18,7 @@ const int MAX_HITBOXES = 7;
 
 // ================================================ //
 
-PlayerImpl::PlayerImpl(const std::string& fighterFile, const int inputType)
+PlayerImpl::PlayerImpl(const std::string& fighterFile, const std::string& buttomMapFile, const int mode)
 	:	ObjectImpl(),
 		m_xAccel(0),
 		m_yAccel(0),
@@ -28,7 +28,8 @@ PlayerImpl::PlayerImpl(const std::string& fighterFile, const int inputType)
 		m_yMax(0),
 		m_currentAction(PlayerAction::NONE),
 		m_playerSide(PlayerSide::LEFT),
-		m_pInput(new Input()),
+		m_pInput(new Input(buttomMapFile)),
+		m_mode(mode),
 		m_moves(),
 		m_pCurrentMove(nullptr),
 		m_pMoveTimer(new Timer()),
@@ -311,8 +312,7 @@ void PlayerImpl::setColliding(const bool colliding)
 
 void PlayerImpl::update(double dt)
 {
-	//if (m_inputType == PlayerInputType::LOCAL){
-	if (true){
+	if (m_mode == PlayerMode::LOCAL){
 		this->updateLocalInput();
 	}
 

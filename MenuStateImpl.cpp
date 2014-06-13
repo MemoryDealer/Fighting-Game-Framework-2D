@@ -254,6 +254,7 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_KEYDOWN:
+			printf("Key: %d\n", e.key.keysym.sym);
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.key.keysym.sym == SDLK_RETURN){
 					m_pGUI->setSelectorPressed(true);

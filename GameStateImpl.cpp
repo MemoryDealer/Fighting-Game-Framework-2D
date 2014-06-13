@@ -65,25 +65,27 @@ void GameStateImpl::resume(void)
 void GameStateImpl::handleInput(SDL_Event& e)
 {
 	if (e.type == SDL_KEYDOWN){
+
+		// Mapped buttons
+		// Red Player
+		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT)){
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+		}
+		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT)){
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+		}
+
+		// Blue Player
+		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT)){
+			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+		}
+		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT)){
+			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+		}
+		
 		switch (e.key.keysym.sym){
 		default:
 			
-			break;
-
-		case SDLK_a: // this value should eventually be retrieved from the Player class
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
-			break;
-
-		case SDLK_d:
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
-			break;
-
-		case SDLK_LEFT: 
-			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
-			break;
-
-		case SDLK_RIGHT:
-			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
 			break;
 
 		case SDLK_UP:
