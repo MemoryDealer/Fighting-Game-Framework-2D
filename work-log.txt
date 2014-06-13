@@ -199,6 +199,9 @@
 -Added ability for buttons to change their appearance as the mouse button is held down. It stays if the button is held and the mouse is moved elsewhere, just like a normal GUI for an OS, etc.
 	Quite elegant. Also works for keyboard. 
 
+#6/12/14
+-Created Input class, which is held by each PlayerImpl. This holds the states of all input buttons and an input map. 
+
 
 #TODO
  -Add gamepad support, should be able to use SDL (maybe try http://blog.5pmcasual.com/game-controller-api-in-sdl2.html)

@@ -150,6 +150,7 @@
     <ClCompile Include="..\GUI.cpp" />
     <ClCompile Include="..\GUIMenuState.cpp" />
     <ClCompile Include="..\Hitbox.cpp" />
+    <ClCompile Include="..\Input.cpp" />
     <ClCompile Include="..\Label.cpp" />
     <ClCompile Include="..\Log.cpp" />
     <ClCompile Include="..\LogImpl.cpp" />

@@ -230,7 +230,7 @@ void FighterMetadata::parseHitboxes(Move* pMove, const std::string& frame)
 {
 	// Load all hitbox rects into the frame's hitbox list
 	// Normal hitboxes
-	for(int i=Player::HBOX_LOWER, num=1; i<=Player::HBOX_HEAD; ++i, ++num){
+	for (int i = Hitbox::HBOX_LOWER, num = 1; i <= Hitbox::HBOX_HEAD; ++i, ++num){
 		std::string hbox = this->parseMoveValue(frame, std::string("hbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(hbox));
 	}
@@ -240,13 +240,13 @@ void FighterMetadata::parseHitboxes(Move* pMove, const std::string& frame)
 	pMove->frames.back().hitboxes.push_back(this->parseRect(tbox));
 
 	// Damage boxes
-	for(int i=Player::DBOX1, num=1; i<=Player::DBOX2; ++i, ++num){
+	for (int i = Hitbox::DBOX1, num = 1; i <= Hitbox::DBOX2; ++i, ++num){
 		std::string dbox = this->parseMoveValue(frame, std::string("dbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(dbox));
 	}
 
 	// Counter boxes
-	for(int i=Player::CBOX1, num=1; i<=Player::CBOX2; ++i, ++num){
+	for (int i = Hitbox::CBOX1, num = 1; i <= Hitbox::CBOX2; ++i, ++num){
 		std::string cbox = this->parseMoveValue(frame, std::string("cbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(cbox));
 	}

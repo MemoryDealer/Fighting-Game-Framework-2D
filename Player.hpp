@@ -12,6 +12,7 @@
 
 class PlayerImpl;
 class Hitbox;
+class Input;
 
 // ================================================ //
 
@@ -21,19 +22,6 @@ public:
 	explicit Player(const std::string& fighterFile, const int inputType = PlayerInputType::LOCAL);
 	virtual ~Player(void);
 
-	// Hitbox indices
-	enum{
-		HBOX_LOWER = 0,
-		HBOX_MIDDLE,
-		HBOX_UPPER,
-		HBOX_HEAD,
-		TBOX,
-		DBOX1,
-		DBOX2,
-		CBOX1,
-		CBOX2,
-	};
-
 	// Getter functions
 	const int getSide(void) const;
 	Hitbox& getHitbox(const int index);
@@ -41,10 +29,10 @@ public:
 	const bool isColliding(void) const;
 	const int getVelocityX(void) const;
 	const int getVelocityY(void) const;
+	Input* getInput(void) const;
 
 	// Setter functions
 	void setSide(const int side);
-	void setInput(const int input, const bool down);
 	void setColliding(const bool colliding);
 	void toggleDrawHitboxes(void);
 

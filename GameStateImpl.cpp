@@ -71,19 +71,19 @@ void GameStateImpl::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_a: // this value should eventually be retrieved from the Player class
-			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, true);
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
 			break;
 
 		case SDLK_d:
-			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, true);
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
 			break;
 
 		case SDLK_LEFT: 
-			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_LEFT, true);
+			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
 			break;
 
 		case SDLK_RIGHT:
-			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_RIGHT, true);
+			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
 			break;
 
 		case SDLK_UP:
@@ -116,19 +116,19 @@ void GameStateImpl::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_a: // this value should eventually be retrieved from the Player class
-			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_LEFT, false);
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
 			break; 
 
 		case SDLK_d:
-			PlayerManager::getSingletonPtr()->getRedPlayer()->setInput(Input::BUTTON_RIGHT, false);
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
 			break;
 
 		case SDLK_LEFT:
-			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_LEFT, false);
+			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
 			break; 
 
 		case SDLK_RIGHT:
-			PlayerManager::getSingletonPtr()->getBluePlayer()->setInput(Input::BUTTON_RIGHT, false);
+			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
 			break;
 		}
 	}

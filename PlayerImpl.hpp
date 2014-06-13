@@ -16,6 +16,7 @@
 struct Move;
 class FighterMetadata;
 class Timer;
+class Input;
 
 // ================================================ //
 
@@ -41,10 +42,10 @@ public:
 	const bool isColliding(void) const;
 	const int getVelocityX(void) const;
 	const int getVelocityY(void) const;
+	Input* getInput(void) const;
 
 	// Setter functions
 	void setSide(const int side);
-	void setInput(const int input, const bool down);
 	void setColliding(const bool colliding);
 	void toggleDrawHitboxes(void);
 
@@ -63,8 +64,7 @@ private:
 	int		m_currentAction;
 	int		m_playerSide;
 
-	int		m_inputType;
-	bool*	m_input; // dynamically allocated array of current inputs
+	std::shared_ptr<Input> m_pInput;
 
 	MoveList		m_moves;
 	Move*			m_pCurrentMove;
@@ -103,14 +103,14 @@ inline const int PlayerImpl::getVelocityY(void) const{
 	return m_yVel;
 }
 
+inline Input* PlayerImpl::getInput(void) const{
+	return m_pInput.get();
+}
+
 // Setter functions
 inline void PlayerImpl::setSide(const int side){ 
 	m_playerSide = side; 
 	m_flip = (side == PlayerSide::LEFT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-}
-
-inline void PlayerImpl::setInput(const int input, const bool down){ 
-	m_input[input] = down; 
 }
 
 inline void PlayerImpl::toggleDrawHitboxes(void){

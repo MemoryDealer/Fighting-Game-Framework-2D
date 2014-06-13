@@ -64,19 +64,19 @@ const int Player::getVelocityY(void) const
 }
 
 // ================================================ //
+
+Input* Player::getInput(void) const
+{
+	return m_pImpl->getInput();
+}
+
+// ================================================ //
 // Setter functions
 // ================================================ //
 
 void Player::setSide(const int side)
 {
 	return m_pImpl->setSide(side);
-}
-
-// ================================================ //
-
-void Player::setInput(const int input, const bool down)
-{
-	return m_pImpl->setInput(input, down);
 }
 
 // ================================================ //

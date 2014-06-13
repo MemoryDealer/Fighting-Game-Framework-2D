@@ -26,6 +26,19 @@ public:
 	explicit Hitbox(const int type);
 	virtual ~Hitbox(void);
 
+	// Hitbox indices
+	enum{
+		HBOX_LOWER = 0,
+		HBOX_MIDDLE,
+		HBOX_UPPER,
+		HBOX_HEAD,
+		TBOX,
+		DBOX1,
+		DBOX2,
+		CBOX1,
+		CBOX2,
+	};
+
 	const bool intersects(const Hitbox& b);
 	void render(void);
 

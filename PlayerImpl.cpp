@@ -10,6 +10,7 @@
 #include "Input.hpp"
 #include "Camera.hpp"
 #include "PlayerManager.hpp"
+#include "Input.hpp"
 
 // ================================================ //
 
@@ -27,8 +28,7 @@ PlayerImpl::PlayerImpl(const std::string& fighterFile, const int inputType)
 		m_yMax(0),
 		m_currentAction(PlayerAction::NONE),
 		m_playerSide(PlayerSide::LEFT),
-		m_inputType(inputType),
-		m_input(new bool[Input::NUM_INPUTS]),
+		m_pInput(new Input()),
 		m_moves(),
 		m_pCurrentMove(nullptr),
 		m_pMoveTimer(new Timer()),
@@ -36,10 +36,6 @@ PlayerImpl::PlayerImpl(const std::string& fighterFile, const int inputType)
 		m_colliding(false),
 		m_drawHitboxes(false)
 {
-	// Set all input to false
-	memset(m_input, false, sizeof(bool) * Input::NUM_INPUTS);
-	//std::fill(m_input, m_input + (sizeof(bool)*Input::NUM_INPUTS), false);
-	
 	// Load configuration settings
 	this->loadFighterData(fighterFile);
 
@@ -94,8 +90,6 @@ PlayerImpl::~PlayerImpl(void)
 	}
 
 	m_moves.clear();
-
-	delete[] m_input;
 }
 
 // ================================================ //
@@ -174,7 +168,8 @@ void PlayerImpl::updateLocalInput(void)
 	// Movement
 	// Checking both right now will force the player to cancel out movement if both are held
 	// thus preventing the character from sliding when holding both down
-	if (m_input[Input::BUTTON_LEFT] && !m_input[Input::BUTTON_RIGHT]){
+	if (m_pInput->getButton(Input::BUTTON_LEFT) && 
+		!m_pInput->getButton(Input::BUTTON_RIGHT)){
 		m_xVel -= m_xAccel;
 		if (m_xVel < -m_xMax)
 			m_xVel = -m_xMax;
@@ -182,7 +177,8 @@ void PlayerImpl::updateLocalInput(void)
 		m_currentAction = (m_playerSide == PlayerSide::LEFT) ? 
 			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
 	}
-	else if (m_input[Input::BUTTON_RIGHT] && !m_input[Input::BUTTON_LEFT]){
+	else if (m_pInput->getButton(Input::BUTTON_RIGHT) &&
+		!m_pInput->getButton(Input::BUTTON_LEFT)){
 		m_xVel += m_xAccel;
 		if (m_xVel > m_xMax)
 			m_xVel = m_xMax;
@@ -315,7 +311,8 @@ void PlayerImpl::setColliding(const bool colliding)
 
 void PlayerImpl::update(double dt)
 {
-	if (m_inputType == PlayerInputType::LOCAL){
+	//if (m_inputType == PlayerInputType::LOCAL){
+	if (true){
 		this->updateLocalInput();
 	}
 
