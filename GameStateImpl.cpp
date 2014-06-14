@@ -142,24 +142,48 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 	// Gamepad input
 	if (e.type == SDL_CONTROLLERBUTTONDOWN){
+		printf("(Gamepad ID): %d\n", e.cdevice.which);
+
 		// Red Player
-		if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+		if (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()){
+			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+			}
+			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+			}
 		}
-		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+		// Blue Player
+		else if (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()){
+			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+			}
+			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+			}
 		}
 	}
 	else if (e.type == SDL_CONTROLLERBUTTONUP){
 		// Red Player
-		if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
+		if (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()){
+			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
+			}
+			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
+			}
+			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true)){
+				m_bQuit = true;
+			}
 		}
-		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
-		}
-		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true)){
-			m_bQuit = true;
+		// Blue Player
+		else if (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()){
+			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
+			}
+			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
+			}
 		}
 	}
 }
@@ -191,16 +215,36 @@ void GameStateImpl::update(double dt)
 
 		// Gamepad events
 		case SDL_CONTROLLERDEVICEADDED:
-			GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
+			{
+				int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
+				
+				// Assign the new controller to the first open slot
+				if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
+						GamepadManager::getSingletonPtr()->getPad(id));
+				}
+				else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
+						GamepadManager::getSingletonPtr()->getPad(id));
+				}
+			}
 			break;
 
 		case SDL_CONTROLLERDEVICEREMOVED:
+			// The player's pad pointer will be gone, so assign it to null to prevent undefined behavior
+			if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(nullptr);
+			}
+			if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(nullptr);
+			}
+
 			GamepadManager::getSingletonPtr()->removePad(e.cdevice.which);
 			break;
 
 		case SDL_CONTROLLERBUTTONDOWN:
 		case SDL_CONTROLLERBUTTONUP:
-			printf("Gamepad: %d\n", e.cbutton.button);
+			printf("[Gamepad Button ID]: %d\n", e.cbutton.button);
 			this->handleInput(e);
 			break;
 		}
@@ -227,6 +271,9 @@ void GameStateImpl::update(double dt)
 
 		break;
 	}
+
+	printf("RedID: %d\tBlueID: %d\n", PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID(),
+		PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID());
 
 	Engine::getSingletonPtr()->renderPresent();
 }

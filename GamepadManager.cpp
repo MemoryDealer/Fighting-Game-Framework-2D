@@ -2,6 +2,8 @@
 
 #include "GamepadManager.hpp"
 #include "Engine.hpp"
+#include "PlayerManager.hpp"
+#include "Input.hpp"
 
 // ================================================ //
 
@@ -24,9 +26,9 @@ GamepadManager::~GamepadManager(void)
 
 // ================================================ //
 
-bool GamepadManager::addPad(const int id)
+int GamepadManager::addPad(const int id)
 {
-	Log::getSingletonPtr()->logMessage("Adding gamepad with device ID " + Engine::toString(id) + "...");
+	Log::getSingletonPtr()->logMessage("Adding gamepad...");
 
 	// See if it's a gamepad
 	if (SDL_IsGameController(id)){
@@ -39,17 +41,18 @@ bool GamepadManager::addPad(const int id)
 			// Get the actual instance ID of the device
 			SDL_Joystick* joy = SDL_JoystickOpen(id);
 			gamepad.id = SDL_JoystickInstanceID(joy);
+			Log::getSingletonPtr()->logMessage("Gamepad has ID " + Engine::toString(gamepad.id));
 
 			// Add gamepad to the PadList
 			m_gamepads.push_back(gamepad);
 
 			SDL_JoystickClose(joy);
-			return true;
+			return gamepad.id;
 		}
 	}
 
 	Log::getSingletonPtr()->logMessage("ERROR: Failed to add gamepad");
-	return false;
+	return -1;
 }
 
 // ================================================ //
@@ -61,7 +64,9 @@ void GamepadManager::removePad(const int id)
 	for (GamepadList::iterator itr = m_gamepads.begin();
 		itr != m_gamepads.end();
 		++itr){
+		// Find the right gamepad
 		if (itr->id == id){
+			// Remove the controller
 			SDL_GameControllerClose(itr->pad);
 			itr = m_gamepads.erase(itr);
 			Log::getSingletonPtr()->logMessage("Gamepad successfully removed");

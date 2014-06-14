@@ -5,7 +5,8 @@
 
 // ================================================ //
 
-Input::Input(const std::string& bmap)
+Input::Input(const std::string& bmap) :
+m_pad(nullptr)
 {
 	// Set all button states to false
 	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
@@ -57,6 +58,21 @@ void Input::loadButtonMap(const std::string& file)
 void Input::resetAllButtons(void)
 {
 	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
+}
+
+// ================================================ //
+
+const int Input::getPadID(void) const
+{
+	// Get the instance ID of the controller using the underlying joystick
+	SDL_Joystick* joystick = nullptr;
+
+	joystick = SDL_GameControllerGetJoystick(m_pad);
+	if (joystick){
+		return SDL_JoystickInstanceID(joystick);
+	}
+
+	return -1;
 }
 
 // ================================================ //

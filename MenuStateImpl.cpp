@@ -358,7 +358,6 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_CONTROLLERBUTTONUP:
-			printf("ID: %d\n", e.cdevice.which);
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
 					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
@@ -368,6 +367,11 @@ void MenuStateImpl::update(double dt)
 			}
 
 			this->handleInput(e);
+			break;
+
+		case SDL_CONTROLLERAXISMOTION:
+			const Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(0), (SDL_GameControllerAxis)0);
+			printf("axis: %d\n", value);
 			break;
 		}
 	}

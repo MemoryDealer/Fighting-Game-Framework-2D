@@ -24,7 +24,7 @@ public:
 	GamepadManager(void);
 	~GamepadManager(void);
 
-	bool addPad(const int id);
+	int addPad(const int id); // returns instance ID
 	void removePad(const int id);
 
 	void addAllConnectedPads(void);
@@ -49,6 +49,8 @@ inline SDL_GameController* GamepadManager::getPad(const int id){
 			return itr->pad;
 		}
 	}
+
+	return nullptr;
 }
 
 // Setters
