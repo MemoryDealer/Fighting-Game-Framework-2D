@@ -31,6 +31,9 @@ public:
 	Player* getRedPlayer(void) const;
 	Player* getBluePlayer(void) const;
 
+	Input* getRedPlayerInput(void) const;
+	Input* getBluePlayerInput(void) const;
+
 	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
 	bool reload(void);
 
@@ -49,11 +52,21 @@ private:
 
 // ================================================ //
 
-inline Player* PlayerManager::getRedPlayer(void) const
-{ return m_pRedPlayer.get(); }
+inline Player* PlayerManager::getRedPlayer(void) const{ 
+	return m_pRedPlayer.get(); 
+}
 
-inline Player* PlayerManager::getBluePlayer(void) const
-{ return m_pBluePlayer.get(); }
+inline Player* PlayerManager::getBluePlayer(void) const{ 
+	return m_pBluePlayer.get(); 
+}
+
+inline Input* PlayerManager::getRedPlayerInput(void) const{
+	return m_pRedPlayer->getInput();
+}
+
+inline Input* PlayerManager::getBluePlayerInput(void) const{
+	return m_pBluePlayer->getInput();
+}
 
 // ================================================ //
 

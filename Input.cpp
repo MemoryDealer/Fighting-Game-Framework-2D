@@ -5,8 +5,7 @@
 
 // ================================================ //
 
-Input::Input(const std::string& bmap) :
-m_type(0)
+Input::Input(const std::string& bmap)
 {
 	// Set all button states to false
 	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
@@ -43,12 +42,21 @@ void Input::loadButtonMap(const std::string& file)
 		m_gamepadMap[BUTTON_DOWN] = c.parseIntValue("gamepad", "down");
 		m_gamepadMap[BUTTON_LEFT] = c.parseIntValue("gamepad", "left");
 		m_gamepadMap[BUTTON_RIGHT] = c.parseIntValue("gamepad", "right");
+		m_gamepadMap[BUTTON_START] = c.parseIntValue("gamepad", "start");
+		m_gamepadMap[BUTTON_SELECT] = c.parseIntValue("gamepad", "select");
 
 		Log::getSingletonPtr()->logMessage("Button map loaded!");
 	}
 	else{
 		Log::getSingletonPtr()->logMessage("ERROR: Failed to open button map file!");
 	}
+}
+
+// ================================================ //
+
+void Input::resetAllButtons(void)
+{
+	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
 }
 
 // ================================================ //

@@ -69,18 +69,18 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		// Mapped buttons
 		// Red Player
-		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT)){
+		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
 		}
-		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT)){
+		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
 		}
 
 		// Blue Player
-		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT)){
+		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
 			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
 		}
-		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT)){
+		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
 			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
 		}
 		
@@ -117,46 +117,49 @@ void GameStateImpl::handleInput(SDL_Event& e)
 
 		// Mapped buttons
 		// Red Player
-		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT)){
+		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
 		}
-		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT)){
+		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
 		}
 
 		// Blue Player
-		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT)){
+		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
 			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
 		}
-		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT)){
+		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
 			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
 		}
 
 		// Hard-coded keys
-		switch (e.key.keysym.sym){
+		/*switch (e.key.keysym.sym){
 		default:
 			
 			break;
-		}
+		}*/
 	}
 
 	// Gamepad input
 	if (e.type == SDL_CONTROLLERBUTTONDOWN){
 		// Red Player
-		if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+		if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
 		}
-		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
 		}
 	}
 	else if (e.type == SDL_CONTROLLERBUTTONUP){
 		// Red Player
-		if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+		if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
 		}
-		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
 			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
+		}
+		else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true)){
+			m_bQuit = true;
 		}
 	}
 }
@@ -196,7 +199,8 @@ void GameStateImpl::update(double dt)
 			break;
 
 		case SDL_CONTROLLERBUTTONDOWN:
-			printf("pad: %d\n", e.cbutton.button);
+		case SDL_CONTROLLERBUTTONUP:
+			printf("Gamepad: %d\n", e.cbutton.button);
 			this->handleInput(e);
 			break;
 		}

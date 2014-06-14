@@ -26,7 +26,7 @@ GamepadManager::~GamepadManager(void)
 
 bool GamepadManager::addPad(const int id)
 {
-	Log::getSingletonPtr()->logMessage("Adding gamepad with device ID " + Engine::toString(id));
+	Log::getSingletonPtr()->logMessage("Adding gamepad with device ID " + Engine::toString(id) + "...");
 
 	// See if it's a gamepad
 	if (SDL_IsGameController(id)){
@@ -56,7 +56,7 @@ bool GamepadManager::addPad(const int id)
 
 void GamepadManager::removePad(const int id)
 {
-	Log::getSingletonPtr()->logMessage("Removing gamepad with ID " + Engine::toString(id));
+	Log::getSingletonPtr()->logMessage("Removing gamepad with ID " + Engine::toString(id) + "...");
 
 	for (GamepadList::iterator itr = m_gamepads.begin();
 		itr != m_gamepads.end();
@@ -76,6 +76,8 @@ void GamepadManager::removePad(const int id)
 
 void GamepadManager::addAllConnectedPads(void)
 {
+	Log::getSingletonPtr()->logMessage("Adding all connected gamepads...");
+
 	for (int i = 0; i < SDL_NumJoysticks(); ++i){
 		this->addPad(i);
 	}

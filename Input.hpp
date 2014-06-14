@@ -25,10 +25,14 @@ public:
 		BUTTON_LEFT,
 		BUTTON_RIGHT,
 
+		BUTTON_START,
+		BUTTON_SELECT, // such as A button, for menus (will be a duplicate)
+
 		NUM_BUTTONS
 	};
 
 	void loadButtonMap(const std::string& file);
+	void resetAllButtons(void);
 
 	// Getter functions
 	const bool getButton(const int button) const;
@@ -38,7 +42,6 @@ public:
 	void setButton(const int button, const bool state);
 	
 private:
-	int m_type;
 	bool m_buttons[NUM_BUTTONS];
 	ButtonValue m_keyboardMap[NUM_BUTTONS];
 	ButtonValue m_gamepadMap[NUM_BUTTONS];

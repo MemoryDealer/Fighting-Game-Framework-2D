@@ -97,6 +97,8 @@ void MenuStateImpl::resume(void)
 void MenuStateImpl::handleInput(SDL_Event& e)
 {
 	if (e.type == SDL_KEYDOWN){
+
+		// Hard-coded keys
 		switch (e.key.keysym.sym){
 		default:
 			break;
@@ -119,8 +121,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				if (widget == Widget::NONE){
 					m_pGUI->setSelectedWidget(0);
 				}
-				else
-				{
+				else{
 					Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
 					switch (e.key.keysym.sym){
 					default:
@@ -152,6 +153,38 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				m_pBackground.reset(new Stage("Data/Stages/mainmenu.stage"));
 			}
 			break;
+		}
+	}
+
+	if (e.type == SDL_CONTROLLERBUTTONDOWN){
+
+		if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
+			m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
+		}
+
+		// Gamepad buttons
+		if (!m_pGUI->getSelectorPressed()){ // prevents user from navigating away while pressing a button
+			int widget = m_pGUI->getSelectedWidget();
+			if (widget == Widget::NONE){
+				m_pGUI->setSelectedWidget(0);
+			}
+			else{
+				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
+
+				// Red player
+				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_UP, true)){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+				}
+				else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_DOWN, true)){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+				}
+				else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+				}
+				else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+				}
+			}
 		}
 	}
 }
@@ -242,24 +275,23 @@ void MenuStateImpl::update(double dt)
 		case SDL_QUIT:
 			m_bQuit = true;
 			break;
+
+		case SDL_KEYDOWN:
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+				if (e.key.keysym.sym == SDLK_RETURN){
+					m_pGUI->setSelectorPressed(true);
+					this->processGUIAction(GUI::Action::BEGIN_PRESS);
+				}
+			}
+
+			this->handleInput(e);
+			break;
 		
 		case SDL_KEYUP:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.key.keysym.sym == SDLK_RETURN){
 					m_pGUI->setSelectorPressed(false);
 					this->processGUIAction(GUI::Action::FINISH_PRESS);
-				}
-			}
-
-			this->handleInput(e);
-			break;
-
-		case SDL_KEYDOWN:
-			printf("Key: %d\n", e.key.keysym.sym);
-			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-				if (e.key.keysym.sym == SDLK_RETURN){
-					m_pGUI->setSelectorPressed(true);
-					this->processGUIAction(GUI::Action::BEGIN_PRESS);
 				}
 			}
 
@@ -299,20 +331,43 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_WINDOWEVENT:
-			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST){
 				Engine::getSingletonPtr()->setWindowFocused(false);
+			}
 			break;
 
 		// Gamepad events
 		case SDL_CONTROLLERDEVICEADDED:
-		{
-			static int id = 0;
 			GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
-		}
 			break;
 
 		case SDL_CONTROLLERDEVICEREMOVED:
 			GamepadManager::getSingletonPtr()->removePad(e.cdevice.which);
+			break;
+
+		case SDL_CONTROLLERBUTTONDOWN:
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
+					m_pGUI->setSelectorPressed(true);
+					this->processGUIAction(GUI::Action::BEGIN_PRESS);
+				}
+			}
+
+			this->handleInput(e);
+			break;
+
+		case SDL_CONTROLLERBUTTONUP:
+			printf("ID: %d\n", e.cdevice.which);
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
+					m_pGUI->setSelectorPressed(false);
+					this->processGUIAction(GUI::Action::FINISH_PRESS);
+				}
+			}
+
+			this->handleInput(e);
 			break;
 		}
 	}

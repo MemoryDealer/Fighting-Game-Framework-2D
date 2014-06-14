@@ -204,6 +204,9 @@
 
 #6/13/14
 -Tested Xbox360 controller input, works nicely. 
+-The gamepad and keyboard controls can be used simultaneously. 
+-Added controller support in both game state and menu state.
+-Button maps are loaded from .bmap files, which hold both keyboard and gamepad mappings. The player will be able to save/load button maps using these. 
 
 
 #TODO
