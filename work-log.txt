@@ -209,12 +209,13 @@
 -Button maps are loaded from .bmap files, which hold both keyboard and gamepad mappings. The player will be able to save/load button maps using these. 
 -When removing a controller, the SDL_GameController pointer in the Player's Input object is set to nullptr, however something weird happens with the memory
 	and when I tried to add the controller back it would get IDs confused. I fixed this by assigning nullptr to the Player of which the controller was removed. 
+-I've extensively tested plugging in and unplugging two xbox360 controllers, alternating them every which way and I experience no errors in controlling the players. 
 
 
 #TODO
- -Add gamepad support, should be able to use SDL (maybe try http://blog.5pmcasual.com/game-controller-api-in-sdl2.html)
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
+-Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 
 -Make GameState use the same system for popping as MenuState
 -Use SDL_UpdateTexture() to change colors of textures on the fly
 -Remove c_str() on std::strings where feasible
@@ -239,6 +240,7 @@
 #BUGS
 -If holding down a movement key when exiting game state, the key is still registered as down when returning. This may resolve itself once PlayerManager
 	is re-allocated per entry to game state. 
+-When unplugging an xbox360 controller, it sends input from seemingly random buttons. 
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 
