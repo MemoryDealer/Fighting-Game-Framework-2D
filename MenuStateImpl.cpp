@@ -14,6 +14,7 @@
 #include "Server.hpp"
 #include "AppState.hpp"
 #include "App.hpp"
+#include "GamepadManager.hpp"
 
 // ================================================ //
 
@@ -300,6 +301,18 @@ void MenuStateImpl::update(double dt)
 		case SDL_WINDOWEVENT:
 			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
 				Engine::getSingletonPtr()->setWindowFocused(false);
+			break;
+
+		// Gamepad events
+		case SDL_CONTROLLERDEVICEADDED:
+		{
+			static int id = 0;
+			GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
+		}
+			break;
+
+		case SDL_CONTROLLERDEVICEREMOVED:
+			GamepadManager::getSingletonPtr()->removePad(e.cdevice.which);
 			break;
 		}
 	}

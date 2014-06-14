@@ -6,6 +6,7 @@
 #include "MenuState.hpp"
 #include "GameState.hpp"
 #include "FontManager.hpp"
+#include "GamepadManager.hpp"
 
 // ================================================ //
 
@@ -26,6 +27,10 @@ App::App(void)
 	// Allocate FontManager singleton
 	new FontManager();
 	FontManager::getSingletonPtr()->reloadAll();
+
+	// Allocate GamepadManager singleton and register all gamepads
+	new GamepadManager();
+	GamepadManager::getSingletonPtr()->addAllConnectedPads();
 
 	// Create our state manager
 	Log::getSingletonPtr()->logMessage("Creating AppStateManager...");
@@ -49,6 +54,7 @@ App::~App(void)
 {
 	delete m_pAppStateManager;
 	//delete GUIManager::getSingletonPtr();
+	delete GamepadManager::getSingletonPtr();
 	delete FontManager::getSingletonPtr();
 	delete Engine::getSingletonPtr(); // Engine must be available for AppState's destruction (ObjectManager)
 	delete MessageRouter::getSingletonPtr();

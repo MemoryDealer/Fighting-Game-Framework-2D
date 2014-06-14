@@ -202,6 +202,9 @@
 #6/12/14
 -Created Input class, which is held by each PlayerImpl. This holds the states of all input buttons and an input map. 
 
+#6/13/14
+-Tested Xbox360 controller input, works nicely. 
+
 
 #TODO
  -Add gamepad support, should be able to use SDL (maybe try http://blog.5pmcasual.com/game-controller-api-in-sdl2.html)
