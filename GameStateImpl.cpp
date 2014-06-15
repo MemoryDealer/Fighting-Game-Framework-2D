@@ -65,23 +65,38 @@ void GameStateImpl::resume(void)
 
 void GameStateImpl::handleInput(SDL_Event& e)
 {
+	// Acquire a pointer to the player under the control of the current gamepad here (avoids copied & pasted code below)
+	Player* player = nullptr;
+	if (e.type == SDL_CONTROLLERBUTTONDOWN ||
+		e.type == SDL_CONTROLLERBUTTONUP ||
+		e.type == SDL_CONTROLLERAXISMOTION){
+		player = (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()) ?
+			PlayerManager::getSingletonPtr()->getRedPlayer() : (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()) ?
+			PlayerManager::getSingletonPtr()->getBluePlayer() : nullptr;
+
+		if (player == nullptr){
+			Log::getSingletonPtr()->logMessage("WARNING: Unregistered gamepad sending input (ID: " + Engine::toString(e.cdevice.which) + ")");
+			return;
+		}
+	}
+
 	if (e.type == SDL_KEYDOWN){
 
 		// Mapped buttons
 		// Red Player
 		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, true);
 		}
 		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, true);
 		}
 
 		// Blue Player
 		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
-			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
+			PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LEFT, true);
 		}
 		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
-			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
+			PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, true);
 		}
 		
 		// Hard-coded keys
@@ -118,73 +133,96 @@ void GameStateImpl::handleInput(SDL_Event& e)
 		// Mapped buttons
 		// Red Player
 		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
+			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, false);
 		}
 		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
-			PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
+			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, false);
 		}
 
 		// Blue Player
 		if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT)){
-			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
+			PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LEFT, false);
 		}
 		else if (e.key.keysym.sym == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT)){
-			PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
+			PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, false);
 		}
-
-		// Hard-coded keys
-		/*switch (e.key.keysym.sym){
-		default:
-			
-			break;
-		}*/
 	}
 
 	// Gamepad input
 	if (e.type == SDL_CONTROLLERBUTTONDOWN){
-		printf("(Gamepad ID): %d\n", e.cdevice.which);
-
-		// Red Player
-		if (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()){
-			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
-				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
-			}
-			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
-				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
-			}
+		printf("[Gamepad Button ID]: %-5d(Gamepad ID: %d)\n", e.cbutton.button, e.cdevice.which);
+		
+		if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+			player->getInput()->setButton(Input::BUTTON_LEFT, true);
+			player->getInput()->setMovementMode(Input::MovementMode::DPAD);
 		}
-		// Blue Player
-		else if (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()){
-			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
-				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, true);
-			}
-			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
-				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, true);
-			}
+		else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+			player->getInput()->setButton(Input::BUTTON_RIGHT, true);
+			player->getInput()->setMovementMode(Input::MovementMode::DPAD);
 		}
 	}
 	else if (e.type == SDL_CONTROLLERBUTTONUP){
-		// Red Player
-		if (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()){
-			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
-				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
+		if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+			player->getInput()->setButton(Input::BUTTON_LEFT, false);
+			player->getInput()->setMovementMode(Input::MovementMode::DPAD);
+		}
+		else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+			player->getInput()->setButton(Input::BUTTON_RIGHT, false);
+			player->getInput()->setMovementMode(Input::MovementMode::DPAD);
+		}
+		else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_START, true)){
+			m_bQuit = true;
+		}
+	}
+	else if (e.type == SDL_CONTROLLERAXISMOTION){
+		Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(1));
+		const int deadzone = player->getInput()->getPadDeadzone();
+
+		// First see if we should not process the joystick if the player is using the D-pad
+		if (player->getInput()->getMovementMode() == Input::MovementMode::DPAD){
+			if (value < -deadzone || value > deadzone){
+				player->getInput()->setMovementMode(Input::MovementMode::JOYSTICK);
 			}
-			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
-				PlayerManager::getSingletonPtr()->getRedPlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
-			}
-			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true)){
-				m_bQuit = true;
+			else{
+				value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(0));
+				if (value < -deadzone || value > deadzone){
+					player->getInput()->setMovementMode(Input::MovementMode::JOYSTICK);
+				}
+				else{
+					// The joystick is not out of the deadzone, so remain in DPAD mode
+					return;
+				}
 			}
 		}
-		// Blue Player
-		else if (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()){
-			if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
-				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_LEFT, false);
-			}
-			else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
-				PlayerManager::getSingletonPtr()->getBluePlayer()->getInput()->setButton(Input::BUTTON_RIGHT, false);
-			}
+
+		// Y-axis
+		value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(1));
+		if (value < -deadzone){
+			player->getInput()->setButton(Input::BUTTON_UP, true);
 		}
+		else if (value > deadzone){
+			player->getInput()->setButton(Input::BUTTON_DOWN, true);
+		}
+		else{
+			player->getInput()->setButton(Input::BUTTON_UP, false);
+			player->getInput()->setButton(Input::BUTTON_DOWN, false);
+		}
+
+		// X-axis
+		value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(0));
+		if (value < -deadzone){
+			player->getInput()->setButton(Input::BUTTON_LEFT, true);
+		}
+		else if (value > deadzone){
+			player->getInput()->setButton(Input::BUTTON_RIGHT, true);
+		}
+		else{
+			player->getInput()->setButton(Input::BUTTON_LEFT, false);
+			player->getInput()->setButton(Input::BUTTON_RIGHT, false);
+		}
+
+		// Process GUI
+		// ...
 	}
 }
 
@@ -244,7 +282,10 @@ void GameStateImpl::update(double dt)
 
 		case SDL_CONTROLLERBUTTONDOWN:
 		case SDL_CONTROLLERBUTTONUP:
-			printf("[Gamepad Button ID]: %d\n", e.cbutton.button);
+			this->handleInput(e);
+			break;
+
+		case SDL_CONTROLLERAXISMOTION:
 			this->handleInput(e);
 			break;
 		}

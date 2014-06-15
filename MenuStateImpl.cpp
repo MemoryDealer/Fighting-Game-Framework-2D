@@ -96,6 +96,21 @@ void MenuStateImpl::resume(void)
 
 void MenuStateImpl::handleInput(SDL_Event& e)
 {
+	// Acquire a pointer to the player under the control of the current gamepad here (avoids copied & pasted code below)
+	Player* player = nullptr;
+	if (e.type == SDL_CONTROLLERBUTTONDOWN ||
+		e.type == SDL_CONTROLLERBUTTONUP ||
+		e.type == SDL_CONTROLLERAXISMOTION){
+		player = (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()) ?
+			PlayerManager::getSingletonPtr()->getRedPlayer() : (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()) ?
+			PlayerManager::getSingletonPtr()->getBluePlayer() : nullptr;
+
+		if (player == nullptr){
+			Log::getSingletonPtr()->logMessage("WARNING: Unregistered gamepad sending input (ID: " + Engine::toString(e.cdevice.which) + ")");
+			return;
+		}
+	}
+
 	if (e.type == SDL_KEYDOWN){
 
 		// Hard-coded keys
@@ -172,16 +187,16 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
 
 				// Red player
-				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_UP, true)){
+				if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_UP, true)){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
 				}
-				else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_DOWN, true)){
+				else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_DOWN, true)){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
 				}
-				else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+				else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_LEFT, true)){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
 				}
-				else if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+				else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
 				}
 			}
@@ -202,39 +217,32 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				static bool xAxisReset = true; // this will prevent the selector from skipping widgets in between two end widgets
 				static bool yAxisReset = true;
 				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
+				const int deadzone = player->getInput()->getPadDeadzone();
 
-				// Allow both players to control menu
-				if (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() ||
-					e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()){
-					const int deadzone = (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()) ?
-						PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadDeadzone() :
-						PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadDeadzone();
+				// Y-axis movement
+				Sint16 value = SDL_GameControllerGetAxis(player->getInput()->getPad(), static_cast<SDL_GameControllerAxis>(1));
+				if (value < -deadzone && yAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+					yAxisReset = false;
+				}
+				else if (value > deadzone && yAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+					yAxisReset = false;
+				}
+				else if(value < deadzone && value > -deadzone){
+					yAxisReset = true;
+				}
 
-					// Y-axis movement
-					Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(1));
-					if (value < -deadzone && yAxisReset){
-						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
-						yAxisReset = false;
-					}
-					else if (value > deadzone && yAxisReset){
-						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
-						yAxisReset = false;
-					}
-					else if(value < deadzone && value > -deadzone){
-						yAxisReset = true;
-					}
-
-					// X-axis movement
-					value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(0));
-					if (value < -deadzone && xAxisReset){
-						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
-					}
-					else if (value > deadzone && xAxisReset){
-						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
-					}
-					else if (value < deadzone && value > -deadzone){
-						xAxisReset = true;
-					}
+				// X-axis movement
+				value = SDL_GameControllerGetAxis(player->getInput()->getPad(), static_cast<SDL_GameControllerAxis>(0));
+				if (value < -deadzone && xAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+				}
+				else if (value > deadzone && xAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+				}
+				else if (value < deadzone && value > -deadzone){
+					xAxisReset = true;
 				}
 			}
 		}
@@ -442,8 +450,6 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_CONTROLLERAXISMOTION:
-			const Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), (SDL_GameControllerAxis)0);
-			printf("axis: %d\n", value);
 			this->handleInput(e);
 			break;
 		}

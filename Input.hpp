@@ -31,6 +31,11 @@ public:
 		NUM_BUTTONS
 	};
 
+	enum MovementMode{
+		JOYSTICK = 0,
+		DPAD
+	};
+
 	void loadButtonMap(const std::string& file);
 	void resetAllButtons(void);
 
@@ -40,11 +45,13 @@ public:
 	SDL_GameController* getPad(void) const;
 	const int getPadID(void) const;
 	const int getPadDeadzone(void) const;
+	const int getMovementMode(void) const;
 
 	// Setter functions
 	void setButton(const int button, const bool state);
 	void setPad(SDL_GameController* pad);
 	void setPadDeadzone(const int deadzone);
+	void setMovementMode(const int movementMode);
 	
 private:
 	bool m_buttons[NUM_BUTTONS];
@@ -52,6 +59,7 @@ private:
 	ButtonValue m_gamepadMap[NUM_BUTTONS];
 	SDL_GameController* m_pad;
 	int m_padDeadzone;
+	int m_movementMode;
 };
 
 // ================================================ //
@@ -73,6 +81,10 @@ inline const int Input::getPadDeadzone(void) const{
 	return m_padDeadzone;
 }
 
+inline const int Input::getMovementMode(void) const{
+	return m_movementMode;
+}
+
 // Setters
 inline void Input::setButton(const int button, const bool state){
 	m_buttons[button] = state;
@@ -84,6 +96,10 @@ inline void Input::setPad(SDL_GameController* pad){
 
 inline void Input::setPadDeadzone(const int deadzone){
 	m_padDeadzone = deadzone;
+}
+
+inline void Input::setMovementMode(const int movementMode){
+	m_movementMode = movementMode;
 }
 
 // ================================================ //

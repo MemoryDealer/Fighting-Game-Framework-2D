@@ -7,7 +7,8 @@
 
 Input::Input(const std::string& bmap) :
 m_pad(nullptr),
-m_padDeadzone(1000)
+m_padDeadzone(1000),
+m_movementMode(Input::MovementMode::JOYSTICK)
 {
 	// Set all button states to false
 	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
