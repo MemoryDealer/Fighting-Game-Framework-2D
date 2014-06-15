@@ -272,9 +272,6 @@ void GameStateImpl::update(double dt)
 		break;
 	}
 
-	printf("RedID: %d\tBlueID: %d\n", PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID(),
-		PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID());
-
 	Engine::getSingletonPtr()->renderPresent();
 }
 

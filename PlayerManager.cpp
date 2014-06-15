@@ -65,8 +65,14 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_pBluePlayer.reset(new Player(blueFighterFile, "Data/ButtonMaps/default-xbox360-blueplayer.bmap"));
 
 	// Set default player gamepads
-	m_pRedPlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(1));
-	m_pBluePlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(0));
+	if (GamepadManager::getSingletonPtr()->getPad(1) == nullptr){
+		m_pRedPlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(0));
+		m_pBluePlayer->getInput()->setPad(nullptr);
+	}
+	else{
+		m_pRedPlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(1));
+		m_pBluePlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(0));
+	}
 
 	// Set default starting sides and positions
 	m_pRedPlayer->setSide(PlayerSide::LEFT);

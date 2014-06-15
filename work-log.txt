@@ -211,6 +211,10 @@
 	and when I tried to add the controller back it would get IDs confused. I fixed this by assigning nullptr to the Player of which the controller was removed. 
 -I've extensively tested plugging in and unplugging two xbox360 controllers, alternating them every which way and I experience no errors in controlling the players. 
 
+#6/14/14
+-Added ability to navigate main menu with left joystick on xbox360 controller. Should work with any compatible gamepad's default joystick. In the handleInput() code,
+	I use to static booleans (xAxisReset & yAxisReset) to force the joystick to be re-centered before it can navigate again in the same direction. This way, it doesn't 
+	just speed over all the widgets in the GUI. 
 
 #TODO
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 

@@ -187,6 +187,58 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			}
 		}
 	}
+	else if (e.type == SDL_CONTROLLERAXISMOTION){
+
+		if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
+			m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
+		}
+
+		if (!m_pGUI->getSelectorPressed()){ // prevents user from navigating away while pressing a button
+			int widget = m_pGUI->getSelectedWidget();
+			if (widget == Widget::NONE){
+				m_pGUI->setSelectedWidget(0);
+			}
+			else{
+				static bool xAxisReset = true; // this will prevent the selector from skipping widgets in between two end widgets
+				static bool yAxisReset = true;
+				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
+
+				// Allow both players to control menu
+				if (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() ||
+					e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()){
+					const int deadzone = (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()) ?
+						PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadDeadzone() :
+						PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadDeadzone();
+
+					// Y-axis movement
+					Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(1));
+					if (value < -deadzone && yAxisReset){
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+						yAxisReset = false;
+					}
+					else if (value > deadzone && yAxisReset){
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+						yAxisReset = false;
+					}
+					else if(value < deadzone && value > -deadzone){
+						yAxisReset = true;
+					}
+
+					// X-axis movement
+					value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), static_cast<SDL_GameControllerAxis>(0));
+					if (value < -deadzone && xAxisReset){
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+					}
+					else if (value > deadzone && xAxisReset){
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+					}
+					else if (value < deadzone && value > -deadzone){
+						xAxisReset = true;
+					}
+				}
+			}
+		}
+	}
 }
 
 // ================================================ //
@@ -390,8 +442,9 @@ void MenuStateImpl::update(double dt)
 			break;
 
 		case SDL_CONTROLLERAXISMOTION:
-			const Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(0), (SDL_GameControllerAxis)0);
+			const Sint16 value = SDL_GameControllerGetAxis(GamepadManager::getSingletonPtr()->getPad(e.cdevice.which), (SDL_GameControllerAxis)0);
 			printf("axis: %d\n", value);
+			this->handleInput(e);
 			break;
 		}
 	}

@@ -6,7 +6,8 @@
 // ================================================ //
 
 Input::Input(const std::string& bmap) :
-m_pad(nullptr)
+m_pad(nullptr),
+m_padDeadzone(1000)
 {
 	// Set all button states to false
 	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
@@ -45,6 +46,8 @@ void Input::loadButtonMap(const std::string& file)
 		m_gamepadMap[BUTTON_RIGHT] = c.parseIntValue("gamepad", "right");
 		m_gamepadMap[BUTTON_START] = c.parseIntValue("gamepad", "start");
 		m_gamepadMap[BUTTON_SELECT] = c.parseIntValue("gamepad", "select");
+
+		m_padDeadzone = c.parseIntValue("gamepad", "deadzone");
 
 		Log::getSingletonPtr()->logMessage("Button map loaded!");
 	}
