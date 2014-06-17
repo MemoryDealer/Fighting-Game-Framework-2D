@@ -27,6 +27,7 @@ public:
 	// Setter functions
 	void setWindowFocused(const bool focused);
 	void setMaxFrameRate(const unsigned int max);
+	void setResolution(const int width, const int height);
 
 	// Getter functions
 	SDL_Renderer* getRenderer(void) const;
@@ -36,6 +37,8 @@ public:
 	const int getLogicalWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
 	const int getMaxFrameRate(void) const;
+	const int getVersionMajor(void) const;
+	const int getVersionMinor(void) const;
 
 private:
 	// SDL components
@@ -46,38 +49,48 @@ private:
 	unsigned int		m_logicalWidth, m_logicalHeight;
 	bool				m_windowFocused;
 	unsigned int		m_maxFrameRate;
+	std::string			m_windowTitle;
 };
 
 // ================================================ //
 
 // Setters
-inline void EngineImpl::setWindowFocused(const bool focused)
-{ m_windowFocused = focused; }
+inline void EngineImpl::setWindowFocused(const bool focused){ 
+	m_windowFocused = focused; 
+}
 
-inline void EngineImpl::setMaxFrameRate(const unsigned int max)
-{ m_maxFrameRate = max; }
+inline void EngineImpl::setMaxFrameRate(const unsigned int max){ 
+	m_maxFrameRate = max; 
+}
 
 // Getters
-inline SDL_Renderer* EngineImpl::getRenderer(void) const
-{ return m_pRenderer; }
+inline SDL_Renderer* EngineImpl::getRenderer(void) const{ 
+	return m_pRenderer; 
+}
 
-inline const bool EngineImpl::isWindowFocused(void) const
-{ return m_windowFocused; }
+inline const bool EngineImpl::isWindowFocused(void) const{ 
+	return m_windowFocused; 
+}
 
-inline const int EngineImpl::getWindowWidth(void) const
-{ return m_width; }
+inline const int EngineImpl::getWindowWidth(void) const{ 
+	return m_width; 
+}
 
-inline const int EngineImpl::getWindowHeight(void) const
-{ return m_height; }
+inline const int EngineImpl::getWindowHeight(void) const{ 
+	return m_height; 
+}
 
-inline const int EngineImpl::getLogicalWindowWidth(void) const
-{ return m_logicalWidth; }
+inline const int EngineImpl::getLogicalWindowWidth(void) const{ 
+	return m_logicalWidth; 
+}
 
-inline const int EngineImpl::getLogicalWindowHeight(void) const
-{ return m_logicalHeight; }
+inline const int EngineImpl::getLogicalWindowHeight(void) const{ 
+	return m_logicalHeight; 
+}
 
-inline const int EngineImpl::getMaxFrameRate(void) const
-{ return m_maxFrameRate; }
+inline const int EngineImpl::getMaxFrameRate(void) const{ 
+	return m_maxFrameRate; 
+}
 
 // ================================================ //
 

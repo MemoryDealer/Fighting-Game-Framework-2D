@@ -220,7 +220,16 @@
 -Optimized the handleInput() function in GameState so that it doesn't have to check both the red and blue player objects separately. It just gets a pointer to the player
 	being controlled by the gamepad. I don't know why I didn't think of this before. 
 
+#6/16/14
+-Added static version numbers to Engine. Should be changed as needed. 
+-Added Engine::setResolution() which simply calls SDL_SetWindowSize(). 
+-Prevented the mouse from selecting one button, hovering to another, and releasing the mouse button and selecting the new button. This is done by storing the value
+	of the last selected widget in processGUIAction() and checking the currently selected widget on GUI::Action::FINISH_PRESS. 
+-Found a GUI bug where moving the mouse left/right over two buttons could result in a button that is not selected appear as selected. To quickly fix this, I instead
+	set all widgets to an idle appearance when the mouse is not hovering over any instead of just the previously selected widget. 
+
 #TODO
+-Fix bug when clicking in options menu (vector subscript out of range). 
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 

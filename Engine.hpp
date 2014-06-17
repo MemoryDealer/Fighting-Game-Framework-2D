@@ -32,6 +32,7 @@ public:
 	// Setter functions
 	void setWindowFocused(const bool focused);
 	void setMaxFrameRate(const unsigned int max);
+	void setResolution(const int width, const int height);
 
 	// Getter functions
 	SDL_Renderer* getRenderer(void) const;
@@ -51,15 +52,20 @@ public:
 		oss << value;
 		return oss.str();
 	}
-#ifdef _DEBUG
+
 	static bool CustomAssertFunction(bool, char*, int, char*);
 
+#ifdef _DEBUG
 #define Assert(exp, desc)\
 	if (Engine::CustomAssertFunction((int)exp, desc, __LINE__, __FILE__))\
 	{ _asm { int 3 } } // trigger debugger to break
 #else
 #define Assert(exp, desc);
 #endif
+
+	static const int VERSION_MAJOR;
+	static const int VERSION_MINOR1;
+	static const int VERSION_MINOR2;
 
 private:
 	std::shared_ptr<EngineImpl> m_pImpl;

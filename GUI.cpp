@@ -103,7 +103,8 @@ void GUI::update(double dt)
 		// Reset last selected widget's texture if nothing is selected
 		if (m_selectedWidget == Widget::NONE){
 			if (!m_leftMouseDown){
-				m_pCurrentLayer->getWidget(m_lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+				//m_pCurrentLayer->getWidget(m_lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+				m_pCurrentLayer->resetAllWidgets();
 			}
 		}
 	}
@@ -167,6 +168,17 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 
 // Explicitly instantiate template functions for each Widget type
 template void GUILayer::parse<Button>(Config& c, const int widgetType, const std::vector<std::string>& names);
+
+// ================================================ //
+
+void GUILayer::resetAllWidgets(void)
+{
+	for (WidgetList::iterator itr = m_widgets.begin();
+		itr != m_widgets.end();
+		++itr){
+		(*itr)->setAppearance(Widget::Appearance::IDLE);
+	}
+}
 
 // ================================================ //
 

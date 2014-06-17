@@ -20,6 +20,68 @@ typedef std::vector<std::shared_ptr<GUILayer>> GUILayerList;
 typedef std::vector<std::string> StringList;
 
 // ================================================ //
+
+
+class GUILayer
+{
+public:
+	explicit GUILayer(void);
+	virtual ~GUILayer(void);
+
+	void addWidget(std::shared_ptr<Widget> widget);
+
+	template<typename T>
+	void parse(Config& c, const int widgetType, const StringList& names);
+
+	// Getter functions
+	const int getID(void) const;
+	Widget* getWidget(const int n) const;
+	const int getNumWidgets(void) const;
+
+	// Setter functions
+	void setID(const int id);
+	void setLayerName(const std::string& name);
+	void resetAllWidgets(void);
+
+	virtual void render(void);
+	virtual void update(double dt) = 0;
+
+private:
+	int m_id;
+	WidgetList m_widgets;
+	std::string m_layerName;
+};
+
+// ================================================ //
+
+inline void GUILayer::addWidget(std::shared_ptr<Widget> widget){
+	m_widgets.push_back(widget);
+}
+
+// Getters
+inline const int GUILayer::getID(void) const{
+	return m_id;
+}
+
+inline Widget* GUILayer::getWidget(const int n) const{
+	return m_widgets[n].get();
+}
+
+inline const int GUILayer::getNumWidgets(void) const{
+	return m_widgets.size();
+}
+
+// Setters
+inline void GUILayer::setID(const int id){
+	m_id = id;
+}
+
+inline void GUILayer::setLayerName(const std::string& name){
+	m_layerName = name;
+}
+
+// ================================================ //
+// ================================================ //
 /* An object for each game state to process all GUI operations */
 class GUI
 {
@@ -49,12 +111,15 @@ public:
 	void setRightMouseDown(const bool down);
 	void setSelectorPressed(const bool pressed);
 	void setSelectedWidget(const int n);
+	void setLastSelectedWidget(const int n);
 
 	// Getter functions
 	GUILayer* getCurrentLayer(void) const;
 	const int getNavigationMode(void) const;
 	const int getSelectedWidget(void) const;
+	const int getLastSelectedWidget(void) const;
 	const bool getSelectorPressed(void) const;
+	Widget* getWidget(const int n) const;
 
 	virtual void update(double dt);
 
@@ -98,6 +163,10 @@ inline void GUI::setSelectorPressed(const bool pressed){
 	m_selectorPressed = pressed;
 }
 
+inline void GUI::setLastSelectedWidget(const int n){
+	m_lastSelectedWidget = n;
+}
+
 // Getters
 inline GUILayer* GUI::getCurrentLayer(void) const{
 	return m_pCurrentLayer;
@@ -111,68 +180,16 @@ inline const int GUI::getSelectedWidget(void) const{
 	return m_selectedWidget;
 }
 
+inline const int GUI::getLastSelectedWidget(void) const{
+	return m_lastSelectedWidget;
+}
+
 inline const bool GUI::getSelectorPressed(void) const{
 	return m_selectorPressed;
 }
 
-// ================================================ //
-// ================================================ //
-
-class GUILayer
-{
-public:
-	explicit GUILayer(void);
-	virtual ~GUILayer(void);
-
-	void addWidget(std::shared_ptr<Widget> widget);
-
-	template<typename T>
-	void parse(Config& c, const int widgetType, const StringList& names);
-
-	// Getter functions
-	const int getID(void) const;
-	Widget* getWidget(const int n) const;
-	const int getNumWidgets(void) const;
-
-	// Setter functions
-	void setID(const int id);
-	void setLayerName(const std::string& name);
-
-	virtual void render(void);
-	virtual void update(double dt) = 0;
-
-private:
-	int m_id;
-	WidgetList m_widgets;
-	std::string m_layerName;
-};
-
-// ================================================ //
-
-inline void GUILayer::addWidget(std::shared_ptr<Widget> widget){
-	m_widgets.push_back(widget);
-}
-
-// Getters
-inline const int GUILayer::getID(void) const{
-	return m_id;
-}
-
-inline Widget* GUILayer::getWidget(const int n) const{
-	return m_widgets[n].get();
-}
-
-inline const int GUILayer::getNumWidgets(void) const{
-	return m_widgets.size();
-}
-
-// Setters
-inline void GUILayer::setID(const int id){
-	m_id = id;
-}
-
-inline void GUILayer::setLayerName(const std::string& name){
-	m_layerName = name;
+inline Widget* GUI::getWidget(const int n) const{
+	return m_pCurrentLayer->getWidget(n);
 }
 
 // ================================================ //

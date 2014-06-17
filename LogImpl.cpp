@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "LogImpl.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -13,7 +14,8 @@ LogImpl::LogImpl(void)
 	}
 
 	this->logTime(false, true);
-	this->logMessage(" Log created for Extreme Metal Fighter\n");
+	this->logMessage(" Log created for Extreme Metal Fighter - Version " + Engine::toString(Engine::VERSION_MAJOR) +
+		"." + Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINOR2));
 }
 
 // ================================================ //
@@ -30,9 +32,9 @@ void LogImpl::logMessage(const std::string& str)
 	this->logTime();
 	m_file << str << std::endl;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	printf("LOG: %s\n", str.c_str());
-#endif
+//#endif
 }
 
 // ================================================ //

@@ -1,6 +1,7 @@
 // ================================================ //
 
 #include "EngineImpl.hpp"
+#include "Engine.hpp"
 #include "Config.hpp"
 
 // ================================================ //
@@ -12,7 +13,9 @@ EngineImpl::EngineImpl(void)
 		m_height(480),
 		m_logicalWidth(854),
 		m_logicalHeight(480),
-		m_maxFrameRate(60)
+		m_maxFrameRate(60),
+		m_windowTitle("Extreme Metal Fighter - Pre-alpha Build " + Engine::toString(Engine::VERSION_MAJOR) + "." +
+		Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINOR2))
 {
 	// Initialize SDL
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -50,8 +53,7 @@ EngineImpl::EngineImpl(void)
 	// Create the window
 	m_width = cfg.parseIntValue("window", "width");
 	m_height = cfg.parseIntValue("window", "height");
-	m_pWindow = SDL_CreateWindow("Main Menu Simulator 2014", SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED, m_width, m_height, 0);
+	m_pWindow = SDL_CreateWindow(m_windowTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_height, 0);
 	if (m_pWindow == nullptr)
 		throw std::exception("SDL_CreateWindow() failed.");
 
@@ -127,6 +129,15 @@ SDL_Texture* EngineImpl::loadTexture(const std::string& filename)
 void EngineImpl::destroyTexture(SDL_Texture* pTexture)
 {
 	SDL_DestroyTexture(pTexture);
+}
+
+// ================================================ //
+
+void EngineImpl::setResolution(const int width, const int height)
+{
+	SDL_SetWindowSize(m_pWindow, m_width = width, m_height = height);
+	SDL_SetWindowPosition(m_pWindow, 0, 0);
+	//SDL_SetWindowBordered(m_pWindow, SDL_FALSE);
 }
 
 // ================================================ //

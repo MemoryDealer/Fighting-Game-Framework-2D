@@ -168,6 +168,10 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				m_pBackground.reset(new Stage("Data/Stages/mainmenu.stage"));
 			}
 			break;
+
+		case SDLK_i:
+			Engine::getSingletonPtr()->setResolution(1920, 1080);
+			break;
 		}
 	}
 
@@ -253,13 +257,16 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 
 void MenuStateImpl::processGUIAction(const int type)
 {
+	static int lastSelectedWidget = Widget::NONE;
+
 	switch (type){
 	default:
 		return;
 
 	case GUI::Action::BEGIN_PRESS:
 		if (m_pGUI->getSelectedWidget() != Widget::NONE){
-			m_pGUI->getCurrentLayer()->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::PRESSED);
+			lastSelectedWidget = m_pGUI->getSelectedWidget();
+			m_pGUI->getWidget(lastSelectedWidget)->setAppearance(Widget::Appearance::PRESSED);
 		}
 		break; // BEGIN_PRESS
 
@@ -267,7 +274,15 @@ void MenuStateImpl::processGUIAction(const int type)
 		
 		// Switch the button appearance from pressed back to selected
 		if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-			m_pGUI->getCurrentLayer()->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::SELECTED);
+			m_pGUI->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::SELECTED);
+		}
+
+		// Don't let this button be pressed unless BEGIN_PRESS started on it
+		if (m_pGUI->getSelectedWidget() != lastSelectedWidget){
+			if (lastSelectedWidget < m_pGUI->getCurrentLayer()->getNumWidgets()){
+				m_pGUI->getWidget(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+				return;
+			}
 		}
 
 		// Find the current layer, then look in that layer's widgets

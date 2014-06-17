@@ -9,6 +9,14 @@ template<> Engine* Singleton<Engine>::msSingleton = nullptr;
 
 // ================================================ //
 
+// Version 0.01
+const int Engine::VERSION_MAJOR =	0;
+//								    .
+const int Engine::VERSION_MINOR1 =	0;
+const int Engine::VERSION_MINOR2 =	1;
+
+// ================================================ //
+
 Engine::Engine(void)
 	: m_pImpl(new EngineImpl())
 {
@@ -64,6 +72,13 @@ void Engine::setWindowFocused(const bool focused)
 void Engine::setMaxFrameRate(const unsigned int max)
 {
 	return m_pImpl->setMaxFrameRate(max);
+}
+
+// ================================================ //
+
+void Engine::setResolution(const int width, const int height)
+{
+	return m_pImpl->setResolution(width, height);
 }
 
 // ================================================ //
