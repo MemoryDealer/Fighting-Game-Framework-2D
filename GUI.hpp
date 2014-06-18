@@ -35,7 +35,7 @@ public:
 
 	// Getter functions
 	const int getID(void) const;
-	Widget* getWidget(const int n) const;
+	Widget* getWidgetPtr(const int n) const;
 	const int getNumWidgets(void) const;
 
 	// Setter functions
@@ -63,7 +63,7 @@ inline const int GUILayer::getID(void) const{
 	return m_id;
 }
 
-inline Widget* GUILayer::getWidget(const int n) const{
+inline Widget* GUILayer::getWidgetPtr(const int n) const{
 	return m_widgets[n].get();
 }
 
@@ -111,7 +111,6 @@ public:
 	void setRightMouseDown(const bool down);
 	void setSelectorPressed(const bool pressed);
 	void setSelectedWidget(const int n);
-	void setLastSelectedWidget(const int n);
 
 	// Getter functions
 	GUILayer* getCurrentLayer(void) const;
@@ -119,7 +118,7 @@ public:
 	const int getSelectedWidget(void) const;
 	const int getLastSelectedWidget(void) const;
 	const bool getSelectorPressed(void) const;
-	Widget* getWidget(const int n) const;
+	Widget* getWidgetPtr(const int n) const;
 
 	virtual void update(double dt);
 
@@ -129,7 +128,7 @@ public:
 private:
 	GUILayerList m_layers;
 	GUILayer* m_pCurrentLayer;
-	int m_selectedWidget, m_lastSelectedWidget;
+	int m_selectedWidget;
 	int m_navMode;
 	int m_mouseX, m_mouseY;
 	bool m_leftMouseDown, m_rightMouseDown;
@@ -163,10 +162,6 @@ inline void GUI::setSelectorPressed(const bool pressed){
 	m_selectorPressed = pressed;
 }
 
-inline void GUI::setLastSelectedWidget(const int n){
-	m_lastSelectedWidget = n;
-}
-
 // Getters
 inline GUILayer* GUI::getCurrentLayer(void) const{
 	return m_pCurrentLayer;
@@ -180,16 +175,12 @@ inline const int GUI::getSelectedWidget(void) const{
 	return m_selectedWidget;
 }
 
-inline const int GUI::getLastSelectedWidget(void) const{
-	return m_lastSelectedWidget;
-}
-
 inline const bool GUI::getSelectorPressed(void) const{
 	return m_selectorPressed;
 }
 
-inline Widget* GUI::getWidget(const int n) const{
-	return m_pCurrentLayer->getWidget(n);
+inline Widget* GUI::getWidgetPtr(const int n) const{
+	return m_pCurrentLayer->getWidgetPtr(n);
 }
 
 // ================================================ //

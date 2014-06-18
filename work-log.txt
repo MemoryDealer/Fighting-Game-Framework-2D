@@ -229,7 +229,7 @@
 	set all widgets to an idle appearance when the mouse is not hovering over any instead of just the previously selected widget. 
 
 #TODO
--Fix bug when clicking in options menu (vector subscript out of range). 
+-Add boiler-plate comments to top of each file. And comment everything more extensively. 
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 

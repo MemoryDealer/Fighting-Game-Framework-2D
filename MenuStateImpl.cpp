@@ -137,7 +137,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 					m_pGUI->setSelectedWidget(0);
 				}
 				else{
-					Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
+					Widget* pWidget = m_pGUI->getCurrentLayer()->getWidgetPtr(widget);
 					switch (e.key.keysym.sym){
 					default:
 					case SDLK_UP:
@@ -188,7 +188,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				m_pGUI->setSelectedWidget(0);
 			}
 			else{
-				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
+				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidgetPtr(widget);
 
 				// Red player
 				if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_UP, true)){
@@ -220,7 +220,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			else{
 				static bool xAxisReset = true; // this will prevent the selector from skipping widgets in between two end widgets
 				static bool yAxisReset = true;
-				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidget(widget);
+				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidgetPtr(widget);
 				const int deadzone = player->getInput()->getPadDeadzone();
 
 				// Y-axis movement
@@ -266,21 +266,16 @@ void MenuStateImpl::processGUIAction(const int type)
 	case GUI::Action::BEGIN_PRESS:
 		if (m_pGUI->getSelectedWidget() != Widget::NONE){
 			lastSelectedWidget = m_pGUI->getSelectedWidget();
-			m_pGUI->getWidget(lastSelectedWidget)->setAppearance(Widget::Appearance::PRESSED);
+			m_pGUI->getWidgetPtr(lastSelectedWidget)->setAppearance(Widget::Appearance::PRESSED);
 		}
 		break; // BEGIN_PRESS
 
 	case GUI::Action::FINISH_PRESS: // mouse button or key released
-		
-		// Switch the button appearance from pressed back to selected
-		if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-			m_pGUI->getWidget(m_pGUI->getSelectedWidget())->setAppearance(Widget::Appearance::SELECTED);
-		}
 
 		// Don't let this button be pressed unless BEGIN_PRESS started on it
 		if (m_pGUI->getSelectedWidget() != lastSelectedWidget){
 			if (lastSelectedWidget < m_pGUI->getCurrentLayer()->getNumWidgets()){
-				m_pGUI->getWidget(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
+				m_pGUI->getWidgetPtr(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
 				return;
 			}
 		}
