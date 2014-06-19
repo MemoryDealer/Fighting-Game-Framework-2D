@@ -21,7 +21,7 @@
 
 // ================================================ //
 
-// Pimpl class definition for Widget. 
+// Pimpl class for Widget. 
 class WidgetImpl : public ObjectImpl
 {
 public:

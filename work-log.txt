@@ -230,9 +230,21 @@
 
 #6/18/14
 -All code is undergoing extreme documentation using a consistent commenting style. 
+-Using this template for every file:
+	// ================================================ //
+	// Extreme Metal Fighter
+	// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+	// Unauthorized copying of this file, via any medium is strictly prohibited
+	// Proprietary and confidential
+	// Written by Jordan Sparks <unixunited@live.com> June 2014
+	// ================================================ //
+	// File: 
+	// Author: Jordan Sparks <unixunited@live.com>
+	// ================================================ //
+	// 
+	// ================================================ //
 
 #TODO
--Add boiler-plate comments to top of each file. And comment everything more extensively. 
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 

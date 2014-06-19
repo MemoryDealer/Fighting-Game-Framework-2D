@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: GUI.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Defines GUI class, and GUILayer class. 
+// ================================================ //
 
 #ifndef __GUI_HPP__
 #define __GUI_HPP__
@@ -21,34 +32,66 @@ typedef std::vector<std::string> StringList;
 
 // ================================================ //
 
-
+// A polymorphic, abstract class defining a layer within a GUI system. 
+// A GUI object holds a list of GUILayers, and only displays one GUILayer at a time. 
+// GUILayer holds a list of Widgets which are updated each frame, and rendered if 
+// it's the active GUILayer. 
 class GUILayer
 {
 public:
+	// Initializes ID to zero. 
 	explicit GUILayer(void);
+
+	// Empty destructor. 
 	virtual ~GUILayer(void);
 
+	// Adds a new Widget smart pointer to the list of Widgets. 
+	// Parameters:
+	// widget - a derived object of Widget (smart pointer)
 	void addWidget(std::shared_ptr<Widget> widget);
 
+	// Parses all Widgets of type T for the GUILayer and adds them to the Widget list. 
+	// This should be called from a GUI object's constructor. 
 	template<typename T>
 	void parse(Config& c, const int widgetType, const StringList& names);
 
-	// Getter functions
+	// Getters
+
+	// Returns the ID of the GUILayer. 
 	const int getID(void) const;
+
+	// Returns a Widget pointer for specified widget. 
+	// Parameters:
+	// n - Index of Widget in GUILayer
 	Widget* getWidgetPtr(const int n) const;
+
+	// Returns the number of Widgets in GUILayer
 	const int getNumWidgets(void) const;
 
-	// Setter functions
+	// Setters
+
+	// Set the ID of the GUILayer
 	void setID(const int id);
+
+	// Set the name of the GUILayer
 	void setLayerName(const std::string& name);
+
+	// Resets all Widget's appearances in GUILayer to Appearance::IDLE. 
 	void resetAllWidgets(void);
 
+	// Render every Widget.
 	virtual void render(void);
+
+	// Update all Widgets with delta time. 
 	virtual void update(double dt) = 0;
 
 private:
+	// Unique ID for a GUILayer. 
 	int m_id;
+
 	WidgetList m_widgets;
+
+	// Set by derived classes so GUILayer::parse() knows where to look. 
 	std::string m_layerName;
 };
 
