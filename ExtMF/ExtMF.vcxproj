@@ -102,7 +102,6 @@
     <ClInclude Include="..\FontManager.hpp" />
     <ClInclude Include="..\FSM.hpp" />
     <ClInclude Include="..\FState.hpp" />
-    <ClInclude Include="..\GameManager.hpp" />
     <ClInclude Include="..\GamepadManager.hpp" />
     <ClInclude Include="..\GameState.hpp" />
     <ClInclude Include="..\GameStateImpl.hpp" />
@@ -149,7 +148,6 @@
     <ClCompile Include="..\FontManager.cpp" />
     <ClCompile Include="..\FSM.cpp" />
     <ClCompile Include="..\FState.cpp" />
-    <ClCompile Include="..\GameManager.cpp" />
     <ClCompile Include="..\GamepadManager.cpp" />
     <ClCompile Include="..\GameState.cpp" />
     <ClCompile Include="..\GameStateImpl.cpp" />

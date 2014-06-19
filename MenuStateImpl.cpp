@@ -2,7 +2,6 @@
 
 #include "MenuStateImpl.hpp"
 #include "Engine.hpp"
-#include "GameManager.hpp"
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
@@ -42,10 +41,6 @@ void MenuStateImpl::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	// Allocate GameManager
-	new GameManager();
-	GameManager::getSingletonPtr()->setMode(GameMode::SERVER);
-
 	// Allocate StageManager
 	new StageManager();
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
@@ -58,8 +53,7 @@ void MenuStateImpl::enter(void)
 	new Camera();
 
 	// Allocate Network
-	if (GameManager::getSingletonPtr()->getMode() == GameMode::SERVER)
-		new Server();
+	new Server();
 }
 
 // ================================================ //
@@ -69,7 +63,6 @@ void MenuStateImpl::exit(void)
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 
 	// Free all singletons
-	delete GameManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
@@ -137,7 +130,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 					m_pGUI->setSelectedWidget(0);
 				}
 				else{
-					Widget* pWidget = m_pGUI->getCurrentLayer()->getWidgetPtr(widget);
+					Widget* pWidget = m_pGUI->getWidgetPtr(widget);
 					switch (e.key.keysym.sym){
 					default:
 					case SDLK_UP:
@@ -188,7 +181,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 				m_pGUI->setSelectedWidget(0);
 			}
 			else{
-				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidgetPtr(widget);
+				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
 
 				// Red player
 				if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_UP, true)){
@@ -220,7 +213,7 @@ void MenuStateImpl::handleInput(SDL_Event& e)
 			else{
 				static bool xAxisReset = true; // this will prevent the selector from skipping widgets in between two end widgets
 				static bool yAxisReset = true;
-				Widget* pWidget = m_pGUI->getCurrentLayer()->getWidgetPtr(widget);
+				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
 				const int deadzone = player->getInput()->getPadDeadzone();
 
 				// Y-axis movement
@@ -271,6 +264,11 @@ void MenuStateImpl::processGUIAction(const int type)
 		break; // BEGIN_PRESS
 
 	case GUI::Action::FINISH_PRESS: // mouse button or key released
+
+		// When a button is pressed in selector mode, reset it back to select appearance
+		if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
+			m_pGUI->getSelectedWidgetPtr()->setAppearance(Widget::Appearance::SELECTED);
+		}
 
 		// Don't let this button be pressed unless BEGIN_PRESS started on it
 		if (m_pGUI->getSelectedWidget() != lastSelectedWidget){

@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Widget.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements the Widget class. 
+// ================================================ //
 
 #include "Widget.hpp"
 #include "WidgetImpl.hpp"
@@ -6,7 +17,7 @@
 // ================================================ //
 
 Widget::Widget(const int id) :
-m_pImpl(nullptr) // should this be left nullptr and child widgets called Widget::setPImpl(), I believe
+m_pImpl(nullptr) // TODO: this should be left nullptr and child widgets called Widget::setPImpl(), I believe
 {
 	
 }
@@ -18,8 +29,6 @@ Widget::~Widget(void)
 
 }
 
-// ================================================ //
-// Helper functions
 // ================================================ //
 
 void Widget::parseLinks(const std::string& links)

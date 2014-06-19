@@ -228,8 +228,12 @@
 -Found a GUI bug where moving the mouse left/right over two buttons could result in a button that is not selected appear as selected. To quickly fix this, I instead
 	set all widgets to an idle appearance when the mouse is not hovering over any instead of just the previously selected widget. 
 
+#6/18/14
+-All code is undergoing extreme documentation using a consistent commenting style. 
+
 #TODO
 -Add boiler-plate comments to top of each file. And comment everything more extensively. 
+-Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 

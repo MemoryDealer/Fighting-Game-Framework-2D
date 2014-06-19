@@ -1,4 +1,14 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) Jordan Sparks - All Rights Reserved
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: main.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// Description: 
+// ================================================ //
 
 #include "stdafx.hpp"
 #include "App.hpp"

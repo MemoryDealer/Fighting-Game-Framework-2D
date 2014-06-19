@@ -3,7 +3,6 @@
 #include "GameStateImpl.hpp"
 #include "Engine.hpp"
 #include "ObjectManager.hpp"
-#include "GameManager.hpp"
 #include "PlayerManager.hpp"
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
@@ -297,21 +296,6 @@ void GameStateImpl::update(double dt)
 	StageManager::getSingletonPtr()->update(dt);
 	m_pObjectManager->update(dt);
 	PlayerManager::getSingletonPtr()->update(dt);
-
-	// Update with any authoritative information from server
-	switch (GameManager::getSingletonPtr()->getMode()){
-	case GameMode::LOCAL:
-
-		break;
-
-	case GameMode::CLIENT:
-
-		break;
-
-	case GameMode::SERVER:
-
-		break;
-	}
 
 	Engine::getSingletonPtr()->renderPresent();
 }

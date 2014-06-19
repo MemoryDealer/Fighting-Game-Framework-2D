@@ -119,6 +119,7 @@ public:
 	const int getLastSelectedWidget(void) const;
 	const bool getSelectorPressed(void) const;
 	Widget* getWidgetPtr(const int n) const;
+	Widget* getSelectedWidgetPtr(void) const;
 
 	virtual void update(double dt);
 
@@ -181,6 +182,10 @@ inline const bool GUI::getSelectorPressed(void) const{
 
 inline Widget* GUI::getWidgetPtr(const int n) const{
 	return m_pCurrentLayer->getWidgetPtr(n);
+}
+
+inline Widget* GUI::getSelectedWidgetPtr(void) const{
+	return m_pCurrentLayer->getWidgetPtr(m_selectedWidget);
 }
 
 // ================================================ //
