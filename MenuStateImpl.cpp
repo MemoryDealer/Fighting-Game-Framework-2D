@@ -53,7 +53,7 @@ void MenuStateImpl::enter(void)
 	new Camera();
 
 	// Allocate Network
-	new Server();
+	//new Server();
 }
 
 // ================================================ //
@@ -66,7 +66,7 @@ void MenuStateImpl::exit(void)
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
-	delete Server::getSingletonPtr();
+	//delete Server::getSingletonPtr();
 }
 
 // ================================================ //

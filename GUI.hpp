@@ -102,6 +102,7 @@ inline void GUILayer::addWidget(std::shared_ptr<Widget> widget){
 }
 
 // Getters
+
 inline const int GUILayer::getID(void) const{
 	return m_id;
 }
@@ -115,6 +116,7 @@ inline const int GUILayer::getNumWidgets(void) const{
 }
 
 // Setters
+
 inline void GUILayer::setID(const int id){
 	m_id = id;
 }
@@ -125,7 +127,8 @@ inline void GUILayer::setLayerName(const std::string& name){
 
 // ================================================ //
 // ================================================ //
-/* An object for each game state to process all GUI operations */
+
+// 
 class GUI
 {
 public:

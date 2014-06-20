@@ -188,11 +188,19 @@ void PlayerImpl::updateLocalInput(void)
 			PlayerAction::WALK_BACK : PlayerAction::WALK_FORWARD;
 	}
 	else{
-		// Zero out left/right movement
-		if (m_xVel < 0)
+		// Decelerate when nothing is pressed
+		if (m_xVel < 0){
 			m_xVel += m_xAccel;
-		else if (m_xVel > 0)
+			if (m_xVel > 0){
+				m_xVel = 0;
+			}
+		}
+		else if (m_xVel > 0){
 			m_xVel -= m_xAccel;
+			if (m_xVel < 0){
+				m_xVel = 0;
+			}
+		}
 	}
 
 	m_pFSM->stateTransition(m_currentAction);

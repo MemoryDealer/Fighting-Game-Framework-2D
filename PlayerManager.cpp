@@ -87,7 +87,7 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_redMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pRedPlayer->getPosition().w;
 	m_blueMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w;
 
-	return( (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr) );
+	return (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr);
 }
 
 // ================================================ //
