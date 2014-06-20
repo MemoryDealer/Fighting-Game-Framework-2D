@@ -6,6 +6,7 @@
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
 #include "GUIMenuState.hpp"
+#include "Widget.hpp"
 #include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"

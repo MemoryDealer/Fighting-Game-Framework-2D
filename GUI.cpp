@@ -39,6 +39,8 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 {
 	std::string widgetName("");
 	std::string layer = "layer." + m_layerName;
+
+	// The texture to assign the widget.
 	std::shared_ptr<SDL_Texture> pTex = nullptr;
 
 	switch (widgetType){
@@ -53,8 +55,9 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 		break;
 	}
 
+	// Parse each setting for this Widget. 
 	for (unsigned int i = 0; i < names.size(); ++i){
-		// Allocate widget with ID i (the names list should be in order)
+		// Allocate widget with ID i (the names list parameter should be in order).
 		std::shared_ptr<Widget> pWidget(new T(i));
 		std::string value = widgetName + names[i] + ":";
 
@@ -133,13 +136,12 @@ void GUI::clearSelector(void)
 
 void GUI::setCurrentLayer(const int n)
 {
-	if (m_selectedWidget != Widget::NONE){
-		m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
-	}
+	this->clearSelector();
 
 	m_pCurrentLayer = m_layers[n].get();
 	m_selectedWidget = 0;
 
+	// Set the default selected Widget's appearance to SELECTED.
 	if (m_navMode == GUI::NavMode::SELECTOR){
 		m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
 	}
@@ -150,18 +152,20 @@ void GUI::setCurrentLayer(const int n)
 void GUI::setSelectedWidget(const int n)
 {
 	if (n != Widget::NONE){
-		// Reset currently selected widget to idle appearance
+		// Reset currently selected widget to IDLE appearance.
 		if (m_selectedWidget != Widget::NONE){
 			m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
 		}
 
-		// Store new selected widget index
 		m_selectedWidget = n;
 
-		// Set newly selected widget's appearance to selected
-		if (!m_leftMouseDown){
-			m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		// If the mouse is pressed on a button, don't reset the appearance back to SELECTED.
+		if (m_navMode == NavMode::MOUSE && m_leftMouseDown){
+			return;
 		}
+
+		// Set newly selected widget's appearance to SELECTED.
+		m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
 	}
 }
 
@@ -170,21 +174,24 @@ void GUI::setSelectedWidget(const int n)
 void GUI::update(double dt)
 {
 	if (m_navMode == NavMode::MOUSE){
-		static bool resetAllWidgets = false;
-
-		// Reset selected widget
 		m_selectedWidget = Widget::NONE;
 
+		// Determines if a reset check for all Widgets should take place.
+		static bool resetAllWidgets = false;
+		
+		// Create a pixel to represent the mouse position for collision testing.
 		SDL_Rect mouse;
 		mouse.x = m_mouseX;
 		mouse.y = m_mouseY;
 		mouse.w = mouse.h = 1;
 
-		// See if mouse is inside bounds of each widget
+		// See if mouse is inside bounds of each widget.
 		for (int i = 0; i < m_pCurrentLayer->getNumWidgets(); ++i){
 			if (SDL_HasIntersection(&mouse, &m_pCurrentLayer->getWidgetPtr(i)->getPosition())){
 				this->setSelectedWidget(i);
-				resetAllWidgets = true; // Allow a layer reset
+
+				// Allow a reset check.
+				resetAllWidgets = true;
 				break;
 			}
 		}
@@ -193,12 +200,14 @@ void GUI::update(double dt)
 		if (m_selectedWidget == Widget::NONE && resetAllWidgets){
 			if (!m_leftMouseDown){
 				m_pCurrentLayer->resetAllWidgets();
-				resetAllWidgets = false; // prevent resetAllWidgets() from being called when not necessary
+
+				// Prevent resetAllWidgets() from being called when not necessary.
+				resetAllWidgets = false; 
 			}
 		}
 	}
 
-	// Update the current layer
+	// Update and render the current layer.
 	this->getCurrentLayer()->update(dt);
 	this->getCurrentLayer()->render();
 }
