@@ -258,14 +258,11 @@
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 
--Make GameState use the same system for popping as MenuState
 -Use SDL_UpdateTexture() to change colors of textures on the fly
 -Remove c_str() on std::strings where feasible
--Add doxygen to all code and more logging
 -When colliding make the forward moving player push the other one into a walking back state
 -NET
 -LoadResources in Engine
--GUILayer
 -For release builds enable code optimization in Project Options->C/C++->Optimization
 -For net security: "Ty TheBeast: just create an rc4 key based off some msg from the server
 	(1:11:52 AM) Ty TheBeast: then that rc4 key gets salted with each new packet sent

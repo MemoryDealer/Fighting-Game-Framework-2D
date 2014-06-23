@@ -7,8 +7,8 @@
 
 // ================================================ //
 
-AppStateManager::AppStateManager(void)
-	:	m_bShutdown(false)
+AppStateManager::AppStateManager(void) :	
+m_bShutdown(false)
 {
 
 }
@@ -179,6 +179,7 @@ void AppStateManager::pauseAppState(void)
 		m_activeStateStack.back()->pause();
 	}
 
+	// Resume state in the stack below.
 	if (m_activeStateStack.size() > 2){
 		this->init(m_activeStateStack.at(m_activeStateStack.size() - 2));
 		m_activeStateStack.at(m_activeStateStack.size() - 2)->resume();
@@ -196,7 +197,7 @@ void AppStateManager::shutdown(void)
 
 void AppStateManager::init(AppState* pState)
 {
-	// ...
+	
 }
 
 // ================================================ //

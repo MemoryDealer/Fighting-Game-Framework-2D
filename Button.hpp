@@ -25,8 +25,8 @@
 class Button : public Widget
 {
 public:
-	// Calls WidgetImpl's constructor with id. Allocates the Label
-	// object, and sets m_renderLabel to true. 
+	// Calls Widget's constructor with id. Sets Widget type to BUTTON.
+	// Allocates the Label object, and sets m_renderLabel to true.
 	explicit Button(const int id);
 
 	// Empty destructor.

@@ -49,6 +49,7 @@ private:
 
 // Provide a namespace for MenuState's GUILayer's.
 // Each layer's constructor sets the ID and name to the corresponding values.
+// Each layer enumerates all of its Widget IDs.
 namespace GUIMenuStateLayer{
 
 	// ================================================ //

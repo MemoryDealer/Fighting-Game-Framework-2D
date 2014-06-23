@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: App.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements App class.
+// ================================================ //
 
 #include "App.hpp"
 #include "Engine.hpp"
@@ -10,8 +21,8 @@
 
 // ================================================ //
 
-App::App(void)
-	:	m_pAppStateManager(nullptr)
+App::App(void) :	
+m_pAppStateManager(nullptr)
 {
 	// Initialize log singleton
 	new Log();
@@ -53,10 +64,11 @@ App::App(void)
 App::~App(void)
 {
 	delete m_pAppStateManager;
-	//delete GUIManager::getSingletonPtr();
 	delete GamepadManager::getSingletonPtr();
 	delete FontManager::getSingletonPtr();
-	delete Engine::getSingletonPtr(); // Engine must be available for AppState's destruction (ObjectManager)
+
+	// Engine must be available for prior destructors.
+	delete Engine::getSingletonPtr(); 
 	delete MessageRouter::getSingletonPtr();
 
 	Log::getSingletonPtr()->logMessage("Exiting app...");
