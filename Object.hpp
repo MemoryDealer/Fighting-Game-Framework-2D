@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Object.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Defines Object class.
+// ================================================ //
 
 #ifndef __OBJECT_HPP__
 #define __OBJECT_HPP__
@@ -9,16 +20,18 @@
 
 // ================================================ //
 
-class ObjectImpl;
 struct Message;
+class Label;
+class FSM;
 
 // ================================================ //
 
+// An Object is *anything* that can be rendered and/or interacted with.
+// An abstract class to derive from for any new object in the game.
 class Object
 {
 public:
-	/** \brief An Object is *anything* that can be rendered and/or interacted with.
-		An abstract class to derive from for any new object in the game. */
+	
 	explicit Object(void);
 	virtual ~Object(void);
 
@@ -45,19 +58,62 @@ public:
 	virtual void update(double dt) = 0;
 
 protected:
-	/** \brief This should be called in the constructor of any child class of Object,
-		passing the local m_pImpl of the child class as the argument. This basically
-		allows "pointer to implementation" polymorphism. */
-	virtual void setPImpl(std::shared_ptr<ObjectImpl> pImpl);
+	SDL_Texture*		m_pTexture;
+	SDL_Rect			m_src;
+	SDL_Rect			m_dst;
+	SDL_RendererFlip	m_flip;
 
-private:
-	std::shared_ptr<ObjectImpl> m_pImpl;
+	std::string			m_name;
+	std::shared_ptr<Label> m_pLabel;
+	bool				m_renderLabel;
+	int					m_id;
+
+	bool				m_dead;
+
+	// The core state machine.
+	std::shared_ptr<FSM> m_pFSM;
 };
 
 // ================================================ //
 
-inline void Object::setPImpl(std::shared_ptr<ObjectImpl> pImpl){ 
-	m_pImpl = pImpl; 
+// Getters
+
+inline SDL_Texture* Object::getTexturePtr(void) const{
+	return m_pTexture;
+}
+
+inline const SDL_Rect& Object::getPosition(void) const{
+	return m_dst;
+}
+
+inline const std::string& Object::getName(void) const{
+	return m_name;
+}
+
+inline const int Object::getID(void) const{
+	return m_id;
+}
+
+inline const bool Object::isDead(void) const{
+	return m_dead;
+}
+
+// Setters
+
+inline void Object::setTexture(std::shared_ptr<SDL_Texture> pTex){
+	return this->setTexture(pTex.get());
+}
+
+inline void Object::setPosition(const int x, const int y){
+	m_dst.x = x; m_dst.y = y;
+}
+
+inline void Object::setPosition(const int x, const int y, const int w, const int h){
+	m_dst.x = x; m_dst.y = y; m_dst.w = w; m_dst.h = h;
+}
+
+inline void Object::setPosition(const SDL_Rect& pos){
+	m_dst = pos;
 }
 
 // ================================================ //

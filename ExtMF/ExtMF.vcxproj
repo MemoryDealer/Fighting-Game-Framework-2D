@@ -92,7 +92,6 @@
     <ClInclude Include="..\AppState.hpp" />
     <ClInclude Include="..\AppStateManager.hpp" />
     <ClInclude Include="..\Button.hpp" />
-    <ClInclude Include="..\ButtonImpl.hpp" />
     <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Config.hpp" />
     <ClInclude Include="..\Engine.hpp" />
@@ -104,7 +103,6 @@
     <ClInclude Include="..\FState.hpp" />
     <ClInclude Include="..\GamepadManager.hpp" />
     <ClInclude Include="..\GameState.hpp" />
-    <ClInclude Include="..\GameStateImpl.hpp" />
     <ClInclude Include="..\GUI.hpp" />
     <ClInclude Include="..\GUIMenuState.hpp" />
     <ClInclude Include="..\Hitbox.hpp" />
@@ -113,32 +111,26 @@
     <ClInclude Include="..\Log.hpp" />
     <ClInclude Include="..\LogImpl.hpp" />
     <ClInclude Include="..\MenuState.hpp" />
-    <ClInclude Include="..\MenuStateImpl.hpp" />
     <ClInclude Include="..\MessageRouter.hpp" />
     <ClInclude Include="..\Move.hpp" />
     <ClInclude Include="..\Object.hpp" />
-    <ClInclude Include="..\ObjectImpl.hpp" />
     <ClInclude Include="..\ObjectManager.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayerData.hpp" />
-    <ClInclude Include="..\PlayerImpl.hpp" />
     <ClInclude Include="..\PlayerManager.hpp" />
     <ClInclude Include="..\Server.hpp" />
     <ClInclude Include="..\Singleton.hpp" />
     <ClInclude Include="..\Stage.hpp" />
     <ClInclude Include="..\StageEffect.hpp" />
-    <ClInclude Include="..\StageImpl.hpp" />
     <ClInclude Include="..\StageManager.hpp" />
     <ClInclude Include="..\stdafx.hpp" />
     <ClInclude Include="..\Timer.hpp" />
     <ClInclude Include="..\Widget.hpp" />
-    <ClInclude Include="..\WidgetImpl.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp" />
     <ClCompile Include="..\AppStateManager.cpp" />
     <ClCompile Include="..\Button.cpp" />
-    <ClCompile Include="..\ButtonImpl.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />
     <ClCompile Include="..\Engine.cpp" />
@@ -150,7 +142,6 @@
     <ClCompile Include="..\FState.cpp" />
     <ClCompile Include="..\GamepadManager.cpp" />
     <ClCompile Include="..\GameState.cpp" />
-    <ClCompile Include="..\GameStateImpl.cpp" />
     <ClCompile Include="..\GUI.cpp" />
     <ClCompile Include="..\GUIMenuState.cpp" />
     <ClCompile Include="..\Hitbox.cpp" />
@@ -160,23 +151,18 @@
     <ClCompile Include="..\LogImpl.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\MenuState.cpp" />
-    <ClCompile Include="..\MenuStateImpl.cpp" />
     <ClCompile Include="..\MessageRouter.cpp" />
     <ClCompile Include="..\Move.cpp" />
     <ClCompile Include="..\Object.cpp" />
-    <ClCompile Include="..\ObjectImpl.cpp" />
     <ClCompile Include="..\ObjectManager.cpp" />
     <ClCompile Include="..\Player.cpp" />
-    <ClCompile Include="..\PlayerImpl.cpp" />
     <ClCompile Include="..\PlayerManager.cpp" />
     <ClCompile Include="..\Server.cpp" />
     <ClCompile Include="..\Stage.cpp" />
-    <ClCompile Include="..\StageImpl.cpp" />
     <ClCompile Include="..\StageManager.cpp" />
     <ClCompile Include="..\stdafx.cpp" />
     <ClCompile Include="..\Timer.cpp" />
     <ClCompile Include="..\Widget.cpp" />
-    <ClCompile Include="..\WidgetImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\work-log.txt" />

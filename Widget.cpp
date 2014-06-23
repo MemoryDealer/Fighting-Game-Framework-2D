@@ -12,14 +12,16 @@
 // ================================================ //
 
 #include "Widget.hpp"
-#include "WidgetImpl.hpp"
+#include "GUI.hpp"
 
 // ================================================ //
 
 Widget::Widget(const int id) :
-m_pImpl(nullptr) // TODO: this should be left nullptr and child widgets called Widget::setPImpl(), I believe
+m_widgetID(id),
+m_type(Widget::STATIC),
+m_enabled(true)
 {
-	
+	std::fill_n(m_links, 4, Widget::NONE);
 }
 
 // ================================================ //
@@ -31,69 +33,29 @@ Widget::~Widget(void)
 
 // ================================================ //
 
-void Widget::parseLinks(const std::string& links)
-{
-	return m_pImpl->parseLinks(links);
-}
-
-// ================================================ //
-// Getter functions
-// ================================================ //
-
-const int Widget::getWidgetID(void) const
-{
-	return m_pImpl->getWidgetID();
-}
-
-// ================================================ //
-
-const int Widget::getType(void) const
-{
-	return m_pImpl->getType();
-}
-
-// ================================================ //
-
-const bool Widget::isEnabled(void) const
-{
-	return m_pImpl->isEnabled();
-}
-
-// ================================================ //
-
-const int Widget::getLinkID(const int direction) const
-{
-	return m_pImpl->getLinkID(direction);
-}
-
-// ================================================ //
-// Setter functions
-// ================================================ //
-
-void Widget::setType(const int type)
-{
-	return m_pImpl->setType(type);
-}
-
-// ================================================ //
-
-void Widget::setEnabled(const bool enabled)
-{
-	return m_pImpl->setEnabled(enabled);
-}
-
-// ================================================ //
-
-void Widget::setLinkID(const int direction, const int id)
-{
-	return m_pImpl->setLinkID(direction, id);
-}
-
-// ================================================ //
-
 void Widget::setAppearance(const int appearance)
 {
-	return m_pImpl->setAppearance(appearance);
+	// Store current position. Setting the texture will reset position information. 
+	SDL_Rect pos = this->getPosition();
+
+	switch (this->getType()){
+	default:
+		break;
+
+	case Widget::Type::BUTTON:
+		this->setTexture(GUI::ButtonTexture[appearance]);
+		break;
+	}
+
+	// Restore original position.
+	this->setPosition(pos);
+}
+
+// ================================================ //
+
+void Widget::update(double dt)
+{
+
 }
 
 // ================================================ //

@@ -21,17 +21,14 @@
 
 // ================================================ //
 
-class WidgetImpl;
-
-// ================================================ //
-
 // A polymorphic, abstract class to derive GUI widgets from. A GUILayer holds 
-// a list of Widget objects. This class uses the pImpl idiom (WidgetImpl). 
+// a list of Widget objects.
 // Sample usage: N/A (see Button.hpp, for an example)
 class Widget : public Object
 {
 public:
-	// Assigns m_pImpl to nullptr (child classes should call Widget::setPImpl()).
+	// Initializes the Widget ID to id, assigns the type to STATIC by default,
+	// and sets it to enabled by default. Sets all links to Widget::NONE. 
 	explicit Widget(const int id);
 
 	// Automatically destructs m_pImpl.
@@ -113,22 +110,58 @@ public:
 	// Update the Widget using delta time. 
 	virtual void update(double dt) = 0;
 
-protected:
-
-	// Sets the Widget's m_pImpl to another m_pImpl. This is required by all derived classes
-	// of Widget. First Widget::setPImpl() should be called, then Object::setPImpl(), 
-	// passing the parameter "m_pImpl". 
-	virtual void setPImpl(std::shared_ptr<WidgetImpl> pImpl);
-
 private:
-	// Pimpl idiom for proper inheritance. 
-	std::shared_ptr<WidgetImpl> m_pImpl;
+	int m_widgetID;
+	int m_type;
+	bool m_enabled;
+
+	// Assocations between this widget and other widgets for SELECTOR navigation. 
+	int m_links[4];
 };
 
 // ================================================ //
 
-inline void Widget::setPImpl(std::shared_ptr<WidgetImpl> pImpl){
-	m_pImpl = pImpl;
+inline void Widget::parseLinks(const std::string& links) {
+	// Get each link ID, delimited by commas
+	char* p = strtok(const_cast<char*>(links.c_str()), ",");
+	int direction = Widget::Link::UP;
+	while (p && direction < 4){
+		int linkID = std::stoi(p);
+		this->setLinkID(direction++, linkID);
+		p = strtok(nullptr, ",");
+	}
+}
+
+// Getters
+
+inline const int Widget::getWidgetID(void) const{
+	return m_widgetID;
+}
+
+inline const int Widget::getType(void) const{
+	return m_type;
+}
+
+inline const bool Widget::isEnabled(void) const{
+	return m_enabled;
+}
+
+inline const int Widget::getLinkID(const int direction) const{
+	return m_links[direction];
+}
+
+// Setters
+
+inline void Widget::setType(const int type){
+	m_type = type;
+}
+
+inline void Widget::setEnabled(const bool enabled){
+	m_enabled = enabled;
+}
+
+inline void Widget::setLinkID(const int direction, const int id){
+	m_links[direction] = id;
 }
 
 // ================================================ //

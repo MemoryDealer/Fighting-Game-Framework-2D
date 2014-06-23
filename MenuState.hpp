@@ -9,7 +9,8 @@
 
 // ================================================ //
 
-class MenuStateImpl;
+class GUIMenuState;
+class Stage;
 
 // ================================================ //
 
@@ -29,7 +30,11 @@ public:
 	void update(double dt);
 
 private:
-	std::shared_ptr<MenuStateImpl> m_pImpl;
+	void processGUIAction(const int type);
+
+	bool m_bQuit;
+	std::shared_ptr<GUIMenuState> m_pGUI;
+	std::shared_ptr<Stage> m_pBackground;
 };
 
 // ================================================ //

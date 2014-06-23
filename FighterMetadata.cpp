@@ -33,7 +33,7 @@ FighterMetadata::~FighterMetadata(void)
 
 // ================================================ //
 
-Move* FighterMetadata::parseMove(const std::string& name)
+std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 {
 	this->resetFilePointer();
 
@@ -53,7 +53,8 @@ Move* FighterMetadata::parseMove(const std::string& name)
 						if (m_buffer.compare(2, m_buffer.size() - 3, name) == 0){
 
 							// Allocate Move object for this move
-							Move* pMove = new Move();
+							std::shared_ptr<Move> pMove;
+							pMove.reset(new Move());
 							pMove->name = name;
 
 							// Store beginning of this move's data
@@ -226,7 +227,7 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 
 // ================================================ //
 
-void FighterMetadata::parseHitboxes(Move* pMove, const std::string& frame)
+void FighterMetadata::parseHitboxes(std::shared_ptr<Move> pMove, const std::string& frame)
 {
 	// Load all hitbox rects into the frame's hitbox list
 	// Normal hitboxes

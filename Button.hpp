@@ -20,18 +20,13 @@
 
 // ================================================ //
 
-class ButtonImpl;
-
-// ================================================ //
-
 // A GUI button. When pressed, it does something special (handled in the state
 // function "processGUIAction()"). 
 class Button : public Widget
 {
 public:
-	// Calls Widget's constructor with id. Allocates m_pImpl ButtonImpl. 
-	// Calls Widget::setPImpl() and Object::setPImpl(). 
-	// Calls Widget::setType() with BUTTON. 
+	// Calls WidgetImpl's constructor with id. Allocates the Label
+	// object, and sets m_renderLabel to true. 
 	explicit Button(const int id);
 
 	// Empty destructor.
@@ -41,7 +36,7 @@ public:
 	virtual void update(double dt);
 
 private:
-	std::shared_ptr<ButtonImpl> m_pImpl;
+	
 };
 
 // ================================================ //

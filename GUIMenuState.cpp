@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: GUIMenuState.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements GUIMenuState class.
+// ================================================ //
 
 #include "GUIMenuState.hpp"
 #include "Config.hpp"
@@ -10,14 +21,12 @@
 GUIMenuState::GUIMenuState(const std::string& file) :
 GUI()
 {
-	// Load config file
 	Config c(file);
 	if (!c.isLoaded()){
 		throw std::exception("Failed to load GUI config file for MenuState");
 	}
 
-	// Get theme textures
-	std::string buttonTexture;
+	// Get theme textures and store them in the static GUI SDL_Texture pointers.
 	Config e("ExtMF.cfg");
 	Config theme(e.parseValue("GUI", "theme"));
 	if (theme.isLoaded()){
@@ -26,29 +35,22 @@ GUI()
 		GUI::ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
 	}
 
-	// Add layers
+	// List of names of each widget for each layer.
 	StringList names;
 
-	/* Root layer */
+	// Add each layer to the GUI.
+
 	std::shared_ptr<GUILayer> layer(new GUIMenuStateLayer::Root());
-	
-	// Buttons
 	names = StringList{ "campaign", "arcade", "options", "quit" };
 	layer->parse<Button>(c, Widget::Type::BUTTON, names);
-
-	// Add the layer to the GUI
 	this->addLayer(layer);
 
-	/* Options layer */
 	layer.reset(new GUIMenuStateLayer::Options());
-
-	// Buttons
 	names = StringList{ "back" };
 	layer->parse<Button>(c, Widget::Type::BUTTON, names);
-	
 	this->addLayer(layer);
 
-	// Set starting layer
+	// Set starting layer to Root.
 	this->setCurrentLayer(GUIMenuState::Layer::ROOT);
 }
 

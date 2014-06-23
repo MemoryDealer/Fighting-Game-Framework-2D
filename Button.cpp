@@ -12,18 +12,18 @@
 // ================================================ //
 
 #include "Button.hpp"
-#include "ButtonImpl.hpp"
+#include "Label.hpp"
 
 // ================================================ //
 
 Button::Button(const int id) :
-Widget(id),
-m_pImpl(new ButtonImpl(id))
+Widget(id)
 {
-	Widget::setPImpl(m_pImpl);
-	Object::setPImpl(m_pImpl);
-
 	this->setType(Widget::Type::BUTTON);
+
+	// m_pLabel is in ObjectImpl; tell this class to use it.
+	m_renderLabel = true;
+	m_pLabel.reset(new Label());
 }
 
 // ================================================ //
@@ -37,7 +37,7 @@ Button::~Button(void)
 
 void Button::update(double dt)
 {
-	return m_pImpl->update(dt);
+	
 }
 
 // ================================================ //

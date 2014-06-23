@@ -35,32 +35,32 @@ typedef std::vector<std::string> StringList;
 // A polymorphic, abstract class defining a layer within a GUI system. 
 // A GUI object holds a list of GUILayers, and only displays one GUILayer at a time. 
 // GUILayer holds a list of Widgets which are updated each frame, and rendered if 
-// it's the active GUILayer. 
+// it's the active GUILayer.
 class GUILayer
 {
 public:
-	// Initializes ID to zero. 
+	// Initializes ID to zero.
 	explicit GUILayer(void);
 
-	// Empty destructor. 
+	// Empty destructor.
 	virtual ~GUILayer(void);
 
-	// Adds a new Widget smart pointer to the list of Widgets. 
+	// Adds a new Widget smart pointer to the list of Widgets.
 	// Parameters:
 	// widget - a derived object of Widget (smart pointer)
 	void addWidget(std::shared_ptr<Widget> widget);
 
-	// Parses all Widgets of type T for the GUILayer and adds them to the Widget list. 
-	// This should be called from a GUI object's constructor. 
+	// Parses all Widgets of type T for the GUILayer and adds them to the Widget list.
+	// This should be called from a GUI object's constructor.
 	template<typename T>
 	void parse(Config& c, const int widgetType, const StringList& names);
 
 	// Getters
 
-	// Returns the ID of the GUILayer. 
+	// Returns the ID of the GUILayer.
 	const int getID(void) const;
 
-	// Returns a Widget pointer for specified widget. 
+	// Returns a Widget pointer for specified widget.
 	// Parameters:
 	// n - Index of Widget in GUILayer
 	Widget* getWidgetPtr(const int n) const;
@@ -76,22 +76,22 @@ public:
 	// Sets the name of the GUILayer.
 	void setLayerName(const std::string& name);
 
-	// Resets all Widget's appearances in GUILayer to Appearance::IDLE. 
+	// Resets all Widget's appearances in GUILayer to Appearance::IDLE.
 	void resetAllWidgets(void);
 
 	// Render every Widget.
 	virtual void render(void);
 
-	// Update all Widgets with delta time. 
+	// Update all Widgets with delta time.
 	virtual void update(double dt) = 0;
 
 private:
-	// Unique ID for a GUILayer. 
+	// Unique ID for a GUILayer.
 	int m_id;
 
 	WidgetList m_widgets;
 
-	// Set by derived classes so GUILayer::parse() knows where to look. 
+	// Set by derived classes so GUILayer::parse() knows where to look.
 	std::string m_layerName;
 };
 
@@ -128,9 +128,9 @@ inline void GUILayer::setLayerName(const std::string& name){
 // ================================================ //
 // ================================================ //
 
-// Represents a single GUI (e.g, main menu, pause menu). Holds a list of
-// GUILayer objects. Assists in navigation of menu widgets using mouse and keyboard
-// or gamepad.
+// A polymorphic, abstract class representing a single GUI (e.g, main menu, pause menu). 
+// Holds a list of GUILayer objects. Assists in navigation of menu widgets using 
+// mouse and keyboard or gamepad.
 class GUI
 {
 public:
@@ -140,7 +140,7 @@ public:
 	// Empty destructor, used to make this class abstract.
 	virtual ~GUI(void) = 0;
 
-	// The type of navigation currently in use by the user.
+	// The type of navigation modes possible. SELECTOR is for keyboards/gamepads.
 	enum NavMode{
 		MOUSE = 0,
 		SELECTOR

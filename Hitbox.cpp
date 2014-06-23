@@ -59,9 +59,9 @@ Hitbox::~Hitbox(void)
 
 // ================================================ //
 
-const bool Hitbox::intersects(const Hitbox& b)
+const bool Hitbox::intersects(const Hitbox* b)
 {
-	return (SDL_HasIntersection(&this->getRect(), &b.getRect()) == SDL_TRUE);
+	return (SDL_HasIntersection(&this->getRect(), &b->getRect()) == SDL_TRUE);
 }
 
 // ================================================ //
@@ -80,9 +80,9 @@ void Hitbox::render(void)
 
 // ================================================ //
 
-const bool Hitbox::HitboxIntersect(const Hitbox& a, const Hitbox& b)
+const bool Hitbox::HitboxIntersect(const Hitbox* a, const Hitbox* b)
 {
-	return (SDL_HasIntersection(&a.getRect(), &b.getRect()) == SDL_TRUE);
+	return (SDL_HasIntersection(&a->getRect(), &b->getRect()) == SDL_TRUE);
 }
 
 // ================================================ //

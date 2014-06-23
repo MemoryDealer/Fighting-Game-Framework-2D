@@ -9,7 +9,7 @@
 
 // ================================================ //
 
-class GameStateImpl;
+class ObjectManager;
 
 // ================================================ //
 
@@ -29,7 +29,8 @@ public:
 	void update(double dt);
 
 private:
-	std::shared_ptr<GameStateImpl> m_pImpl;
+	bool	m_bQuit;
+	std::shared_ptr<ObjectManager> m_pObjectManager;
 };
 
 // ================================================ //

@@ -6,10 +6,7 @@
 // ================================================ //
 
 #include "Object.hpp"
-
-// ================================================ //
-
-class StageImpl;
+#include "StageEffect.hpp"
 
 // ================================================ //
 
@@ -25,8 +22,14 @@ public:
 	virtual void update(double dt);
 
 private:
-	std::shared_ptr<StageImpl>	m_pImpl;
+	StageLayerList m_layers;
 };
+
+// ================================================ //
+
+inline const int Stage::getSourceX(const int layer) const{
+	return m_layers[layer].src.x;
+}
 
 // ================================================ //
 

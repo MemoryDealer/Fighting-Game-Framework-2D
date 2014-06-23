@@ -21,7 +21,7 @@ public:
 	virtual ~FighterMetadata(void);
 
 	// Currently this is shit, probably O(n^3) or something
-	virtual Move* parseMove(const std::string& name);
+	virtual std::shared_ptr<Move> parseMove(const std::string& name);
 	
 
 private:
@@ -30,7 +30,7 @@ private:
 	virtual std::string parseMoveValue(const std::string& section, const std::string& value);
 	virtual const int parseMoveIntValue(const std::string& section, const std::string& value);
 	virtual const bool parseMoveBoolValue(const std::string& section, const std::string& value);
-	virtual void parseHitboxes(Move* pMove, const std::string& frame);
+	virtual void parseHitboxes(std::shared_ptr<Move> pMove, const std::string& frame);
 	virtual SDL_Rect FighterMetadata::parseRect(const std::string& str);
 
 	std::streampos m_moveBeg;

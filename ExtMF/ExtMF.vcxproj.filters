@@ -66,9 +66,6 @@
     <ClInclude Include="..\GameState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\GameStateImpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Hitbox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
     <ClInclude Include="..\Object.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\ObjectImpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\ObjectManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -100,9 +94,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PlayerData.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PlayerImpl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PlayerManager.hpp">
@@ -120,9 +111,6 @@
     <ClInclude Include="..\StageEffect.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\StageImpl.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\StageManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,19 +126,10 @@
     <ClInclude Include="..\Button.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\ButtonImpl.hpp">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\WidgetImpl.hpp">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\GUI.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="..\MenuState.hpp">
-      <Filter>Header Files\MenuState</Filter>
-    </ClInclude>
-    <ClInclude Include="..\MenuStateImpl.hpp">
       <Filter>Header Files\MenuState</Filter>
     </ClInclude>
     <ClInclude Include="..\GUIMenuState.hpp">
@@ -200,9 +179,6 @@
     <ClCompile Include="..\GameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GameStateImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Hitbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -224,16 +200,10 @@
     <ClCompile Include="..\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ObjectImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\ObjectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PlayerImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\PlayerManager.cpp">
@@ -243,9 +213,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Stage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\StageImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\StageManager.cpp">
@@ -263,19 +230,10 @@
     <ClCompile Include="..\Button.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\WidgetImpl.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ButtonImpl.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\GUI.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="..\MenuState.cpp">
-      <Filter>Source Files\MenuState</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MenuStateImpl.cpp">
       <Filter>Source Files\MenuState</Filter>
     </ClCompile>
     <ClCompile Include="..\GUIMenuState.cpp">

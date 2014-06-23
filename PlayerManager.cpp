@@ -223,10 +223,10 @@ void PlayerManager::update(double dt)
 	// Damage boxes to opponent hitbox
 	for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
 		for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
-			if (m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j))){
+			if (m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j))){
 				printf("Damage: Red => Blue\n");
 			} 
-			if (m_pBluePlayer->getHitbox(i).intersects(m_pRedPlayer->getHitbox(j))){
+			if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
 				printf("Damage: Blue => Red\n");
 			}
 		}
@@ -239,7 +239,7 @@ void PlayerManager::update(double dt)
 	// Normal hitbox collision (hitboxes 0 through 3)
 	for(int i=0; i<4; ++i){
 		for(int j=0; j<4; ++j){
-			if ((m_pRedPlayer->getHitbox(i).intersects(m_pBluePlayer->getHitbox(j)))){
+			if ((m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j)))){
 				m_pRedPlayer->setColliding(true);
 				m_pBluePlayer->setColliding(true);
 			}

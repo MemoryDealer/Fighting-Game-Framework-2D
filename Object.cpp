@@ -1,14 +1,43 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Object.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Object class.
+// ================================================ //
 
 #include "Object.hpp"
-#include "ObjectImpl.hpp"
+#include "Engine.hpp"
 #include "MessageRouter.hpp"
+#include "FSM.hpp"
+#include "Label.hpp"
 
 // ================================================ //
 
 Object::Object(void) :
-m_pImpl(nullptr)
+m_pTexture(nullptr),
+m_src(),
+m_dst(),
+m_flip(SDL_FLIP_NONE),
+m_name("ObjectID "),
+m_pLabel(nullptr),
+m_renderLabel(false),
+m_dead(false),
+m_pFSM(new FSM(0))
 {
+	static int nameCtr = 0;
+	m_id = nameCtr++;
+	m_name += std::to_string(static_cast<long long>(m_id));
+
+	m_src.x = m_src.y = m_dst.x = m_dst.y = 0;
+
+	Log::getSingletonPtr()->logMessage("Object \"" + m_name + "\" created!");
+
 	MessageRouter::getSingletonPtr()->addObject(static_cast<Object*>(this));
 }
 
@@ -16,112 +45,84 @@ m_pImpl(nullptr)
 
 Object::~Object(void)
 {
-	MessageRouter::getSingletonPtr()->removeObject(m_pImpl->getID());
+	if (m_pTexture != nullptr)
+		Engine::getSingletonPtr()->destroyTexture(m_pTexture);
+
+	Log::getSingletonPtr()->logMessage("Destroyed Object \"" + m_name + "\"");
 }
 
-// ================================================ //
-// Setter functions
 // ================================================ //
 
 void Object::setTexture(SDL_Texture* pTex)
 {
-	return m_pImpl->setTexture(pTex);
+	m_pTexture = pTex;
+
+	// Get texture width/height
+	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
+	m_dst.w = m_src.w;
+	m_dst.h = m_src.h;
 }
 
-void Object::setTexture(std::shared_ptr<SDL_Texture> pTex)
-{
-	return m_pImpl->setTexture(pTex);
-}
+// ================================================ //
 
 bool Object::setTextureFile(const std::string& filename)
 {
-	return m_pImpl->setTextureFile(filename);
+	if (m_pTexture != nullptr)
+		Engine::getSingletonPtr()->destroyTexture(m_pTexture);
+
+	Log::getSingletonPtr()->logMessage("Setting texture \"" + std::string(filename) +
+		"\" for Object \"" + m_name + "\"");
+	m_pTexture = Engine::getSingletonPtr()->loadTexture(filename);
+
+	// Get texture width/height
+	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
+	m_dst.w = m_src.w;
+	m_dst.h = m_src.h;
+
+	return (m_pTexture != nullptr);
 }
+
+// ================================================ //
 
 void Object::setTextureCoordinates(const int x, const int y, const int w, const int h)
 {
-	return m_pImpl->setTextureCoordinates(x, y, w, h);
+	m_src.x = x; m_src.y = y;
+	if (w != 0)
+		m_src.w = m_dst.w = w;
+	if (h != 0)
+		m_src.h = m_dst.h = h;
 }
 
 // ================================================ //
 
-void Object::setLabel(const std::string& label, const int offset)
+inline void Object::setLabel(const std::string& label, const int offset)
 {
-	return m_pImpl->setLabel(label, offset);
+	m_pLabel->create(label); m_pLabel->setOffset(offset);
 }
 
-// ================================================ //
-
-void Object::setPosition(const int x, const int y)
-{
-	return m_pImpl->setPosition(x, y);
-}
-
-// ================================================ //
-
-void Object::setPosition(const int x, const int y, const int w, const int h)
-{
-	return m_pImpl->setPosition(x, y, w, h);
-}
-
-// ================================================ //
-
-void Object::setPosition(const SDL_Rect& pos)
-{
-	return m_pImpl->setPosition(pos);
-}
-
-// ================================================ //
-// Getter functions
-// ================================================ //
-
-SDL_Texture* Object::getTexturePtr(void) const
-{ 
-	return m_pImpl->getTexturePtr(); 
-}
-
-// ================================================ //
-
-const SDL_Rect& Object::getPosition(void) const
-{
-	return m_pImpl->getPosition();
-}
-
-// ================================================ //
-
-const std::string& Object::getName(void) const
-{
-	return m_pImpl->getName();
-}
-
-// ================================================ //
-
-const int Object::getID(void) const
-{
-	return m_pImpl->getID();
-}
-
-// ================================================ //
-
-const bool Object::isDead(void) const
-{ 
-	return m_pImpl->isDead();
-}
-
-// ================================================ //
-// Other functions
 // ================================================ //
 
 void Object::sendMessage(const Message& msg)
 {
-	return m_pImpl->sendMessage(msg);
+
 }
 
 // ================================================ //
 
 void Object::render(void)
 {
-	return m_pImpl->render();
+	//! I hope it's safe to const_cast the renderer pointer
+	SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
+		m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+
+	if (m_renderLabel){
+		SDL_Rect dst = m_dst;
+		dst.x += m_pLabel->getOffset();
+		dst.w -= m_pLabel->getOffset() * 2;
+
+		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), m_pLabel->getTexturePtr(),
+			&m_src, &dst, 0, nullptr, m_flip);
+	}
 }
 
 // ================================================ //

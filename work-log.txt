@@ -245,10 +245,13 @@
 	// ================================================ //
 
 #6/20/14
--There was a bug where players would move by themsevles when left still sometimes. I multiplied dt by 10 in PlayerManager::update() in the game loop, which sped
+-There was a bug where players would move by themsevles when left still sometimes. I multiplied dt by 10 in PlayerManager::update() in the game loop, which sped 
 	up the game clock for the players by a magnitude of 10. It was quite apparent that they were moving on their own with the game clock sped up, so I isolated the 
-	bug to the deceleration code in PlayerImpl::updateLocalInput(). I simply was not check if the difference from the deceleration calculation overshot zero. It has been fixed. 
+	bug to the deceleration code in PlayerImpl::updateLocalInput(). I simply was not checking if the difference from the deceleration calculation overshot zero. It has been fixed. 
 
+#6/23/14
+-Removed Pimpl idiom for Object and all of its derived classes, as well as GameState/MenuState. It was too cumbersome for a polymorphic class and should 
+	only be used for classes that won't be inherited from.
 
 #TODO
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
