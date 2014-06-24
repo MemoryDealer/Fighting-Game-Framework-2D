@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: AppStateManager.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements AppStateManager class.
+// ================================================ //
 
 #include "AppStateManager.hpp"
 #include "Engine.hpp"
@@ -68,8 +79,7 @@ AppState* AppStateManager::findByName(const std::string& stateName)
 }
 
 // ================================================ //
-// This is the main parent loop
-// ================================================ //
+
 void AppStateManager::start(AppState* pState)
 {
 	this->changeAppState(pState);
@@ -92,13 +102,11 @@ void AppStateManager::start(AppState* pState)
 
 			SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), 0, 0, 0, 255);
 
-			// Automatically update the global message router
+			// Perform global updates.
 			MessageRouter::getSingletonPtr()->update();
-
-			// Update the active state
 			m_activeStateStack.back()->update(dt);
 
-			// Regulate the maximum frame rate (in case VSync is off)
+			// Regulate the maximum frame rate (in case VSync is off).
 			int frameTicks = capTimer.getTicks();
 			if (frameTicks < TICKS_PER_FRAME){
 				SDL_Delay(TICKS_PER_FRAME - frameTicks);

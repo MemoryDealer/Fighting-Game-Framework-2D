@@ -252,9 +252,12 @@
 #6/23/14
 -Removed Pimpl idiom for Object and all of its derived classes, as well as GameState/MenuState. It was too cumbersome for a polymorphic class and should 
 	only be used for classes that won't be inherited from.
+-Added some more documentation among the code.
 
 #TODO
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
+-Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
+	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 
