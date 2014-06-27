@@ -5,14 +5,14 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: MenuState.hpp
+// File: LobbyState.hpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Defines MenuState class.
+// Defines LobbyState class.
 // ================================================ //
 
-#ifndef __MENUSTATE_HPP__
-#define __MENUSTATE_HPP__
+#ifndef __LOBBYSTATE_HPP__
+#define __LOBBYSTATE_HPP__
 
 // ================================================ //
 
@@ -25,25 +25,25 @@ class Stage;
 
 // ================================================ //
 
-// The state for the main menu. Has a GUI and renders a 
-// Stage object for a background.
-class MenuState : public AppState
+// The state for the lobby, which is in between the menu state and
+// the game state. Used for selecting characters and setting up the game.
+class LobbyState : public AppState
 {
 public:
-	// Initializes background to "Data/Stages/mainmenu.stage" and allocates
-	// GUI to the .gui file defined in ExtMF.cfg.
-	explicit MenuState(void);
+	// Loads the background stage file and parses the location of the .gui file
+	// and loads the GUI.
+	explicit LobbyState(void);
 
 	// Empty destructor.
-	~MenuState(void);
+	~LobbyState(void);
 
-	// Registers this AppState.
-	DECLARE_APPSTATE_CLASS(MenuState);
+	// Registers the AppState.
+	DECLARE_APPSTATE_CLASS(LobbyState);
 
-	// Allocates the Camera (needed for Stage update).
+	// Allocates StageManager and PlayerManager.
 	void enter(void);
 
-	// Frees the Camera.
+	// Frees StageManager and PlayerManager.
 	void exit(void);
 
 	// Logs the pause.
@@ -52,7 +52,7 @@ public:
 	// Logs the resumption.
 	void resume(void);
 
-	// Processes keyboard and gamepad input for GUI.
+	// Process keyboard/gamepad input for GUI.
 	void handleInput(SDL_Event& e);
 
 	// Process events for the GUI.

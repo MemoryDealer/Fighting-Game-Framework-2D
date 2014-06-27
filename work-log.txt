@@ -254,12 +254,18 @@
 	only be used for classes that won't be inherited from.
 -Added some more documentation among the code.
 
+#6/27/14
+-Intellisense in Visual Studio 2013 incorrectly shows errors when including SDL headers in stdafx.hpp when I use the environment variable %SDL% ("D:\SDL2") in the additional include directories 
+	for the project options. If I manually put "D:\SDL2\include" instead of "%SDL%\include" it's fine. So until this bug in VS2013 is fixed, I must hard code the SDL directory.
+
+
 #TODO
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
 	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
 	The lobby can be treated as always being a server, unless connecting to another server. 
+-Check for ExtMF.cfg in the working directory on startup. If it's not there, generate a default one and notify the user.
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state. 
 -Use SDL_UpdateTexture() to change colors of textures on the fly
 -Remove c_str() on std::strings where feasible

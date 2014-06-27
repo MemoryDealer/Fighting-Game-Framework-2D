@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: MenuState.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements MenuState class.
+// ================================================ //
 
 #include "MenuState.hpp"
 #include "Engine.hpp"
@@ -21,8 +32,9 @@
 MenuState::MenuState(void) :
 m_bQuit(false),
 m_pGUI(nullptr),
-m_pBackground(new Stage("Data/Stages/mainmenu.stage"))
+m_pBackground(new Stage("Data/Stages/menu.stage"))
 {
+	// Parse the location of the .gui file for the main menu and load it.
 	Config c("ExtMF.cfg");
 	m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
 }
@@ -40,19 +52,7 @@ void MenuState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	// Allocate StageManager
-	new StageManager();
-	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
-
-	// Allocate PlayerManager
-	new PlayerManager();
-	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
-
-	// Allocate Camera singleton
 	new Camera();
-
-	// Allocate Network
-	//new Server();
 }
 
 // ================================================ //
@@ -61,11 +61,7 @@ void MenuState::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 
-	// Free all singletons
-	delete StageManager::getSingletonPtr();
-	delete PlayerManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
-	//delete Server::getSingletonPtr();
 }
 
 // ================================================ //
@@ -88,7 +84,7 @@ void MenuState::resume(void)
 
 void MenuState::handleInput(SDL_Event& e)
 {
-	// Acquire a pointer to the player under the control of the current gamepad here (avoids copied & pasted code below)
+	// Acquire a pointer to the player under the control of the current gamepad here (avoids copied & pasted code below).
 	Player* player = nullptr;
 	if (e.type == SDL_CONTROLLERBUTTONDOWN ||
 		e.type == SDL_CONTROLLERBUTTONUP ||
@@ -105,7 +101,7 @@ void MenuState::handleInput(SDL_Event& e)
 
 	if (e.type == SDL_KEYDOWN){
 
-		// Hard-coded keys
+		// Process hard-coded keys.
 		switch (e.key.keysym.sym){
 		default:
 			break;
@@ -118,17 +114,19 @@ void MenuState::handleInput(SDL_Event& e)
 		case SDLK_DOWN:
 		case SDLK_LEFT:
 		case SDLK_RIGHT:
+			// Automatically switch to navigation mode when arrows are pressed.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
 				m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
 			}
 
-			// Navigate to the widget's link
-			if (!m_pGUI->getSelectorPressed()){ // prevents user from navigating away while pressing a button
+			if (!m_pGUI->getSelectorPressed()){ 
+				// Prevent user from navigating away while pressing a button.
 				int widget = m_pGUI->getSelectedWidget();
 				if (widget == Widget::NONE){
 					m_pGUI->setSelectedWidget(0);
 				}
 				else{
+					// Navigate the selector to the linked Widget.
 					Widget* pWidget = m_pGUI->getWidgetPtr(widget);
 					switch (e.key.keysym.sym){
 					default:
@@ -154,10 +152,10 @@ void MenuState::handleInput(SDL_Event& e)
 
 		case SDLK_r:
 		{
-					   // Reload GUI and background
-					   Config c("ExtMF.cfg");
-					   m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
-					   m_pBackground.reset(new Stage("Data/Stages/mainmenu.stage"));
+			// Reload GUI and background.
+			Config c("ExtMF.cfg");
+			m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
+			m_pBackground.reset(new Stage("Data/Stages/mainmenu.stage"));
 		}
 			break;
 
@@ -173,16 +171,16 @@ void MenuState::handleInput(SDL_Event& e)
 			m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
 		}
 
-		// Gamepad buttons
-		if (!m_pGUI->getSelectorPressed()){ // prevents user from navigating away while pressing a button
+		if (!m_pGUI->getSelectorPressed()){
+			// Prevent user from navigating away while pressing a button.
 			int widget = m_pGUI->getSelectedWidget();
 			if (widget == Widget::NONE){
 				m_pGUI->setSelectedWidget(0);
 			}
 			else{
+				// Navigate to the linked Widget.
 				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
 
-				// Red player
 				if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_UP, true)){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
 				}
@@ -204,18 +202,22 @@ void MenuState::handleInput(SDL_Event& e)
 			m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
 		}
 
-		if (!m_pGUI->getSelectorPressed()){ // prevents user from navigating away while pressing a button
+		if (!m_pGUI->getSelectorPressed()){
+			// Prevent user from navigating away while pressing a button.
 			int widget = m_pGUI->getSelectedWidget();
 			if (widget == Widget::NONE){
 				m_pGUI->setSelectedWidget(0);
 			}
 			else{
-				static bool xAxisReset = true; // this will prevent the selector from skipping widgets in between two end widgets
+				// These booleans prevent the selector from skipping Widgets in 
+				// between two end Widgets when a joystick is held down.
+				static bool xAxisReset = true; 
 				static bool yAxisReset = true;
+
 				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
 				const int deadzone = player->getInput()->getPadDeadzone();
 
-				// Y-axis movement
+				// Process Y-axis movement.
 				Sint16 value = SDL_GameControllerGetAxis(player->getInput()->getPad(), static_cast<SDL_GameControllerAxis>(1));
 				if (value < -deadzone && yAxisReset){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
@@ -229,7 +231,7 @@ void MenuState::handleInput(SDL_Event& e)
 					yAxisReset = true;
 				}
 
-				// X-axis movement
+				// Process X-axis movement.
 				value = SDL_GameControllerGetAxis(player->getInput()->getPad(), static_cast<SDL_GameControllerAxis>(0));
 				if (value < -deadzone && xAxisReset){
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
@@ -260,16 +262,15 @@ void MenuState::processGUIAction(const int type)
 			lastSelectedWidget = m_pGUI->getSelectedWidget();
 			m_pGUI->getWidgetPtr(lastSelectedWidget)->setAppearance(Widget::Appearance::PRESSED);
 		}
-		break; // BEGIN_PRESS
+		break; // End BEGIN_PRESS.
 
-	case GUI::Action::FINISH_PRESS: // mouse button or key released
-
-		// When a button is pressed in selector mode, reset it back to select appearance
+	case GUI::Action::FINISH_PRESS:
+		// When a button is pressed in selector mode, reset it back to select appearance.
 		if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 			m_pGUI->getSelectedWidgetPtr()->setAppearance(Widget::Appearance::SELECTED);
 		}
 
-		// Don't let this button be pressed unless BEGIN_PRESS started on it
+		// Don't let this button be pressed unless BEGIN_PRESS started on it.
 		if (m_pGUI->getSelectedWidget() != lastSelectedWidget){
 			if (lastSelectedWidget < m_pGUI->getCurrentLayer()->getNumWidgets()){
 				m_pGUI->getWidgetPtr(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
@@ -277,19 +278,19 @@ void MenuState::processGUIAction(const int type)
 			}
 		}
 
-		// Find the current layer, then look in that layer's widgets
+		// Find the current layer, then test that layer's widgets for actions.
 		switch (m_pGUI->getCurrentLayer()->getID()){
 		default:
 			break;
 
-			// Root layer
 		case GUIMenuState::Layer::ROOT:
 			switch (m_pGUI->getSelectedWidget()){
 			default:
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
-				m_pGUI->setMousePos(-1, -1); // Prevents selector from improperly re-appearing, see work-log.txt:line 196
+				// Prevent selector from improperly re-appearing, see work-log.txt:line 196.
+				m_pGUI->setMousePos(-1, -1); 
 				this->pushAppState(this->findByName(GAME_STATE));
 				break;
 
@@ -307,7 +308,6 @@ void MenuState::processGUIAction(const int type)
 			}
 			break;
 
-			// Options layer
 		case GUIMenuState::Layer::OPTIONS:
 			switch (m_pGUI->getSelectedWidget()){
 			default:
@@ -319,7 +319,7 @@ void MenuState::processGUIAction(const int type)
 			}
 			break;
 		}
-		break; // FINISH_PRESS
+		break; // End FINISH_PRESS.
 	}
 }
 
@@ -333,7 +333,6 @@ void MenuState::update(double dt)
 	}
 
 	SDL_Event e;
-
 	while (SDL_PollEvent(&e)){
 		switch (e.type){
 		default:
@@ -344,6 +343,8 @@ void MenuState::update(double dt)
 			break;
 
 		case SDL_KEYDOWN:
+			// Send a BEGIN_PRESS action to processGUI() if the selection 
+			// button is held.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.key.keysym.sym == SDLK_RETURN){
 					m_pGUI->setSelectorPressed(true);
@@ -355,6 +356,8 @@ void MenuState::update(double dt)
 			break;
 
 		case SDL_KEYUP:
+			// Send a FINISH_PRESS action to processGUI() if the selection 
+			// button is released.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.key.keysym.sym == SDLK_RETURN){
 					m_pGUI->setSelectorPressed(false);
@@ -403,25 +406,24 @@ void MenuState::update(double dt)
 			}
 			break;
 
-			// Gamepad events
 		case SDL_CONTROLLERDEVICEADDED:
 		{
-										  int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
+			int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
 
-										  // Assign the new controller to the first open slot
-										  if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
-											  PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
-												  GamepadManager::getSingletonPtr()->getPad(id));
-										  }
-										  else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
-											  PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
-												  GamepadManager::getSingletonPtr()->getPad(id));
-										  }
+			// Assign the new controller to the first open slot.
+			if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
+					GamepadManager::getSingletonPtr()->getPad(id));
+			}
+			else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
+					GamepadManager::getSingletonPtr()->getPad(id));
+			}
 		}
 			break;
 
 		case SDL_CONTROLLERDEVICEREMOVED:
-			// The player's pad pointer will be gone, so assign it to null to prevent undefined behavior
+			// The player's pad pointer will be gone, so assign it to null to prevent undefined behavior.
 			if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(nullptr);
 			}
@@ -435,7 +437,9 @@ void MenuState::update(double dt)
 		case SDL_CONTROLLERBUTTONDOWN:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
-					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true) ||
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
 					m_pGUI->setSelectorPressed(true);
 					this->processGUIAction(GUI::Action::BEGIN_PRESS);
 				}
@@ -447,7 +451,9 @@ void MenuState::update(double dt)
 		case SDL_CONTROLLERBUTTONUP:
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
 				if (e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
-					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getMappedButton(Input::BUTTON_SELECT, true) ||
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_START, true) ||
+					e.cbutton.button == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getMappedButton(Input::BUTTON_SELECT, true)){
 					m_pGUI->setSelectorPressed(false);
 					this->processGUIAction(GUI::Action::FINISH_PRESS);
 				}

@@ -31,6 +31,18 @@
     <Filter Include="Source Files\Font">
       <UniqueIdentifier>{041f19d4-91ac-4721-89ec-11b82205bd3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\LobbyState">
+      <UniqueIdentifier>{7784913a-9068-4ec2-b374-c847975f9fc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameState">
+      <UniqueIdentifier>{c00ff9f5-4a18-4fe1-a33c-3f72cb710f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\LobbyState">
+      <UniqueIdentifier>{502abd6f-1c18-4715-8e62-4695aa242f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameState">
+      <UniqueIdentifier>{834842b3-ea9b-40c6-a911-e047eff7ad66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\App.hpp">
@@ -61,9 +73,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\FState.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GameState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Hitbox.hpp">
@@ -147,6 +156,12 @@
     <ClInclude Include="..\GamepadManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\GameState.hpp">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\LobbyState.hpp">
+      <Filter>Header Files\LobbyState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp">
@@ -174,9 +189,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\FState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Hitbox.cpp">
@@ -253,6 +265,12 @@
     </ClCompile>
     <ClCompile Include="..\GamepadManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameState.cpp">
+      <Filter>Source Files\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\LobbyState.cpp">
+      <Filter>Source Files\LobbyState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

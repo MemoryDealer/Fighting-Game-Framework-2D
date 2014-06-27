@@ -24,37 +24,31 @@
 App::App(void) :	
 m_pAppStateManager(nullptr)
 {
-	// Initialize log singleton
 	new Log();
 
-	// Initialize message router singleton
 	Log::getSingletonPtr()->logMessage("Initializing MessageRouter...");
 	new MessageRouter();
 
-	// Initialize engine singleton
 	Log::getSingletonPtr()->logMessage("Initializing engine...");
 	new Engine();
 
-	// Allocate FontManager singleton
 	new FontManager();
 	FontManager::getSingletonPtr()->reloadAll();
 
-	// Allocate GamepadManager singleton and register all gamepads
 	new GamepadManager();
 	GamepadManager::getSingletonPtr()->addAllConnectedPads();
 
-	// Create our state manager
 	Log::getSingletonPtr()->logMessage("Creating AppStateManager...");
 	m_pAppStateManager = new AppStateManager();
 
-	// Create states
+	// Create all states.
 	Log::getSingletonPtr()->logMessage("Creating game states...");
 	MenuState::create(m_pAppStateManager, MENU_STATE);
 	GameState::create(m_pAppStateManager, GAME_STATE);
 
 	Log::getSingletonPtr()->logMessage("App initialized!");
 
-	// Start entry state
+	// Start game by entering menu state.
 	Log::getSingletonPtr()->logMessage("Starting with MENU_STATE...");
 	m_pAppStateManager->start(m_pAppStateManager->findByName(MENU_STATE));
 }
