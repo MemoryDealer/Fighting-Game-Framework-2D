@@ -1,26 +1,36 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Config.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Config class.
+// ================================================ //
 
 #include "Config.hpp"
 #include "Engine.hpp"
 
 // ================================================ //
 
-Config::Config(const ConfigType type)
-	:	m_file(),
-		m_type(type),
-		m_loaded(false)
+Config::Config(const ConfigType type) :	
+m_file(),
+m_type(type),
+m_loaded(false)
 {
 
 }
 
 // ================================================ //
 
-Config::Config(const std::string& file, const ConfigType type)
-	:	m_file(),
-		m_type(type),
-		m_loaded(false)
+Config::Config(const std::string& file, const ConfigType type) :	
+m_file(),
+m_type(type),
+m_loaded(false)
 {
-	// Open file
 	this->loadFile(file);
 }
 
@@ -47,6 +57,9 @@ void Config::loadFile(const std::string& file)
 		m_loaded = true;
 		Log::getSingletonPtr()->logMessage("File loaded!");
 	}
+	else{
+		Log::getSingletonPtr()->logMessage("ERROR: Failed to load file!");
+	}
 }
 
 // ================================================ //
@@ -66,30 +79,28 @@ std::string& Config::parseValue(const std::string& section, const std::string& v
 		return m_buffer;
 	}
 
-	// Reset file pointer to beginning
+	// Always start scanning from the first line.
 	this->resetFilePointer();
 
 	while(!m_file.eof()){
 		m_file >> m_buffer;
 
-		// Find the right section first
+		// Find the right section first.
 		if (m_buffer[0] == '[' && m_buffer[m_buffer.size() - 1] == ']'){
 			std::string compare(section);
-
-			// Compare the section name inside the brackets
 			if (m_buffer.compare(1, m_buffer.size() - 2, compare) == 0){
-				
-				// Section found, now find the value
+				// Section found, now find the value.
 				m_file >> m_buffer;
-				while(m_buffer[0] != '[' && !m_file.eof()){ // NOTE: There must always be a \n at the end of a config file
+				while(m_buffer[0] != '[' && !m_file.eof()){ // TODO: There must always be a \n at the end of a config file with !m_file.eof().
 					
-					// Skip comments
+					// Skip comments.
 					if (m_buffer[0] != '#'){
-						// Find location of assignment operator
+						// Find location of assignment operator.
 						size_t assign = m_buffer.find_first_of('=');
 
-						// See if pos 0 to the assignment operator matches value name
+						// See if pos 0 to the assignment operator matches value name.
 						if (m_buffer.compare(0, assign, value) == 0){
+							// Trim string to only contain the value.
 							m_buffer = m_buffer.substr(assign + 1, m_buffer.size());
 
 							return m_buffer;
@@ -102,7 +113,7 @@ std::string& Config::parseValue(const std::string& section, const std::string& v
 		}
 	}
 
-	// Value not found, return empty string
+	// Value not found.
 	m_buffer.clear();
 	return m_buffer;
 }
@@ -129,16 +140,16 @@ SDL_Rect Config::parseRect(const std::string& section, const std::string& value)
 	std::string str = this->parseValue(section, value);
 
 	if (!str.empty()){
-		// Should look like "(0,0,100,100)
+		// str should look like "(0,0,100,100)".
 		char c;
 		std::istringstream parse(str);
-		parse >> c; // eat (
+		parse >> c; // eat "(".
 		parse >> rc.x;
-		parse >> c; // eat ,
+		parse >> c; // eat ",".
 		parse >> rc.y;
-		parse >> c;
+		parse >> c; // eat ",".
 		parse >> rc.w;
-		parse >> c;
+		parse >> c; // eat ",".
 		parse >> rc.h;
 	}
 

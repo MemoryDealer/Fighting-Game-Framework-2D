@@ -52,11 +52,11 @@ private:
 
 // ================================================ //
 
-inline Player* PlayerManager::getRedPlayer(void) const{ 
+inline Player* PlayerManager::getRedPlayer(void) const{
 	return m_pRedPlayer.get(); 
 }
 
-inline Player* PlayerManager::getBluePlayer(void) const{ 
+inline Player* PlayerManager::getBluePlayer(void) const{
 	return m_pBluePlayer.get(); 
 }
 

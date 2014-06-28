@@ -15,6 +15,7 @@
 #include "Engine.hpp"
 #include "MessageRouter.hpp"
 #include "MenuState.hpp"
+#include "LobbyState.hpp"
 #include "GameState.hpp"
 #include "FontManager.hpp"
 #include "GamepadManager.hpp"
@@ -44,6 +45,7 @@ m_pAppStateManager(nullptr)
 	// Create all states.
 	Log::getSingletonPtr()->logMessage("Creating game states...");
 	MenuState::create(m_pAppStateManager, MENU_STATE);
+	LobbyState::create(m_pAppStateManager, LOBBY_STATE);
 	GameState::create(m_pAppStateManager, GAME_STATE);
 
 	Log::getSingletonPtr()->logMessage("App initialized!");

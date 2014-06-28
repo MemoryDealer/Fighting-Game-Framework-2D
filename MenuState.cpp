@@ -291,7 +291,7 @@ void MenuState::processGUIAction(const int type)
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
 				// Prevent selector from improperly re-appearing, see work-log.txt:line 196.
 				m_pGUI->setMousePos(-1, -1); 
-				this->pushAppState(this->findByName(GAME_STATE));
+				this->pushAppState(this->findByName(LOBBY_STATE));
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_ARCADE:

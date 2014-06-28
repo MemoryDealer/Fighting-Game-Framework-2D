@@ -16,6 +16,7 @@
 #include "StageManager.hpp"
 #include "PlayerManager.hpp"
 #include "Config.hpp"
+#include "App.hpp"
 
 // ================================================ //
 
@@ -41,9 +42,12 @@ void LobbyState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering LobbyState...");
 
-	// Allocate data for LobbyState and GameState
+	// Allocate data for LobbyState and GameState.
 	new StageManager();
+	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
+
 	new PlayerManager();
+	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 }
 
 // ================================================ //
@@ -103,7 +107,13 @@ void LobbyState::update(double dt)
 		}
 	}
 
+	// Temporary skip.
+	m_bQuit = true;
+	this->pushAppState(this->findByName(GAME_STATE));
+
 	Engine::getSingletonPtr()->clearRenderer();
+
+	m_pBackground->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

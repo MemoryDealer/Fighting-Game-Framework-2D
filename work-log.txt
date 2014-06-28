@@ -257,7 +257,7 @@
 #6/27/14
 -Intellisense in Visual Studio 2013 incorrectly shows errors when including SDL headers in stdafx.hpp when I use the environment variable %SDL% ("D:\SDL2") in the additional include directories 
 	for the project options. If I manually put "D:\SDL2\include" instead of "%SDL%\include" it's fine. So until this bug in VS2013 is fixed, I must hard code the SDL directory.
-
+-Added some more documentation.
 
 #TODO
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 

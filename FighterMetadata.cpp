@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: FighterMetadata.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements FighterMetadata class.
+// ================================================ //
 
 #include "FighterMetadata.hpp"
 #include "Engine.hpp"
@@ -8,20 +19,20 @@
 
 // ================================================ //
 
-FighterMetadata::FighterMetadata(const std::string& file)
-	:	Config(Config::FIGHTER_METADATA),
-		m_moveBeg()
+FighterMetadata::FighterMetadata(void) :	
+Config(Config::FIGHTER_METADATA),
+m_moveBeg()
 {
-	this->loadFile(file);
+
 }
 
 // ================================================ //
 
-FighterMetadata::FighterMetadata(void)
-	:	Config(Config::FIGHTER_METADATA),
-		m_moveBeg()
+FighterMetadata::FighterMetadata(const std::string& file) : 
+Config(Config::FIGHTER_METADATA),
+m_moveBeg()
 {
-
+	this->loadFile(file);
 }
 
 // ================================================ //
@@ -40,31 +51,31 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 	while(!m_file.eof()){
 		m_file >> m_buffer;
 
-		// Look for moves section
+		// Look for moves section.
 		if (m_buffer[0] == '[' && m_buffer[m_buffer.size() - 1] == ']'){
 			if (m_buffer.compare(1, m_buffer.size() - 2, "moves") == 0){
 
-				// In the moves section, now find the move
+				// In the moves section, now find the move.
 				while(!m_file.eof()){
 					m_file >> m_buffer;
 
 					if (m_buffer[0] == '+'){
-						// Found a move, see if it's the right one (example buffer: "+(IDLE)")
+						// Found a move, see if it's the right one (example m_buffer: "+(IDLE)").
 						if (m_buffer.compare(2, m_buffer.size() - 3, name) == 0){
 
-							// Allocate Move object for this move
+							// Setup Move object for this move.
 							std::shared_ptr<Move> pMove;
 							pMove.reset(new Move());
 							pMove->name = name;
 
-							// Store beginning of this move's data
+							// Store beginning of this move's data for later.
 							m_moveBeg = m_file.tellg();
 
-							// Get the main data for the move
+							// Get the main data for the move.
 							pMove->numFrames = this->parseMoveIntValue("core", "numFrames");
 							pMove->frameGap = this->parseMoveIntValue("core", "frameGap");
 
-							// frame data
+							// Get the frame data.
 							m_buffer = this->parseMoveValue("core", "frameData");
 							char c;
 							std::istringstream parse(m_buffer);
@@ -74,6 +85,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							parse >> c;
 							parse >> pMove->recoveryFrames;
 
+							// Get other core data.
 							pMove->damage = this->parseMoveIntValue("core", "damage");
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
@@ -81,14 +93,14 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 								pMove->repeatFrame = this->parseMoveIntValue("core", "repeatFrame");
 							pMove->reverse = this->parseMoveBoolValue("core", "reverse");
 
-							// Parse any cancels
+							// Parse any cancels.
 							// ...
 
-							// Locomotion
+							// Get locomotion data.
 							pMove->xVel = this->parseMoveIntValue("locomotion", "xVel");
 							pMove->yVel = this->parseMoveIntValue("locomotion", "yVel");
 
-							// Parse initial frame
+							// Parse initial frame.
 							Frame frame1;
 							frame1.x = this->parseMoveIntValue("frame1", "x");
 							frame1.y = this->parseMoveIntValue("frame1", "y");
@@ -97,7 +109,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							pMove->frames.push_back(frame1);
 							this->parseHitboxes(pMove, "frame1");
 
-							// Parse the rest of the frames
+							// Parse the rest of the frames.
 							for(int i=2; i<=pMove->numFrames; ++i){
 								Frame frame;
 								std::string frameSection = "frame" + Engine::toString(i);
@@ -106,7 +118,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 								frame.w = this->parseMoveIntValue(frameSection.c_str(), "w");
 								frame.h = this->parseMoveIntValue(frameSection.c_str(), "h");
 
-								// See if any values should be inherited
+								// See if any values should be inherited (-1 means inherit from previous frame).
 								if (frame.x == -1)
 									frame.x = pMove->frames.back().x;
 								if (frame.y == -1)
@@ -120,7 +132,6 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 								this->parseHitboxes(pMove, frameSection.c_str());
 							}
 
-							// Finished parsing move
 							return pMove;
 						}
 					}
@@ -136,28 +147,28 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 
 std::string FighterMetadata::parseMoveValue(const std::string& section, const std::string& value)
 {
-	// Reset file pointer to beginning of this move
+	// Reset file pointer to beginning of this move.
 	m_file.clear();
 	m_file.seekg(m_moveBeg);
 
 	while(!m_file.eof()){
-		// Find the section
+		// Find the section.
 		m_file >> m_buffer;
 
 		if (m_buffer[0] == '[' && m_buffer[m_buffer.size() - 2] == ']'){
 			
-			// Does the section name match? 
+			// Check section name.
 			if (m_buffer.compare(1, m_buffer.size() - 3, section) == 0){
 				while(m_buffer[0] != '}'){
 					m_file >> m_buffer;
 
-					// Skip comments
+					// Skip comments.
 					if (m_buffer[0] != '#'){
-						// Find location of assignment operator
 						size_t assign = m_buffer.find_first_of('=');
 
-						// See if this is the value
+						// See if this is the value.
 						if (m_buffer.compare(0, assign, value) == 0){
+							// Trim the string to only the value.
 							m_buffer = m_buffer.substr(assign + 1, m_buffer.size());
 
 							return m_buffer;
@@ -167,7 +178,7 @@ std::string FighterMetadata::parseMoveValue(const std::string& section, const st
 			}
 		}
 		else if (m_buffer[0] == '-'){
-			// end of move found
+			// End of move found.
 			break;
 		}
 	}
@@ -185,9 +196,6 @@ const int FighterMetadata::parseMoveIntValue(const std::string& section, const s
 		return std::stoi(str);
 	}
 
-	/* The reason FighterMetadata::parseMoveIntValue() returns -1 on failure is to let FighterMetadata::parseMove() know if a frame of animation should be inherited
-	from the previous frame, rather than assigning its corresponding value(s) to zero. This will no longer be necessary once a tool is developed to visually 
-	edit fighter data. */
 	return -1;
 }
 
@@ -210,12 +218,12 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 		return rc;
 	}
 	
-	// Should look like "(0,0,100,100)
+	// str should look like "(0,0,100,100)".
 	char c;
 	std::istringstream parse(str);
-	parse >> c; // eat (
+	parse >> c; // eat "(".
 	parse >> rc.x;
-	parse >> c; // eat ,
+	parse >> c; // eat ",".
 	parse >> rc.y;
 	parse >> c;
 	parse >> rc.w;
@@ -229,24 +237,25 @@ SDL_Rect FighterMetadata::parseRect(const std::string& str)
 
 void FighterMetadata::parseHitboxes(std::shared_ptr<Move> pMove, const std::string& frame)
 {
-	// Load all hitbox rects into the frame's hitbox list
-	// Normal hitboxes
+	// Load all hitbox rects into the frame's hitbox list.
+
+	// Parse normal hitboxes.
 	for (int i = Hitbox::HBOX_LOWER, num = 1; i <= Hitbox::HBOX_HEAD; ++i, ++num){
 		std::string hbox = this->parseMoveValue(frame, std::string("hbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(hbox));
 	}
 
-	// Throw box
+	// Parse throw box.
 	std::string tbox = this->parseMoveValue(frame, "tbox");
 	pMove->frames.back().hitboxes.push_back(this->parseRect(tbox));
 
-	// Damage boxes
+	// Parse damage boxes.
 	for (int i = Hitbox::DBOX1, num = 1; i <= Hitbox::DBOX2; ++i, ++num){
 		std::string dbox = this->parseMoveValue(frame, std::string("dbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(dbox));
 	}
 
-	// Counter boxes
+	// Parse counter boxes.
 	for (int i = Hitbox::CBOX1, num = 1; i <= Hitbox::CBOX2; ++i, ++num){
 		std::string cbox = this->parseMoveValue(frame, std::string("cbox" + Engine::toString(num)).c_str());
 		pMove->frames.back().hitboxes.push_back(this->parseRect(cbox));
