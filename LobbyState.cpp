@@ -46,7 +46,6 @@ void LobbyState::enter(void)
 	new StageManager();
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
-	new PlayerManager();
 	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 }
 
@@ -57,7 +56,6 @@ void LobbyState::exit(void)
 	Log::getSingletonPtr()->logMessage("Exiting LobbyState...");
 
 	delete StageManager::getSingletonPtr();
-	delete PlayerManager::getSingletonPtr();
 
 	m_bQuit = false; // temporary control
 }

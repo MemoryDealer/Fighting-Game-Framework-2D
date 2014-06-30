@@ -37,6 +37,10 @@ public:
 	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
 	bool reload(void);
 
+	// Allocates both Player objects with empty fighter files and default 
+	// button maps and gamepads.
+	bool reset(void);
+
 	void updateCamera(double dt);
 	void update(double dt);
 

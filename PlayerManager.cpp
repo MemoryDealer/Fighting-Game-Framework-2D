@@ -99,6 +99,32 @@ bool PlayerManager::reload(void)
 
 // ================================================ //
 
+bool PlayerManager::reset(void)
+{
+	Config c("ExtMF.cfg");
+
+	if (c.isLoaded()){
+		m_pRedPlayer.reset(new Player("", c.parseValue("controls", "red")));
+		m_pBluePlayer.reset(new Player("", c.parseValue("controls", "blue")));
+
+		// Set default player gamepads.
+		if (GamepadManager::getSingletonPtr()->getPad(1) == nullptr){
+			m_pRedPlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(0));
+			m_pBluePlayer->getInput()->setPad(nullptr);
+		}
+		else{
+			m_pRedPlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(1));
+			m_pBluePlayer->getInput()->setPad(GamepadManager::getSingletonPtr()->getPad(0));
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+// ================================================ //
+
 void PlayerManager::updateCamera(double dt)
 {
 	// Clear camera movement

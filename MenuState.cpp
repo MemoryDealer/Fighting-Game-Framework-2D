@@ -52,6 +52,10 @@ void MenuState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
+	new PlayerManager();
+	// Pre-load Players to allow gamepad input in MenuState.
+	PlayerManager::getSingletonPtr()->reset();
+
 	new Camera();
 }
 
@@ -61,6 +65,7 @@ void MenuState::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 
+	delete PlayerManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
 }
 
@@ -77,6 +82,8 @@ bool MenuState::pause(void)
 
 void MenuState::resume(void)
 {
+	PlayerManager::getSingletonPtr()->reset();
+
 	Log::getSingletonPtr()->logMessage("Resuming MenuState...");
 }
 

@@ -32,6 +32,13 @@ m_hitboxes(),
 m_colliding(false),
 m_drawHitboxes(false)
 {
+	// Stop loading here if the fighter file is not specified. Useful for
+	// pre-loading button maps for controlling the main menu.
+	if (fighterFile.empty()){
+		Log::getSingletonPtr()->logMessage("WARNING: No fighter file specified");
+		return;
+	}
+
 	// Load configuration settings
 	this->loadFighterData(fighterFile);
 
