@@ -31,9 +31,8 @@
 int SDL_main(int argc, char** argv)
 {
 	try{
-		// Initialize application
+		// Initialize application and run.
 		App app;
-		
 	} 
 	catch(std::exception& e){
 #ifdef __WIN32__

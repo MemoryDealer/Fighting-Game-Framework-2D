@@ -47,6 +47,10 @@ void LobbyState::enter(void)
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
 	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
+
+	// Temporary skip.
+	m_bQuit = true;
+	this->pushAppState(this->findByName(GAME_STATE));
 }
 
 // ================================================ //
@@ -106,10 +110,6 @@ void LobbyState::update(double dt)
 			break;
 		}
 	}
-
-	// Temporary skip.
-	m_bQuit = true;
-	this->pushAppState(this->findByName(GAME_STATE));
 
 	Engine::getSingletonPtr()->clearRenderer();
 

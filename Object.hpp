@@ -31,30 +31,65 @@ class FSM;
 class Object
 {
 public:
-	
+	// Gives the Object an ID using a static counter. Adds Object to the
+	// MessageRouter.
 	explicit Object(void);
+
+	// Destroys the Object's main texture if it's allocated.
 	virtual ~Object(void);
 
-	// Getter functions
+	// Getters
+
+	// Returns a pointer to the Object's main SDL_Texture.
 	virtual SDL_Texture* getTexturePtr(void) const;
+
+	// Returns the Object's position as an SDL_Rect.
 	virtual const SDL_Rect& getPosition(void) const;
+
+	// Returns the Object's name.
 	virtual const std::string& getName(void) const;
+
+	// Returns the Object's ID.
 	virtual const int getID(void) const;
+
+	// Returns true if the Object is dead.
 	virtual const bool isDead(void) const;
 
-	// Setter functions
+	// Setters
+
+	// Sets the main SDL_Texture's pointer directly.
 	virtual void setTexture(SDL_Texture* pTex);
+
+	// Sets the main SDL_Texture's pointer directly.
 	virtual void setTexture(std::shared_ptr<SDL_Texture> pTex);
+
+	// Loads the main SDL_Texture's by loading it from the specified filename.
 	virtual bool setTextureFile(const std::string& filename);
+
+	// Sets the main SDL_Texture's source(clipping) coordinates.
 	virtual void setTextureCoordinates(const int x, const int y, const int w = 0, const int h = 0);
+
+	// Calls Label::create() on the internal Label.
 	virtual void setLabel(const std::string& label, const int offset = 0);
+
+	// Sets the destination SDL_Rect coordinates (where in the viewport it's rendered).
 	virtual void setPosition(const int x, const int y);
+
+	// Sets the destination SDL_Rect coordinates (where in the viewport it's rendered).
 	virtual void setPosition(const int x, const int y, const int w, const int h);
+
+	// Sets the destination SDL_Rect coordinates (where in the viewport it's rendered).
 	virtual void setPosition(const SDL_Rect& pos);
 
-	// Other functions
+	// --- //
+
+	// Processes the Message (should be overriden by children who want to handle messages).
 	virtual void sendMessage(const Message& msg);
+
+	// Renders the main SDL_Texture and Label if m_renderLabel is true.
 	virtual void render(void);
+
+	// Ticks the Object.
 	virtual void update(double dt) = 0;
 
 protected:

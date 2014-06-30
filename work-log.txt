@@ -294,6 +294,7 @@
 -If holding down a movement key when exiting game state, the key is still registered as down when returning. This may resolve itself once PlayerManager
 	is re-allocated per entry to game state. 
 -When unplugging an xbox360 controller, it sends input from seemingly random buttons. 
+-When clicking the campaign button more after it's already pressed, an abort() error occurs.
 
 #Spreadsheet=https://docs.google.com/spreadsheet/ccc?key=0AnnbWNRHDV25dF9SQy1RWXBYdjBqbklNaDN0U2Rwcnc#gid=0
 

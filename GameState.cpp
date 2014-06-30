@@ -257,17 +257,17 @@ void GameState::update(double dt)
 			// Gamepad events
 		case SDL_CONTROLLERDEVICEADDED:
 		{
-										  int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
+			int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
 
-										  // Assign the new controller to the first open slot
-										  if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
-											  PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
-												  GamepadManager::getSingletonPtr()->getPad(id));
-										  }
-										  else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
-											  PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
-												  GamepadManager::getSingletonPtr()->getPad(id));
-										  }
+			// Assign the new controller to the first open slot
+			if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
+					GamepadManager::getSingletonPtr()->getPad(id));
+			}
+			else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
+					GamepadManager::getSingletonPtr()->getPad(id));
+			}
 		}
 			break;
 

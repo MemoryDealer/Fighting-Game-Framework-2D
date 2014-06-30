@@ -1,7 +1,18 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Move.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Defines Move struct.
+// ================================================ //
 
-#ifndef __ANIMATION_HPP__
-#define __ANIMATION_HPP__
+#ifndef __MOVE_HPP__
+#define __MOVE_HPP__
 
 // ================================================ //
 
@@ -9,6 +20,7 @@
 
 // ================================================ //
 
+// All core moves for each fighter.
 namespace MoveID{
 	enum{
 		IDLE = 0,
@@ -25,12 +37,14 @@ namespace MoveID{
 
 typedef std::vector<SDL_Rect> HitboxRectList;
 
+// A single frame of animation during a move.
 struct Frame{
 	int x;
 	int y;
 	int w;
 	int h;
 
+	// Converts this frames coordinates to a SDL_Rect.
 	SDL_Rect toSDLRect(void){
 		SDL_Rect r;
 		r.x = this->x;
@@ -40,7 +54,7 @@ struct Frame{
 		return r;
 	}
 
-	// Holds each hitbox for a single frame
+	// All hitboxes for a frame.
 	HitboxRectList hitboxes;
 };
 
@@ -48,23 +62,30 @@ typedef std::vector<Frame> FrameList;
 
 // ================================================ //
 
+// A move that can be performed by a Player(e.g., move forward, light punch, etc.).
 struct Move
 {
+	// Initializes all data to zero or false.
 	explicit Move(void);
+
+	// Empty destructor.
 	virtual ~Move(void);
 
 	int id;
 	std::string name;
 	int numFrames;
-	int frameGap;	// how long to wait between frames (ms)
+	// How long to wait between frames(ms).
+	int frameGap;	
 	int startupFrames, hitFrames, recoveryFrames;
 	int damage;
 	int knockback;
 	bool repeat, reverse;
 	int repeatFrame;
-	std::vector<int> cancels; // list of moves this move cancels into
+	// List of moves this move cancels into.
+	std::vector<int> cancels; 
 	int xVel, yVel;
 
+	// Active frame from the frame list.
 	int currentFrame;
 	FrameList frames;
 };

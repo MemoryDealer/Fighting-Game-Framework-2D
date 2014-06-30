@@ -1,21 +1,33 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: MessageRouter.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements MessageRouter singleton class.
+// ================================================ //
 
 #include "MessageRouter.hpp"
+#include "Object.hpp"
 #include "Log.hpp"
 #include "Engine.hpp"
 
 // ================================================ //
 
-template<> MessageRouter* Singleton<MessageRouter>::msSingleton = 0;
+template<> MessageRouter* Singleton<MessageRouter>::msSingleton = nullptr;
 
 // ================================================ //
 
-Message::Message(void)
-	:	type(MessageType::TYPE_NOTHING),
-		senderID(0),
-		receiverID(0),
-		delay(0),
-		pData(nullptr)
+Message::Message(void) :
+type(MessageType::TYPE_NOTHING),
+senderID(0),
+receiverID(0),
+delay(0),
+pData(nullptr)
 {
 
 }
@@ -28,10 +40,11 @@ Message::~Message(void)
 }
 
 // ================================================ //
+// ================================================ //
 
-MessageRouter::MessageRouter(void)
-	:	m_objects(),
-		m_messages()
+MessageRouter::MessageRouter(void) :	
+m_objects(),	
+m_messages()
 {
 
 }
@@ -40,8 +53,7 @@ MessageRouter::MessageRouter(void)
 
 MessageRouter::~MessageRouter(void)
 {
-	m_objects.clear();
-	m_messages.clear();
+
 }
 
 // ================================================ //
@@ -62,11 +74,11 @@ void MessageRouter::removeObject(const int id)
 		itr != m_objects.end();
 		++itr){
 
-		// Remove empty pointers from list
+		// Remove empty pointers from list.
 		if ((*itr) == nullptr){
 			m_objects.erase(itr++);
 		}
-		// Remove the desired object
+		// Remove the desired object.
 		else if ((*itr)->getID() == id){
 			m_objects.erase(itr++);
 			return;
@@ -101,37 +113,34 @@ void MessageRouter::routeMessage(Message msg)
 
 void MessageRouter::update(void)
 {
-	// Loop through each message in the list
 	MessageList::iterator msgItr;
 	bool shouldIterate;
 
 	for(msgItr = m_messages.begin(); msgItr != m_messages.end();){
 		shouldIterate = true;
 
-		// See if this message's receive ID is found in the list of objects
+		// See if this message's receive ID is found in the list of objects.
 		ObjectList::iterator objItr;
 		for(objItr = m_objects.begin(); objItr != m_objects.end(); ++objItr){
 
-			// Test the ID
 			if ((*objItr)->getID() == msgItr->receiverID){
 
-				// See if a delay should be applied
+				// See if a delay should be applied.
 				if (msgItr->delay < Engine::getSingletonPtr()->getTicks()){
 
-					// Correct object found, send the message
 					this->dispatchMessageToObject(*msgItr, *objItr);
 
-					// Now delete this message from the message list
+					// Now delete this message from the message list.
 					msgItr = m_messages.erase(msgItr);
 					shouldIterate = false;
 				}
 			}
 		}
 
-		// We didn't find the object or there was still a delay, so move on to the next
+		// We didn't find the object or there was still a delay, so move on to the next.
 		if (shouldIterate){
 			++msgItr;
-			//! TODO: handle object not found...
+			// TODO: handle object not found.
 		}
 	}
 }

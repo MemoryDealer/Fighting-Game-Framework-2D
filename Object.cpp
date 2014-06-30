@@ -57,7 +57,6 @@ void Object::setTexture(SDL_Texture* pTex)
 {
 	m_pTexture = pTex;
 
-	// Get texture width/height
 	SDL_QueryTexture(m_pTexture, nullptr, nullptr, &m_src.w, &m_src.h);
 	m_dst.w = m_src.w;
 	m_dst.h = m_src.h;
@@ -97,7 +96,8 @@ void Object::setTextureCoordinates(const int x, const int y, const int w, const 
 
 inline void Object::setLabel(const std::string& label, const int offset)
 {
-	m_pLabel->create(label); m_pLabel->setOffset(offset);
+	m_pLabel->create(label); 
+	m_pLabel->setOffset(offset);
 }
 
 // ================================================ //
@@ -111,11 +111,10 @@ void Object::sendMessage(const Message& msg)
 
 void Object::render(void)
 {
-	//! I hope it's safe to const_cast the renderer pointer
-	SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
-		m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
 
 	if (m_renderLabel){
+		// Copy the dst rect and modify to suit the Label's dimensions.
 		SDL_Rect dst = m_dst;
 		dst.x += m_pLabel->getOffset();
 		dst.w -= m_pLabel->getOffset() * 2;
