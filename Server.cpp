@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Server.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Server singleton class.
+// ================================================ //
 
 #include "Server.hpp"
 #include "Engine.hpp"
@@ -11,12 +22,12 @@ template<> Server* Singleton<Server>::msSingleton = nullptr;
 
 // ================================================ //
 
-Server::Server(const int port)
-	:	m_port(port),
-		m_sock(nullptr),
-		m_active(false)
+Server::Server(const int port) :
+m_port(port),
+m_sock(nullptr),
+m_active(false)
 {
-	Log::getSingletonPtr()->logMessage("Initializing Server...");	
+	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
 	m_sock = SDLNet_UDP_Open(m_port);
 
@@ -27,10 +38,7 @@ Server::Server(const int port)
 
 	m_packet = SDLNet_AllocPacket(66560); // 65 KB
 
-	if (m_active)
-		Log::getSingletonPtr()->logMessage("Server initialized!");
-	else
-		Log::getSingletonPtr()->logMessage("ERROR: Failed to initialized Server!");
+	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
 
 // ================================================ //

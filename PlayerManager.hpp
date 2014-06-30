@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: PlayerManager.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Defines PlayerManager singleton class.
+// ================================================ //
 
 #ifndef __PLAYERMANAGER_HPP__
 #define __PLAYERMANAGER_HPP__
@@ -10,6 +21,7 @@
 
 // ================================================ //
 
+// An entry for each fighter available for gameplay.
 struct FighterEntry{
 	std::string name;
 	std::string file;
@@ -19,20 +31,30 @@ struct FighterEntry{
 typedef std::vector<FighterEntry> FighterEntryList;
 
 // ================================================ //
-// This is used as a singleton to hold both player's objects
-// ================================================ //
 
+// Holds both Red and Blue Player Object's and updates them. Performs calculations
+// needed for Camera movement and such.
 class PlayerManager : public Singleton<PlayerManager>
 {
 public:
+	// Loads fighters.cfg and parses all fighter entries.
 	explicit PlayerManager(void);
+
+	// Empty destructor.
 	~PlayerManager(void);
 
+	// Returns pointer to Red Player.
 	Player* getRedPlayer(void) const;
+
+	// Returns pointer to Blue Player.
 	Player* getBluePlayer(void) const;
 
+	// Returns pointer to Red Player Input.
 	Input* getRedPlayerInput(void) const;
+
+	// Returns pointer to Blue Player Input.
 	Input* getBluePlayerInput(void) const;
+
 
 	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
 	bool reload(void);

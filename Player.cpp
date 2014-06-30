@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Player.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Player class.
+// ================================================ //
 
 #include "Player.hpp"
 #include "Player.hpp"
@@ -39,13 +50,11 @@ m_drawHitboxes(false)
 		return;
 	}
 
-	// Load configuration settings
 	this->loadFighterData(fighterFile);
 
-	// Add states to core FSM
+	// Add states to core FSM.
 	FState* state = new FState(PlayerState::IDLE);
 
-	// State Idle
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
 	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
 	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
@@ -57,27 +66,23 @@ m_drawHitboxes(false)
 	state->addTransition(PlayerAction::HEAVY_KICK, PlayerState::ATTACKING);
 	m_pFSM->addState(state);
 
-	// State Walking
 	state = new FState(PlayerState::WALKING_FORWARD);
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
 	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
 	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
 	m_pFSM->addState(state);
 
-	// State Blocking
 	state = new FState(PlayerState::WALKING_BACK);
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
 	state->addTransition(PlayerAction::WALK_BACK, PlayerState::WALKING_BACK);
 	state->addTransition(PlayerAction::WALK_FORWARD, PlayerState::WALKING_FORWARD);
 	m_pFSM->addState(state);
 
-	// State Attacking
 	state = new FState(PlayerState::ATTACKING);
 	state->addTransition(PlayerAction::NONE, PlayerState::IDLE);
-	state->addTransition(PlayerAction::LIGHT_PUNCH, PlayerState::ATTACKING); // light punch cancels into self
+	state->addTransition(PlayerAction::LIGHT_PUNCH, PlayerState::ATTACKING); // light punch cancels into self...
 	m_pFSM->addState(state);
 
-	// Set the starting state
 	m_pFSM->setCurrentState(PlayerState::IDLE);
 }
 
@@ -101,32 +106,29 @@ void Player::loadFighterData(const std::string& fighterFile)
 {
 	FighterMetadata m(fighterFile);
 
-	//! Add a fighter data file integrity check here?
+	// TODO: Add a fighter data file integrity check here.
 
 	if (!m.isLoaded()){
 		throw std::exception((std::string("Failed to load fighter file ") + std::string(fighterFile)).c_str());
 	}
 
-	// Load spritesheet
 	this->setTextureFile(m.parseValue("core", "spriteSheet"));
 
-	// Get player rendering size
+	// Get player rendering size.
 	m_dst.w = m.parseIntValue("size", "w");
 	m_dst.h = m.parseIntValue("size", "h");
 
-	// Movement
 	m_xAccel = m.parseIntValue("movement", "xAccel");
 	m_yAccel = m.parseIntValue("movement", "yAccel");
 	m_xMax = m.parseIntValue("movement", "xMax");
 	m_yMax = m.parseIntValue("movement", "yMax");
 
-	// Set player Y position 26 units from bottom, adjusting for player height
+	// Set player Y position 26 units from bottom, adjusting for player height.
 	m_dst.y = Engine::getSingletonPtr()->getLogicalWindowHeight() - m_dst.h - 26;
 
-	// Load move set
 	this->loadMoves(m);
 
-	// Default the source rect to the first frame of IDLE
+	// Default the source rect to the first frame of move IDLE.
 	m_src = m_moves[MoveID::IDLE]->frames[0].toSDLRect();
 	m_pCurrentMove = m_moves[MoveID::IDLE];
 }
@@ -146,16 +148,16 @@ void Player::loadMoves(FighterMetadata& m)
 		}
 	}
 
-	// Reserve four normal hitboxes
+	// Reserve four normal hitboxes.
 	for (int i = 0; i<4; ++i){
 		m_hitboxes.push_back(std::shared_ptr<Hitbox>(new Hitbox(HitboxType::NORMAL)));
 	}
-	// Reserve one throw hitbox
+	// Reserve one throw hitbox.
 	m_hitboxes.push_back(std::shared_ptr<Hitbox>(new Hitbox(HitboxType::THROW)));
-	// Reserve two damage hitboxes
+	// Reserve two damage hitboxes.
 	m_hitboxes.push_back(std::shared_ptr<Hitbox>(new Hitbox(HitboxType::DAMAGE)));
 	m_hitboxes.push_back(std::shared_ptr<Hitbox>(new Hitbox(HitboxType::DAMAGE)));
-	// Reserve two counter hitboxes
+	// Reserve two counter hitboxes.
 	m_hitboxes.push_back(std::shared_ptr<Hitbox>(new Hitbox(HitboxType::COUNTER)));
 	m_hitboxes.push_back(std::shared_ptr<Hitbox>(new Hitbox(HitboxType::COUNTER)));
 
@@ -168,9 +170,8 @@ void Player::updateLocalInput(void)
 {
 	m_currentAction = PlayerAction::NONE;
 
-	// Movement
-	// Checking both right now will force the player to cancel out movement if both are held
-	// thus preventing the character from sliding when holding both down
+	// Checking both left and right will force the player to cancel out movement 
+	// if both are held thus preventing the character from sliding when holding both down.
 	if (m_pInput->getButton(Input::BUTTON_LEFT) &&
 		!m_pInput->getButton(Input::BUTTON_RIGHT)){
 		m_xVel -= m_xAccel;
@@ -212,7 +213,7 @@ void Player::updateLocalInput(void)
 
 void Player::updateMove(double dt)
 {
-	// Force the current animation to stop instantly if it has changed to a new one
+	// Force the current animation to stop instantly if it has changed to a new one.
 	if (m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
 		m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
 		m_pMoveTimer->setStartTicks(0);
@@ -240,7 +241,7 @@ void Player::updateMove(double dt)
 		break;
 	}
 
-	// Update frame
+	// Update current frame.
 	if (m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
 
@@ -276,10 +277,9 @@ void Player::updateMove(double dt)
 
 void Player::updateHitboxes(void)
 {
-	// Assign each hitbox to originate from the character's center.
+	// Assign each Hitbox to originate from the character's center.
 	// So a hitbox of (50, 0, 50, 50) will be 50x50 and 50 units to the right
 	// of the character's center.
-
 	for (unsigned int i = 0; i < m_hitboxes.size(); ++i){
 		SDL_Rect offset = { 0, 0, 0, 0 };
 		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
@@ -329,7 +329,7 @@ void Player::update(double dt)
 	this->updateMove(dt);
 
 	if (m_colliding){
-		// Move player back upon collision
+		// Move player back upon collision.
 		if (m_playerSide == PlayerSide::LEFT){
 			m_dst.x = m_dst.x - static_cast<int>(m_xMax * dt);
 		}
@@ -342,7 +342,7 @@ void Player::update(double dt)
 
 	this->render();
 
-	// Render hitboxes
+	// Render hitboxes if debug draw is on.
 	if (m_drawHitboxes){
 		for (unsigned int i = 0; i < m_hitboxes.size(); ++i){
 			m_hitboxes[i]->render();

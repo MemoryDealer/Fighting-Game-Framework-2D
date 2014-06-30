@@ -43,7 +43,7 @@
     <LibraryPath>%SDL%\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>%SDL%\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\SDL2\include;$(IncludePath)</IncludePath>
     <LibraryPath>%SDL%\lib\x86;$(LibraryPath)</LibraryPath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
@@ -122,7 +122,7 @@
     <ClInclude Include="..\Server.hpp" />
     <ClInclude Include="..\Singleton.hpp" />
     <ClInclude Include="..\Stage.hpp" />
-    <ClInclude Include="..\StageEffect.hpp" />
+    <ClInclude Include="..\StageLayer.hpp" />
     <ClInclude Include="..\StageManager.hpp" />
     <ClInclude Include="..\stdafx.hpp" />
     <ClInclude Include="..\Timer.hpp" />

@@ -117,9 +117,6 @@
     <ClInclude Include="..\Stage.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\StageEffect.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\StageManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -161,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="..\LobbyState.hpp">
       <Filter>Header Files\LobbyState</Filter>
+    </ClInclude>
+    <ClInclude Include="..\StageLayer.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

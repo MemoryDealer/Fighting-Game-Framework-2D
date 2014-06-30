@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Singleton.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Defines and implements Singleton class.
+// ================================================ //
 
 #ifndef __SINGLETON_HPP__
 #define __SINGLETON_HPP__
@@ -9,16 +20,20 @@
 
 // ================================================ //
 
-// Disable warnings for this singleton class
+// Disable warnings for this singleton class.
 #pragma warning (disable : 4311)
 #pragma warning (disable : 4312)
 
 // ================================================ //
 
+// A basic singleton utility.
+// Derive a class from Singleton and allocate it with new ClassName();,
+// free it with delete ClassName::getSingletonPtr();.
 template <typename T>
 class Singleton
 {
 public:
+	// Assign singleton's location in memory.
 	explicit Singleton(void)
 	{
 		assert(!msSingleton);
@@ -31,16 +46,16 @@ public:
 #endif
 	}
 
+	// Set singleton's memory location to null.
 	~Singleton(void)
 	{
 		assert(msSingleton);
-		msSingleton = 0;
+		msSingleton = nullptr;
 	}
 
-	// Getter functions 
-	/*static T& getSingleton(void)
-	{ Assert(msSingleton); return (*msSingleton); }
-	*/
+	// Getters
+
+	// Returns the singleton object.
 	static T* getSingletonPtr(void)
 	{ return msSingleton; }
 

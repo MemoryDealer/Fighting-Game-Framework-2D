@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: PlayerManager.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements PlayerManager singleton class.
+// ================================================ //
 
 #include "PlayerManager.hpp"
 #include "StageManager.hpp"
@@ -16,14 +27,14 @@ template<> PlayerManager* Singleton<PlayerManager>::msSingleton = nullptr;
 
 // ================================================ //
 
-PlayerManager::PlayerManager(void)
-	:	m_pRedPlayer(nullptr),
-		m_pBluePlayer(nullptr),
-		m_redFighterFile(),
-		m_blueFighterFile(),
-		m_redMax(0),
-		m_blueMax(0),
-		m_fighters()
+PlayerManager::PlayerManager(void) :	
+m_pRedPlayer(nullptr),
+m_pBluePlayer(nullptr),
+m_redFighterFile(),
+m_blueFighterFile(),
+m_redMax(0),
+m_blueMax(0),
+m_fighters()
 {
 	Log::getSingletonPtr()->logMessage("Initializing PlayerManager...");
 
@@ -37,7 +48,7 @@ PlayerManager::PlayerManager(void)
 		fighter.name = c.parseValue(fighterName.c_str(), "name");
 		fighter.file = c.parseValue(fighterName.c_str(), "file");
 
-		// portrait...
+		// TODO: load portrait texture.
 
 		m_fighters.push_back(fighter);
 
