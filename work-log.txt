@@ -261,6 +261,8 @@
 
 #6/29/14
 -Added some more documentation to the files. Almost done.
+-Added PlayerManager::reset() which loads both Player objects using empty filenames. Player's constructor catches the empty file name and stops loading it. This allows the MenuState to pre-load
+	button maps so users can navigate the menus.
 
 #TODO
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 

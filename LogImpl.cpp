@@ -1,12 +1,23 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: LogImpl.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements LogImpl Pimpl idiom class.
+// ================================================ //
 
 #include "LogImpl.hpp"
 #include "Engine.hpp"
 
 // ================================================ //
 
-LogImpl::LogImpl(void)
-	: m_file()
+LogImpl::LogImpl(void) :
+m_file()
 {
 	m_file.open("ExtMF.log", std::ios::out);
 	if (!m_file.is_open()){
@@ -32,9 +43,7 @@ void LogImpl::logMessage(const std::string& str)
 	this->logTime();
 	m_file << str << std::endl;
 
-//#ifdef _DEBUG
-	printf("LOG: %s\n", str.c_str());
-//#endif
+	printf("LOG: %s\n", str.c_str()); // TODO: Remove in release build.
 }
 
 // ================================================ //
