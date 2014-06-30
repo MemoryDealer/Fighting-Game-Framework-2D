@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: PlayerData.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Provides enumerations used by Player class.
+// ================================================ //
 
 #ifndef __PLAYERSTATES_HPP__
 #define __PLAYERSTATES_HPP__
@@ -25,7 +36,7 @@ namespace PlayerMode{
 // ================================================ //
 
 namespace PlayerState{
-	// These along with PlayerAction may seem redundant, but they may be needed for AI/network player input
+	// These along with PlayerAction may seem redundant, but they may be needed for AI/network player input.
 	enum{
 		IDLE = 0,
 		WALKING_FORWARD,

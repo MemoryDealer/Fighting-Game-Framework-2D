@@ -1,15 +1,26 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Timer.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Timer class.
+// ================================================ //
 
 #include "stdafx.hpp"
 #include "Timer.hpp"
 
 // ================================================ //
 
-Timer::Timer(void)
-	:	m_startTicks(0),
-		m_pausedTicks(0),
-		m_paused(false),
-		m_started(false)
+Timer::Timer(void) :
+m_startTicks(0),
+m_pausedTicks(0),
+m_paused(false),
+m_started(false)
 {
 
 }

@@ -185,7 +185,7 @@
 	below the actual definition of GUILayer::parse() in GUI.cpp, for proper linking to occur. 
 -In AppStateManager::start()'s update loop (this is the main game loop), add a line to set the render color to black before updating the MessageRouter and active state. 
 	This will ensure that any background not covered by a texture(needed for the letterboxing that occurs on certain resolutions) will be black. 
--Used m_bQuit in MenuState to properly exit. Before, after calling m_pMenuState->popAppState() the MenuStateImpl::update() loop would still run. 
+-Used m_quit in MenuState to properly exit. Before, after calling m_pMenuState->popAppState() the MenuStateImpl::update() loop would still run. 
 
 #6/11/14
 -Changed GUI's static strings to smart pointers of SDL_Texture. This way the button's textures (and other widgets eventually) can be swapped without having to reload
@@ -263,8 +263,11 @@
 -Added some more documentation to the files. Almost done.
 -Added PlayerManager::reset() which loads both Player objects using empty filenames. Player's constructor catches the empty file name and stops loading it. This allows the MenuState to pre-load
 	button maps so users can navigate the menus.
+-Finished documenting every file.
+-Got several crashes when clicking randomly in the main menu. Perhaps there is a bug in the GUI handling.
 
 #TODO
+-Add the ability for the GUI to enable/disable interaction, use when processing data.
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
 	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.

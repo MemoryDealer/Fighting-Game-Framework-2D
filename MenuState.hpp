@@ -62,7 +62,6 @@ public:
 	void update(double dt);
 
 private:
-	bool m_bQuit;
 	std::shared_ptr<GUI> m_pGUI;
 	std::shared_ptr<Stage> m_pBackground;
 };

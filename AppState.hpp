@@ -67,8 +67,8 @@ public:
 class AppState
 {
 public:
-	// Empty constructor.
-	virtual ~AppState(void){}
+	// Sets m_quit to false.
+	virtual ~AppState(void){ m_quit = false; }
 
 	// Initializes a new AppState for use in the game.
 	static void create(AppStateListener* parent, const std::string& name){}
@@ -98,27 +98,31 @@ public:
 	const std::string& getName(void){ return m_name; }
 
 	// Returns AppState with name stateName by calling the AppStateManager's findByName().
-	AppState*	findByName(const std::string& stateName){ return m_pParent->findByName(stateName); }
+	AppState* findByName(const std::string& stateName){ return m_pParent->findByName(stateName); }
 
 	// Pushes an AppState by calling the AppStateManager's pushAppState().
-	bool		pushAppState(AppState* pState){ return m_pParent->pushAppState(pState); }
+	bool pushAppState(AppState* pState){ return m_pParent->pushAppState(pState); }
 
 	// Pops the state stack by calling the AppStateManager's popAppState().
-	void		popAppState(void){ m_pParent->popAppState(); }
+	void popAppState(void){ m_pParent->popAppState(); }
+
+	// Sets m_quit to false.
+	void reset(void){ m_quit = false; }
 
 protected:
 	// Empty destructor.
 	explicit AppState(void){}
 	
 	// Pauses the current active AppState and starts pState, pushing it on the stack.
-	void		changeAppState(AppState* pState){ m_pParent->changeAppState(pState); }
+	void changeAppState(AppState* pState){ m_pParent->changeAppState(pState); }
 
 	// Shuts down the AppStateManager, eventually terminating the program.
-	void		shutdown(void){ m_pParent->shutdown(); }
+	void shutdown(void){ m_pParent->shutdown(); }
 
-	// Pointers to the AppStateManager, which is derived from AppStateListener.
+	// Pointer to the AppStateManager, which is derived from AppStateListener.
 	AppStateListener* m_pParent;
 	std::string m_name;
+	bool m_quit;
 };
 
 // ================================================ //

@@ -30,7 +30,6 @@
 // ================================================ //
 
 MenuState::MenuState(void) :
-m_bQuit(false),
 m_pGUI(nullptr),
 m_pBackground(new Stage("Data/Stages/menu.stage"))
 {
@@ -56,6 +55,13 @@ void MenuState::enter(void)
 	// Pre-load Players to allow gamepad input in MenuState.
 	PlayerManager::getSingletonPtr()->reset();
 
+	// Should be done in lobby state
+	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
+
+	// Allocate data for LobbyState and GameState.
+	new StageManager();
+	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
+
 	new Camera();
 }
 
@@ -64,8 +70,9 @@ void MenuState::enter(void)
 void MenuState::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
-
+	
 	delete PlayerManager::getSingletonPtr();
+	delete StageManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
 }
 
@@ -82,7 +89,7 @@ bool MenuState::pause(void)
 
 void MenuState::resume(void)
 {
-	PlayerManager::getSingletonPtr()->reset();
+	this->findByName(GAME_STATE)->reset();
 
 	Log::getSingletonPtr()->logMessage("Resuming MenuState...");
 }
@@ -114,7 +121,7 @@ void MenuState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_ESCAPE:
-			m_bQuit = true;
+			m_quit = true;
 			break;
 
 		case SDLK_UP:
@@ -298,7 +305,7 @@ void MenuState::processGUIAction(const int type)
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
 				// Prevent selector from improperly re-appearing, see work-log.txt:line 196.
 				m_pGUI->setMousePos(-1, -1); 
-				this->pushAppState(this->findByName(LOBBY_STATE));
+				this->pushAppState(this->findByName(GAME_STATE));
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_ARCADE:
@@ -310,7 +317,7 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_QUIT:
-				m_bQuit = true;
+				m_quit = true;
 				break;
 			}
 			break;
@@ -334,7 +341,7 @@ void MenuState::processGUIAction(const int type)
 
 void MenuState::update(double dt)
 {
-	if (m_bQuit == true){
+	if (m_quit == true){
 		this->popAppState();
 		return;
 	}
@@ -346,7 +353,7 @@ void MenuState::update(double dt)
 			break;
 
 		case SDL_QUIT:
-			m_bQuit = true;
+			m_quit = true;
 			break;
 
 		case SDL_KEYDOWN:

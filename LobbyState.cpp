@@ -49,7 +49,7 @@ void LobbyState::enter(void)
 	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 
 	// Temporary skip.
-	m_bQuit = true;
+	m_quit = true;
 	this->pushAppState(this->findByName(GAME_STATE));
 }
 
@@ -61,7 +61,7 @@ void LobbyState::exit(void)
 
 	delete StageManager::getSingletonPtr();
 
-	m_bQuit = false; // temporary control
+	m_quit = false; // temporary control
 }
 
 // ================================================ //
@@ -98,7 +98,7 @@ void LobbyState::processGUIAction(const int type)
 
 void LobbyState::update(double dt)
 {
-	if (m_bQuit == true){
+	if (m_quit == true){
 		this->popAppState();
 		return;
 	}

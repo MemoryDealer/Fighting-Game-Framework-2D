@@ -7,7 +7,8 @@
 // ================================================ //
 // File: main.cpp
 // Author: Jordan Sparks <unixunited@live.com>
-// Description: 
+// ================================================ //
+// Entry point of program.
 // ================================================ //
 
 #include "stdafx.hpp"
@@ -21,7 +22,7 @@
 
 // ================================================ //
 
-/* To update from repo
+/* To update from repo:
 * git fetch --all
 * git reset --hard origin/master
 */

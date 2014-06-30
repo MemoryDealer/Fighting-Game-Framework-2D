@@ -43,6 +43,18 @@ public:
 	// Empty destructor.
 	~PlayerManager(void);
 
+	// Allocates both Player objects and sets up default data.
+	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
+
+	// Calls load() with last used fighter file names.
+	bool reload(void);
+
+	// Allocates both Player objects with empty fighter files and default 
+	// button maps and gamepads.
+	bool reset(void);
+
+	// Getters
+
 	// Returns pointer to Red Player.
 	Player* getRedPlayer(void) const;
 
@@ -55,15 +67,12 @@ public:
 	// Returns pointer to Blue Player Input.
 	Input* getBluePlayerInput(void) const;
 
+	// --- //
 
-	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
-	bool reload(void);
-
-	// Allocates both Player objects with empty fighter files and default 
-	// button maps and gamepads.
-	bool reset(void);
-
+	// Updates Camera offsets based on the positions of each Player.
 	void updateCamera(double dt);
+
+	// Updates Red and Blue Players, and tests for collisions.
 	void update(double dt);
 
 private:
@@ -71,12 +80,15 @@ private:
 	std::shared_ptr<Player> m_pBluePlayer;
 	std::string m_redFighterFile, m_blueFighterFile;
 
-	int m_redMax, m_blueMax; // the right edge of the screen minus player width (pixels)
+	// The right edge of the screen minus player width (pixels).
+	int m_redMax, m_blueMax; 
 
 	FighterEntryList m_fighters;
 };
 
 // ================================================ //
+
+// Getters
 
 inline Player* PlayerManager::getRedPlayer(void) const{
 	return m_pRedPlayer.get(); 

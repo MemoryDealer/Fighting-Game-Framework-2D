@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Move.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Move struct.
+// ================================================ //
 
 #include "Move.hpp"
 
@@ -10,17 +21,6 @@ namespace MoveID{
 	};
 }
 
-// ================================================ //
-// Extreme Metal Fighter
-// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
-// Unauthorized copying of this file, via any medium is strictly prohibited
-// Proprietary and confidential
-// Written by Jordan Sparks <unixunited@live.com> June 2014
-// ================================================ //
-// File: Move.cpp
-// Author: Jordan Sparks <unixunited@live.com>
-// ================================================ //
-// Implements Move struct.
 // ================================================ //
 
 Move::Move(void) :
@@ -52,4 +52,3 @@ Move::~Move(void)
 
 // ================================================ //
 
-// ================================================ //

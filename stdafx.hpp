@@ -1,4 +1,16 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: stdafx.hpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Includes all common headers needed, should be included
+// at the top of any header that needs them.
+// ================================================ //
 
 #pragma once
 
@@ -35,7 +47,7 @@
 
 // Platform-specific headers
 #ifdef __WIN32__
-#define _WINSOCKAPI_ // prevents automatic winsock.h inclusion 
+#define _WINSOCKAPI_ // Prevents automatic winsock.h inclusion.
 #include <Windows.h>
 #elif __linux__
 	;
