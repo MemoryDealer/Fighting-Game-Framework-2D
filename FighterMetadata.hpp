@@ -38,8 +38,8 @@ public:
 	// Empty destructor, parent destructor close the file handle.
 	virtual ~FighterMetadata(void);
 
-	// Allocates a Move object and parses all data for it. A Move is formatted
-	// like so:
+	// Allocates a Move object and parses all data for it. 
+	// A Move is formatted like so:
 	// +(MOVE_NAME)
 	// ... (all data)
 	// -(MOVE_NAME)

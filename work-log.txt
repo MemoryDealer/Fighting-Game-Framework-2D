@@ -259,6 +259,9 @@
 	for the project options. If I manually put "D:\SDL2\include" instead of "%SDL%\include" it's fine. So until this bug in VS2013 is fixed, I must hard code the SDL directory.
 -Added some more documentation.
 
+#6/29/14
+-Added some more documentation to the files. Almost done.
+
 #TODO
 -Consider using a keybindings table with a struct that has the SDL key value and a pointer to a function instead of else-if chains. 
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be

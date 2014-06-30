@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: GamepadManager.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements GamepadManager singleton class.
+// ================================================ //
 
 #include "GamepadManager.hpp"
 #include "Engine.hpp"
@@ -30,20 +41,18 @@ int GamepadManager::addPad(const int id)
 {
 	Log::getSingletonPtr()->logMessage("Adding gamepad...");
 
-	// See if it's a gamepad
+	// See if it's a gamepad.
 	if (SDL_IsGameController(id)){
 		Gamepad gamepad;
 
-		// Open the gamepad
 		gamepad.pad = SDL_GameControllerOpen(id);
 		if (gamepad.pad){
 
-			// Get the actual instance ID of the device
+			// Get the actual instance ID of the device.
 			SDL_Joystick* joy = SDL_JoystickOpen(id);
 			gamepad.id = SDL_JoystickInstanceID(joy);
 			Log::getSingletonPtr()->logMessage("Gamepad has ID " + Engine::toString(gamepad.id));
 
-			// Add gamepad to the PadList
 			m_gamepads.push_back(gamepad);
 
 			SDL_JoystickClose(joy);
@@ -64,9 +73,9 @@ void GamepadManager::removePad(const int id)
 	for (GamepadList::iterator itr = m_gamepads.begin();
 		itr != m_gamepads.end();
 		++itr){
-		// Find the right gamepad
+		// Find the right gamepad instance ID.
 		if (itr->id == id){
-			// Remove the controller
+			// Remove the controller from SDL and manager.
 			SDL_GameControllerClose(itr->pad);
 			itr = m_gamepads.erase(itr);
 			Log::getSingletonPtr()->logMessage("Gamepad successfully removed");

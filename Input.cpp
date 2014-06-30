@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Input.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Input class.
+// ================================================ //
 
 #include "Input.hpp"
 #include "Config.hpp"
@@ -32,15 +43,15 @@ void Input::loadButtonMap(const std::string& file)
 {
 	Log::getSingletonPtr()->logMessage("Loading button map from \"" + file + "\"");
 
-	// Parse the bmap file
 	Config c(file);
 	if (c.isLoaded()){
-		// Keyboard
+		// Load keyboard keys.
 		m_keyboardMap[BUTTON_UP] = c.parseIntValue("keyboard", "up");
 		m_keyboardMap[BUTTON_DOWN] = c.parseIntValue("keyboard", "down");
 		m_keyboardMap[BUTTON_LEFT] = c.parseIntValue("keyboard", "left");
 		m_keyboardMap[BUTTON_RIGHT] = c.parseIntValue("keyboard", "right");
 
+		// Load gamepad buttons.
 		m_gamepadMap[BUTTON_UP] = c.parseIntValue("gamepad", "up");
 		m_gamepadMap[BUTTON_DOWN] = c.parseIntValue("gamepad", "down");
 		m_gamepadMap[BUTTON_LEFT] = c.parseIntValue("gamepad", "left");
@@ -68,7 +79,7 @@ void Input::resetAllButtons(void)
 
 const int Input::getPadID(void) const
 {
-	// Get the instance ID of the controller using the underlying joystick
+	// Get the instance ID of the controller using the underlying joystick.
 	SDL_Joystick* joystick = nullptr;
 
 	joystick = SDL_GameControllerGetJoystick(m_pad);

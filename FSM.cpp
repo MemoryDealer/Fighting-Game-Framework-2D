@@ -1,13 +1,24 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: FSM.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements FSM class.
+// ================================================ //
 
 #include "FSM.hpp"
 #include "Engine.hpp"
 
 // ================================================ //
 
-FSM::FSM(StateID id)
-	:	m_stateMap(),
-		m_currentState(id)
+FSM::FSM(StateID id) :
+m_stateMap(),
+m_currentState(id)
 {
 
 }
@@ -16,7 +27,6 @@ FSM::FSM(StateID id)
 
 FSM::~FSM(void)
 {
-	// Free any pointers in the map
 	FState* pState = nullptr;
 	StateMap::iterator itr;
 
@@ -50,11 +60,12 @@ void FSM::addState(FState* pState)
 	FState* existingState = nullptr;
 	StateMap::iterator itr;
 
-	// See if this state already exists
+	// See if this state already exists. Return if it does.
 	existingState = this->getStatePtr(pState->getID());
 
-	if (existingState != nullptr)
+	if (existingState != nullptr){
 		return;
+	}
 
 	m_stateMap.insert(SM_VT(pState->getID(), pState));
 }

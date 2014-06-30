@@ -76,6 +76,8 @@ public:
 	// Sets the name of the GUILayer.
 	void setLayerName(const std::string& name);
 
+	// --- //
+
 	// Resets all Widget's appearances in GUILayer to Appearance::IDLE.
 	void resetAllWidgets(void);
 

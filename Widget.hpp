@@ -107,6 +107,8 @@ public:
 	// appearance - the enumerated value for the appearance, such as Appearance::IDLE
 	virtual void setAppearance(const int appearance);
 
+	// --- //
+
 	// Update the Widget using delta time. 
 	virtual void update(double dt) = 0;
 

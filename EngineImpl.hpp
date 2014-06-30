@@ -9,27 +9,30 @@
 
 // ================================================ //
 
+// PImpl idiom class for Engine. See Engine.hpp for function details 
+// that are not specified here.
 class EngineImpl
 {
 public:
+	// Initializes SDL (with everything), SDL_img, SDL_ttf, and SDL_net.
+	// Creates the rendering window and sets up the renderer.
 	explicit EngineImpl(void);
+
+	// Frees the renderer and the window, then frees all SDL components
+	// in reverse order from which they were initialized.
 	~EngineImpl(void);
 
 	void clearRenderer(void);
 	void renderPresent(void);
 
-	// Factory functions
 	SDL_Texture* loadTexture(const std::string& filename);
 
-	// Destroy functions
 	void destroyTexture(SDL_Texture* pTexture);
 
-	// Setter functions
 	void setWindowFocused(const bool focused);
 	void setMaxFrameRate(const unsigned int max);
 	void setResolution(const int width, const int height);
 
-	// Getter functions
 	SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
 	const int getWindowHeight(void) const;
@@ -37,15 +40,13 @@ public:
 	const int getLogicalWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
 	const int getMaxFrameRate(void) const;
-	const int getVersionMajor(void) const;
-	const int getVersionMinor(void) const;
 
 private:
-	// SDL components
 	SDL_Window*			m_pWindow;
 	SDL_Renderer*		m_pRenderer;
 
 	unsigned int		m_width, m_height;
+	// Represents the virtual resolution.
 	unsigned int		m_logicalWidth, m_logicalHeight;
 	bool				m_windowFocused;
 	unsigned int		m_maxFrameRate;
@@ -55,6 +56,7 @@ private:
 // ================================================ //
 
 // Setters
+
 inline void EngineImpl::setWindowFocused(const bool focused){ 
 	m_windowFocused = focused; 
 }
@@ -64,6 +66,7 @@ inline void EngineImpl::setMaxFrameRate(const unsigned int max){
 }
 
 // Getters
+
 inline SDL_Renderer* EngineImpl::getRenderer(void) const{ 
 	return m_pRenderer; 
 }

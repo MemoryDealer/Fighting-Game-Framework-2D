@@ -76,8 +76,9 @@ protected:
 
 // Getters
 
-inline const bool Config::isLoaded(void) const
-{ return m_loaded; }
+inline const bool Config::isLoaded(void) const{ 
+	return m_loaded; 
+}
 
 // ================================================ //
 

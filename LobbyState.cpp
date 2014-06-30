@@ -58,6 +58,8 @@ void LobbyState::exit(void)
 
 	delete StageManager::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
+
+	m_bQuit = false; // temporary control
 }
 
 // ================================================ //

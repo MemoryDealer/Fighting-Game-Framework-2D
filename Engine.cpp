@@ -1,4 +1,15 @@
 // ================================================ //
+// Extreme Metal Fighter
+// Copyright (C) 2014 Jordan Sparks. All Rights Reserved.
+// Unauthorized copying of this file, via any medium is strictly prohibited
+// Proprietary and confidential
+// Written by Jordan Sparks <unixunited@live.com> June 2014
+// ================================================ //
+// File: Engine.cpp
+// Author: Jordan Sparks <unixunited@live.com>
+// ================================================ //
+// Implements Engine singleton class.
+// ================================================ //
 
 #include "Engine.hpp"
 #include "EngineImpl.hpp"
@@ -17,8 +28,8 @@ const int Engine::VERSION_MINOR2 =	1;
 
 // ================================================ //
 
-Engine::Engine(void)
-	: m_pImpl(new EngineImpl())
+Engine::Engine(void) : 
+m_pImpl(new EngineImpl())
 {
 
 }
@@ -59,31 +70,8 @@ void Engine::destroyTexture(SDL_Texture* pTexture)
 }
 
 // ================================================ //
-// Setter functions
-// ================================================ //
 
-void Engine::setWindowFocused(const bool focused)
-{
-	return m_pImpl->setWindowFocused(focused);
-}
-
-// ================================================ //
-
-void Engine::setMaxFrameRate(const unsigned int max)
-{
-	return m_pImpl->setMaxFrameRate(max);
-}
-
-// ================================================ //
-
-void Engine::setResolution(const int width, const int height)
-{
-	return m_pImpl->setResolution(width, height);
-}
-
-// ================================================ //
-// Getter functions
-// ================================================ //
+// Getters
 
 SDL_Renderer* Engine::getRenderer(void) const
 {
@@ -134,9 +122,35 @@ const int Engine::getMaxFrameRate(void) const
 
 // ================================================ //
 
+// Setters
+
+void Engine::setWindowFocused(const bool focused)
+{
+	return m_pImpl->setWindowFocused(focused);
+}
+
+// ================================================ //
+
+void Engine::setMaxFrameRate(const unsigned int max)
+{
+	return m_pImpl->setMaxFrameRate(max);
+}
+
+// ================================================ //
+
+void Engine::setResolution(const int width, const int height)
+{
+	return m_pImpl->setResolution(width, height);
+}
+
+// ================================================ //
+
+// --- //
+
 bool Engine::CustomAssertFunction(bool exp, char* desc, int line, char* file)
 {
 	if (!exp){
+		// Display a message offering whether or not to break for debugging.
 		bool ret = false;
 #ifdef __WIN32__
 		char* msg = new char[strlen(desc) + strlen(file) + 256];
