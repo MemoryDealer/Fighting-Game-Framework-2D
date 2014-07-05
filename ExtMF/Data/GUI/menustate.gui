@@ -3,31 +3,94 @@
 #links=UP,DOWN,LEFT,RIGHT
 [layer.root]
 #ID 0
-button.campaign:pos=(152,200,150,60)
-button.campaign:label=Campaign
+button.campaign:pos=(314,75,225,60)
+button.campaign:label="Campaign"
 button.campaign:labeloffset=10
-button.campaign:links=-1,-1,-1,1
+button.campaign:links=-1,1,-1,-1
 
 #ID 1
-button.arcade:pos=(352,200,150,60)
-button.arcade:label=Arcade
-button.arcade:labeloffset=10
-button.arcade:links=-1,2,0,-1
+button.arcade:pos=(314,175,225,60)
+button.arcade:label="Arcade"
+button.arcade:labeloffset=25
+button.arcade:links=0,2,-1,-1
 
 #ID 2
-button.options:pos=(352,300,150,60)
-button.options:label=Options
-button.options:labeloffset=10
+button.options:pos=(314,275,225,60)
+button.options:label="Options"
+button.options:labeloffset=25
 button.options:links=1,3,-1,-1
 
 #ID 3
-button.quit:pos=(352,400,150,60)
-button.quit:label=Quit
-button.quit:labeloffset=30
+button.quit:pos=(314,375,225,60)
+button.quit:label="Quit"
+button.quit:labeloffset=60
 button.quit:links=2,-1,-1,-1
+
+[layer.campaign]
+#ID 0
+button.new:pos=(314,75,225,60)
+button.new:label="New Game"
+button.new:labeloffset=10
+button.new:links=-1,1,-1,-10
+
+#ID 1
+button.load:pos=(314,175,225,60)
+button.load:label="Load Game"
+button.load:labeloffset=10
+button.load:links=0,2,-1,-1
+
+#ID 2
+button.back:pos=(314,375,225,60)
+button.back:label="Back"
+button.back:labeloffset=60
+button.back:links=1,-1,-1,-1
+
+[layer.arcade]
+#ID 0
+button.local:pos=(314,75,225,60)
+button.local:label="Local Game"
+button.local:labeloffset=10
+button.local:links=-1,1,-1,-1
+
+#ID 1
+button.online:pos=(314,175,225,60)
+button.online:label="Online Game"
+button.online:labeloffset=10
+button.online:links=0,2,-1,-1
+
+#ID 2
+button.back:pos=(314,375,225,60)
+button.back:label="Back"
+button.back:labeloffset=60
+button.back:links=1,-1,-1,-1
+
+[layer.online]
+#ID 0
+button.host:pos=(314,75,225,60)
+button.host:label="Host Game"
+button.host:labeloffset=10
+button.host:links=-1,1,-1,-1
+
+#ID 1
+button.join:pos=(314,175,225,60)
+button.join:label="Join Game"
+button.join:labeloffset=10
+button.join:links=0,2,-1,-1
+
+#ID 2
+button.dedicated:pos=(314,275,225,60)
+button.dedicated:label="Dedicated Server"
+button.dedicated:labeloffset=10
+button.dedicated:links=1,3,-1,-1
+
+#ID 3
+button.back:pos=(314,375,225,60)
+button.back:label="Back"
+button.back:labeloffset=60
+button.back:links=2,-1,-1,-1
 
 [layer.options]
 #ID 0
-button.back:pos=(352,400,150,60)
-button.back:label=Back
-button.back:labeloffset=30
+button.back:pos=(314,375,225,60)
+button.back:label="Back"
+button.back:labeloffset=60

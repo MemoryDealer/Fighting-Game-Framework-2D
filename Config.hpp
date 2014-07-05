@@ -49,8 +49,9 @@ public:
 
 	// Resets the file pointer and scans line by line looking for the section 
 	// (such as [gamesettings]), then looks in that section for the value. Returns
-	// the value in std::string format.
-	virtual std::string& parseValue(const std::string& section, const std::string& value);
+	// the value in std::string format. The parameter quotations should be true
+	// if the value is inside quotation marks.
+	virtual std::string& parseValue(const std::string& section, const std::string& value, const bool quotations = false);
 
 	// Wraps parseValue(), converts the std::string to an int.
 	virtual const int parseIntValue(const std::string& section, const std::string& value);

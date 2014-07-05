@@ -56,6 +56,7 @@ void Config::loadFile(const std::string& file)
 	if (m_file.is_open()){
 		m_loaded = true;
 		Log::getSingletonPtr()->logMessage("File loaded!");
+		
 	}
 	else{
 		Log::getSingletonPtr()->logMessage("ERROR: Failed to load file!");
@@ -72,7 +73,7 @@ void Config::resetFilePointer(void)
 
 // ================================================ //
 
-std::string& Config::parseValue(const std::string& section, const std::string& value)
+std::string& Config::parseValue(const std::string& section, const std::string& value, const bool quotations)
 {
 	if (!m_loaded){
 		m_buffer.clear();
@@ -83,14 +84,13 @@ std::string& Config::parseValue(const std::string& section, const std::string& v
 	this->resetFilePointer();
 
 	while(!m_file.eof()){
-		m_file >> m_buffer;
-
+		std::getline(m_file, m_buffer);
 		// Find the right section first.
 		if (m_buffer[0] == '[' && m_buffer[m_buffer.size() - 1] == ']'){
 			std::string compare(section);
 			if (m_buffer.compare(1, m_buffer.size() - 2, compare) == 0){
 				// Section found, now find the value.
-				m_file >> m_buffer;
+				std::getline(m_file, m_buffer);
 				while(m_buffer[0] != '[' && !m_file.eof()){ // TODO: There must always be a \n at the end of a config file with !m_file.eof().
 					
 					// Skip comments.
@@ -101,13 +101,18 @@ std::string& Config::parseValue(const std::string& section, const std::string& v
 						// See if pos 0 to the assignment operator matches value name.
 						if (m_buffer.compare(0, assign, value) == 0){
 							// Trim string to only contain the value.
-							m_buffer = m_buffer.substr(assign + 1, m_buffer.size());
+							if (quotations){
+								m_buffer = m_buffer.substr(assign + 2, m_buffer.size() - value.size() - 3);
+							}
+							else{
+								m_buffer = m_buffer.substr(assign + 1, m_buffer.size() - value.size() - 1);
+							}
 
 							return m_buffer;
 						}
 					}
 
-					m_file >> m_buffer;
+					std::getline(m_file, m_buffer);
 				} 
 			}
 		}

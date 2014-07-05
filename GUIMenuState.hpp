@@ -35,6 +35,9 @@ public:
 	// Layer names enumerated for clarity.
 	enum Layer{
 		ROOT = 0,
+		CAMPAIGN,
+		ARCADE,
+		ONLINE,
 		OPTIONS
 	};
 
@@ -70,6 +73,54 @@ namespace GUIMenuStateLayer{
 	};
 
 	// ================================================ //
+
+	class Campaign : public GUILayer
+	{
+	public:
+		explicit Campaign(void);
+
+		enum Widget{
+			BUTTON_NEW = 0,
+			BUTTON_LOAD,
+			BUTTON_BACK
+		};
+
+		virtual void update(double dt);
+	};
+
+	// ================================================ //
+
+	class Arcade : public GUILayer
+	{
+	public:
+		explicit Arcade(void);
+
+		enum Widget{
+			BUTTON_LOCAL = 0,
+			BUTTON_ONLINE,
+			BUTTON_BACK
+		};
+
+		virtual void update(double dt);
+	};
+
+	// ================================================ //
+
+	class Online : public GUILayer
+	{
+	public:
+		explicit Online(void);
+
+		enum Widget{
+			BUTTON_HOST = 0,
+			BUTTON_JOIN,
+			BUTTON_DEDICATED,
+			BUTTON_BACK
+		};
+
+		virtual void update(double dt);
+	};
+
 	// ================================================ //
 
 	class Options : public GUILayer

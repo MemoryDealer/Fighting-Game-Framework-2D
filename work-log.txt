@@ -269,6 +269,10 @@
 #7/5/14
 -Added Input::SDLButtonToMappedButton() which takes the SDL_Event cbutton.button value and finds the corresponding Input button value according to 
 	the button map. This removes the need for long if-else chains in state code.
+-Added ability for Config::parseValue() to parse values inside quotation marks. The parameter quotations must be set to true.
+-Changed m_file >> buffer to std::getline(m_file, buffer) inside Config::parseValue().
+-For some reason the .bmap files only had carriage returns (CR) and not CRLF like other files. Perhaps it has to do with how they were created. I created 
+	new ones in Notepad++ and now they have CRLFs.
 
 #TODO
 -Add the ability for the GUI to enable/disable interaction, use when processing data.

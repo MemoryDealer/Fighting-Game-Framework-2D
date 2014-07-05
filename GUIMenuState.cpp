@@ -39,9 +39,23 @@ GUI()
 	StringList names;
 
 	// Add each layer to the GUI.
-
 	std::shared_ptr<GUILayer> layer(new GUIMenuStateLayer::Root());
 	names = StringList{ "campaign", "arcade", "options", "quit" };
+	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	this->addLayer(layer);
+
+	layer.reset(new GUIMenuStateLayer::Campaign());
+	names = StringList{ "new", "load", "back" };
+	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	this->addLayer(layer);
+
+	layer.reset(new GUIMenuStateLayer::Arcade());
+	names = StringList{ "local", "online", "back" };
+	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	this->addLayer(layer);
+
+	layer.reset(new GUIMenuStateLayer::Online());
+	names = StringList{ "host", "join", "dedicated", "back" };
 	layer->parse<Button>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
 
@@ -88,6 +102,57 @@ namespace GUIMenuStateLayer{
 	void Root::update(double dt)
 	{
 		
+	}
+
+	// ================================================ //
+	// Campaign
+	// ================================================ //
+
+	Campaign::Campaign(void)
+	{
+		this->setID(GUIMenuState::Layer::CAMPAIGN);
+		this->setLayerName("campaign");
+	}
+
+	// ================================================ //
+
+	void Campaign::update(double dt)
+	{
+
+	}
+
+	// ================================================ //
+	// Arcade
+	// ================================================ //
+
+	Arcade::Arcade(void)
+	{
+		this->setID(GUIMenuState::Layer::ARCADE);
+		this->setLayerName("arcade");
+	}
+
+	// ================================================ //
+
+	void Arcade::update(double dt)
+	{
+
+	}
+
+	// ================================================ //
+	// Online
+	// ================================================ //
+
+	Online::Online(void)
+	{
+		this->setID(GUIMenuState::Layer::ONLINE);
+		this->setLayerName("online");
+	}
+
+	// ================================================ //
+
+	void Online::update(double dt)
+	{
+
 	}
 
 	// ================================================ //

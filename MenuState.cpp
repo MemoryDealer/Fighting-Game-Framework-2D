@@ -169,7 +169,7 @@ void MenuState::handleInput(SDL_Event& e)
 			// Reload GUI and background.
 			Config c("ExtMF.cfg");
 			m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
-			m_pBackground.reset(new Stage("Data/Stages/mainmenu.stage"));
+			m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
 		}
 			break;
 
@@ -310,13 +310,11 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
-				// Prevent selector from improperly re-appearing, see work-log.txt:line 196.
-				m_pGUI->setMousePos(-1, -1); 
-				this->pushAppState(this->findByName(GAME_STATE));
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::CAMPAIGN);
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_ARCADE:
-				printf("ARCADE!!!\n");
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ARCADE);
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_OPTIONS:
@@ -325,6 +323,69 @@ void MenuState::processGUIAction(const int type)
 
 			case GUIMenuStateLayer::Root::BUTTON_QUIT:
 				m_quit = true;
+				break;
+			}
+			break;
+
+		case GUIMenuState::Layer::CAMPAIGN:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUIMenuStateLayer::Campaign::BUTTON_NEW:
+				// Prevent selector from improperly re-appearing, see work-log.txt:line 196.
+				m_pGUI->setMousePos(-1, -1);
+				this->pushAppState(this->findByName(GAME_STATE));
+				break;
+
+			case GUIMenuStateLayer::Campaign::BUTTON_LOAD:
+
+				break;
+
+			case GUIMenuStateLayer::Campaign::BUTTON_BACK:
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ROOT);
+				break;
+			}
+			break;
+
+		case GUIMenuState::Layer::ARCADE:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUIMenuStateLayer::Arcade::BUTTON_LOCAL:
+
+				break;
+
+			case GUIMenuStateLayer::Arcade::BUTTON_ONLINE:
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ONLINE);
+				break;
+
+			case GUIMenuStateLayer::Arcade::BUTTON_BACK:
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ROOT);
+				break;
+			}
+			break;
+
+		case GUIMenuState::Layer::ONLINE:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUIMenuStateLayer::Online::BUTTON_HOST:
+				
+				break;
+
+			case GUIMenuStateLayer::Online::BUTTON_JOIN:
+
+				break;
+
+			case GUIMenuStateLayer::Online::BUTTON_DEDICATED:
+
+				break;
+
+			case GUIMenuStateLayer::Online::BUTTON_BACK:
+				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ARCADE);
 				break;
 			}
 			break;
