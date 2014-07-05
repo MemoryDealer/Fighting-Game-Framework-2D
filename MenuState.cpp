@@ -194,18 +194,25 @@ void MenuState::handleInput(SDL_Event& e)
 			else{
 				// Navigate to the linked Widget.
 				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
+				switch (player->getInput()->SDLButtonToMappedButton(e.cbutton.button, true)){
+				default:
+					break;
 
-				if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_UP, true)){
+				case Input::BUTTON_UP:
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
-				}
-				else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_DOWN, true)){
+					break;
+
+				case Input::BUTTON_DOWN:
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
-				}
-				else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_LEFT, true)){
+					break;
+
+				case Input::BUTTON_LEFT:
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
-				}
-				else if (e.cbutton.button == player->getInput()->getMappedButton(Input::BUTTON_RIGHT, true)){
+					break;
+
+				case Input::BUTTON_RIGHT:
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+					break;
 				}
 			}
 		}

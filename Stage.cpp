@@ -12,7 +12,6 @@
 // ================================================ //
 
 #include "Stage.hpp"
-#include "StageImpl.hpp"
 #include "Engine.hpp"
 #include "Config.hpp"
 #include "Camera.hpp"

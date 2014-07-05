@@ -65,9 +65,14 @@ public:
 	// Returns true if the specified button is pressed.
 	const bool getButton(const int button) const;
 
-	// Returns the value of the mapped button. Returns the keyboard value if gamepad is false,
-	// and the gamepad value if gamepad is true.
+	// Returns the value of the mapped button. Returns the keyboard value if 
+	// gamepad is false, and the gamepad value if gamepad is true.
 	const ButtonValue getMappedButton(const int button, const bool gamepad = false) const;
+
+	// Returns the input value (e.g., BUTTON_LEFT or BUTTON_RIGHT) associated 
+	// with the mapped input key/button parameter button.
+	// O(n) complexity, since it must search for match.
+	const int SDLButtonToMappedButton(const int button, const bool gamepad = false);
 
 	// Returns a pointer to the SDL_GameController held by this Input.
 	SDL_GameController* getPad(void) const;

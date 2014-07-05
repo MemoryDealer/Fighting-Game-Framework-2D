@@ -77,6 +77,30 @@ void Input::resetAllButtons(void)
 
 // ================================================ //
 
+const int Input::SDLButtonToMappedButton(const int button, const bool gamepad)
+{
+	// Test each mapped button to see if it matches the button parameter.
+	if (gamepad){
+		for (int i = 0; i < NUM_BUTTONS; ++i){
+			if (button == m_gamepadMap[i]){
+				return i;
+			}
+		}
+	}
+	else{
+		for (int i = 0; i < NUM_BUTTONS; ++i){
+			if (button == m_keyboardMap[i]){
+				return i;
+			}
+		}
+	}
+
+	// No mapped button found.
+	return -1;
+}
+
+// ================================================ //
+
 const int Input::getPadID(void) const
 {
 	// Get the instance ID of the controller using the underlying joystick.
