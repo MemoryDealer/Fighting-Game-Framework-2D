@@ -5,18 +5,18 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: Button.cpp
+// File: WidgetButton.cpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
 // Implements Button class. 
 // ================================================ //
 
-#include "Button.hpp"
+#include "WidgetButton.hpp"
 #include "Label.hpp"
 
 // ================================================ //
 
-Button::Button(const int id) :
+WidgetButton::WidgetButton(const int id) :
 Widget(id)
 {
 	this->setType(Widget::Type::BUTTON);
@@ -28,14 +28,14 @@ Widget(id)
 
 // ================================================ //
 
-Button::~Button(void)
+WidgetButton::~WidgetButton(void)
 {
 
 }
 
 // ================================================ //
 
-void Button::update(double dt)
+void WidgetButton::update(double dt)
 {
 	
 }

@@ -37,7 +37,8 @@ public:
 	// Every type of widget used by the GUI is enumerated here. 
 	enum Type{
 		STATIC = 0,
-		BUTTON
+		BUTTON,
+		TEXTBOX
 	};
 
 	// Links connect GUI widgets to other GUI widgets. This is used only when the GUI

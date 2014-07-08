@@ -28,6 +28,7 @@
 #include <fstream>
 #include <string>
 #include <cassert>
+#include <stack>
 #include <vector>
 #include <list>
 #include <queue>

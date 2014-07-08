@@ -162,10 +162,21 @@ public:
 	// Useful for switching from SELECTOR to MOUSE navigation.
 	void clearSelector(void);
 
+	// Clears the selector, sets the currently selected widget to 0. If navigating
+	// in SELECTOR mode, it sets the appearance of Widget 0 to SELECTED. Pushes 
+	// layer value n onto the layer stack.
+	void pushLayer(const int n);
+
+	// Pops the layer stack and sets current layer to the top of the stack.
+	void popLayer(void);
+
 	// Getters
 
+	// Returns index value of current layer.
+	const int getCurrentLayer(void) const;
+
 	// Returns a pointer to the current GUILayer in use.
-	GUILayer* getCurrentLayer(void) const;
+	GUILayer* getCurrentLayerPtr(void) const;
 
 	// Returns the navigation mode currently in use (e.g., SELECTOR or MOUSE).
 	const int getNavigationMode(void) const;
@@ -185,11 +196,6 @@ public:
 	Widget* getSelectedWidgetPtr(void) const;
 	
 	// Setters
-
-	// Clears the selector, sets the currently selected widget to 0,
-	// and points m_pCurrentLayer to layer n in the layer list. If navigating
-	// in SELECTOR mode, it sets the appearance of Widget 0 to SELECTED. 
-	void setCurrentLayer(const int n);
 
 	// Changes the navigation mode. Valid arguments are SELECTOR and MOUSE.
 	void setNavigationMode(const int mode);
@@ -224,8 +230,8 @@ private:
 	// List of all GUILayer's used by this GUI.
 	GUILayerList m_layers;
 
-	// Pointers to the current GUILayer in use from m_layers.
-	GUILayer* m_pCurrentLayer;
+	// Active stack of layers.
+	std::stack<int> m_layerStack;
 
 	// Index of currently selected Widget from the current GUILayer.
 	int m_selectedWidget;
@@ -251,8 +257,12 @@ inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 
 // Getters
 
-inline GUILayer* GUI::getCurrentLayer(void) const{
-	return m_pCurrentLayer;
+inline const int GUI::getCurrentLayer(void) const{
+	return m_layerStack.top();
+}
+
+inline GUILayer* GUI::getCurrentLayerPtr(void) const{
+	return m_layers[m_layerStack.top()].get();
 }
 
 inline const int GUI::getNavigationMode(void) const{
@@ -268,11 +278,11 @@ inline const bool GUI::getSelectorPressed(void) const{
 }
 
 inline Widget* GUI::getWidgetPtr(const int n) const{
-	return m_pCurrentLayer->getWidgetPtr(n);
+	return m_layers[m_layerStack.top()]->getWidgetPtr(n);
 }
 
 inline Widget* GUI::getSelectedWidgetPtr(void) const{
-	return m_pCurrentLayer->getWidgetPtr(m_selectedWidget);
+	return m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget);
 }
 
 // Setters

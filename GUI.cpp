@@ -14,7 +14,8 @@
 #include "GUI.hpp"
 #include "Config.hpp"
 #include "Engine.hpp"
-#include "Button.hpp"
+#include "WidgetButton.hpp"
+#include "WidgetStatic.hpp"
 
 // ================================================ //
 
@@ -71,7 +72,8 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 }
 
 // Explicitly instantiate template functions for each Widget type.
-template void GUILayer::parse<Button>(Config& c, const int widgetType, const std::vector<std::string>& names);
+template void GUILayer::parse<WidgetButton>(Config& c, const int widgetType, const StringList& names);
+template void GUILayer::parse<WidgetStatic>(Config& c, const int widgetType, const StringList& names);
 
 // ================================================ //
 
@@ -104,7 +106,7 @@ std::shared_ptr<SDL_Texture> GUI::ButtonTexture[] = { nullptr, nullptr, nullptr 
 
 GUI::GUI(void) :
 m_layers(),
-m_pCurrentLayer(nullptr),
+m_layerStack(),
 m_selectedWidget(Widget::NONE),
 m_navMode(NavMode::MOUSE),
 m_mouseX(0),
@@ -128,22 +130,39 @@ GUI::~GUI(void)
 void GUI::clearSelector(void)
 {
 	if (m_selectedWidget != Widget::NONE){
-		m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
+		m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
 	}
 }
 
 // ================================================ //
 
-void GUI::setCurrentLayer(const int n)
+void GUI::pushLayer(const int n)
 {
 	this->clearSelector();
-
-	m_pCurrentLayer = m_layers[n].get();
 	m_selectedWidget = 0;
+
+	m_layerStack.push(n);
 
 	// Set the default selected Widget's appearance to SELECTED.
 	if (m_navMode == GUI::NavMode::SELECTOR){
-		m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+	}
+}
+
+// ================================================ //
+
+void GUI::popLayer(void)
+{
+	// Only pop if there is more than one layer.
+	if (m_layerStack.size() > 1){
+		this->clearSelector();
+		m_selectedWidget = 0;
+
+		m_layerStack.pop();
+
+		if (m_navMode == GUI::NavMode::SELECTOR){
+			m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		}
 	}
 }
 
@@ -154,7 +173,7 @@ void GUI::setSelectedWidget(const int n)
 	if (n != Widget::NONE){
 		// Reset currently selected widget to IDLE appearance.
 		if (m_selectedWidget != Widget::NONE){
-			m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
+			m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
 		}
 
 		m_selectedWidget = n;
@@ -165,7 +184,7 @@ void GUI::setSelectedWidget(const int n)
 		}
 
 		// Set newly selected widget's appearance to SELECTED.
-		m_pCurrentLayer->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
 	}
 }
 
@@ -186,8 +205,8 @@ void GUI::update(double dt)
 		mouse.w = mouse.h = 1;
 
 		// See if mouse is inside bounds of each widget.
-		for (int i = 0; i < m_pCurrentLayer->getNumWidgets(); ++i){
-			if (SDL_HasIntersection(&mouse, &m_pCurrentLayer->getWidgetPtr(i)->getPosition())){
+		for (int i = 0; i < m_layers[m_layerStack.top()]->getNumWidgets(); ++i){
+			if (SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
 				this->setSelectedWidget(i);
 
 				// Allow a reset check.
@@ -199,7 +218,7 @@ void GUI::update(double dt)
 		// Reset all of the current layer's widgets if nothing is selected
 		if (m_selectedWidget == Widget::NONE && resetAllWidgets){
 			if (!m_leftMouseDown){
-				m_pCurrentLayer->resetAllWidgets();
+				m_layers[m_layerStack.top()]->resetAllWidgets();
 
 				// Prevent resetAllWidgets() from being called when not necessary.
 				resetAllWidgets = false; 
@@ -208,8 +227,8 @@ void GUI::update(double dt)
 	}
 
 	// Update and render the current layer.
-	this->getCurrentLayer()->update(dt);
-	this->getCurrentLayer()->render();
+	m_layers[m_layerStack.top()]->update(dt);
+	m_layers[m_layerStack.top()]->render();
 }
 
 // ================================================ //

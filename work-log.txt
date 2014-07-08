@@ -274,6 +274,11 @@
 -For some reason the .bmap files only had carriage returns (CR) and not CRLF like other files. Perhaps it has to do with how they were created. I created 
 	new ones in Notepad++ and now they have CRLFs.
 
+#7/8/14
+-Added layer stack to GUI class, which keeps all of the active GUILayers. Can be pushed and popped through GUI::pushLayer() and GUI::popLayer().
+-In Object::render()'s 2nd call to SDL_RenderCopyEx(), I changed the destination rect pointer to nullptr, otherwise an Object without a core texture
+	would fail to render the text because the src rect is zero.
+
 #TODO
 -Add stack of layers to GUI and back button for gamepad.
 -Add the ability for the GUI to enable/disable interaction, use when processing data.

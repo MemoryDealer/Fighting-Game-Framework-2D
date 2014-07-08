@@ -129,9 +129,6 @@
     <ClInclude Include="..\Widget.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Button.hpp">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\GUI.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -161,6 +158,12 @@
     </ClInclude>
     <ClInclude Include="..\StageLayer.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WidgetStatic.hpp">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WidgetButton.hpp">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,9 +242,6 @@
     <ClCompile Include="..\Widget.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Button.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\GUI.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -271,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="..\LobbyState.cpp">
       <Filter>Source Files\LobbyState</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WidgetButton.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WidgetStatic.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

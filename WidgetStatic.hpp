@@ -5,14 +5,14 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: Button.hpp
+// File: WidgetStatic.hpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Defines the Button class, derived from Widget. 
+// Defines the WidgetStatic class, derived from Widget.
 // ================================================ //
 
-#ifndef __BUTTON_HPP__
-#define __BUTTON_HPP__
+#ifndef __WIDGETSTATIC_HPP__
+#define __WIDGETSTATIC_HPP__
 
 // ================================================ //
 
@@ -20,23 +20,22 @@
 
 // ================================================ //
 
-// A GUI button. When pressed, it does something special (handled in the state
-// function "processGUIAction()"). 
-class Button : public Widget
+// A static GUI widget that can hold text and/or a picture. Does not allow
+// direct interaction from user.
+class WidgetStatic : public Widget
 {
 public:
-	// Calls Widget's constructor with id. Sets Widget type to BUTTON.
-	// Allocates the Label object, and sets m_renderLabel to true.
-	explicit Button(const int id);
+	// Calls Widget's constructor, sets type to STATIC, allocates Label.
+	explicit WidgetStatic(const int id);
 
 	// Empty destructor.
-	virtual ~Button(void);
+	virtual ~WidgetStatic(void);
 
-	// Updates Button with delta time. 
+	// Updates with delta time.
 	virtual void update(double dt);
 
 private:
-	
+
 };
 
 // ================================================ //

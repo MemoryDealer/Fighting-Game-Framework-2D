@@ -58,6 +58,7 @@ void Input::loadButtonMap(const std::string& file)
 		m_gamepadMap[BUTTON_RIGHT] = c.parseIntValue("gamepad", "right");
 		m_gamepadMap[BUTTON_START] = c.parseIntValue("gamepad", "start");
 		m_gamepadMap[BUTTON_SELECT] = c.parseIntValue("gamepad", "select");
+		m_gamepadMap[BUTTON_BACK] = c.parseIntValue("gamepad", "back");
 
 		m_padDeadzone = c.parseIntValue("gamepad", "deadzone");
 

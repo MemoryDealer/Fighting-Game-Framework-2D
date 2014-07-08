@@ -38,6 +38,8 @@ public:
 		CAMPAIGN,
 		ARCADE,
 		ONLINE,
+			HOST,
+			JOIN,
 		OPTIONS
 	};
 
@@ -115,6 +117,42 @@ namespace GUIMenuStateLayer{
 			BUTTON_HOST = 0,
 			BUTTON_JOIN,
 			BUTTON_DEDICATED,
+			BUTTON_BACK
+		};
+
+		virtual void update(double dt);
+	};
+
+	// ================================================ //
+
+	class Host : public GUILayer
+	{
+	public:
+		explicit Host(void);
+
+		enum Widget{
+			STATIC_PORT = 0,
+			TEXTBOX_PORT,
+			BUTTON_HOST,
+			BUTTON_BACK
+		};
+
+		virtual void update(double dt);
+	};
+
+	// ================================================ //
+
+	class Join : public GUILayer
+	{
+	public:
+		explicit Join(void);
+
+		enum Widgets{
+			STATIC_SERVER = 0,
+			TEXTBOX_SERVER,
+			STATIC_PORT,
+			TEXTBOX_PORT,
+			BUTTON_JOIN,
 			BUTTON_BACK
 		};
 

@@ -5,64 +5,41 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: Widget.cpp
+// File: StageEffect.hpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Implements the Widget class. 
+// Defines StageLayer struct, and Effect struct inside it.
 // ================================================ //
 
-#include "Widget.hpp"
-#include "GUI.hpp"
-
-// ================================================ //
-
-Widget::Widget(const int id) :
-m_widgetID(id),
-m_type(Widget::STATIC),
-m_enabled(true)
-{
-	std::fill_n(m_links, 4, Widget::NONE);
-}
+#ifndef __STAGELAYER_HPP__
+#define __STAGELAYER_HPP__
 
 // ================================================ //
 
-Widget::~Widget(void)
-{
-
-}
+#include "stdafx.hpp"
 
 // ================================================ //
 
-void Widget::setAppearance(const int appearance)
-{
-	// Store current position. Setting the texture will reset position information. 
-	SDL_Rect pos = this->getPosition();
+// A layer that is rendered in a Stage. Can be the background,
+// scrolling translucent fog, etc.
+struct StageLayer{
+	SDL_Texture* pTexture;
+	SDL_Rect src, dst;
+	int w, h;
 
-	switch (this->getType()){
-	default:
-		break;
-
-	case Widget::Type::STATIC:
-		break;
-
-	case Widget::Type::BUTTON:
-		this->setTexture(GUI::ButtonTexture[appearance]);
-		break;
-
-	case Widget::Type::TEXTBOX:
-
-		break;
-	}
-
-	// Restore original position.
-	this->setPosition(pos);
-}
+	// An effect that can be applied to a Layer.
+	struct{
+		int scrollX, scrollY;
+		int alpha;
+	} Effect;
+};
 
 // ================================================ //
 
-void Widget::update(double dt)
-{
+typedef std::vector<StageLayer> StageLayerList;
 
-}
+// ================================================ //
+
+#endif
 
 // ================================================ //

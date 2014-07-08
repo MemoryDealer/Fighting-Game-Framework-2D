@@ -91,7 +91,7 @@
     <ClInclude Include="..\App.hpp" />
     <ClInclude Include="..\AppState.hpp" />
     <ClInclude Include="..\AppStateManager.hpp" />
-    <ClInclude Include="..\Button.hpp" />
+    <ClInclude Include="..\WidgetButton.hpp" />
     <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Config.hpp" />
     <ClInclude Include="..\Engine.hpp" />
@@ -127,11 +127,12 @@
     <ClInclude Include="..\stdafx.hpp" />
     <ClInclude Include="..\Timer.hpp" />
     <ClInclude Include="..\Widget.hpp" />
+    <ClInclude Include="..\WidgetStatic.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp" />
     <ClCompile Include="..\AppStateManager.cpp" />
-    <ClCompile Include="..\Button.cpp" />
+    <ClCompile Include="..\WidgetButton.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />
     <ClCompile Include="..\Engine.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="..\stdafx.cpp" />
     <ClCompile Include="..\Timer.cpp" />
     <ClCompile Include="..\Widget.cpp" />
+    <ClCompile Include="..\WidgetStatic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\work-log.txt" />

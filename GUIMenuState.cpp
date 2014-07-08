@@ -13,7 +13,8 @@
 
 #include "GUIMenuState.hpp"
 #include "Config.hpp"
-#include "Button.hpp"
+#include "WidgetButton.hpp"
+#include "WidgetStatic.hpp"
 #include "Engine.hpp"
 
 // ================================================ //
@@ -41,31 +42,42 @@ GUI()
 	// Add each layer to the GUI.
 	std::shared_ptr<GUILayer> layer(new GUIMenuStateLayer::Root());
 	names = StringList{ "campaign", "arcade", "options", "quit" };
-	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
 
 	layer.reset(new GUIMenuStateLayer::Campaign());
 	names = StringList{ "new", "load", "back" };
-	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
 
 	layer.reset(new GUIMenuStateLayer::Arcade());
 	names = StringList{ "local", "online", "back" };
-	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
 
 	layer.reset(new GUIMenuStateLayer::Online());
 	names = StringList{ "host", "join", "dedicated", "back" };
-	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
 
+	layer.reset(new GUIMenuStateLayer::Host());
+	names = StringList{ "port" };
+	layer->parse<WidgetStatic>(c, Widget::Type::STATIC, names);
+	names = StringList{ "host", "back" };
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
+	this->addLayer(layer);
+
+	layer.reset(new GUIMenuStateLayer::Join());
+	names = StringList{ "" };
+	this->addLayer(layer);
+	
 	layer.reset(new GUIMenuStateLayer::Options());
 	names = StringList{ "back" };
-	layer->parse<Button>(c, Widget::Type::BUTTON, names);
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
 
 	// Set starting layer to Root.
-	this->setCurrentLayer(GUIMenuState::Layer::ROOT);
+	this->pushLayer(GUIMenuState::Layer::ROOT);
 }
 
 // ================================================ //
@@ -151,6 +163,40 @@ namespace GUIMenuStateLayer{
 	// ================================================ //
 
 	void Online::update(double dt)
+	{
+
+	}
+
+	// ================================================ //
+	// Host
+	// ================================================ //
+
+	Host::Host(void)
+	{
+		this->setID(GUIMenuState::Layer::HOST);
+		this->setLayerName("host");
+	}
+
+	// ================================================ //
+
+	void Host::update(double dt)
+	{
+
+	}
+
+	// ================================================ //
+	// Join
+	// ================================================ //
+
+	Join::Join(void)
+	{
+		this->setID(GUIMenuState::Layer::JOIN);
+		this->setLayerName("join");
+	}
+
+	// ================================================ //
+
+	void Join::update(double dt)
 	{
 
 	}

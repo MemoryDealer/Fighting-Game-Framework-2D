@@ -121,7 +121,12 @@ void MenuState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_ESCAPE:
-			m_quit = true;
+			if (m_pGUI->getCurrentLayer() == GUIMenuState::Layer::ROOT){
+				m_quit = true;
+			}
+			else{
+				m_pGUI->popLayer();
+			}
 			break;
 
 		case SDLK_UP:
@@ -213,6 +218,10 @@ void MenuState::handleInput(SDL_Event& e)
 				case Input::BUTTON_RIGHT:
 					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
 					break;
+
+				case Input::BUTTON_BACK:
+					m_pGUI->popLayer();
+					break;
 				}
 			}
 		}
@@ -293,14 +302,14 @@ void MenuState::processGUIAction(const int type)
 
 		// Don't let this button be pressed unless BEGIN_PRESS started on it.
 		if (m_pGUI->getSelectedWidget() != lastSelectedWidget){
-			if (lastSelectedWidget < m_pGUI->getCurrentLayer()->getNumWidgets()){
+			if (lastSelectedWidget < m_pGUI->getCurrentLayerPtr()->getNumWidgets()){
 				m_pGUI->getWidgetPtr(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
 				return;
 			}
 		}
 
 		// Find the current layer, then test that layer's widgets for actions.
-		switch (m_pGUI->getCurrentLayer()->getID()){
+		switch (m_pGUI->getCurrentLayerPtr()->getID()){
 		default:
 			break;
 
@@ -310,15 +319,15 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_CAMPAIGN:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::CAMPAIGN);
+				m_pGUI->pushLayer(GUIMenuState::Layer::CAMPAIGN);
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_ARCADE:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ARCADE);
+				m_pGUI->pushLayer(GUIMenuState::Layer::ARCADE);
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_OPTIONS:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::OPTIONS);
+				m_pGUI->pushLayer(GUIMenuState::Layer::OPTIONS);
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_QUIT:
@@ -343,7 +352,7 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Campaign::BUTTON_BACK:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ROOT);
+				m_pGUI->popLayer();
 				break;
 			}
 			break;
@@ -358,11 +367,11 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Arcade::BUTTON_ONLINE:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ONLINE);
+				m_pGUI->pushLayer(GUIMenuState::Layer::ONLINE);
 				break;
 
 			case GUIMenuStateLayer::Arcade::BUTTON_BACK:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ROOT);
+				m_pGUI->popLayer();
 				break;
 			}
 			break;
@@ -373,7 +382,7 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Online::BUTTON_HOST:
-				
+				m_pGUI->pushLayer(GUIMenuState::Layer::HOST);
 				break;
 
 			case GUIMenuStateLayer::Online::BUTTON_JOIN:
@@ -385,7 +394,22 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Online::BUTTON_BACK:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ARCADE);
+				m_pGUI->popLayer();
+				break;
+			}
+			break;
+
+		case GUIMenuState::Layer::HOST:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUIMenuStateLayer::Host::BUTTON_HOST:
+
+				break;
+
+			case GUIMenuStateLayer::Host::BUTTON_BACK:
+				m_pGUI->popLayer();
 				break;
 			}
 			break;
@@ -396,7 +420,7 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Options::BUTTON_BACK:
-				m_pGUI->setCurrentLayer(GUIMenuState::Layer::ROOT);
+				m_pGUI->popLayer();
 				break;
 			}
 			break;

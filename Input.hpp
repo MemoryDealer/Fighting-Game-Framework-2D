@@ -44,6 +44,7 @@ public:
 
 		BUTTON_START,
 		BUTTON_SELECT, // such as A button, for menus (will be a duplicate)
+		BUTTON_BACK,
 
 		NUM_BUTTONS
 	};

@@ -119,8 +119,8 @@ void Object::render(void)
 		dst.x += m_pLabel->getOffset();
 		dst.w -= m_pLabel->getOffset() * 2;
 
-		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), m_pLabel->getTexturePtr(),
-			&m_src, &dst, 0, nullptr, m_flip);
+		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pLabel->getTexturePtr(),
+			nullptr, &dst, 0, nullptr, m_flip);
 	}
 }
 
