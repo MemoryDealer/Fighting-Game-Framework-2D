@@ -9,3 +9,9 @@ tex=Data/GUI/Textures/button1.png
 tex.selected=Data/GUI/Textures/button1selected.png
 tex.pressed=Data/GUI/Textures/button1pressed.png
 
+[textbox]
+tex=Data/GUI/Textures/textbox1.png
+tex.selected=Data/GUI/Textures/textbox1.png
+tex.pressed=Data/GUI/Textures/textbox1.png
+cursor=Data/GUI/Textures/textbox1cursor.png
+

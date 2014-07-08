@@ -13,8 +13,9 @@
 
 #include "GUIMenuState.hpp"
 #include "Config.hpp"
-#include "WidgetButton.hpp"
 #include "WidgetStatic.hpp"
+#include "WidgetButton.hpp"
+#include "WidgetTextbox.hpp"
 #include "Engine.hpp"
 
 // ================================================ //
@@ -34,6 +35,11 @@ GUI()
 		GUI::ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex")), SDL_DestroyTexture);
 		GUI::ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.selected")), SDL_DestroyTexture);
 		GUI::ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
+
+		GUI::TextboxTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex")), SDL_DestroyTexture);
+		GUI::TextboxTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.selected")), SDL_DestroyTexture);
+		GUI::TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
+		GUI::TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
 	}
 
 	// List of names of each widget for each layer.
@@ -63,6 +69,8 @@ GUI()
 	layer.reset(new GUIMenuStateLayer::Host());
 	names = StringList{ "port" };
 	layer->parse<WidgetStatic>(c, Widget::Type::STATIC, names);
+	names = StringList{ "port" };
+	layer->parse<WidgetTextbox>(c, Widget::Type::TEXTBOX, names);
 	names = StringList{ "host", "back" };
 	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);

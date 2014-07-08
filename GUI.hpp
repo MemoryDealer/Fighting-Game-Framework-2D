@@ -79,7 +79,7 @@ public:
 	// --- //
 
 	// Resets all Widget's appearances in GUILayer to Appearance::IDLE.
-	void resetAllWidgets(void);
+	void resetAllWidgets(const int cursor);
 
 	// Render every Widget.
 	virtual void render(void);
@@ -170,6 +170,9 @@ public:
 	// Pops the layer stack and sets current layer to the top of the stack.
 	void popLayer(void);
 
+	// Modifies the label of the Widget under control of the cursor.
+	void handleTextInput(const char* text, const bool backspace = false);
+
 	// Getters
 
 	// Returns index value of current layer.
@@ -185,6 +188,9 @@ public:
 	// by the current GUILayer's index for the Widget. 
 	const int getSelectedWidget(void) const;
 
+	// Returns the index at which the cursor is active.
+	const int getCursor(void) const;
+
 	// Returns true if the selector button is being held.
 	const bool getSelectorPressed(void) const;
 
@@ -194,6 +200,9 @@ public:
 	// Returns a Widget pointer for the currently selected Widget. An easier
 	// way to say: gui->WidgetPtr(gui->getSelectedWidget());
 	Widget* getSelectedWidgetPtr(void) const;
+
+	// Returns true if a Widget has the cursor and is processing text input.
+	const bool isEditingText(void) const;
 	
 	// Setters
 
@@ -219,12 +228,17 @@ public:
 	// SELECTED as long as the left mouse button is not pressed on the Widget.
 	void setSelectedWidget(const int n);
 
+	// Sets the value of the cursor for text editing.
+	void setCursor(const int n);
+
 	// Update the GUI and current GUILayer with delta time.
 	virtual void update(double dt);
 
 	// Static strings to store theme data across all GUI states.
 	// Used in GUILayer::parse().
 	static std::shared_ptr<SDL_Texture> ButtonTexture[3];
+	static std::shared_ptr<SDL_Texture> TextboxTexture[3];
+	static std::shared_ptr<SDL_Texture> TextboxCursor;
 
 private:
 	// List of all GUILayer's used by this GUI.
@@ -235,6 +249,9 @@ private:
 
 	// Index of currently selected Widget from the current GUILayer.
 	int m_selectedWidget;
+
+	// Index of widget with the "cursor" for editing text (usually textboxes).
+	int m_cursor;
 
 	// Stores navigation mode (e.g., SELECTOR or MOUSE).
 	int m_navMode;
@@ -273,6 +290,10 @@ inline const int GUI::getSelectedWidget(void) const{
 	return m_selectedWidget;
 }
 
+inline const int GUI::getCursor(void) const{
+	return m_cursor;
+}
+
 inline const bool GUI::getSelectorPressed(void) const{
 	return m_selectorPressed;
 }
@@ -283,6 +304,10 @@ inline Widget* GUI::getWidgetPtr(const int n) const{
 
 inline Widget* GUI::getSelectedWidgetPtr(void) const{
 	return m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget);
+}
+
+inline const bool GUI::isEditingText(void) const{
+	return (m_cursor != -1);
 }
 
 // Setters

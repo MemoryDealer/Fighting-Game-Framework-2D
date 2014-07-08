@@ -278,6 +278,8 @@
 -Added layer stack to GUI class, which keeps all of the active GUILayers. Can be pushed and popped through GUI::pushLayer() and GUI::popLayer().
 -In Object::render()'s 2nd call to SDL_RenderCopyEx(), I changed the destination rect pointer to nullptr, otherwise an Object without a core texture
 	would fail to render the text because the src rect is zero.
+-Added Static Widget which holds text for now. Can be modified to hold a picture as well.
+-Added Textbox Widget, working on using SDL_TEXTINPUT to allow text input.
 
 #TODO
 -Add stack of layers to GUI and back button for gamepad.

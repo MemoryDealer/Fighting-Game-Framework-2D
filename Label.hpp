@@ -26,7 +26,7 @@ class Label
 {
 public:
 	// Sets SDL_Texture to nullptr and offset to zero.
-	explicit Label(void);
+	explicit Label(const bool centered = false);
 
 	// Frees the SDL_Texture.
 	virtual ~Label(void);
@@ -42,14 +42,24 @@ public:
 	// Returns the offset for rendering the text.
 	const int getOffset(void) const;
 
+	// Returns the string content of the label.
+	const std::string getText(void) const;
+
+	// Returns true if the text is centered.
+	const bool isCentered(void) const;
+
 	// Setters
 
-	// Sets the offset for rendering the text.
+	// Sets the offset for rendering centered text.
 	void setOffset(const int offset);
+
+	// Sets whether or not the text is center-oriented.
+	void setCentered(const bool centered);
 
 private:
 	SDL_Texture* m_pTexture;
 	std::string m_label;
+	bool m_centered;
 
 	// Space between both left/right sides of Object's dst.
 	int m_offset; 
@@ -67,10 +77,22 @@ inline const int Label::getOffset(void) const{
 	return m_offset;
 }
 
+inline const std::string Label::getText(void) const{
+	return m_label;
+}
+
+inline const bool Label::isCentered(void) const{
+	return m_centered;
+}
+
 // Setters
 
 inline void Label::setOffset(const int offset){
 	m_offset = offset;
+}
+
+inline void Label::setCentered(const bool centered){
+	m_centered = centered;
 }
 
 // ================================================ //

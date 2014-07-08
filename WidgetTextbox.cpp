@@ -5,39 +5,40 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: WidgetButton.cpp
+// File: WidgetTextbox.cpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Implements Button class. 
+// Implements the WidgetTextbox class, derived from Widget.
 // ================================================ //
 
-#include "WidgetButton.hpp"
+#include "WidgetTextbox.hpp"
 #include "Label.hpp"
 
 // ================================================ //
 
-WidgetButton::WidgetButton(const int id) :
+WidgetTextbox::WidgetTextbox(const int id) :
 Widget(id)
 {
-	this->setType(Widget::Type::BUTTON);
+	this->setType(Widget::Type::TEXTBOX);
 
-	// m_pLabel is in ObjectImpl; tell this class to use it.
 	m_renderLabel = true;
-	m_pLabel.reset(new Label(true));
+	m_pLabel.reset(new Label());
 }
 
 // ================================================ //
 
-WidgetButton::~WidgetButton(void)
+WidgetTextbox::~WidgetTextbox(void)
 {
 
 }
 
 // ================================================ //
 
-void WidgetButton::update(double dt)
+void WidgetTextbox::update(double dt)
 {
-	
+
 }
 
 // ================================================ //
+
+

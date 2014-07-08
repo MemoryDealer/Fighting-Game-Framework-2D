@@ -22,7 +22,7 @@ Widget(id)
 	this->setType(Widget::Type::STATIC);
 
 	m_renderLabel = true;
-	m_pLabel.reset(new Label());
+	m_pLabel.reset(new Label(true));
 }
 
 // ================================================ //

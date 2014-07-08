@@ -5,39 +5,39 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: WidgetButton.cpp
+// File: WidgetTextbox.hpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Implements Button class. 
+// Defines the WidgetTextbox class, derived from Widget.
 // ================================================ //
 
-#include "WidgetButton.hpp"
-#include "Label.hpp"
+#ifndef __WIDGETTEXTBOX_HPP__
+#define __WIDGETTEXTBOX_HPP__
 
 // ================================================ //
 
-WidgetButton::WidgetButton(const int id) :
-Widget(id)
+#include "Widget.hpp"
+
+// ================================================ //
+
+class WidgetTextbox : public Widget
 {
-	this->setType(Widget::Type::BUTTON);
+public:
+	// Calls Widget's constructor, sets type to TEXTBOX, allocates Label.
+	explicit WidgetTextbox(const int id);
 
-	// m_pLabel is in ObjectImpl; tell this class to use it.
-	m_renderLabel = true;
-	m_pLabel.reset(new Label(true));
-}
+	// Empty destructor.
+	virtual ~WidgetTextbox(void);
+
+	// Updates with delta time.
+	virtual void update(double dt);
+
+private:
+
+};
 
 // ================================================ //
 
-WidgetButton::~WidgetButton(void)
-{
-
-}
-
-// ================================================ //
-
-void WidgetButton::update(double dt)
-{
-	
-}
+#endif
 
 // ================================================ //

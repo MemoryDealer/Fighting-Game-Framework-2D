@@ -129,6 +129,12 @@ void MenuState::handleInput(SDL_Event& e)
 			}
 			break;
 
+		case SDLK_BACKSPACE:
+			if (m_pGUI->isEditingText()){
+				m_pGUI->handleTextInput("", true);
+			}
+			break;
+
 		case SDLK_UP:
 		case SDLK_DOWN:
 		case SDLK_LEFT:
@@ -282,6 +288,7 @@ void MenuState::handleInput(SDL_Event& e)
 void MenuState::processGUIAction(const int type)
 {
 	static int lastSelectedWidget = Widget::NONE;
+	m_pGUI->setCursor(Widget::NONE);
 
 	switch (type){
 	default:
@@ -404,6 +411,10 @@ void MenuState::processGUIAction(const int type)
 			default:
 				break;
 
+			case GUIMenuStateLayer::Host::TEXTBOX_PORT:
+				m_pGUI->setCursor(GUIMenuStateLayer::Host::TEXTBOX_PORT);
+				break;
+
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
 
 				break;
@@ -448,7 +459,7 @@ void MenuState::update(double dt)
 			m_quit = true;
 			break;
 
-		case SDL_KEYDOWN:
+		case SDL_KEYDOWN:	
 			// Send a BEGIN_PRESS action to processGUI() if the selection 
 			// button is held.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
@@ -570,6 +581,14 @@ void MenuState::update(double dt)
 
 		case SDL_CONTROLLERAXISMOTION:
 			this->handleInput(e);
+			break;
+
+		case SDL_TEXTINPUT:
+			m_pGUI->handleTextInput(e.text.text);
+			break;
+
+		case SDL_TEXTEDITING:
+			m_pGUI->handleTextInput(e.edit.text);
 			break;
 		}
 	}

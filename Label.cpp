@@ -17,9 +17,10 @@
 
 // ================================================ //
 
-Label::Label(void) :
+Label::Label(const bool centered) :
 m_pTexture(nullptr),
 m_label(),
+m_centered(centered),
 m_offset(0)
 {
 
@@ -36,8 +37,9 @@ Label::~Label(void)
 
 void Label::create(const std::string& label)
 {
-	if (label.empty()){
-		Log::getSingletonPtr()->logMessage("Label creation rejected due to blank label text");
+	const int MAX_LENGTH = 64;
+	if (label.length() > MAX_LENGTH){
+		Log::getSingletonPtr()->logMessage("Label creation rejected, text over maximum length!");
 		return;
 	}
 
@@ -45,6 +47,13 @@ void Label::create(const std::string& label)
 
 	Font* pFont = FontManager::getSingletonPtr()->getFont(FontManager::MAIN);
 	SDL_Color color = { 200, 200, 200 };
+
+	if (m_label.empty()){
+		m_label.assign(" ");
+	}
+	else if (m_label[0] == ' '){
+		m_label = m_label.substr(1, m_label.length() - 1);
+	}
 
 	// A surface must be created before creating a texture.
 	SDL_Surface* surf = TTF_RenderText_Blended(pFont->get(), m_label.c_str(), color);

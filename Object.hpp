@@ -55,6 +55,9 @@ public:
 	// Returns true if the Object is dead.
 	virtual const bool isDead(void) const;
 
+	// Returns a pointer to the Object's Label.
+	virtual Label* getLabel(void) const;
+
 	// Setters
 
 	// Sets the main SDL_Texture's pointer directly.
@@ -131,6 +134,10 @@ inline const int Object::getID(void) const{
 
 inline const bool Object::isDead(void) const{
 	return m_dead;
+}
+
+inline Label* Object::getLabel(void) const{
+	return m_pLabel.get();
 }
 
 // Setters

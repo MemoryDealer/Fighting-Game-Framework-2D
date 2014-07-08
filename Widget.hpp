@@ -106,7 +106,9 @@ public:
 	// Sets the graphical appearance of the Widget. 
 	// Parameters:
 	// appearance - the enumerated value for the appearance, such as Appearance::IDLE
-	virtual void setAppearance(const int appearance);
+	// pTex - if specified, the widget will use this texture, otherwise it will use
+	//  the GUI's theme texture for the appearance value.
+	virtual void setAppearance(const int appearance, std::shared_ptr<SDL_Texture> pTex = nullptr);
 
 	// --- //
 

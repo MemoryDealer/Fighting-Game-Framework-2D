@@ -33,25 +33,30 @@ Widget::~Widget(void)
 
 // ================================================ //
 
-void Widget::setAppearance(const int appearance)
+void Widget::setAppearance(const int appearance, std::shared_ptr<SDL_Texture> pTex)
 {
 	// Store current position. Setting the texture will reset position information. 
 	SDL_Rect pos = this->getPosition();
 
-	switch (this->getType()){
-	default:
-		break;
+	if (pTex == nullptr){
+		switch (this->getType()){
+		default:
+			break;
 
-	case Widget::Type::STATIC:
-		break;
+		case Widget::Type::STATIC:
+			break;
 
-	case Widget::Type::BUTTON:
-		this->setTexture(GUI::ButtonTexture[appearance]);
-		break;
+		case Widget::Type::BUTTON:
+			this->setTexture(GUI::ButtonTexture[appearance]);
+			break;
 
-	case Widget::Type::TEXTBOX:
-
-		break;
+		case Widget::Type::TEXTBOX:
+			this->setTexture(GUI::TextboxTexture[appearance]);
+			break;
+		}
+	}
+	else{
+		this->setTexture(pTex);
 	}
 
 	// Restore original position.

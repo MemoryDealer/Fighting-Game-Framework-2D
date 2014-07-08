@@ -14,8 +14,10 @@
 #include "GUI.hpp"
 #include "Config.hpp"
 #include "Engine.hpp"
-#include "WidgetButton.hpp"
 #include "WidgetStatic.hpp"
+#include "WidgetButton.hpp"
+#include "WidgetTextbox.hpp"
+#include "Label.hpp"
 
 // ================================================ //
 
@@ -54,6 +56,10 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 		widgetName = "button.";
 		pTex = GUI::ButtonTexture[Widget::Appearance::IDLE];
 		break;
+
+	case Widget::Type::TEXTBOX:
+		widgetName = "textbox.";
+		break;
 	}
 
 	// Parse each setting for this Widget. 
@@ -72,17 +78,18 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 }
 
 // Explicitly instantiate template functions for each Widget type.
-template void GUILayer::parse<WidgetButton>(Config& c, const int widgetType, const StringList& names);
 template void GUILayer::parse<WidgetStatic>(Config& c, const int widgetType, const StringList& names);
+template void GUILayer::parse<WidgetButton>(Config& c, const int widgetType, const StringList& names);
+template void GUILayer::parse<WidgetTextbox>(Config& c, const int widgetType, const StringList& names);
 
 // ================================================ //
 
-void GUILayer::resetAllWidgets(void)
+void GUILayer::resetAllWidgets(const int cursor)
 {
-	for (WidgetList::iterator itr = m_widgets.begin();
-		itr != m_widgets.end();
-		++itr){
-		(*itr)->setAppearance(Widget::Appearance::IDLE);
+	for (unsigned int i = 0; i < m_widgets.size(); ++i){
+		if (i != cursor){
+			m_widgets[i]->setAppearance(Widget::Appearance::IDLE);
+		}
 	}
 }
 
@@ -101,6 +108,8 @@ void GUILayer::render(void)
 // ================================================ //
 
 std::shared_ptr<SDL_Texture> GUI::ButtonTexture[] = { nullptr, nullptr, nullptr };
+std::shared_ptr<SDL_Texture> GUI::TextboxTexture[] = { nullptr, nullptr, nullptr };
+std::shared_ptr<SDL_Texture> GUI::TextboxCursor = nullptr;
 
 // ================================================ //
 
@@ -108,6 +117,7 @@ GUI::GUI(void) :
 m_layers(),
 m_layerStack(),
 m_selectedWidget(Widget::NONE),
+m_cursor(Widget::NONE),
 m_navMode(NavMode::MOUSE),
 m_mouseX(0),
 m_mouseY(0),
@@ -132,6 +142,9 @@ void GUI::clearSelector(void)
 	if (m_selectedWidget != Widget::NONE){
 		m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::IDLE);
 	}
+
+	m_selectedWidget = 0;
+	m_cursor = Widget::NONE;
 }
 
 // ================================================ //
@@ -139,8 +152,7 @@ void GUI::clearSelector(void)
 void GUI::pushLayer(const int n)
 {
 	this->clearSelector();
-	m_selectedWidget = 0;
-
+	
 	m_layerStack.push(n);
 
 	// Set the default selected Widget's appearance to SELECTED.
@@ -156,13 +168,34 @@ void GUI::popLayer(void)
 	// Only pop if there is more than one layer.
 	if (m_layerStack.size() > 1){
 		this->clearSelector();
-		m_selectedWidget = 0;
 
 		m_layerStack.pop();
 
 		if (m_navMode == GUI::NavMode::SELECTOR){
 			m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
 		}
+	}
+}
+
+// ================================================ //
+
+void GUI::handleTextInput(const char* text, const bool backspace)
+{
+	Widget* pWidget = this->getWidgetPtr(m_cursor);
+	// The change in the offset.
+	const int offsetDiff = 4;
+
+	std::string label = pWidget->getLabel()->getText();
+	if (backspace){
+		// An empty label is one space.
+		if (label != " "){
+			label.erase(label.length() - 1, 1);
+			pWidget->setLabel(label, pWidget->getLabel()->getOffset() + offsetDiff);
+		}
+	}
+	else{
+		label.append(text);
+		pWidget->setLabel(label, pWidget->getLabel()->getOffset() - offsetDiff);
 	}
 }
 
@@ -184,7 +217,23 @@ void GUI::setSelectedWidget(const int n)
 		}
 
 		// Set newly selected widget's appearance to SELECTED.
-		m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		if (m_cursor != n){
+			m_layers[m_layerStack.top()]->getWidgetPtr(m_selectedWidget)->setAppearance(Widget::Appearance::SELECTED);
+		}
+	}
+}
+
+// ================================================ //
+
+void GUI::setCursor(const int n)
+{
+	m_cursor = n;
+	if (m_cursor == Widget::NONE){
+		SDL_StopTextInput();
+	}
+	else{
+		this->getWidgetPtr(n)->setAppearance(0, GUI::TextboxCursor);
+		SDL_StartTextInput();
 	}
 }
 
@@ -207,7 +256,10 @@ void GUI::update(double dt)
 		// See if mouse is inside bounds of each widget.
 		for (int i = 0; i < m_layers[m_layerStack.top()]->getNumWidgets(); ++i){
 			if (SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
-				this->setSelectedWidget(i);
+				if (this->getWidgetPtr(i)->getType() == Widget::Type::BUTTON ||
+					this->getWidgetPtr(i)->getType() == Widget::Type::TEXTBOX){
+					this->setSelectedWidget(i);
+				}
 
 				// Allow a reset check.
 				resetAllWidgets = true;
@@ -218,7 +270,8 @@ void GUI::update(double dt)
 		// Reset all of the current layer's widgets if nothing is selected
 		if (m_selectedWidget == Widget::NONE && resetAllWidgets){
 			if (!m_leftMouseDown){
-				m_layers[m_layerStack.top()]->resetAllWidgets();
+				// Pass the index of the Widget with the active cursor.
+				m_layers[m_layerStack.top()]->resetAllWidgets(m_cursor);
 
 				// Prevent resetAllWidgets() from being called when not necessary.
 				resetAllWidgets = false; 

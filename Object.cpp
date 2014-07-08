@@ -116,8 +116,13 @@ void Object::render(void)
 	if (m_renderLabel){
 		// Copy the dst rect and modify to suit the Label's dimensions.
 		SDL_Rect dst = m_dst;
-		dst.x += m_pLabel->getOffset();
-		dst.w -= m_pLabel->getOffset() * 2;
+		if (m_pLabel->isCentered()){
+			dst.x += m_pLabel->getOffset();
+			dst.w -= m_pLabel->getOffset() * 2;
+		}
+		else{
+			dst.w = m_pLabel->getText().length() * 32;
+		}
 
 		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pLabel->getTexturePtr(),
 			nullptr, &dst, 0, nullptr, m_flip);
