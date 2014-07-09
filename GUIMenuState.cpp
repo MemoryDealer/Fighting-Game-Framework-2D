@@ -118,13 +118,6 @@ namespace GUIMenuStateLayer{
 	}
 
 	// ================================================ //
-
-	void Root::update(double dt)
-	{
-		
-	}
-
-	// ================================================ //
 	// Campaign
 	// ================================================ //
 
@@ -132,13 +125,6 @@ namespace GUIMenuStateLayer{
 	{
 		this->setID(GUIMenuState::Layer::CAMPAIGN);
 		this->setLayerName("campaign");
-	}
-
-	// ================================================ //
-
-	void Campaign::update(double dt)
-	{
-
 	}
 
 	// ================================================ //
@@ -152,13 +138,6 @@ namespace GUIMenuStateLayer{
 	}
 
 	// ================================================ //
-
-	void Arcade::update(double dt)
-	{
-
-	}
-
-	// ================================================ //
 	// Online
 	// ================================================ //
 
@@ -166,13 +145,6 @@ namespace GUIMenuStateLayer{
 	{
 		this->setID(GUIMenuState::Layer::ONLINE);
 		this->setLayerName("online");
-	}
-
-	// ================================================ //
-
-	void Online::update(double dt)
-	{
-
 	}
 
 	// ================================================ //
@@ -186,13 +158,6 @@ namespace GUIMenuStateLayer{
 	}
 
 	// ================================================ //
-
-	void Host::update(double dt)
-	{
-
-	}
-
-	// ================================================ //
 	// Join
 	// ================================================ //
 
@@ -203,13 +168,6 @@ namespace GUIMenuStateLayer{
 	}
 
 	// ================================================ //
-
-	void Join::update(double dt)
-	{
-
-	}
-
-	// ================================================ //
 	// Options
 	// ================================================ //
 
@@ -217,13 +175,6 @@ namespace GUIMenuStateLayer{
 	{
 		this->setID(GUIMenuState::Layer::OPTIONS);
 		this->setLayerName("options");
-	}
-
-	// ================================================ //
-
-	void Options::update(double dt)
-	{
-
 	}
 
 	// ================================================ //

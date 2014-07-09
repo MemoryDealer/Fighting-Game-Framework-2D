@@ -121,7 +121,7 @@ void Object::render(void)
 			dst.w -= m_pLabel->getOffset() * 2;
 		}
 		else{
-			dst.w = m_pLabel->getText().length() * 32;
+			dst.w = m_pLabel->getWidth();
 		}
 
 		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pLabel->getTexturePtr(),

@@ -17,7 +17,7 @@
 #include "PlayerData.hpp"
 #include "StageManager.hpp"
 #include "GUIMenuState.hpp"
-#include "Widget.hpp"
+#include "WidgetTextbox.hpp"
 #include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
@@ -121,11 +121,22 @@ void MenuState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_ESCAPE:
-			if (m_pGUI->getCurrentLayer() == GUIMenuState::Layer::ROOT){
-				m_quit = true;
+			if (m_pGUI->isEditingText()){
+				m_pGUI->setEditingText(Widget::NONE);
 			}
 			else{
-				m_pGUI->popLayer();
+				if (m_pGUI->getCurrentLayer() == GUIMenuState::Layer::ROOT){
+					m_quit = true;
+				}
+				else{
+					m_pGUI->popLayer();
+				}
+			}
+			break;
+
+		case SDLK_RETURN:
+			if (m_pGUI->isEditingText()){
+				m_pGUI->setEditingText(Widget::NONE);
 			}
 			break;
 
@@ -288,7 +299,7 @@ void MenuState::handleInput(SDL_Event& e)
 void MenuState::processGUIAction(const int type)
 {
 	static int lastSelectedWidget = Widget::NONE;
-	m_pGUI->setCursor(Widget::NONE);
+	m_pGUI->setEditingText(Widget::NONE);
 
 	switch (type){
 	default:
@@ -412,7 +423,7 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Host::TEXTBOX_PORT:
-				m_pGUI->setCursor(GUIMenuStateLayer::Host::TEXTBOX_PORT);
+				m_pGUI->setEditingText(GUIMenuStateLayer::Host::TEXTBOX_PORT);
 				break;
 
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
@@ -459,11 +470,11 @@ void MenuState::update(double dt)
 			m_quit = true;
 			break;
 
-		case SDL_KEYDOWN:	
+		case SDL_KEYDOWN:
 			// Send a BEGIN_PRESS action to processGUI() if the selection 
 			// button is held.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-				if (e.key.keysym.sym == SDLK_RETURN){
+				if (e.key.keysym.sym == SDLK_SPACE){
 					m_pGUI->setSelectorPressed(true);
 					this->processGUIAction(GUI::Action::BEGIN_PRESS);
 				}
@@ -476,7 +487,7 @@ void MenuState::update(double dt)
 			// Send a FINISH_PRESS action to processGUI() if the selection 
 			// button is released.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-				if (e.key.keysym.sym == SDLK_RETURN){
+				if (e.key.keysym.sym == SDLK_SPACE){
 					m_pGUI->setSelectorPressed(false);
 					this->processGUIAction(GUI::Action::FINISH_PRESS);
 				}

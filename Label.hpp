@@ -39,6 +39,9 @@ public:
 	// Returns a pointer to the SDL_Texture containing the text.
 	SDL_Texture* getTexturePtr(void) const;
 
+	// Returns the SDL_Color of the label.
+	const SDL_Color getColor(void) const;
+
 	// Returns the offset for rendering the text.
 	const int getOffset(void) const;
 
@@ -48,7 +51,19 @@ public:
 	// Returns true if the text is centered.
 	const bool isCentered(void) const;
 
+	// Returns the width of the generated label.
+	const int getWidth(void) const;
+
+	// Returns the height of the generated label.
+	const int getHeight(void) const;
+
 	// Setters
+
+	// Sets the label's color.
+	void setColor(const int r, const int g, const int b, const int a);
+
+	// Sets the label's color.
+	void setColor(const SDL_Color& color);
 
 	// Sets the offset for rendering centered text.
 	void setOffset(const int offset);
@@ -59,10 +74,12 @@ public:
 private:
 	SDL_Texture* m_pTexture;
 	std::string m_label;
+	SDL_Color m_color;
 	bool m_centered;
+	int m_width, m_height;
 
 	// Space between both left/right sides of Object's dst.
-	int m_offset; 
+	int m_offset;
 };
 
 // ================================================ //
@@ -71,6 +88,10 @@ private:
 
 inline SDL_Texture* Label::getTexturePtr(void) const{
 	return m_pTexture;
+}
+
+inline const SDL_Color Label::getColor(void) const{
+	return m_color;
 }
 
 inline const int Label::getOffset(void) const{
@@ -85,7 +106,23 @@ inline const bool Label::isCentered(void) const{
 	return m_centered;
 }
 
+inline const int Label::getWidth(void) const{
+	return m_width;
+}
+
+inline const int Label::getHeight(void) const{
+	return m_height;
+}
+
 // Setters
+
+inline void Label::setColor(const int r, const int g, const int b, const int a){
+	m_color.r = r; m_color.g = g; m_color.b = b; m_color.a = a;
+}
+
+inline void Label::setColor(const SDL_Color& color){
+	m_color = color;
+}
 
 inline void Label::setOffset(const int offset){
 	m_offset = offset;

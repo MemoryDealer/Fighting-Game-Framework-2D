@@ -18,6 +18,8 @@
 
 #include "Widget.hpp"
 
+class Timer;
+
 // ================================================ //
 
 class WidgetTextbox : public Widget
@@ -29,11 +31,19 @@ public:
 	// Empty destructor.
 	virtual ~WidgetTextbox(void);
 
+	// Modifies the label of the Widget.
+	void handleEditing(const char* text, const bool backspace);
+
 	// Updates with delta time.
 	virtual void update(double dt);
 
-private:
+	// Renders the cursor and calls Object::render();
+	virtual void render(void);
 
+private:
+	int m_cursorPos;
+	std::shared_ptr<Timer> m_pCursorTimer;
+	bool m_renderCursor;
 };
 
 // ================================================ //

@@ -37,9 +37,9 @@ public:
 		ROOT = 0,
 		CAMPAIGN,
 		ARCADE,
-		ONLINE,
-			HOST,
-			JOIN,
+			ONLINE,
+				HOST,
+				JOIN,
 		OPTIONS
 	};
 
@@ -70,8 +70,6 @@ namespace GUIMenuStateLayer{
 			BUTTON_OPTIONS,
 			BUTTON_QUIT
 		};
-
-		virtual void update(double dt);
 	};
 
 	// ================================================ //
@@ -86,8 +84,6 @@ namespace GUIMenuStateLayer{
 			BUTTON_LOAD,
 			BUTTON_BACK
 		};
-
-		virtual void update(double dt);
 	};
 
 	// ================================================ //
@@ -102,8 +98,6 @@ namespace GUIMenuStateLayer{
 			BUTTON_ONLINE,
 			BUTTON_BACK
 		};
-
-		virtual void update(double dt);
 	};
 
 	// ================================================ //
@@ -119,8 +113,6 @@ namespace GUIMenuStateLayer{
 			BUTTON_DEDICATED,
 			BUTTON_BACK
 		};
-
-		virtual void update(double dt);
 	};
 
 	// ================================================ //
@@ -136,8 +128,6 @@ namespace GUIMenuStateLayer{
 			BUTTON_HOST,
 			BUTTON_BACK
 		};
-
-		virtual void update(double dt);
 	};
 
 	// ================================================ //
@@ -155,8 +145,6 @@ namespace GUIMenuStateLayer{
 			BUTTON_JOIN,
 			BUTTON_BACK
 		};
-
-		virtual void update(double dt);
 	};
 
 	// ================================================ //
@@ -169,10 +157,7 @@ namespace GUIMenuStateLayer{
 		enum Widget{
 			BUTTON_BACK = 0
 		};
-
-		virtual void update(double dt);
 	};
-
 }
 
 // ================================================ //

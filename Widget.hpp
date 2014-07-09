@@ -81,6 +81,9 @@ public:
 	// Returns true if the Widget is enabled. 
 	const bool isEnabled(void) const;
 
+	// Returns true if the Widget is active (selected).
+	const bool isActive(void) const;
+
 	// Returns the link value (another Widget's ID) for the specific direction. 
 	// Parameters:
 	// direction - the direction of the link (e.g., UP, DOWN, LEFT, or RIGHT)
@@ -96,6 +99,9 @@ public:
 
 	// Sets the Widget to enabled or disabled. 
 	void setEnabled(const bool enabled);
+
+	// Sets the Widget to active if true.
+	void setActive(const bool active);
 
 	// Sets the link value (another Widget's ID) for the specified direction. 
 	// Parameters:
@@ -119,6 +125,7 @@ private:
 	int m_widgetID;
 	int m_type;
 	bool m_enabled;
+	bool m_active;
 
 	// Assocations between this widget and other widgets for SELECTOR navigation. 
 	int m_links[4];
@@ -151,6 +158,10 @@ inline const bool Widget::isEnabled(void) const{
 	return m_enabled;
 }
 
+inline const bool Widget::isActive(void) const{
+	return m_active;
+}
+
 inline const int Widget::getLinkID(const int direction) const{
 	return m_links[direction];
 }
@@ -163,6 +174,10 @@ inline void Widget::setType(const int type){
 
 inline void Widget::setEnabled(const bool enabled){
 	m_enabled = enabled;
+}
+
+inline void Widget::setActive(const bool active){
+	m_active = active;
 }
 
 inline void Widget::setLinkID(const int direction, const int id){

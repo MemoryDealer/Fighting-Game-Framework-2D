@@ -80,13 +80,13 @@ const bool Hitbox::intersects(const Hitbox* b)
 void Hitbox::render(void)
 {
 	// Render the inner translucent box.
-	SDL_SetRenderDrawBlendMode(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), SDL_BLENDMODE_BLEND);
-	SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), m_color.r, m_color.g, m_color.b, m_color.a);
-	SDL_RenderFillRect(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), &m_rc);
+	SDL_SetRenderDrawBlendMode(Engine::getSingletonPtr()->getRenderer(), SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(Engine::getSingletonPtr()->getRenderer(), m_color.r, m_color.g, m_color.b, m_color.a);
+	SDL_RenderFillRect(Engine::getSingletonPtr()->getRenderer(), &m_rc);
 	
 	// Render the opaque outline.
-	SDL_SetRenderDrawColor(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), m_outline.r, m_outline.g, m_outline.b, 255);
-	SDL_RenderDrawRect(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()), &m_rc);
+	SDL_SetRenderDrawColor(Engine::getSingletonPtr()->getRenderer(), m_outline.r, m_outline.g, m_outline.b, 255);
+	SDL_RenderDrawRect(Engine::getSingletonPtr()->getRenderer(), &m_rc);
 }
 
 // ================================================ //

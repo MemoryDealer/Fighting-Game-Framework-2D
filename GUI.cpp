@@ -105,6 +105,17 @@ void GUILayer::render(void)
 }
 
 // ================================================ //
+
+void GUILayer::update(double dt)
+{
+	for (WidgetList::iterator itr = m_widgets.begin();
+		itr != m_widgets.end();
+		++itr){
+		(*itr)->update(dt);
+	}
+}
+
+// ================================================ //
 // ================================================ //
 
 std::shared_ptr<SDL_Texture> GUI::ButtonTexture[] = { nullptr, nullptr, nullptr };
@@ -181,21 +192,9 @@ void GUI::popLayer(void)
 
 void GUI::handleTextInput(const char* text, const bool backspace)
 {
-	Widget* pWidget = this->getWidgetPtr(m_cursor);
-	// The change in the offset.
-	const int offsetDiff = 4;
-
-	std::string label = pWidget->getLabel()->getText();
-	if (backspace){
-		// An empty label is one space.
-		if (label != " "){
-			label.erase(label.length() - 1, 1);
-			pWidget->setLabel(label, pWidget->getLabel()->getOffset() + offsetDiff);
-		}
-	}
-	else{
-		label.append(text);
-		pWidget->setLabel(label, pWidget->getLabel()->getOffset() - offsetDiff);
+	if (m_cursor != Widget::NONE){
+		WidgetTextbox* pWidget = static_cast<WidgetTextbox*>(this->getWidgetPtr(m_cursor));
+		pWidget->handleEditing(text, backspace);
 	}
 }
 
@@ -225,15 +224,22 @@ void GUI::setSelectedWidget(const int n)
 
 // ================================================ //
 
-void GUI::setCursor(const int n)
+void GUI::setEditingText(const int n)
 {
+	static int lastActiveWidget = Widget::NONE;
 	m_cursor = n;
 	if (m_cursor == Widget::NONE){
 		SDL_StopTextInput();
+		if (lastActiveWidget != Widget::NONE){
+			this->getWidgetPtr(lastActiveWidget)->setActive(false);
+			this->getWidgetPtr(lastActiveWidget)->setAppearance(Widget::Appearance::IDLE);
+		}
 	}
 	else{
 		this->getWidgetPtr(n)->setAppearance(0, GUI::TextboxCursor);
+		this->getWidgetPtr(n)->setActive(true);
 		SDL_StartTextInput();
+		lastActiveWidget = n;
 	}
 }
 

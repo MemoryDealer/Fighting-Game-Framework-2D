@@ -85,7 +85,7 @@ public:
 	virtual void render(void);
 
 	// Update all Widgets with delta time.
-	virtual void update(double dt) = 0;
+	virtual void update(double dt);
 
 private:
 	// Unique ID for a GUILayer.
@@ -229,7 +229,7 @@ public:
 	void setSelectedWidget(const int n);
 
 	// Sets the value of the cursor for text editing.
-	void setCursor(const int n);
+	void setEditingText(const int n);
 
 	// Update the GUI and current GUILayer with delta time.
 	virtual void update(double dt);

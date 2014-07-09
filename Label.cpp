@@ -20,10 +20,13 @@
 Label::Label(const bool centered) :
 m_pTexture(nullptr),
 m_label(),
+m_color(),
 m_centered(centered),
+m_width(0),
+m_height(0),
 m_offset(0)
 {
-
+	m_color = { 200, 200, 200, 255 };
 }
 
 // ================================================ //
@@ -46,7 +49,6 @@ void Label::create(const std::string& label)
 	m_label = label;
 
 	Font* pFont = FontManager::getSingletonPtr()->getFont(FontManager::MAIN);
-	SDL_Color color = { 200, 200, 200 };
 
 	if (m_label.empty()){
 		m_label.assign(" ");
@@ -56,7 +58,7 @@ void Label::create(const std::string& label)
 	}
 
 	// A surface must be created before creating a texture.
-	SDL_Surface* surf = TTF_RenderText_Blended(pFont->get(), m_label.c_str(), color);
+	SDL_Surface* surf = TTF_RenderText_Blended(pFont->get(), m_label.c_str(), m_color);
 	if (surf == nullptr){
 		throw std::exception("Failure loading SDL_Surface in Label::create()");
 	}
@@ -65,6 +67,9 @@ void Label::create(const std::string& label)
 
 	// The surface is no longer needed, the memory was copied to the texture.
 	SDL_FreeSurface(surf);
+
+	// Store the width and height of the label.
+	TTF_SizeText(pFont->get(), m_label.c_str(), &m_width, &m_height);
 }
 
 // ================================================ //
