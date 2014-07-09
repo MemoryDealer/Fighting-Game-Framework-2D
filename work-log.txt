@@ -280,9 +280,11 @@
 	would fail to render the text because the src rect is zero.
 -Added Static Widget which holds text for now. Can be modified to hold a picture as well.
 -Added Textbox Widget, working on using SDL_TEXTINPUT to allow text input.
+-Added a cursor to the Textbox Widget. It only stays at the end for now.
+-Created logic for activating the Textbox Widget and editing the text, and exiting editing mode. These are handled in GUI and in the AppState.
 
 #TODO
--Add stack of layers to GUI and back button for gamepad.
+-Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.
 -Add the ability for the GUI to enable/disable interaction, use when processing data.
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
 	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.

@@ -56,7 +56,12 @@ void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 	else{
 		label.append(text);
 		this->setLabel(label, m_pLabel->getOffset() - offsetDiff);
-		m_cursorPos = label.length();
+
+		// Prevent text from going outside of the textbox.
+		if (m_pLabel->getWidth() > m_dst.w){
+			label.erase(label.length() - 1, 1);
+			this->setLabel(label, m_pLabel->getOffset() + offsetDiff);
+		}
 	}
 }
 

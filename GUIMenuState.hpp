@@ -123,8 +123,8 @@ namespace GUIMenuStateLayer{
 		explicit Host(void);
 
 		enum Widget{
-			STATIC_PORT = 0,
-			TEXTBOX_PORT,
+			TEXTBOX_PORT = 0,
+			STATIC_PORT,
 			BUTTON_HOST,
 			BUTTON_BACK
 		};

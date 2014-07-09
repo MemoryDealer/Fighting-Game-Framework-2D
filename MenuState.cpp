@@ -136,7 +136,9 @@ void MenuState::handleInput(SDL_Event& e)
 
 		case SDLK_RETURN:
 			if (m_pGUI->isEditingText()){
-				m_pGUI->setEditingText(Widget::NONE);
+				int cursor = m_pGUI->getCursor();
+				m_pGUI->setEditingText(Widget::NONE);				
+				m_pGUI->setSelectedWidget(cursor);
 			}
 			break;
 
@@ -474,7 +476,7 @@ void MenuState::update(double dt)
 			// Send a BEGIN_PRESS action to processGUI() if the selection 
 			// button is held.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-				if (e.key.keysym.sym == SDLK_SPACE){
+				if (!m_pGUI->isEditingText() && e.key.keysym.sym == SDLK_SPACE){
 					m_pGUI->setSelectorPressed(true);
 					this->processGUIAction(GUI::Action::BEGIN_PRESS);
 				}
@@ -487,7 +489,7 @@ void MenuState::update(double dt)
 			// Send a FINISH_PRESS action to processGUI() if the selection 
 			// button is released.
 			if (m_pGUI->getNavigationMode() == GUI::NavMode::SELECTOR){
-				if (e.key.keysym.sym == SDLK_SPACE){
+				if (!m_pGUI->isEditingText() && e.key.keysym.sym == SDLK_SPACE){
 					m_pGUI->setSelectorPressed(false);
 					this->processGUIAction(GUI::Action::FINISH_PRESS);
 				}

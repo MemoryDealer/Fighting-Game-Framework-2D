@@ -68,9 +68,9 @@ GUI()
 
 	layer.reset(new GUIMenuStateLayer::Host());
 	names = StringList{ "port" };
-	layer->parse<WidgetStatic>(c, Widget::Type::STATIC, names);
-	names = StringList{ "port" };
 	layer->parse<WidgetTextbox>(c, Widget::Type::TEXTBOX, names);
+	names = StringList{ "port" };
+	layer->parse<WidgetStatic>(c, Widget::Type::STATIC, names);
 	names = StringList{ "host", "back" };
 	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	this->addLayer(layer);
