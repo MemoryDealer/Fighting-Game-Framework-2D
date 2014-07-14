@@ -168,6 +168,12 @@
     <ClInclude Include="..\WidgetTextbox.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\GameManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUILobbyState.hpp">
+      <Filter>Header Files\LobbyState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp">
@@ -283,6 +289,12 @@
     </ClCompile>
     <ClCompile Include="..\WidgetTextbox.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUILobbyState.cpp">
+      <Filter>Source Files\LobbyState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

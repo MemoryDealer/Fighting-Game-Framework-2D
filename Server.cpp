@@ -36,7 +36,8 @@ m_active(false)
 	}
 	m_active = true;
 
-	m_packet = SDLNet_AllocPacket(66560); // 65 KB
+	// Allocate space for 65 KB packets.
+	m_packet = SDLNet_AllocPacket(66560);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }

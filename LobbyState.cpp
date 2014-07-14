@@ -13,10 +13,13 @@
 
 #include "LobbyState.hpp"
 #include "Engine.hpp"
+#include "GUILobbyState.hpp"
 #include "StageManager.hpp"
 #include "PlayerManager.hpp"
+#include "GameManager.hpp"
 #include "Config.hpp"
 #include "App.hpp"
+#include "Server.hpp"
 
 // ================================================ //
 
@@ -26,7 +29,7 @@ m_pBackground(new Stage("Data/Stages/lobby.stage"))
 {
 	// Parse the location of the .gui file for the lobby and load it.
 	Config c("ExtMF.cfg");
-	//m_pGUI
+	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
 }
 
 // ================================================ //
@@ -46,22 +49,16 @@ void LobbyState::enter(void)
 	new StageManager();
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
-	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
-
-	// Temporary skip.
-	m_quit = true;
-	this->pushAppState(this->findByName(GAME_STATE));
+	//PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
 }
 
 // ================================================ //
 
 void LobbyState::exit(void)
 {
-	Log::getSingletonPtr()->logMessage("Exiting LobbyState...");
-
 	delete StageManager::getSingletonPtr();
 
-	m_quit = false; // temporary control
+	Log::getSingletonPtr()->logMessage("Exiting LobbyState...");
 }
 
 // ================================================ //
@@ -108,12 +105,32 @@ void LobbyState::update(double dt)
 		switch (e.type){
 		default:
 			break;
+
+		case SDL_QUIT:
+			m_quit = true;
+			break;
+
+		case SDL_WINDOWEVENT:
+			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST){
+				// If this is a networked game, we should update even if the window is not 
+				// in focus.
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER ||
+					GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					break;
+				}
+				else{
+					Engine::getSingletonPtr()->setWindowFocused(false);
+				}
+			}
+			break;
 		}
 	}
 
 	Engine::getSingletonPtr()->clearRenderer();
 
 	m_pBackground->update(dt);
+	m_pGUI->update(dt);
+	Server::getSingletonPtr()->testRecv();
 
 	Engine::getSingletonPtr()->renderPresent();
 }

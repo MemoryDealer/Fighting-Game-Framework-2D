@@ -91,6 +91,8 @@
     <ClInclude Include="..\App.hpp" />
     <ClInclude Include="..\AppState.hpp" />
     <ClInclude Include="..\AppStateManager.hpp" />
+    <ClInclude Include="..\GameManager.hpp" />
+    <ClInclude Include="..\GUILobbyState.hpp" />
     <ClInclude Include="..\WidgetButton.hpp" />
     <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Config.hpp" />
@@ -133,6 +135,8 @@
   <ItemGroup>
     <ClCompile Include="..\App.cpp" />
     <ClCompile Include="..\AppStateManager.cpp" />
+    <ClCompile Include="..\GameManager.cpp" />
+    <ClCompile Include="..\GUILobbyState.cpp" />
     <ClCompile Include="..\WidgetButton.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />

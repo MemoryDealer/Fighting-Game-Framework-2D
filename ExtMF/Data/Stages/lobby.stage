@@ -1,0 +1,9 @@
+[core]
+layers=1
+
+[layer1]
+texture=Data/Stages/Textures/nightsky.jpg
+w=512
+h=512
+scrollX=80
+scrollY=0

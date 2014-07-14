@@ -26,6 +26,8 @@
 #include "AppState.hpp"
 #include "App.hpp"
 #include "GamepadManager.hpp"
+#include "GameManager.hpp"
+#include "Label.hpp"
 
 // ================================================ //
 
@@ -51,16 +53,9 @@ void MenuState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
+	// Pre-load Players to allow gamepad input in MenuState (to load button maps).
 	new PlayerManager();
-	// Pre-load Players to allow gamepad input in MenuState.
 	PlayerManager::getSingletonPtr()->reset();
-
-	// Should be done in lobby state
-	PlayerManager::getSingletonPtr()->load("Data/Fighters/corpse-explosion.fighter", "Data/Fighters/corpse-explosion.fighter");
-
-	// Allocate data for LobbyState and GameState.
-	new StageManager();
-	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
 	new Camera();
 }
@@ -72,7 +67,6 @@ void MenuState::exit(void)
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 	
 	delete PlayerManager::getSingletonPtr();
-	delete StageManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
 }
 
@@ -89,7 +83,15 @@ bool MenuState::pause(void)
 
 void MenuState::resume(void)
 {
-	this->findByName(GAME_STATE)->reset();
+	this->findByName(LOBBY_STATE)->reset();
+
+	// Returning to the menu state means a network connection may be active, reset it.
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+		delete Server::getSingletonPtr();
+	}
+	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		// TODO: delete client.
+	}
 
 	Log::getSingletonPtr()->logMessage("Resuming MenuState...");
 }
@@ -429,7 +431,12 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
-
+				GameManager::getSingletonPtr()->setMode(GameManager::SERVER);
+				{
+					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getLabel()->getText();
+					new Server(std::stoi(port));
+				}
+				this->pushAppState(this->findByName(LOBBY_STATE));
 				break;
 
 			case GUIMenuStateLayer::Host::BUTTON_BACK:
