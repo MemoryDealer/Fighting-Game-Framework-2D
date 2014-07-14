@@ -35,6 +35,7 @@
 #include <map>
 #include <complex>
 #include <algorithm>
+#include <locale>
 
 // SDL
 #include <SDL.h>

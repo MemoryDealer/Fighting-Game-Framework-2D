@@ -64,6 +64,14 @@ public:
 		NONE = -1
 	};
 
+	// Widget styles (for all child widgets).
+	enum{
+		DEFAULT = 0x00000000,
+		// Textbox.
+		TB_NUMBER,
+		TB_MULTILINE
+	};
+
 	// Tokenizes a string containing a list of link values (e.g., "-1,0,-1,2") and 
 	// assigns the link values to this Widget's links. This string is retrieved from
 	// a button map (.bmap) file. 
@@ -77,6 +85,9 @@ public:
 
 	// Returns the type of widget (e.g., STATIC, BUTTON, etc.). 
 	const int getType(void) const;
+
+	// Returns the style value.
+	const int getStyle(void) const;
 
 	// Returns true if the Widget is enabled. 
 	const bool isEnabled(void) const;
@@ -96,6 +107,9 @@ public:
 	// Parameters:
 	// type - Type of widget (e.g., STATIC, BUTTON, etc)
 	void setType(const int type);
+
+	// Sets the style value.
+	void setStyle(const int style);
 
 	// Sets the Widget to enabled or disabled. 
 	void setEnabled(const bool enabled);
@@ -124,6 +138,7 @@ public:
 private:
 	int m_widgetID;
 	int m_type;
+	int m_style;
 	bool m_enabled;
 	bool m_active;
 
@@ -154,6 +169,10 @@ inline const int Widget::getType(void) const{
 	return m_type;
 }
 
+inline const int Widget::getStyle(void) const{
+	return m_style;
+}
+
 inline const bool Widget::isEnabled(void) const{
 	return m_enabled;
 }
@@ -170,6 +189,10 @@ inline const int Widget::getLinkID(const int direction) const{
 
 inline void Widget::setType(const int type){
 	m_type = type;
+}
+
+inline void Widget::setStyle(const int style){
+	m_style = style;
 }
 
 inline void Widget::setEnabled(const bool enabled){

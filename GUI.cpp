@@ -73,6 +73,7 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 		pWidget->setPosition(c.parseRect(layer, value + "pos"));
 		pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
 		pWidget->parseLinks(c.parseValue(layer, value + "links"));
+		pWidget->setStyle(c.parseIntValue(layer, value + "style"));
 
 		this->addWidget(pWidget);
 	}

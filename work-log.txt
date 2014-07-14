@@ -283,8 +283,14 @@
 -Added a cursor to the Textbox Widget. It only stays at the end for now.
 -Created logic for activating the Textbox Widget and editing the text, and exiting editing mode. These are handled in GUI and in the AppState.
 
+#7/14/14
+-Added style value to Widget class, styles can be set much like Win32 controls. Tested it with TB_NUMBER (meaning Textbox number only). So if a Textbox
+	widget has the style TB_NUMBER, then it can only accept number values.
+	The style is parsed from the .gui file when added to the layer. A style value of zero is the DEFAULT style.
+
 #TODO
 -Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.
+	Make Textbox scroll left/right for longer strings. Add multiline style.
 -Add the ability for the GUI to enable/disable interaction, use when processing data.
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
 	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.

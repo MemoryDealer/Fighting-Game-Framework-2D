@@ -95,6 +95,7 @@ textbox.port:pos=(314,75,225,60)
 textbox.port:label="666"
 textbox.port:labeloffset=60
 textbox.port:links=-1,2,-1,-1
+textbox.port:style=1
 
 #ID 1
 static.port:pos=(114,75,225,60)

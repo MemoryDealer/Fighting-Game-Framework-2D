@@ -19,6 +19,7 @@
 Widget::Widget(const int id) :
 m_widgetID(id),
 m_type(Widget::STATIC),
+m_style(DEFAULT),
 m_enabled(true)
 {
 	std::fill_n(m_links, 4, Widget::NONE);
