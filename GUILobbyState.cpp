@@ -16,6 +16,7 @@
 #include "WidgetButton.hpp"
 #include "WidgetTextbox.hpp"
 #include "Config.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -26,6 +27,20 @@ GUI()
 	if (!c.isLoaded()){
 		throw std::exception("Failed to load GUI config file for LobbyState");
 	}
+
+	// Get theme textures and store them in the static GUI SDL_Texture pointers.
+	/*Config e("ExtMF.cfg");
+	Config theme(e.parseValue("GUI", "theme"));
+	if (theme.isLoaded()){
+		GUI::ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex")), SDL_DestroyTexture);
+		GUI::ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.selected")), SDL_DestroyTexture);
+		GUI::ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
+
+		GUI::TextboxTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex")), SDL_DestroyTexture);
+		GUI::TextboxTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.selected")), SDL_DestroyTexture);
+		GUI::TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
+		GUI::TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
+	}*/
 
 	StringList names;
 
@@ -68,4 +83,9 @@ namespace GUILobbyStateLayer{
 		this->setID(GUILobbyState::Layer::ROOT);
 		this->setLayerName("root");
 	}
+
+	// ================================================ //
 }
+
+// ================================================ //
+

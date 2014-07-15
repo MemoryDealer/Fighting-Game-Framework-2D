@@ -236,6 +236,7 @@ void GUI::setEditingText(const int n)
 			this->getWidgetPtr(lastActiveWidget)->setActive(false);
 			this->getWidgetPtr(lastActiveWidget)->setAppearance(Widget::Appearance::IDLE);
 		}
+		lastActiveWidget = Widget::NONE;
 	}
 	else{
 		this->getWidgetPtr(n)->setAppearance(0, GUI::TextboxCursor);

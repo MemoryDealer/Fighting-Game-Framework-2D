@@ -110,7 +110,8 @@ inline const int GUILayer::getID(void) const{
 }
 
 inline Widget* GUILayer::getWidgetPtr(const int n) const{
-	return m_widgets[n].get();
+	return (static_cast<unsigned int>(n) < m_widgets.size()) ? m_widgets[n].get() :
+		nullptr;
 }
 
 inline const int GUILayer::getNumWidgets(void) const{

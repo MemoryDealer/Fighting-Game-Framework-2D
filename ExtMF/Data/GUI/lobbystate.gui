@@ -5,25 +5,24 @@ button.ready:label="Ready"
 button.ready:labeloffset=10
 button.ready:links=-1,-1,-1,1
 
-#ID 1
-textbox.send:pos=(654,420,100,60)
-textbox.send:label=""
-textbox.send:links=-1,-1,0,2
-
-#ID 2
+#ID 3
 button.send:pos=(754,420,100,60)
 button.send:label="Send"
-button.send:labeloffset=60
-button.send:links=-1,3,1,-1
+button.send:labeloffset=10
+button.send:links=-1,4,2,-1
 
-#ID 3
+#ID 4
 button.exit:pos=(1,420,100,60)
 button.exit:label="Exit"
-button.exit:labeloffset=60
-button.exit:links=2,-1,-1,-1
+button.exit:labeloffset=10
+button.exit:links=3,-1,-1,-1
 
-#Unlinked widgets
-#ID 4 
-textbox.chat:pos=(654,1,100,599)
+#ID 1
+textbox.chat:pos=(554,1,300,399)
 textbox.chat:style=2
+
+#ID 2
+textbox.send:pos=(554,420,200,60)
+textbox.send:label="a"
+textbox.send:links=-1,-1,0,2
 

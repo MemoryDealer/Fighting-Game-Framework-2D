@@ -289,6 +289,7 @@
 	The style is parsed from the .gui file when added to the layer. A style value of zero is the DEFAULT style.
 
 #TODO
+-Add more bounds checking in GUI functions, getting lots of vector out of bounds errors.
 -Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.
 	Make Textbox scroll left/right for longer strings. Add multiline style.
 -Add the ability for the GUI to enable/disable interaction, use when processing data.
@@ -316,6 +317,8 @@
 	(1:18:12 AM) Ty TheBeast: factoring the prime #s"
 
 #BUGS
+-serious problems with GUI reloading textures between states, something weird with GUILayer::parse() perhaps.
+-Textbox and button adjacent don't de-select correctly in lobby state.
 -If holding down a movement key when exiting game state, the key is still registered as down when returning. This may resolve itself once PlayerManager
 	is re-allocated per entry to game state. 
 -When unplugging an xbox360 controller, it sends input from seemingly random buttons. 
