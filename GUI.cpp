@@ -267,7 +267,9 @@ void GUI::update(double dt)
 				SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
 				if (this->getWidgetPtr(i)->getType() == Widget::Type::BUTTON ||
 					this->getWidgetPtr(i)->getType() == Widget::Type::TEXTBOX){
-					m_layers[m_layerStack.top()]->resetAllWidgets(m_cursor);
+					if (!m_leftMouseDown){
+						m_layers[m_layerStack.top()]->resetAllWidgets(m_cursor);
+					}
 					this->setSelectedWidget(i);
 				}
 

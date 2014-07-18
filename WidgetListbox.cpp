@@ -37,6 +37,11 @@ WidgetListbox::~WidgetListbox(void)
 
 void WidgetListbox::addString(const std::string& str)
 {
+	// Empty textboxes hold a single space.
+	if (str.empty() || str == " "){
+		return;
+	}
+
 	std::shared_ptr<Label> label(new Label());
 	label->create(str);
 

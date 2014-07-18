@@ -17,12 +17,12 @@ button.exit:label="Exit"
 button.exit:labeloffset=10
 button.exit:links=3,-1,-1,-1
 
-#ID 3
+#ID 5
 textbox.send:pos=(554,420,200,60)
 textbox.send:label="a"
 textbox.send:links=-1,-1,0,2
 
-#ID 4
+#ID 6
 listbox.chat:pos=(554,1,300,399)
 listbox.chat:disabled=0
 

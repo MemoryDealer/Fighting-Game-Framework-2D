@@ -50,7 +50,10 @@ void Label::create(const std::string& label)
 
 	Font* pFont = FontManager::getSingletonPtr()->getFont(FontManager::MAIN);
 
-	if (m_label.empty()){
+	if (m_label == " "){
+		return;
+	}
+	else if (m_label.empty()){
 		m_label.assign(" ");
 	}
 	else if (m_label[0] == ' '){

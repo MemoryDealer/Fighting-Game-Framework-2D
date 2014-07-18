@@ -33,6 +33,9 @@ public:
 	// Adds a new string to the listbox.
 	void addString(const std::string& str);
 
+	// Add to the index (offset for rendering).
+	void addIndex(const int amount);
+
 	// Updates with delta time.
 	virtual void update(double dt);
 
@@ -45,6 +48,12 @@ private:
 	int m_index;
 	std::vector<std::shared_ptr<Label>> m_labels;
 };
+
+// ================================================ //
+
+inline void WidgetListbox::addIndex(const int amount){
+	m_index += amount;
+}
 
 // ================================================ //
 
