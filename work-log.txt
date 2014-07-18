@@ -288,6 +288,10 @@
 	widget has the style TB_NUMBER, then it can only accept number values.
 	The style is parsed from the .gui file when added to the layer. A style value of zero is the DEFAULT style.
 
+#7/17/14
+-Added GUITheme singleton class which holds all the theme texture pointers publicly.
+-Fixed bug where more than one widget would change its appearance to selected if the mouse moved quickly enough over them.
+
 #TODO
 -Add more bounds checking in GUI functions, getting lots of vector out of bounds errors.
 -Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.

@@ -35,7 +35,9 @@ MenuState::MenuState(void) :
 m_pGUI(nullptr),
 m_pBackground(nullptr)
 {
-	
+	// Parse the location of the .gui file for the main menu and load it.
+	Config c("ExtMF.cfg");
+	m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
 }
 
 // ================================================ //
@@ -51,23 +53,6 @@ void MenuState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	Config e("ExtMF.cfg");
-	Config theme(e.parseValue("GUI", "theme"));
-	if (theme.isLoaded()){
-		GUI::ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex")), SDL_DestroyTexture);
-		GUI::ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.selected")), SDL_DestroyTexture);
-		GUI::ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
-
-		GUI::TextboxTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex")), SDL_DestroyTexture);
-		GUI::TextboxTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.selected")), SDL_DestroyTexture);
-		GUI::TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
-		GUI::TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
-	}
-
-	// Parse the location of the .gui file for the main menu and load it.
-	Config c("ExtMF.cfg");
-	m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
-
 	m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
 
 	// Pre-load Players to allow gamepad input in MenuState (to load button maps).
@@ -75,8 +60,6 @@ void MenuState::enter(void)
 	PlayerManager::getSingletonPtr()->reset();
 
 	new Camera();
-
-
 }
 
 // ================================================ //

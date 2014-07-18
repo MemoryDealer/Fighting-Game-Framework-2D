@@ -44,9 +44,6 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 	std::string widgetName("");
 	std::string layer = "layer." + m_layerName;
 
-	// The texture to assign the widget.
-	std::shared_ptr<SDL_Texture> pTex = nullptr;
-
 	switch (widgetType){
 	default:
 	case Widget::Type::STATIC:
@@ -55,7 +52,6 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 
 	case Widget::Type::BUTTON:
 		widgetName = "button.";
-		pTex = GUI::ButtonTexture[Widget::Appearance::IDLE];
 		break;
 
 	case Widget::Type::TEXTBOX:
@@ -118,12 +114,6 @@ void GUILayer::update(double dt)
 }
 
 // ================================================ //
-// ================================================ //
-
-std::shared_ptr<SDL_Texture> GUI::ButtonTexture[] = { nullptr, nullptr, nullptr };
-std::shared_ptr<SDL_Texture> GUI::TextboxTexture[] = { nullptr, nullptr, nullptr };
-std::shared_ptr<SDL_Texture> GUI::TextboxCursor = nullptr;
-
 // ================================================ //
 
 GUI::GUI(void) :
@@ -239,7 +229,7 @@ void GUI::setEditingText(const int n)
 		lastActiveWidget = Widget::NONE;
 	}
 	else{
-		this->getWidgetPtr(n)->setAppearance(0, GUI::TextboxCursor);
+		this->getWidgetPtr(n)->setAppearance(0, GUITheme::getSingletonPtr()->TextboxCursor);
 		this->getWidgetPtr(n)->setActive(true);
 		SDL_StartTextInput();
 		lastActiveWidget = n;
@@ -267,6 +257,7 @@ void GUI::update(double dt)
 			if (SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
 				if (this->getWidgetPtr(i)->getType() == Widget::Type::BUTTON ||
 					this->getWidgetPtr(i)->getType() == Widget::Type::TEXTBOX){
+					m_layers[m_layerStack.top()]->resetAllWidgets(m_cursor);
 					this->setSelectedWidget(i);
 				}
 
@@ -276,7 +267,7 @@ void GUI::update(double dt)
 			}
 		}
 
-		// Reset all of the current layer's widgets if nothing is selected
+		// Reset all of the current layer's widgets if nothing is selected.
 		if (m_selectedWidget == Widget::NONE && resetAllWidgets){
 			if (!m_leftMouseDown){
 				// Pass the index of the Widget with the active cursor.
@@ -291,6 +282,51 @@ void GUI::update(double dt)
 	// Update and render the current layer.
 	m_layers[m_layerStack.top()]->update(dt);
 	m_layers[m_layerStack.top()]->render();
+}
+
+// ================================================ //
+// ================================================ //
+
+template<> GUITheme* Singleton<GUITheme>::msSingleton = nullptr;
+
+// ================================================ //
+
+GUITheme::GUITheme(void) :
+ButtonTexture(),
+TextboxTexture(),
+TextboxCursor(nullptr)
+{
+	std::fill_n(ButtonTexture, 3, nullptr);
+	std::fill_n(TextboxTexture, 3, nullptr);
+}
+
+// ================================================ //
+
+GUITheme::~GUITheme(void)
+{
+
+}
+
+// ================================================ //
+
+void GUITheme::load(const std::string& file)
+{
+	Config theme(file);
+	if (theme.isLoaded()){
+		ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex")), SDL_DestroyTexture);
+		ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.selected")), SDL_DestroyTexture);
+		ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
+
+		TextboxTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex")), SDL_DestroyTexture);
+		TextboxTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.selected")), SDL_DestroyTexture);
+		TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
+		TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
+
+		Log::getSingletonPtr()->logMessage("Theme loaded successfully from \"" + file + "\"");
+	}
+	else{
+		Log::getSingletonPtr()->logMessage("Failed to open theme file \"" + file + "\"");
+	}
 }
 
 // ================================================ //

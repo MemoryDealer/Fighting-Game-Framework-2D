@@ -18,8 +18,10 @@
 #include "LobbyState.hpp"
 #include "GameState.hpp"
 #include "FontManager.hpp"
+#include "GUI.hpp"
 #include "GamepadManager.hpp"
 #include "GameManager.hpp"
+#include "Config.hpp"
 
 // ================================================ //
 
@@ -36,6 +38,12 @@ m_pAppStateManager(nullptr)
 
 	new FontManager();
 	FontManager::getSingletonPtr()->reloadAll();
+
+	new GUITheme();
+	Config e("ExtMF.cfg");
+	if (e.isLoaded()){
+		GUITheme::getSingletonPtr()->load(e.parseValue("GUI", "theme"));
+	}
 
 	new GamepadManager();
 	GamepadManager::getSingletonPtr()->addAllConnectedPads();
@@ -66,6 +74,7 @@ App::~App(void)
 	delete GameManager::getSingletonPtr();
 	delete GamepadManager::getSingletonPtr();
 	delete FontManager::getSingletonPtr();
+	delete GUITheme::getSingletonPtr();
 
 	// Engine must be available for prior destructors.
 	delete Engine::getSingletonPtr(); 

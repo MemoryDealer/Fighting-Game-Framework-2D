@@ -48,11 +48,11 @@ void Widget::setAppearance(const int appearance, std::shared_ptr<SDL_Texture> pT
 			break;
 
 		case Widget::Type::BUTTON:
-			this->setTexture(GUI::ButtonTexture[appearance]);
+			this->setTexture(GUITheme::getSingletonPtr()->ButtonTexture[appearance]);
 			break;
 
 		case Widget::Type::TEXTBOX:
-			this->setTexture(GUI::TextboxTexture[appearance]);
+			this->setTexture(GUITheme::getSingletonPtr()->TextboxTexture[appearance]);
 			break;
 		}
 	}

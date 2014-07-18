@@ -235,12 +235,6 @@ public:
 	// Update the GUI and current GUILayer with delta time.
 	virtual void update(double dt);
 
-	// Static strings to store theme data across all GUI states.
-	// Used in GUILayer::parse().
-	static std::shared_ptr<SDL_Texture> ButtonTexture[3];
-	static std::shared_ptr<SDL_Texture> TextboxTexture[3];
-	static std::shared_ptr<SDL_Texture> TextboxCursor;
-
 private:
 	// List of all GUILayer's used by this GUI.
 	GUILayerList m_layers;
@@ -332,6 +326,27 @@ inline void GUI::setRightMouseDown(const bool down){
 inline void GUI::setSelectorPressed(const bool pressed){
 	m_selectorPressed = pressed;
 }
+
+// ================================================ //
+// ================================================ //
+
+// Holds all textures and data for the GUI theme in use.
+struct GUITheme : public Singleton<GUITheme>
+{
+	// Initializes all textures to nullptr.
+	explicit GUITheme(void);
+
+	// Empty destructor.
+	~GUITheme(void);
+
+	// Parses .theme file and allocates textures.
+	void load(const std::string& file);
+
+	// SDL Texture pointers for theme.
+	std::shared_ptr<SDL_Texture> ButtonTexture[3];
+	std::shared_ptr<SDL_Texture> TextboxTexture[3];
+	std::shared_ptr<SDL_Texture> TextboxCursor;
+};
 
 // ================================================ //
 
