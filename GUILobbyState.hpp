@@ -62,9 +62,8 @@ namespace GUILobbyStateLayer{
 			BUTTON_READY = 0,
 			BUTTON_SEND,
 			BUTTON_EXIT,
-			TEXTBOX_CHAT,
-			TEXTBOX_SEND
-			
+			TEXTBOX_SEND,
+			LISTBOX_CHAT
 		};
 	};
 

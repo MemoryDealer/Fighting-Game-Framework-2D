@@ -5,14 +5,14 @@
 // Proprietary and confidential
 // Written by Jordan Sparks <unixunited@live.com> June 2014
 // ================================================ //
-// File: WidgetTextbox.hpp
+// File: WidgetListbox.hpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Defines the WidgetTextbox class, derived from Widget.
+// Defines the WidgetListbox class, derived from Widget.
 // ================================================ //
 
-#ifndef __WIDGETTEXTBOX_HPP__
-#define __WIDGETTEXTBOX_HPP__
+#ifndef __WIDGETLISTBOX_HPP__
+#define __WIDGETLISTBOX_HPP__
 
 // ================================================ //
 
@@ -20,33 +20,30 @@
 
 // ================================================ //
 
-class Timer;
-
-// ================================================ //
-
-// A textbox that displays text, can be edited.
-class WidgetTextbox : public Widget
+// A scrolling box containing single lines of text.
+class WidgetListbox : public Widget
 {
 public:
-	// Calls Widget's constructor, sets type to TEXTBOX, allocates Label.
-	explicit WidgetTextbox(const int id);
+	// Calls Widget's constructor, sets type to LISTBOX.
+	explicit WidgetListbox(const int id);
 
 	// Empty destructor.
-	virtual ~WidgetTextbox(void);
+	virtual ~WidgetListbox(void);
 
-	// Modifies the label of the Widget.
-	void handleEditing(const char* text, const bool backspace = false);
+	// Adds a new string to the listbox.
+	void addString(const std::string& str);
 
 	// Updates with delta time.
 	virtual void update(double dt);
 
-	// Calls Object::render() renders the cursor.
+	// Renders the scrollbar and calls Object::render().
 	virtual void render(void);
 
 private:
-	int m_cursorPos;
-	std::shared_ptr<Timer> m_pCursorTimer;
-	bool m_renderCursor;
+	// Y-position of scrollbar.
+	int m_scrollbarPos;
+	int m_index;
+	std::vector<std::shared_ptr<Label>> m_labels;
 };
 
 // ================================================ //

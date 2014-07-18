@@ -5,24 +5,24 @@ button.ready:label="Ready"
 button.ready:labeloffset=10
 button.ready:links=-1,-1,-1,1
 
-#ID 3
+#ID 1
 button.send:pos=(754,420,100,60)
 button.send:label="Send"
 button.send:labeloffset=10
 button.send:links=-1,4,2,-1
 
-#ID 4
+#ID 2
 button.exit:pos=(1,420,100,60)
 button.exit:label="Exit"
 button.exit:labeloffset=10
 button.exit:links=3,-1,-1,-1
 
-#ID 1
-textbox.chat:pos=(554,1,300,399)
-textbox.chat:style=2
-
-#ID 2
+#ID 3
 textbox.send:pos=(554,420,200,60)
 textbox.send:label="a"
 textbox.send:links=-1,-1,0,2
+
+#ID 4
+listbox.chat:pos=(554,1,300,399)
+listbox.chat:disabled=0
 

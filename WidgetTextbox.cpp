@@ -56,7 +56,7 @@ void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 	else{
 		// Test for number only text if the style is set.
 		if (this->getStyle() & Widget::TB_NUMBER){
-			for (int i = 0; i < std::strlen(text); ++i){
+			for (unsigned int i = 0; i < std::strlen(text); ++i){
 				if (!isdigit(text[i])){
 					return;
 				}

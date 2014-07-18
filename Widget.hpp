@@ -38,7 +38,8 @@ public:
 	enum Type{
 		STATIC = 0,
 		BUTTON,
-		TEXTBOX
+		TEXTBOX,
+		LISTBOX
 	};
 
 	// Links connect GUI widgets to other GUI widgets. This is used only when the GUI
@@ -65,7 +66,7 @@ public:
 	};
 
 	// Widget styles (for all child widgets).
-	enum{
+	enum Style{
 		DEFAULT = 0x00000000,
 		// Textbox.
 		TB_NUMBER,
@@ -111,7 +112,7 @@ public:
 	// Sets the style value.
 	void setStyle(const int style);
 
-	// Sets the Widget to enabled or disabled. 
+	// Sets the Widget to enabled or disabled (can it be interacted with). 
 	void setEnabled(const bool enabled);
 
 	// Sets the Widget to active if true.

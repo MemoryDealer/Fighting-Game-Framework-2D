@@ -52,6 +52,7 @@ void Widget::setAppearance(const int appearance, std::shared_ptr<SDL_Texture> pT
 			break;
 
 		case Widget::Type::TEXTBOX:
+		case Widget::Type::LISTBOX:
 			this->setTexture(GUITheme::getSingletonPtr()->TextboxTexture[appearance]);
 			break;
 		}

@@ -15,6 +15,7 @@
 #include "WidgetStatic.hpp"
 #include "WidgetButton.hpp"
 #include "WidgetTextbox.hpp"
+#include "WidgetListbox.hpp"
 #include "Config.hpp"
 #include "Engine.hpp"
 
@@ -34,8 +35,10 @@ GUI()
 	std::shared_ptr<GUILayer> layer(new GUILobbyStateLayer::Root());
 	names = StringList{ "ready", "send", "exit" };
 	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
-	names = StringList{ "chat", "send" };
+	names = StringList{ "send" };
 	layer->parse<WidgetTextbox>(c, Widget::Type::TEXTBOX, names);
+	names = StringList{ "chat" };
+	layer->parse<WidgetListbox>(c, Widget::Type::LISTBOX, names);
 	this->addLayer(layer);
 
 	this->pushLayer(GUILobbyState::Layer::ROOT);

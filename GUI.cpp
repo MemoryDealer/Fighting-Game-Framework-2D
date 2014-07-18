@@ -17,6 +17,7 @@
 #include "WidgetStatic.hpp"
 #include "WidgetButton.hpp"
 #include "WidgetTextbox.hpp"
+#include "WidgetListbox.hpp"
 #include "Label.hpp"
 
 // ================================================ //
@@ -57,6 +58,10 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 	case Widget::Type::TEXTBOX:
 		widgetName = "textbox.";
 		break;
+
+	case Widget::Type::LISTBOX:
+		widgetName = "listbox.";
+		break;
 	}
 
 	// Parse each setting for this Widget. 
@@ -67,9 +72,12 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 
 		pWidget->setAppearance(Widget::Appearance::IDLE);
 		pWidget->setPosition(c.parseRect(layer, value + "pos"));
-		pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
+		if (widgetType != Widget::Type::LISTBOX){
+			pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
+		}
 		pWidget->parseLinks(c.parseValue(layer, value + "links"));
 		pWidget->setStyle(c.parseIntValue(layer, value + "style"));
+		pWidget->setEnabled(!c.parseIntValue(layer, value + "disabled"));
 
 		this->addWidget(pWidget);
 	}
@@ -79,6 +87,7 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 template void GUILayer::parse<WidgetStatic>(Config& c, const int widgetType, const StringList& names);
 template void GUILayer::parse<WidgetButton>(Config& c, const int widgetType, const StringList& names);
 template void GUILayer::parse<WidgetTextbox>(Config& c, const int widgetType, const StringList& names);
+template void GUILayer::parse<WidgetListbox>(Config& c, const int widgetType, const StringList& names);
 
 // ================================================ //
 
@@ -254,7 +263,8 @@ void GUI::update(double dt)
 
 		// See if mouse is inside bounds of each widget.
 		for (int i = 0; i < m_layers[m_layerStack.top()]->getNumWidgets(); ++i){
-			if (SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
+			if (m_layers[m_layerStack.top()]->getWidgetPtr(i)->isEnabled() && 
+				SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
 				if (this->getWidgetPtr(i)->getType() == Widget::Type::BUTTON ||
 					this->getWidgetPtr(i)->getType() == Widget::Type::TEXTBOX){
 					m_layers[m_layerStack.top()]->resetAllWidgets(m_cursor);

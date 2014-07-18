@@ -16,11 +16,14 @@
 #include "GUILobbyState.hpp"
 #include "StageManager.hpp"
 #include "PlayerManager.hpp"
+#include "Input.hpp"
 #include "GameManager.hpp"
 #include "Config.hpp"
 #include "App.hpp"
 #include "Server.hpp"
 #include "Widget.hpp"
+#include "WidgetListbox.hpp"
+#include "Label.hpp"
 
 // ================================================ //
 
@@ -81,7 +84,202 @@ void LobbyState::resume(void)
 
 void LobbyState::handleInput(SDL_Event& e)
 {
+	// Acquire a pointer to the player under the control of the current gamepad here (avoids copied & pasted code below).
+	Player* player = nullptr;
+	if (e.type == SDL_CONTROLLERBUTTONDOWN ||
+		e.type == SDL_CONTROLLERBUTTONUP ||
+		e.type == SDL_CONTROLLERAXISMOTION){
+		player = (e.cdevice.which == PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID()) ?
+			PlayerManager::getSingletonPtr()->getRedPlayer() : (e.cdevice.which == PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID()) ?
+			PlayerManager::getSingletonPtr()->getBluePlayer() : nullptr;
 
+		if (player == nullptr){
+			Log::getSingletonPtr()->logMessage("WARNING: Unregistered gamepad sending input (ID: " + Engine::toString(e.cdevice.which) + ")");
+			return;
+		}
+	}
+
+	if (e.type == SDL_KEYDOWN){
+
+		// Process hard-coded keys.
+		switch (e.key.keysym.sym){
+		default:
+			break;
+
+		case SDLK_ESCAPE:
+			if (m_pGUI->isEditingText()){
+				m_pGUI->setEditingText(Widget::NONE);
+			}
+			else{
+				if (m_pGUI->getCurrentLayer() == GUILobbyState::Layer::ROOT){
+					m_quit = true;
+				}
+				else{
+					m_pGUI->popLayer();
+				}
+			}
+			break;
+
+		case SDLK_RETURN:
+			if (m_pGUI->isEditingText()){
+				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getLabel()->getText();
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message.c_str());
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
+			}
+			break;
+
+		case SDLK_BACKSPACE:
+			if (m_pGUI->isEditingText()){
+				m_pGUI->handleTextInput("", true);
+			}
+			break;
+
+		case SDLK_UP:
+		case SDLK_DOWN:
+		case SDLK_LEFT:
+		case SDLK_RIGHT:
+			// Automatically switch to navigation mode when arrows are pressed.
+			if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
+				m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
+			}
+
+			if (!m_pGUI->getSelectorPressed()){
+				// Prevent user from navigating away while pressing a button.
+				int widget = m_pGUI->getSelectedWidget();
+				if (widget == Widget::NONE){
+					m_pGUI->setSelectedWidget(0);
+				}
+				else{
+					// Navigate the selector to the linked Widget.
+					Widget* pWidget = m_pGUI->getWidgetPtr(widget);
+					switch (e.key.keysym.sym){
+					default:
+					case SDLK_UP:
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+						break;
+
+					case SDLK_DOWN:
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+						break;
+
+					case SDLK_LEFT:
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+						break;
+
+					case SDLK_RIGHT:
+						m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+						break;
+					}
+				}
+			}
+			break;
+
+		case SDLK_r:
+		{
+			// Reload GUI and background.
+			Config c("ExtMF.cfg");
+			m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
+			m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
+		}
+			break;
+
+		case SDLK_i:
+			Engine::getSingletonPtr()->setResolution(1920, 1080);
+			break;
+		}
+	}
+
+	if (e.type == SDL_CONTROLLERBUTTONDOWN){
+
+		if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
+			m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
+		}
+
+		if (!m_pGUI->getSelectorPressed()){
+			// Prevent user from navigating away while pressing a button.
+			int widget = m_pGUI->getSelectedWidget();
+			if (widget == Widget::NONE){
+				m_pGUI->setSelectedWidget(0);
+			}
+			else{
+				// Navigate to the linked Widget.
+				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
+				switch (player->getInput()->SDLButtonToMappedButton(e.cbutton.button, true)){
+				default:
+					break;
+
+				case Input::BUTTON_UP:
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+					break;
+
+				case Input::BUTTON_DOWN:
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+					break;
+
+				case Input::BUTTON_LEFT:
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+					break;
+
+				case Input::BUTTON_RIGHT:
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+					break;
+
+				case Input::BUTTON_BACK:
+					m_pGUI->popLayer();
+					break;
+				}
+			}
+		}
+	}
+	else if (e.type == SDL_CONTROLLERAXISMOTION){
+
+		if (m_pGUI->getNavigationMode() == GUI::NavMode::MOUSE){
+			m_pGUI->setNavigationMode(GUI::NavMode::SELECTOR);
+		}
+
+		if (!m_pGUI->getSelectorPressed()){
+			// Prevent user from navigating away while pressing a button.
+			int widget = m_pGUI->getSelectedWidget();
+			if (widget == Widget::NONE){
+				m_pGUI->setSelectedWidget(0);
+			}
+			else{
+				// These booleans prevent the selector from skipping Widgets in 
+				// between two end Widgets when a joystick is held down.
+				static bool xAxisReset = true;
+				static bool yAxisReset = true;
+
+				Widget* pWidget = m_pGUI->getWidgetPtr(widget);
+				const int deadzone = player->getInput()->getPadDeadzone();
+
+				// Process Y-axis movement.
+				Sint16 value = SDL_GameControllerGetAxis(player->getInput()->getPad(), static_cast<SDL_GameControllerAxis>(1));
+				if (value < -deadzone && yAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::UP));
+					yAxisReset = false;
+				}
+				else if (value > deadzone && yAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::DOWN));
+					yAxisReset = false;
+				}
+				else if (value < deadzone && value > -deadzone){
+					yAxisReset = true;
+				}
+
+				// Process X-axis movement.
+				value = SDL_GameControllerGetAxis(player->getInput()->getPad(), static_cast<SDL_GameControllerAxis>(0));
+				if (value < -deadzone && xAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::LEFT));
+				}
+				else if (value > deadzone && xAxisReset){
+					m_pGUI->setSelectedWidget(pWidget->getLinkID(Widget::Link::RIGHT));
+				}
+				else if (value < deadzone && value > -deadzone){
+					xAxisReset = true;
+				}
+			}
+		}
+	}
 }
 
 // ================================================ //
@@ -135,7 +333,11 @@ void LobbyState::processGUIAction(const int type)
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_SEND:
-
+			{
+				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getLabel()->getText();
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message.c_str());
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
+			}
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_EXIT:

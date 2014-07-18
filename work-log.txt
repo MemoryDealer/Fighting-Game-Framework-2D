@@ -297,6 +297,7 @@
 -Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.
 	Make Textbox scroll left/right for longer strings. Add multiline style.
 -Add the ability for the GUI to enable/disable interaction, use when processing data.
+-Explicitly define copy constructor and copy assignment operator for all classes.
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
 	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.
 *Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
