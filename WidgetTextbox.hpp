@@ -43,8 +43,15 @@ public:
 	// Calls Object::render() renders the cursor.
 	virtual void render(void);
 
+	// Setters
+
+	// Calls Label::create() on the internal Label.
+	virtual void setLabel(const std::string& label, const int offset = 0);
+
 private:
 	int m_cursorPos;
+	int m_offset;
+	std::string m_text;
 	std::shared_ptr<Timer> m_pCursorTimer;
 	bool m_renderCursor;
 };

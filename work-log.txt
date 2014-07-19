@@ -295,6 +295,8 @@
 
 #7/18/14
 -Added ability to wrap text in Label::create() by specifying in the parameter wrap the size in pixels at which the text should be wrapped.
+-Widgets can now specify their own font according to the .gui file.
+-Textboxes can scroll left/right, however it is currently messed up and the original string (m_text in WidgetTextbox) gets modified somehow during setLabel(). 
 
 #TODO
 -Create a component to add to each state that handles duplicate procedures

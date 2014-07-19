@@ -21,6 +21,8 @@
 WidgetTextbox::WidgetTextbox(const int id) :
 Widget(id),
 m_cursorPos(0),
+m_offset(0),
+m_text(),
 m_pCursorTimer(new Timer()),
 m_renderCursor(true)
 {
@@ -43,14 +45,18 @@ WidgetTextbox::~WidgetTextbox(void)
 
 void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 {
-	// The change in the offset.
 	const int offsetDiff = 0;
-	std::string label = m_pLabel->getText();
 	if (backspace){
 		// An empty label is one space.
-		if (label != " "){
-			label.erase(label.length() - 1, 1);
-			this->setLabel(label, m_pLabel->getOffset() + offsetDiff);
+		if (m_text != " " && !m_text.empty()){
+			m_text.erase(m_text.length() - 1, 1);
+			if (m_offset > 0){
+				std::string scrolledText = m_text.substr(--m_offset, m_text.length());
+				this->setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
+			}
+			else{
+				this->setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
+			}
 		}
 	}
 	else{
@@ -62,13 +68,15 @@ void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 				}
 			}
 		}
-		label.append(text);
-		this->setLabel(label, m_pLabel->getOffset() - offsetDiff);
 
-		// Prevent text from going outside of the textbox.
+		m_text.append(text);
+		this->setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
+
+		// Prevent text from going outside of widget by scrolling it.
 		if (m_pLabel->getWidth() > m_dst.w){
-			label.erase(label.length() - 1, 1);
-			this->setLabel(label, m_pLabel->getOffset() + offsetDiff);
+			std::string scrolledText = m_text.substr(++m_offset, m_text.length()).c_str();
+			//this->setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
+			printf("m_text: %s\noffset: %d\n", m_text.c_str(), m_offset);
 		}
 	}
 }
@@ -98,13 +106,20 @@ void WidgetTextbox::render(void)
 		
 		SDL_Rect rc;
 		rc.x = m_dst.x + m_pLabel->getWidth();
-		rc.y = m_dst.y + 10;
+		rc.y = m_dst.y + m_dst.h / 10;
 		rc.w = 2;
-		rc.h = this->getPosition().h - 20;
+		rc.h = m_dst.h - (m_dst.h / 5);
 		SDL_RenderFillRect(Engine::getSingletonPtr()->getRenderer(), &rc);
 	}
 }
 
 // ================================================ //
 
+void WidgetTextbox::setLabel(const std::string& label, const int offset)
+{
+	Object::setLabel(label, offset);
+	m_text = label;
+}
+
+// ================================================ //
 
