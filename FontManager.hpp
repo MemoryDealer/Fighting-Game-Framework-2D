@@ -40,6 +40,7 @@ public:
 	// the loadFont() and getFont() functions. 
 	enum {
 		MAIN = 0,
+		CHAT,
 
 		NUM_FONTS // Gives the size needed for the font array.
 	};

@@ -332,7 +332,8 @@ void MenuState::processGUIAction(const int type)
 
 		// Don't let this button be pressed unless BEGIN_PRESS started on it.
 		if (m_pGUI->getSelectedWidget() != lastSelectedWidget){
-			if (lastSelectedWidget < m_pGUI->getCurrentLayerPtr()->getNumWidgets()){
+			if (lastSelectedWidget != Widget::NONE && 
+				lastSelectedWidget < m_pGUI->getCurrentLayerPtr()->getNumWidgets()){
 				m_pGUI->getWidgetPtr(lastSelectedWidget)->setAppearance(Widget::Appearance::IDLE);
 				return;
 			}

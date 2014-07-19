@@ -98,9 +98,9 @@ void WidgetTextbox::render(void)
 		
 		SDL_Rect rc;
 		rc.x = m_dst.x + m_pLabel->getWidth();
-		rc.y = m_dst.y + 7;
+		rc.y = m_dst.y + 10;
 		rc.w = 2;
-		rc.h = m_pLabel->getHeight();
+		rc.h = this->getPosition().h - 20;
 		SDL_RenderFillRect(Engine::getSingletonPtr()->getRenderer(), &rc);
 	}
 }

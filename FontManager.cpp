@@ -53,6 +53,8 @@ void FontManager::reloadAll(void)
 		// Load each font. 
 		m_fonts[FontManager::MAIN].reset(new Font(theme.parseValue("font.main", "file"), 
 			theme.parseIntValue("font.main", "size")));
+		m_fonts[FontManager::CHAT].reset(new Font(theme.parseValue("font.chat", "file"),
+			theme.parseIntValue("font.chat", "size")));
 	}
 }
 

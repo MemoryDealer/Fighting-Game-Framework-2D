@@ -33,8 +33,11 @@ public:
 	// Adds a new string to the listbox.
 	void addString(const std::string& str);
 
-	// Add to the index (offset for rendering).
+	// Adds to the index (offset for rendering).
 	void addIndex(const int amount);
+
+	// Removes all strings from the listbox and resets index.
+	void clear(void);
 
 	// Updates with delta time.
 	virtual void update(double dt);
@@ -42,10 +45,20 @@ public:
 	// Renders the scrollbar and calls Object::render().
 	virtual void render(void);
 
+	// Getters
+
+	// Returns the index of Font to use for all labels.
+	const int getFont(void) const;
+
+	// Setters
+
+	// Sets the index of the Font to use for all labels.
+	void setFont(const int font);
+
 private:
-	// Y-position of scrollbar.
-	int m_scrollbarPos;
+	// Starting index for labels to display.
 	int m_index;
+	int m_font;
 	std::vector<std::shared_ptr<Label>> m_labels;
 };
 
@@ -53,6 +66,23 @@ private:
 
 inline void WidgetListbox::addIndex(const int amount){
 	m_index += amount;
+}
+
+inline void WidgetListbox::clear(void){
+	m_labels.clear();
+	m_index = 0;
+}
+
+// Getters
+
+inline const int WidgetListbox::getFont(void) const{
+	return m_font;
+}
+
+// Setters
+
+inline void WidgetListbox::setFont(const int font){
+	m_font = font;
 }
 
 // ================================================ //

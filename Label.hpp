@@ -32,7 +32,8 @@ public:
 	virtual ~Label(void);
 
 	// Creates the label texture with the text contained in parameter label.
-	void create(const std::string& label);
+	// If wrap is greater than zero, the label is wrapped within that width.
+	void create(const std::string& label, const int wrap = 0);
 
 	// Getters
 
@@ -57,6 +58,9 @@ public:
 	// Returns the height of the generated label.
 	const int getHeight(void) const;
 
+	// Returns index of Font to use from FontManager.
+	const int getFont(void) const;
+
 	// Setters
 
 	// Sets the label's color.
@@ -71,12 +75,17 @@ public:
 	// Sets whether or not the text is center-oriented.
 	void setCentered(const bool centered);
 
+	// Sets index of Font to use from the FontManager.
+	void setFont(const int font);
+
 private:
 	SDL_Texture* m_pTexture;
 	std::string m_label;
 	SDL_Color m_color;
 	bool m_centered;
 	int m_width, m_height;
+	// Index of font to use from FontManager.
+	int m_font;
 
 	// Space between both left/right sides of Object's dst.
 	int m_offset;
@@ -114,6 +123,10 @@ inline const int Label::getHeight(void) const{
 	return m_height;
 }
 
+inline const int Label::getFont(void) const{
+	return m_font;
+}
+
 // Setters
 
 inline void Label::setColor(const int r, const int g, const int b, const int a){
@@ -130,6 +143,10 @@ inline void Label::setOffset(const int offset){
 
 inline void Label::setCentered(const bool centered){
 	m_centered = centered;
+}
+
+inline void Label::setFont(const int font){
+	m_font = font;
 }
 
 // ================================================ //

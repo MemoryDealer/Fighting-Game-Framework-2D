@@ -61,6 +61,8 @@ void LobbyState::exit(void)
 {
 	delete StageManager::getSingletonPtr();
 
+	static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->clear();
+
 	Log::getSingletonPtr()->logMessage("Exiting LobbyState...");
 }
 
@@ -177,14 +179,14 @@ void LobbyState::handleInput(SDL_Event& e)
 		case SDLK_r:
 		{
 			// Reload GUI and background.
-			Config c("ExtMF.cfg");
-			m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
+			//Config c("ExtMF.cfg");
+			//m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
 			m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
 		}
 			break;
 
 		case SDLK_i:
-			Engine::getSingletonPtr()->setResolution(1920, 1080);
+			
 			break;
 		}
 	}

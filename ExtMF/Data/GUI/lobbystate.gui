@@ -18,11 +18,13 @@ button.exit:labeloffset=10
 button.exit:links=3,-1,-1,-1
 
 #ID 5
-textbox.send:pos=(554,420,200,60)
-textbox.send:label="a"
+textbox.send:pos=(254,420,500,60)
+textbox.send:label="The quick brown fox jumps"
 textbox.send:links=-1,-1,0,2
+textbox.send:font=0
 
 #ID 6
-listbox.chat:pos=(554,1,300,399)
+listbox.chat:pos=(454,1,400,399)
 listbox.chat:disabled=0
+listbox.chat:font=1
 

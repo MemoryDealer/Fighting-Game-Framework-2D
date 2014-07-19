@@ -19,8 +19,8 @@
 
 WidgetListbox::WidgetListbox(const int id) :
 Widget(id),
-m_scrollbarPos(0),
 m_index(0),
+m_font(0),
 m_labels()
 {
 	this->setType(Widget::Type::LISTBOX);
@@ -43,7 +43,8 @@ void WidgetListbox::addString(const std::string& str)
 	}
 
 	std::shared_ptr<Label> label(new Label());
-	label->create(str);
+	label->setFont(m_font);
+	label->create(str, this->getPosition().w);
 
 	m_labels.push_back(label);
 }

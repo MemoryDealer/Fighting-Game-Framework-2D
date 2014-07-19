@@ -8,7 +8,7 @@
 // File: GUI.cpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Implements GUI and GUILayer classes. 
+// Implements GUI, GUITheme, and GUILayer classes. 
 // ================================================ //
 
 #include "GUI.hpp"
@@ -72,7 +72,13 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 
 		pWidget->setAppearance(Widget::Appearance::IDLE);
 		pWidget->setPosition(c.parseRect(layer, value + "pos"));
-		if (widgetType != Widget::Type::LISTBOX){
+		if (widgetType == Widget::Type::LISTBOX){
+			// A listbox does not use the default label, so save font for later when 
+			// generating labels.
+			static_cast<WidgetListbox*>(pWidget.get())->setFont(c.parseIntValue(layer, value + "font"));
+		}
+		else{
+			pWidget->getLabel()->setFont(c.parseIntValue(layer, value + "font"));
 			pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
 		}
 		pWidget->parseLinks(c.parseValue(layer, value + "links"));

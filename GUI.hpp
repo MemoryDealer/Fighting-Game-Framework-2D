@@ -8,7 +8,7 @@
 // File: GUI.hpp
 // Author: Jordan Sparks <unixunited@live.com>
 // ================================================ //
-// Defines GUI class, and GUILayer class. 
+// Defines GUI class, GUITheme, and GUILayer class. 
 // ================================================ //
 
 #ifndef __GUI_HPP__
@@ -111,7 +111,7 @@ inline const int GUILayer::getID(void) const{
 
 inline Widget* GUILayer::getWidgetPtr(const int n) const{
 	return (static_cast<unsigned int>(n) < m_widgets.size()) ? m_widgets[n].get() :
-		nullptr;
+		m_widgets[0].get();
 }
 
 inline const int GUILayer::getNumWidgets(void) const{
