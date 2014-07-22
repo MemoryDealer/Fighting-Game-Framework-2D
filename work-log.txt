@@ -298,7 +298,13 @@
 -Widgets can now specify their own font according to the .gui file.
 -Textboxes can scroll left/right, however it is currently messed up and the original string (m_text in WidgetTextbox) gets modified somehow during setLabel(). 
 
+#8/22/14
+-Wasted a few hours trying to figure out why m_text was being changed in WidgetTextbox, it was due to calling this->setLabel() in handleEditing(), which assigned m_text to the 
+	label parameter. I changed it to Object::setLabel() to fix it.
+-Modified WidgetTextbox::setLabel() to allow longer strings than the width of the textbox, it will now scroll to the end of the string automatically.
+
 #TODO
+-add offsets in themes for text
 -Create a component to add to each state that handles duplicate procedures
 -Add more bounds checking in GUI functions, getting lots of vector out of bounds errors.
 -Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.

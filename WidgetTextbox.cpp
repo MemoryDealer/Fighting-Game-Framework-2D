@@ -45,17 +45,17 @@ WidgetTextbox::~WidgetTextbox(void)
 
 void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 {
-	const int offsetDiff = 0;
+	const int offsetDiff = 3;
 	if (backspace){
-		// An empty label is one space.
+		// An empty label is one space, so don't operate on it if so.
 		if (m_text != " " && !m_text.empty()){
-			m_text.erase(m_text.length() - 1, 1);
+			m_text.pop_back();
 			if (m_offset > 0){
 				std::string scrolledText = m_text.substr(--m_offset, m_text.length());
-				this->setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
+				Object::setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
 			}
 			else{
-				this->setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
+				Object::setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
 			}
 		}
 	}
@@ -69,14 +69,13 @@ void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 			}
 		}
 
-		m_text.append(text);
-		this->setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
+		m_text += text;
+		Object::setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
 
 		// Prevent text from going outside of widget by scrolling it.
 		if (m_pLabel->getWidth() > m_dst.w){
-			std::string scrolledText = m_text.substr(++m_offset, m_text.length()).c_str();
-			//this->setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
-			printf("m_text: %s\noffset: %d\n", m_text.c_str(), m_offset);
+			std::string scrolledText = m_text.substr(++m_offset, m_text.length());
+			Object::setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
 		}
 	}
 }
@@ -117,8 +116,15 @@ void WidgetTextbox::render(void)
 
 void WidgetTextbox::setLabel(const std::string& label, const int offset)
 {
-	Object::setLabel(label, offset);
+	m_offset = 0;
 	m_text = label;
+
+	Object::setLabel(label, offset);
+	// Scroll text to end of string if needed.
+	while (m_pLabel->getWidth() > m_dst.w){
+		std::string scrolledText = m_text.substr(++m_offset, m_text.length());
+		Object::setLabel(scrolledText, m_pLabel->getOffset());
+	}
 }
 
 // ================================================ //

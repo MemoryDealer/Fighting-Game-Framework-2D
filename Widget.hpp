@@ -101,6 +101,9 @@ public:
 	// direction - the direction of the link (e.g., UP, DOWN, LEFT, or RIGHT)
 	const int getLinkID(const int direction) const;
 
+	// Should be overriden if a widget needs to return any text it holds.
+	virtual const std::string getText(void) const;
+
 	// Setters
 
 	// Sets the type value of the Widget. Should be called in the constructor of 
@@ -184,6 +187,10 @@ inline const bool Widget::isActive(void) const{
 
 inline const int Widget::getLinkID(const int direction) const{
 	return m_links[direction];
+}
+
+inline const std::string Widget::getText(void) const{
+	return std::string("");
 }
 
 // Setters

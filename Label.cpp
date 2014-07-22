@@ -41,6 +41,7 @@ Label::~Label(void)
 void Label::create(const std::string& label, const int wrap)
 {
 	const int MAX_LENGTH = 512;
+	std::string finalLabel = label;
 	if (label.length() > MAX_LENGTH){
 		Log::getSingletonPtr()->logMessage("Label creation rejected, text over maximum length!");
 		return;
@@ -48,19 +49,19 @@ void Label::create(const std::string& label, const int wrap)
 
 	Font* pFont = FontManager::getSingletonPtr()->getFont(m_font);
 
-	if (label == " "){
+	if (finalLabel == " "){
 		return;
 	}
-	else if (label.empty()){
-		//label.assign(" ");
+	else if (finalLabel.empty()){
+		finalLabel.assign(" ");
 	}
-	else if (label[0] == ' '){
-		//label = label.substr(1, m_label.length() - 1);
+	else if (finalLabel[0] == ' '){
+		finalLabel = finalLabel.substr(1, finalLabel.length() - 1);
 	}
 
 	// A surface must be created before creating a texture.
-	SDL_Surface* surf = (wrap == 0) ? TTF_RenderText_Blended(pFont->get(), label.c_str(), m_color)
-		: TTF_RenderText_Blended_Wrapped(pFont->get(), label.c_str(), m_color, wrap);
+	SDL_Surface* surf = (wrap == 0) ? TTF_RenderText_Blended(pFont->get(), finalLabel.c_str(), m_color)
+		: TTF_RenderText_Blended_Wrapped(pFont->get(), finalLabel.c_str(), m_color, wrap);
 	if (surf == nullptr){
 		throw std::exception("Failure loading SDL_Surface in Label::create()");
 	}

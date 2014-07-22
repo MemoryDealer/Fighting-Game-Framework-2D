@@ -46,9 +46,6 @@ public:
 	// Returns the offset for rendering the text.
 	const int getOffset(void) const;
 
-	// Returns the string content of the label.
-	const std::string getText(void) const;
-
 	// Returns true if the text is centered.
 	const bool isCentered(void) const;
 
@@ -80,7 +77,6 @@ public:
 
 private:
 	SDL_Texture* m_pTexture;
-	std::string m_label;
 	SDL_Color m_color;
 	bool m_centered;
 	int m_width, m_height;
@@ -105,10 +101,6 @@ inline const SDL_Color Label::getColor(void) const{
 
 inline const int Label::getOffset(void) const{
 	return m_offset;
-}
-
-inline const std::string Label::getText(void) const{
-	return m_label;
 }
 
 inline const bool Label::isCentered(void) const{

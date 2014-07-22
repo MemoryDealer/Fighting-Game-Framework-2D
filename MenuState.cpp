@@ -440,7 +440,7 @@ void MenuState::processGUIAction(const int type)
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
 				GameManager::getSingletonPtr()->setMode(GameManager::SERVER);
 				{
-					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getLabel()->getText();
+					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getText();
 					new Server(std::stoi(port));
 				}
 				this->pushAppState(this->findByName(LOBBY_STATE));

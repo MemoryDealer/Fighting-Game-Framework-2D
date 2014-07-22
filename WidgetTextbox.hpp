@@ -43,9 +43,15 @@ public:
 	// Calls Object::render() renders the cursor.
 	virtual void render(void);
 
+	// Getters
+
+	// Returns the active text in the editing field.
+	virtual const std::string getText(void) const;
+
 	// Setters
 
-	// Calls Label::create() on the internal Label.
+	// Assigns offset to zero, calls Label::create() on the internal Label,
+	// and assigns m_text to label. Scrolls text and increments offset until correct.
 	virtual void setLabel(const std::string& label, const int offset = 0);
 
 private:
@@ -58,6 +64,13 @@ private:
 
 // ================================================ //
 
+inline const std::string WidgetTextbox::getText(void) const{
+	return m_text;
+}
+
+// ================================================ //
+
 #endif
 
 // ================================================ //
+

@@ -124,7 +124,7 @@ void LobbyState::handleInput(SDL_Event& e)
 
 		case SDLK_RETURN:
 			if (m_pGUI->isEditingText()){
-				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getLabel()->getText();
+				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
 				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message.c_str());
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
@@ -336,7 +336,7 @@ void LobbyState::processGUIAction(const int type)
 
 			case GUILobbyStateLayer::Root::BUTTON_SEND:
 			{
-				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getLabel()->getText();
+				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
 				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message.c_str());
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
