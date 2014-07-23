@@ -62,7 +62,12 @@ GUI()
 	this->addLayer(layer);
 
 	layer.reset(new GUIMenuStateLayer::Join());
-	names = StringList{ "" };
+	names = StringList{ "server", "port" };
+	layer->parse<WidgetStatic>(c, Widget::Type::STATIC, names);
+	names = StringList{ "join", "back" };
+	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
+	names = StringList{ "port", "server" };
+	layer->parse<WidgetTextbox>(c, Widget::Type::TEXTBOX, names);
 	this->addLayer(layer);
 	
 	layer.reset(new GUIMenuStateLayer::Options());

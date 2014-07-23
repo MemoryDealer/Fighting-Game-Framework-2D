@@ -114,6 +114,40 @@ button.back:labeloffset=60
 button.back:links=2,-1,-1,-1
 
 [layer.join]
+#ID 0
+static.server:pos=(114,75,225,60)
+static.server:label="Server:"
+static.server:labeloffset=60
+static.server:links=-1,-1,-1,-1
+
+#ID 1
+static.port:pos=(114,175,225,60)
+static.port:label="Port:"
+static.port:labeloffset=60
+static.port:links=-1,-1,-1,-1
+
+#ID 2
+button.join:pos=(314,275,225,60)
+button.join:label="Join"
+button.join:labeloffset=60
+button.join:links=5,3,-1,-1
+
+#ID 3
+button.back:pos=(314,375,225,60)
+button.back:label="Back"
+button.back:labeloffset=60
+button.back:links=2,-1,-1,-1
+
+#ID 4
+textbox.port:pos=(314,175,225,60)
+textbox.port:label="666"
+textbox.port:links=4,2,-1,-1
+textbox.port:style=1
+
+#ID 5
+textbox.server:pos=(314,75,225,60)
+textbox.server:label="localhost"
+textbox.server:links=-1,5,-1,-1
 
 [layer.options]
 #ID 0

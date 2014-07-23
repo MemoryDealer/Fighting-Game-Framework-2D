@@ -20,6 +20,12 @@
 
 // ================================================ //
 
+struct ClientConnection;
+typedef std::vector<ClientConnection> ClientList;
+class Timer;
+
+// ================================================ //
+
 // Handles all server-side operations.
 class Server : public Singleton<Server>
 {
@@ -31,14 +37,23 @@ public:
 	// Closes the UDP socket and frees the UDPPacket.
 	~Server(void);
 
-	// Testing purposes.
-	void testRecv(void);
+	// Receives packets and process them.
+	void update(double dt);
 
 private:
 	Uint32		m_port;
 	UDPsocket	m_sock;
 	UDPpacket*	m_packet;
-	bool		m_active;
+	ClientList	m_clients;
+};
+
+// ================================================ //
+
+struct ClientConnection{
+	IPaddress addr;
+	char username[12];
+	Uint32 channel;
+	std::shared_ptr<Timer> timer;
 };
 
 // ================================================ //

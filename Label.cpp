@@ -60,7 +60,7 @@ void Label::create(const std::string& label, const int wrap)
 	}
 
 	// A surface must be created before creating a texture.
-	SDL_Surface* surf = (wrap == 0) ? TTF_RenderText_Blended(pFont->get(), finalLabel.c_str(), m_color)
+	SDL_Surface* surf = (wrap == 0) ? TTF_RenderText_Blended_Wrapped(pFont->get(), finalLabel.c_str(), m_color, 99999)
 		: TTF_RenderText_Blended_Wrapped(pFont->get(), finalLabel.c_str(), m_color, wrap);
 	if (surf == nullptr){
 		throw std::exception("Failure loading SDL_Surface in Label::create()");

@@ -45,17 +45,16 @@ WidgetTextbox::~WidgetTextbox(void)
 
 void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 {
-	const int offsetDiff = 3;
 	if (backspace){
 		// An empty label is one space, so don't operate on it if so.
 		if (m_text != " " && !m_text.empty()){
 			m_text.pop_back();
 			if (m_offset > 0){
 				std::string scrolledText = m_text.substr(--m_offset, m_text.length());
-				Object::setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
+				Object::setLabel(scrolledText, m_pLabel->getOffset());
 			}
 			else{
-				Object::setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
+				Object::setLabel(m_text, m_pLabel->getOffset());
 			}
 		}
 	}
@@ -70,12 +69,12 @@ void WidgetTextbox::handleEditing(const char* text, const bool backspace)
 		}
 
 		m_text += text;
-		Object::setLabel(m_text, m_pLabel->getOffset() - offsetDiff);
+		Object::setLabel(m_text, m_pLabel->getOffset());
 
 		// Prevent text from going outside of widget by scrolling it.
 		if (m_pLabel->getWidth() > m_dst.w){
 			std::string scrolledText = m_text.substr(++m_offset, m_text.length());
-			Object::setLabel(scrolledText, m_pLabel->getOffset() + offsetDiff);
+			Object::setLabel(scrolledText, m_pLabel->getOffset());
 		}
 	}
 }

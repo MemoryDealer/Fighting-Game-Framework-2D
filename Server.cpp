@@ -12,8 +12,10 @@
 // ================================================ //
 
 #include "Server.hpp"
+#include "Packet.hpp"
 #include "Engine.hpp"
 #include "Config.hpp"
+#include "Timer.hpp"
 #include "Log.hpp"
 
 // ================================================ //
@@ -22,10 +24,16 @@ template<> Server* Singleton<Server>::msSingleton = nullptr;
 
 // ================================================ //
 
+// Define ExtMF's packet header protocol ID.
+Uint32 Packet::PROTOCOL_ID = 666666;
+
+// ================================================ //
+
 Server::Server(const int port) :
 m_port(port),
 m_sock(nullptr),
-m_active(false)
+m_packet(),
+m_clients()
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
@@ -34,7 +42,6 @@ m_active(false)
 	if (!m_sock){
 		throw std::exception("Failed to open UDP server socket");
 	}
-	m_active = true;
 
 	// Allocate space for 65 KB packets.
 	m_packet = SDLNet_AllocPacket(66560);
@@ -50,24 +57,60 @@ Server::~Server(void)
 		SDLNet_UDP_Close(m_sock);
 	}
 
+	m_packet->data = nullptr;
 	SDLNet_FreePacket(m_packet);
 }
 
 // ================================================ //
 
-void Server::testRecv(void)
+void Server::update(double dt)
 {
+	// Process any incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_packet)){
-		printf("UDP Packet incoming\n");
-		printf("\tChan:    %d\n", m_packet->channel);
-		printf("\tData:    %s\n", (char*)m_packet->data);
-		printf("\tLen:     %d\n", m_packet->len);
-		printf("\tMaxlen:  %d\n", m_packet->maxlen);
-		printf("\tStatus:  %d\n", m_packet->status);
-		printf("\tAddress: %x %x\n", m_packet->address.host, m_packet->address.port);
+		Packet* packet = reinterpret_cast<Packet*>(m_packet->data);
+
+		if (packet->header == Packet::PROTOCOL_ID){
+			switch (packet->type){
+			default:
+				break;
+
+			case Packet::CONNECT_REQUEST:
+				printf("%s connected!\n", packet->buf);
+				{
+					Packet data;
+					data.header = Packet::PROTOCOL_ID;
+					data.type = Packet::CONNECT_ACCEPT;
+
+					ClientConnection client;
+					client.addr = m_packet->address;
+					client.channel = m_packet->channel;
+					strcpy(client.username, packet->buf);
+					m_clients.push_back(client);
+
+					m_packet->address.host = client.addr.host;
+					m_packet->address.port = client.addr.port;
+					m_packet->data = reinterpret_cast<Uint8*>(&data);
+					m_packet->len = sizeof(data)+1;
+					printf("Send: %d\n", SDLNet_UDP_Send(m_sock, -1, m_packet));
+				}
+				break;
+			}
+		}
 	}
-	/*else{
-		printf("No incoming UDP packet.\n");
+
+	// Update all clients.
+	/*for (ClientList::iterator itr = m_clients.begin();
+		itr != m_clients.end();
+		++itr){
+		Packet data;
+		data.header = Packet::PROTOCOL_ID;
+		data.type = Packet::CONNECT_ACCEPT;
+
+		memset(m_packet, 0, sizeof(m_packet));
+		m_packet->address = itr->addr;
+		m_packet->data = reinterpret_cast<Uint8*>(&data);
+		m_packet->len = sizeof(data)+1;
+		SDLNet_UDP_Send(m_sock, -1, m_packet);
 	}*/
 }
 

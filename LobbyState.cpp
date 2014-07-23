@@ -21,6 +21,7 @@
 #include "Config.hpp"
 #include "App.hpp"
 #include "Server.hpp"
+#include "Client.hpp"
 #include "Widget.hpp"
 #include "WidgetListbox.hpp"
 #include "Label.hpp"
@@ -53,6 +54,11 @@ void LobbyState::enter(void)
 	// Allocate data for LobbyState and GameState.
 	new StageManager();
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
+
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+		static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(
+			GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString("Server initialized.");
+	}
 }
 
 // ================================================ //
@@ -457,7 +463,12 @@ void LobbyState::update(double dt)
 
 	m_pBackground->update(dt);
 	m_pGUI->update(dt);
-	Server::getSingletonPtr()->testRecv();
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+		Server::getSingletonPtr()->update(dt);
+	}
+	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		Client::getSingletonPtr()->update(dt);
+	}
 
 	Engine::getSingletonPtr()->renderPresent();
 }

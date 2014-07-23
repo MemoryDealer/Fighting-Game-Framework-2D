@@ -43,6 +43,12 @@
     <Filter Include="Source Files\GameState">
       <UniqueIdentifier>{834842b3-ea9b-40c6-a911-e047eff7ad66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Network">
+      <UniqueIdentifier>{0c71b965-5c91-4fd7-8baf-45e41cd37be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{3124e7f7-8773-451f-b05e-43b974753368}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\App.hpp">
@@ -106,9 +112,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PlayerManager.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Server.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Singleton.hpp">
@@ -177,6 +180,15 @@
     <ClInclude Include="..\WidgetListbox.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Packet.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Client.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\App.cpp">
@@ -234,9 +246,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\PlayerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Stage.cpp">
@@ -301,6 +310,12 @@
     </ClCompile>
     <ClCompile Include="..\WidgetListbox.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Server.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Client.cpp">
+      <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

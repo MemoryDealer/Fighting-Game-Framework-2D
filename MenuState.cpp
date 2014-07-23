@@ -23,6 +23,7 @@
 #include "Config.hpp"
 #include "MessageRouter.hpp"
 #include "Server.hpp"
+#include "Client.hpp"
 #include "AppState.hpp"
 #include "App.hpp"
 #include "GamepadManager.hpp"
@@ -96,7 +97,7 @@ void MenuState::resume(void)
 		delete Server::getSingletonPtr();
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		// TODO: delete client.
+		delete Client::getSingletonPtr();
 	}
 
 	GameManager::getSingletonPtr()->setMode(GameManager::IDLE);
@@ -415,7 +416,7 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Online::BUTTON_JOIN:
-
+				m_pGUI->pushLayer(GUIMenuState::Layer::JOIN);
 				break;
 
 			case GUIMenuStateLayer::Online::BUTTON_DEDICATED:
@@ -447,6 +448,35 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Host::BUTTON_BACK:
+				m_pGUI->popLayer();
+				break;
+			}
+			break;
+
+		case GUIMenuState::Layer::JOIN:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUIMenuStateLayer::Join::TEXTBOX_SERVER:
+				m_pGUI->setEditingText(GUIMenuStateLayer::Join::TEXTBOX_SERVER);
+				break;
+
+			case GUIMenuStateLayer::Join::TEXTBOX_PORT:
+				m_pGUI->setEditingText(GUIMenuStateLayer::Join::TEXTBOX_PORT);
+				break;
+
+			case GUIMenuStateLayer::Join::BUTTON_JOIN:
+				GameManager::getSingletonPtr()->setMode(GameManager::CLIENT);
+				{
+					std::string server = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_SERVER)->getText();
+					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_PORT)->getText();
+					new Client(server, std::stoi(port));
+				}
+				this->pushAppState(this->findByName(LOBBY_STATE));
+				break;
+
+			case GUIMenuStateLayer::Join::BUTTON_BACK:
 				m_pGUI->popLayer();
 				break;
 			}

@@ -139,11 +139,11 @@ namespace GUIMenuStateLayer{
 
 		enum Widgets{
 			STATIC_SERVER = 0,
-			TEXTBOX_SERVER,
 			STATIC_PORT,
-			TEXTBOX_PORT,
 			BUTTON_JOIN,
-			BUTTON_BACK
+			BUTTON_BACK,
+			TEXTBOX_PORT,
+			TEXTBOX_SERVER
 		};
 	};
 
