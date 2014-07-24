@@ -30,6 +30,11 @@ public:
 	// Closes the socket and frees the packet buffer.
 	~Client(void);
 
+	// Send-to-server functions.
+
+	// Sends a chat message to server.
+	int chat(const std::string& msg);
+
 	// Sends needed data to server.
 	void update(double dt);
 

@@ -44,10 +44,8 @@ m_serverAddr()
 
 	// Send connection request to server.
 	Packet connect;
-	connect.header = Packet::PROTOCOL_ID;
-	connect.id = 0;
 	connect.type = Packet::CONNECT_REQUEST;
-	strcpy(connect.buf, "unixunited");
+	connect.setBuffer("unixunited");
 
 	m_packet->address.host = m_serverAddr.host;
 	m_packet->address.port = m_serverAddr.port;
@@ -73,6 +71,21 @@ Client::~Client(void)
 
 // ================================================ //
 
+int Client::chat(const std::string& msg)
+{
+	Packet chat;
+	chat.type = Packet::CHAT;
+	chat.setBuffer(msg);
+	m_packet->address.host = m_serverAddr.host;
+	m_packet->address.port = m_serverAddr.port;
+	m_packet->data = reinterpret_cast<Uint8*>(&chat);
+	m_packet->len = sizeof(chat)+1;
+
+	return SDLNet_UDP_Send(m_sock, -1, m_packet);
+}
+
+// ================================================ //
+
 void Client::update(double dt)
 {
 	// Process incoming packets.
@@ -86,6 +99,8 @@ void Client::update(double dt)
 	else{
 		printf("No incoming packet\n");
 	}*/
+
+
 }
 
 // ================================================ //

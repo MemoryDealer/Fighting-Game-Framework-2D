@@ -22,24 +22,43 @@
 
 struct Packet{
 public:
-	Uint32 header;
-	int id;
-	int type;
+	// Initializes header and id.
+	explicit Packet(void);
 
-	char buf[512];
+	// Sets the buf std::string value and determines bufLength.
+	void setBuffer(const std::string& str);
+
+	// A packet header allows the program the confirm a packet is sent
+	// from another client running Extreme Metal Fighter.
+	Uint32 header;
+	Uint32 id;
+	Uint32 type;
+
+	std::string buf;
+	Uint32 bufLength;
 	
 	enum Type{
 		// Client packet types.
-		CONNECT_REQUEST = 0,
+
+		NIL = 0,
+		CONNECT_REQUEST,
 		DISCONNECT,
 		CHAT,
 
 		// Server packet types.
+
 		CONNECT_ACCEPT
 	};
 
-	static Uint32 PROTOCOL_ID;
+	static const Uint32 PROTOCOL_ID;
 };
+
+// ================================================ //
+
+inline void Packet::setBuffer(const std::string& str){
+	buf = str;
+	bufLength = buf.length();
+}
 
 // ================================================ //
 

@@ -46,6 +46,7 @@ void WidgetListbox::addString(const std::string& str)
 	label->setFont(m_font);
 	label->create(str, this->getPosition().w);
 
+
 	m_labels.push_back(label);
 }
 

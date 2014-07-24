@@ -308,7 +308,12 @@
 -Before operating on m_packet in the Client/Server, I memset it to zeroes since the Packet object it points to is allocated on the stack(for speed) and no longer 
 	exists during the next attempted operation.
 
+#8/24/14
+-Got basic client-to-server chat working however I'm not pleased with how I must allocte a copy of the Packet in Server::update() and return it to LobbyState::update(). This kind
+	of heap allocation can cause a lot of overhead and I should find an alternative.
+
 #TODO
+-Server crashes when receiving string over 16 characters
 -add helper functions for sending/receiving packets
 -check the port when starting server
 -add offsets in themes for text

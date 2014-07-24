@@ -20,6 +20,7 @@
 
 // ================================================ //
 
+struct Packet;
 struct ClientConnection;
 typedef std::vector<ClientConnection> ClientList;
 class Timer;
@@ -38,20 +39,20 @@ public:
 	~Server(void);
 
 	// Receives packets and process them.
-	void update(double dt);
+	Packet* update(double dt);
 
 private:
-	Uint32		m_port;
-	UDPsocket	m_sock;
-	UDPpacket*	m_packet;
-	ClientList	m_clients;
+	Uint32 m_port;
+	UDPsocket m_sock;
+	UDPpacket* m_packet;
+	ClientList m_clients;
 };
 
 // ================================================ //
 
 struct ClientConnection{
 	IPaddress addr;
-	char username[12];
+	std::string username;
 	Uint32 channel;
 	std::shared_ptr<Timer> timer;
 };

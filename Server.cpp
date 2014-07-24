@@ -25,7 +25,7 @@ template<> Server* Singleton<Server>::msSingleton = nullptr;
 // ================================================ //
 
 // Define ExtMF's packet header protocol ID.
-Uint32 Packet::PROTOCOL_ID = 666666;
+const Uint32 Packet::PROTOCOL_ID = 666666;
 
 // ================================================ //
 
@@ -63,7 +63,7 @@ Server::~Server(void)
 
 // ================================================ //
 
-void Server::update(double dt)
+Packet* Server::update(double dt)
 {
 	// Process any incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_packet)){
@@ -75,7 +75,7 @@ void Server::update(double dt)
 				break;
 
 			case Packet::CONNECT_REQUEST:
-				printf("%s connected!\n", packet->buf);
+				printf("%s connected!\n", packet->buf.c_str());
 				{
 					Packet data;
 					data.header = Packet::PROTOCOL_ID;
@@ -83,8 +83,7 @@ void Server::update(double dt)
 
 					ClientConnection client;
 					client.addr = m_packet->address;
-					client.channel = m_packet->channel;
-					strcpy(client.username, packet->buf);
+					client.username = data.buf;
 					m_clients.push_back(client);
 
 					m_packet->address.host = client.addr.host;
@@ -93,6 +92,14 @@ void Server::update(double dt)
 					m_packet->len = sizeof(data)+1;
 					printf("Send: %d\n", SDLNet_UDP_Send(m_sock, -1, m_packet));
 				}
+				break;
+
+			case Packet::CHAT:
+				printf("Len: %d\n", packet->bufLength);
+				Packet* r = new Packet();
+				r->buf = packet->buf;
+				r->type = packet->type;
+				return r;
 				break;
 			}
 		}
@@ -112,6 +119,8 @@ void Server::update(double dt)
 		m_packet->len = sizeof(data)+1;
 		SDLNet_UDP_Send(m_sock, -1, m_packet);
 	}*/
+
+	return nullptr;
 }
 
 // ================================================ //

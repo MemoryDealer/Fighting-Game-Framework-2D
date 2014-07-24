@@ -22,6 +22,7 @@
 #include "App.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Packet.hpp"
 #include "Widget.hpp"
 #include "WidgetListbox.hpp"
 #include "Label.hpp"
@@ -131,7 +132,10 @@ void LobbyState::handleInput(SDL_Event& e)
 		case SDLK_RETURN:
 			if (m_pGUI->isEditingText()){
 				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message.c_str());
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					printf("Chat: %d\n", Client::getSingletonPtr()->chat(message));
+				}
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message);
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
 			break;
@@ -343,7 +347,7 @@ void LobbyState::processGUIAction(const int type)
 			case GUILobbyStateLayer::Root::BUTTON_SEND:
 			{
 				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message.c_str());
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message);
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
 				break;
@@ -464,7 +468,20 @@ void LobbyState::update(double dt)
 	m_pBackground->update(dt);
 	m_pGUI->update(dt);
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-		Server::getSingletonPtr()->update(dt);
+		Packet* packet = Server::getSingletonPtr()->update(dt);
+		if (packet != nullptr){
+			switch (packet->type){
+			default:
+			case Packet::NIL:
+				break;
+
+			case Packet::CHAT:
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(packet->buf);
+				break;
+			}
+
+			delete packet;
+		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		Client::getSingletonPtr()->update(dt);

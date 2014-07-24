@@ -142,6 +142,7 @@
     <ClCompile Include="..\Client.cpp" />
     <ClCompile Include="..\GameManager.cpp" />
     <ClCompile Include="..\GUILobbyState.cpp" />
+    <ClCompile Include="..\Packet.cpp" />
     <ClCompile Include="..\WidgetButton.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />
