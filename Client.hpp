@@ -20,6 +20,10 @@
 
 // ================================================ //
 
+class Timer;
+
+// ================================================ //
+
 // Handles all client-side operations.
 class Client : public Singleton<Client>
 {
@@ -43,6 +47,7 @@ private:
 	UDPsocket m_sock;
 	UDPpacket* m_packet;
 	IPaddress m_serverAddr;
+	std::shared_ptr<Timer> m_pLastResponse;
 };
 
 // ================================================ //

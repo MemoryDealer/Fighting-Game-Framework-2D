@@ -19,12 +19,22 @@ Packet::Packet(void) :
 header(Packet::PROTOCOL_ID),
 id(0),
 type(Packet::NIL),
-buf(),
-bufLength(0)
+message()
 {
 	static Uint32 idctr = 0;
 
 	id = idctr++;
+}
+
+// ================================================ //
+
+int Packet::send(UDPpacket* packet, UDPsocket& sock, const IPaddress& addr, Packet& data)
+{
+	packet->address = addr;
+	packet->data = reinterpret_cast<Uint8*>(&data);
+	packet->len = sizeof(data)+1;
+
+	return SDLNet_UDP_Send(sock, -1, packet);
 }
 
 // ================================================ //

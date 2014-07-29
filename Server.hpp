@@ -27,6 +27,15 @@ class Timer;
 
 // ================================================ //
 
+struct ClientConnection{
+	IPaddress addr;
+	std::string username;
+	Uint32 channel;
+	std::shared_ptr<Timer> timer;
+};
+
+// ================================================ //
+
 // Handles all server-side operations.
 class Server : public Singleton<Server>
 {
@@ -41,6 +50,15 @@ public:
 	// Receives packets and process them.
 	Packet* update(double dt);
 
+	// Returns true if client address has already connected.
+	bool isClientConnected(const IPaddress& addr);
+
+	// Getters
+
+	// Returns index of client matching the specified IPaddress.
+	// Returns -1 if not found.
+	int getClient(const IPaddress& addr);
+
 private:
 	Uint32 m_port;
 	UDPsocket m_sock;
@@ -50,12 +68,31 @@ private:
 
 // ================================================ //
 
-struct ClientConnection{
-	IPaddress addr;
-	std::string username;
-	Uint32 channel;
-	std::shared_ptr<Timer> timer;
-};
+inline bool Server::isClientConnected(const IPaddress& addr){
+	for (ClientList::iterator itr = m_clients.begin();
+		itr != m_clients.end();
+		++itr){
+		if (addr.host == itr->addr.host && 
+			addr.port == itr->addr.port){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// Getters
+
+inline int Server::getClient(const IPaddress& addr){
+	for (unsigned int i = 0; i < m_clients.size(); ++i){
+		if (addr.host == m_clients[i].addr.host &&
+			addr.port == m_clients[i].addr.port){
+			return i;
+		}
+	}
+
+	return -1;
+}
 
 // ================================================ //
 

@@ -25,8 +25,8 @@ public:
 	// Initializes header and id.
 	explicit Packet(void);
 
-	// Sets the buf std::string value and determines bufLength.
-	void setBuffer(const std::string& str);
+	// Copies str to msg.
+	void setMessage(const std::string& str);
 
 	// A packet header allows the program the confirm a packet is sent
 	// from another client running Extreme Metal Fighter.
@@ -34,8 +34,10 @@ public:
 	Uint32 id;
 	Uint32 type;
 
-	std::string buf;
-	Uint32 bufLength;
+	union{
+		char message[256];
+		int whatever;
+	};
 	
 	enum Type{
 		// Client packet types.
@@ -50,14 +52,16 @@ public:
 		CONNECT_ACCEPT
 	};
 
+	// A helper function that sends a packet.
+	static int send(UDPpacket* packet, UDPsocket& sock, const IPaddress& addr, Packet& data);
+
 	static const Uint32 PROTOCOL_ID;
 };
 
 // ================================================ //
 
-inline void Packet::setBuffer(const std::string& str){
-	buf = str;
-	bufLength = buf.length();
+inline void Packet::setMessage(const std::string& str){
+	strncpy(message, str.c_str(), str.length());
 }
 
 // ================================================ //

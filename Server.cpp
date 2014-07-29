@@ -67,39 +67,34 @@ Packet* Server::update(double dt)
 {
 	// Process any incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_packet)){
-		Packet* packet = reinterpret_cast<Packet*>(m_packet->data);
+		Packet* data = reinterpret_cast<Packet*>(m_packet->data);
 
-		if (packet->header == Packet::PROTOCOL_ID){
-			switch (packet->type){
+		if (data->header == Packet::PROTOCOL_ID){
+			switch (data->type){
 			default:
 				break;
 
 			case Packet::CONNECT_REQUEST:
-				printf("%s connected!\n", packet->buf.c_str());
+				printf("%s connected!\n", data->message);
 				{
-					Packet data;
-					data.header = Packet::PROTOCOL_ID;
-					data.type = Packet::CONNECT_ACCEPT;
+					Packet accept;
+					accept.type = Packet::CONNECT_ACCEPT;
+					printf("CONNECT_ACCEPT: %d\n", Packet::send(m_packet, m_sock, m_packet->address, accept));
 
 					ClientConnection client;
 					client.addr = m_packet->address;
-					client.username = data.buf;
+					client.username.assign(data->message);
 					m_clients.push_back(client);
-
-					m_packet->address.host = client.addr.host;
-					m_packet->address.port = client.addr.port;
-					m_packet->data = reinterpret_cast<Uint8*>(&data);
-					m_packet->len = sizeof(data)+1;
-					printf("Send: %d\n", SDLNet_UDP_Send(m_sock, -1, m_packet));
 				}
 				break;
 
 			case Packet::CHAT:
-				printf("Len: %d\n", packet->bufLength);
-				Packet* r = new Packet();
-				r->buf = packet->buf;
-				r->type = packet->type;
-				return r;
+				if (this->isClientConnected(m_packet->address)){
+					Packet* r = new Packet();
+					r->setMessage(m_clients[this->getClient(m_packet->address)].username + ": " + data->message);
+					r->type = data->type;
+					return r;
+				}
 				break;
 			}
 		}

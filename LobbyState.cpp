@@ -468,6 +468,7 @@ void LobbyState::update(double dt)
 	m_pBackground->update(dt);
 	m_pGUI->update(dt);
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+		// Receive a copy of the packet data from the server and process.
 		Packet* packet = Server::getSingletonPtr()->update(dt);
 		if (packet != nullptr){
 			switch (packet->type){
@@ -476,7 +477,7 @@ void LobbyState::update(double dt)
 				break;
 
 			case Packet::CHAT:
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(packet->buf);
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(packet->message);
 				break;
 			}
 

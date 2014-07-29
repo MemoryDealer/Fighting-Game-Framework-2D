@@ -15,6 +15,7 @@
 #include "Log.hpp"
 #include "Engine.hpp"
 #include "Packet.hpp"
+#include "Timer.hpp"
 
 // ================================================ //
 
@@ -26,7 +27,8 @@ Client::Client(const std::string& server, const int port) :
 m_port(port),
 m_sock(nullptr),
 m_packet(),
-m_serverAddr()
+m_serverAddr(),
+m_pLastResponse(new Timer())
 {
 	Log::getSingletonPtr()->logMessage("Initializing Client...");
 
@@ -43,16 +45,13 @@ m_serverAddr()
 	m_packet = SDLNet_AllocPacket(66560);
 
 	// Send connection request to server.
-	Packet connect;
-	connect.type = Packet::CONNECT_REQUEST;
-	connect.setBuffer("unixunited");
+	Packet data;
+	data.type = Packet::CONNECT_REQUEST;
+	data.setMessage("unixunited");
 
-	m_packet->address.host = m_serverAddr.host;
-	m_packet->address.port = m_serverAddr.port;
-	m_packet->data = reinterpret_cast<Uint8*>(&connect);
-	m_packet->len = sizeof(connect)+1;
+	Packet::send(m_packet, m_sock, m_serverAddr, data);
 
-	SDLNet_UDP_Send(m_sock, -1, m_packet);
+	m_pLastResponse->restart();
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");
 }
@@ -73,15 +72,11 @@ Client::~Client(void)
 
 int Client::chat(const std::string& msg)
 {
-	Packet chat;
-	chat.type = Packet::CHAT;
-	chat.setBuffer(msg);
-	m_packet->address.host = m_serverAddr.host;
-	m_packet->address.port = m_serverAddr.port;
-	m_packet->data = reinterpret_cast<Uint8*>(&chat);
-	m_packet->len = sizeof(chat)+1;
-
-	return SDLNet_UDP_Send(m_sock, -1, m_packet);
+	Packet data;
+	data.type = Packet::CHAT;
+	data.setMessage(msg);
+	
+	return Packet::send(m_packet, m_sock, m_serverAddr, data);
 }
 
 // ================================================ //
