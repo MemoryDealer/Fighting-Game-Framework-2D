@@ -41,7 +41,12 @@ public:
 	int chat(const std::string& msg);
 
 	// Sends needed data to server.
-	Packet* update(double dt);
+	int update(double dt);
+
+	// Setters
+
+	// Sets the handle for packet data to be copied to so game states can access it.
+	void setPacketHandle(Packet* handle);
 
 private:
 	int	m_port;
@@ -49,11 +54,18 @@ private:
 	UDPpacket* m_sendPacket;
 	UDPpacket* m_recvPacket;
 	IPaddress m_serverAddr;
+	Packet* m_packetHandle;
 	// Time since last packet received from server.
 	std::shared_ptr<Timer> m_pLastResponse;
 	bool m_connected;
 	int m_timeout;
 };
+
+// ================================================ //
+
+inline void Client::setPacketHandle(Packet* handle){
+	m_packetHandle = handle;
+}
 
 // ================================================ //
 

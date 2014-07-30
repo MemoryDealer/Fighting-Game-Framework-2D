@@ -15,10 +15,10 @@
 
 // ================================================ //
 
-Packet::Packet(void) :
+Packet::Packet(int type) :
 header(Packet::PROTOCOL_ID),
 id(0),
-type(Packet::NIL),
+type(type),
 message()
 {
 	static Uint32 idctr = 0;

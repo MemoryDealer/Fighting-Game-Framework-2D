@@ -31,7 +31,7 @@ public:
 	virtual ~WidgetListbox(void);
 
 	// Adds a new string to the listbox.
-	void addString(const std::string& str);
+	virtual void addString(const std::string& str);
 
 	// Adds to the index (offset for rendering).
 	void addIndex(const int amount);

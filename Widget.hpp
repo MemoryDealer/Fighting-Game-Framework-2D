@@ -78,6 +78,9 @@ public:
 	// a button map (.bmap) file. 
 	void parseLinks(const std::string& links);
 
+	// Empty function for derived widgets.
+	virtual void addString(const std::string& str){}
+
 	// Getters
 
 	// Returns the local ID for this Widget. Each GUILayer contains its own Widget IDs 

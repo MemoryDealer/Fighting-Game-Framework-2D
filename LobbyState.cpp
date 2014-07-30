@@ -58,9 +58,12 @@ void LobbyState::enter(void)
 	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
 
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-		static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(
-			GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString("Server initialized.");
+		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+			"Server initialized.");
 		Server::getSingletonPtr()->setPacketHandle(m_packet.get());
+	}
+	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		Client::getSingletonPtr()->setPacketHandle(m_packet.get());
 	}
 }
 
@@ -136,10 +139,15 @@ void LobbyState::handleInput(SDL_Event& e)
 				// Build message text with user name preceding the message itself.
 				std::string message = GameManager::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					printf("Chat: %d\n", Client::getSingletonPtr()->chat(message));
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+					std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
+					data->setMessage(message);
+					Server::getSingletonPtr()->broadcastToAllClients(data.get());
 				}
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message);
+				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					Client::getSingletonPtr()->chat(message);
+				}
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(message);
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
 			break;
@@ -352,10 +360,15 @@ void LobbyState::processGUIAction(const int type)
 			{
 				std::string message = GameManager::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					printf("Chat: %d\n", Client::getSingletonPtr()->chat(message));
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+					std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
+					data->setMessage(message);
+					Server::getSingletonPtr()->broadcastToAllClients(data.get());
 				}
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message);
+				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					Client::getSingletonPtr()->chat(message);
+				}
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(message);
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
 				break;
@@ -476,37 +489,34 @@ void LobbyState::update(double dt)
 	m_pBackground->update(dt);
 	m_pGUI->update(dt);
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-		// Receive a copy of the packet data from the server and process.
-		if (Server::getSingletonPtr()->update(dt)){
-			switch (m_packet->type){
-			default:
-			case Packet::NIL:
-				break;
+		switch (Server::getSingletonPtr()->update(dt)){
+		default:
+		case Packet::NIL:
+			break;
 
-			case Packet::CONNECT_REQUEST:
-				printf("Connect request from: %s\n", m_packet->message);
-				break;
+		case Packet::CONNECT_REQUEST:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				m_packet->message + std::string(" connected!"));
+			break;
 
-			case Packet::CHAT:
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(m_packet->message);
-				break;
-			}
+		case Packet::CHAT:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
+			break;
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		Packet* data = Client::getSingletonPtr()->update(dt);
-		if (data != nullptr){
-			switch (data->type){
-			default:
-			case Packet::NIL:
-				break;
+		switch (Client::getSingletonPtr()->update(dt)){
+		default:
+		case Packet::NIL:
+			break;
 
-			case Packet::CONNECT_ACCEPT:
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(data->message);
-				break;
-			}
+		case Packet::CHAT:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
+			break;
 
-			delete data;
+		case Packet::CONNECT_ACCEPT:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
+			break;
 		}
 	}
 

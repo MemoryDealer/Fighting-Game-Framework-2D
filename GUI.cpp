@@ -64,7 +64,7 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 		break;
 	}
 
-	// Parse each setting for this Widget. 
+	// Parse each setting for this Widget.
 	for (unsigned int i = 0; i < names.size(); ++i){
 		// Allocate widget with ID i (the names list parameter should be in order).
 		std::shared_ptr<Widget> pWidget(new T(i));

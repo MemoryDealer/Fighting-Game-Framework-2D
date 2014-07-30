@@ -438,10 +438,16 @@ void MenuState::processGUIAction(const int type)
 				m_pGUI->setEditingText(GUIMenuStateLayer::Host::TEXTBOX_PORT);
 				break;
 
+			case GUIMenuStateLayer::Host::TEXTBOX_USERNAME:
+				m_pGUI->setEditingText(GUIMenuStateLayer::Host::TEXTBOX_USERNAME);
+				break;
+
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
 				GameManager::getSingletonPtr()->setMode(GameManager::SERVER);
 				{
 					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getText();
+					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_USERNAME)->getText();
+					GameManager::getSingletonPtr()->setUsername(username);
 					new Server(std::stoi(port));
 				}
 				this->pushAppState(this->findByName(LOBBY_STATE));
@@ -466,11 +472,21 @@ void MenuState::processGUIAction(const int type)
 				m_pGUI->setEditingText(GUIMenuStateLayer::Join::TEXTBOX_PORT);
 				break;
 
+			case GUIMenuStateLayer::Join::TEXTBOX_USERNAME:
+				m_pGUI->setEditingText(GUIMenuStateLayer::Join::TEXTBOX_USERNAME);
+				break;
+
+			case GUIMenuStateLayer::Join::TEXTBOX_PASSWORD:
+				m_pGUI->setEditingText(GUIMenuStateLayer::Join::TEXTBOX_PASSWORD);
+				break;
+
 			case GUIMenuStateLayer::Join::BUTTON_JOIN:
 				GameManager::getSingletonPtr()->setMode(GameManager::CLIENT);
 				{
 					std::string server = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_SERVER)->getText();
 					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_PORT)->getText();
+					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_USERNAME)->getText();
+					GameManager::getSingletonPtr()->setUsername(username);
 					new Client(server, std::stoi(port));
 				}
 				this->pushAppState(this->findByName(LOBBY_STATE));

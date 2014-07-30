@@ -52,7 +52,8 @@ public:
 	// Returns true if client address has already connected.
 	bool isClientConnected(const IPaddress& addr);
 
-	// Sends a packet to all connected clients.
+	// Sends a packet to all connected clients. Excludes excludeAddr if exclude
+	// parameter is true.
 	int broadcastToAllClients(Packet* data, const bool exclude = false, const IPaddress excludeAddr = IPaddress());
 
 	// Getters

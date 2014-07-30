@@ -322,6 +322,8 @@
 -Created a Packet smart pointer in LobbyState which is passed into the Server, which the server stores. When a packet is received and
 	processed, it is copied to this stored pointer in the Server code using Packet::clone(), thus eliminating the new to use heap allocation
 	during the Server update. The same will be done for the client code.
+-Added username textbox in Host/Join GUIlayers. Also a password field for future.
+-The username is retrieved when the Client/Server is started and stored in GameManager.
 
 #TODO
 -check the port when starting server

@@ -30,6 +30,7 @@ m_sock(nullptr),
 m_sendPacket(nullptr),
 m_recvPacket(nullptr),
 m_serverAddr(),
+m_packetHandle(nullptr),
 m_pLastResponse(new Timer()),
 m_connected(false),
 m_timeout(10000)
@@ -50,8 +51,7 @@ m_timeout(10000)
 	m_recvPacket = SDLNet_AllocPacket(66560);
 
 	// Send connection request to server.
-	Packet data;
-	data.type = Packet::CONNECT_REQUEST;
+	Packet data(Packet::CONNECT_REQUEST);
 	data.setMessage(GameManager::getSingletonPtr()->getUsername());
 	Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
 
@@ -78,8 +78,7 @@ Client::~Client(void)
 
 int Client::chat(const std::string& msg)
 {
-	Packet data;
-	data.type = Packet::CHAT;
+	Packet data(Packet::CHAT);
 	data.setMessage(msg);
 	
 	return Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
@@ -87,7 +86,7 @@ int Client::chat(const std::string& msg)
 
 // ================================================ //
 
-Packet* Client::update(double dt)
+int Client::update(double dt)
 {
 	// Process incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
@@ -102,16 +101,18 @@ Packet* Client::update(double dt)
 
 				case Packet::CONNECT_ACCEPT:
 					m_connected = true;
-					{
-						Packet* r = new Packet(*data);
-						r->setMessage("Connected to server.");
-						return r;
-					}
+					break;
+
+				case Packet::CHAT:
+					printf("Recieved chat!\n");
 					break;
 				}
 
 				// Packet received from server, reset timeout timer.
 				m_pLastResponse->restart();
+
+				data->clone(m_packetHandle);
+				return data->type;
 			}
 		}
 	}
@@ -121,7 +122,7 @@ Packet* Client::update(double dt)
 		}
 	}
 
-	return nullptr;
+	return 0;
 }
 
 // ================================================ //

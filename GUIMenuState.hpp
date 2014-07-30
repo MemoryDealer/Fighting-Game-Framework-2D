@@ -124,7 +124,9 @@ namespace GUIMenuStateLayer{
 
 		enum Widget{
 			TEXTBOX_PORT = 0,
+			TEXTBOX_USERNAME,
 			STATIC_PORT,
+			STATIC_USERNAME,
 			BUTTON_HOST,
 			BUTTON_BACK
 		};
@@ -140,10 +142,14 @@ namespace GUIMenuStateLayer{
 		enum Widgets{
 			STATIC_SERVER = 0,
 			STATIC_PORT,
+			STATIC_USERNAME,
+			STATIC_PASSWORD,
 			BUTTON_JOIN,
 			BUTTON_BACK,
+			TEXTBOX_SERVER,
 			TEXTBOX_PORT,
-			TEXTBOX_SERVER
+			TEXTBOX_USERNAME,
+			TEXTBOX_PASSWORD
 		};
 	};
 

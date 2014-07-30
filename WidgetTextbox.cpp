@@ -93,7 +93,21 @@ void WidgetTextbox::update(double dt)
 
 void WidgetTextbox::render(void)
 {
-	Object::render();
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+
+	// Render label.
+	SDL_Rect dst = m_dst;
+	dst.x += 5;
+	if (m_pLabel->isCentered()){
+		dst.x += m_pLabel->getOffset();
+		dst.w -= m_pLabel->getOffset() * 2;
+	}
+	else{
+		dst.w = m_pLabel->getWidth();
+	}
+
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pLabel->getTexturePtr(),
+		nullptr, &dst, 0, nullptr, m_flip);
 
 	// Render the blinking cursor.
 	if (this->isActive() && m_renderCursor){
@@ -103,7 +117,7 @@ void WidgetTextbox::render(void)
 		SDL_SetRenderDrawColor(Engine::getSingletonPtr()->getRenderer(), color.r, color.g, color.b, 200);
 		
 		SDL_Rect rc;
-		rc.x = m_dst.x + m_pLabel->getWidth();
+		rc.x = m_dst.x + m_pLabel->getWidth() + 5;
 		rc.y = m_dst.y + m_dst.h / 10;
 		rc.w = 2;
 		rc.h = m_dst.h - (m_dst.h / 5);

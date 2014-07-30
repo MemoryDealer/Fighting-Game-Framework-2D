@@ -23,7 +23,7 @@
 struct Packet{
 public:
 	// Initializes header and id.
-	explicit Packet(void);
+	explicit Packet(int type = 0);
 
 	enum Type{
 		// Client packet types.

@@ -89,25 +89,41 @@ button.back:links=2,-1,-1,-1
 
 [layer.host]
 #ID 0
-textbox.port:pos=(314,75,225,60)
+textbox.port:pos=(314,75,225,30)
 textbox.port:label="666"
 textbox.port:labeloffset=60
 textbox.port:links=-1,2,-1,-1
 textbox.port:style=1
+textbox.port:font=1
 
 #ID 1
-static.port:pos=(114,75,225,60)
-static.port:label="Port:"
-static.port:labeloffset=60
-static.port:links=-1,-1,-1,-1
+textbox.username:pos=(314,150,225,30)
+textbox.username:label="Anonymous"
+textbox.username:labeloffset=60
+textbox.username:links=-1,-1,-1,-1
+textbox.username:font=1
 
 #ID 2
-button.host:pos=(314,175,225,60)
+static.port:pos=(164,75,75,30)
+static.port:label="Port:"
+static.port:labeloffset=0
+static.port:links=-1,-1,-1,-1
+static.port:font=1
+
+#ID 3
+static.username:pos=(164,150,135,30)
+static.username:label="Username:"
+static.username:labeloffset=0
+static.username:links=-1,-1,-1,-1
+static.username:font=1
+
+#ID 4
+button.host:pos=(314,225,225,60)
 button.host:label="Host"
 button.host:labeloffset=60
 button.host:links=0,3,-1,-1
 
-#ID 3
+#ID 5
 button.back:pos=(314,375,225,60)
 button.back:label="Back"
 button.back:labeloffset=60
@@ -115,39 +131,71 @@ button.back:links=2,-1,-1,-1
 
 [layer.join]
 #ID 0
-static.server:pos=(114,75,225,60)
+static.server:pos=(60,75,75,30)
 static.server:label="Server:"
-static.server:labeloffset=60
+static.server:labeloffset=0
 static.server:links=-1,-1,-1,-1
+static.server:font=1
+static.server:alignleft=1
 
 #ID 1
-static.port:pos=(114,175,225,60)
+static.port:pos=(60,150,75,30)
 static.port:label="Port:"
-static.port:labeloffset=60
+static.port:labeloffset=0
 static.port:links=-1,-1,-1,-1
+static.port:font=1
+static.port:alignleft=1
 
 #ID 2
+static.username:pos=(400,75,135,30)
+static.username:label="Username:"
+static.username:labeloffset=0
+static.username:links=-1,-1,-1,-1
+static.username:font=1
+
+#ID 3
+static.password:pos=(400,150,135,30)
+static.password:label="Password:"
+static.password:labeloffset=0
+static.password:links=-1,-1,-1,-1
+static.password:font=1
+
+#ID 4
 button.join:pos=(314,275,225,60)
 button.join:label="Join"
 button.join:labeloffset=60
 button.join:links=5,3,-1,-1
 
-#ID 3
+#ID 5
 button.back:pos=(314,375,225,60)
 button.back:label="Back"
 button.back:labeloffset=60
 button.back:links=2,-1,-1,-1
 
-#ID 4
-textbox.port:pos=(314,175,225,60)
+#ID 6
+textbox.server:pos=(150,75,225,30)
+textbox.server:label="localhost"
+textbox.server:links=-1,5,-1,-1
+textbox.server:font=1
+
+#ID 7
+textbox.port:pos=(150,150,225,30)
 textbox.port:label="666"
 textbox.port:links=4,2,-1,-1
 textbox.port:style=1
+textbox.port:font=1
 
-#ID 5
-textbox.server:pos=(314,75,225,60)
-textbox.server:label="localhost"
-textbox.server:links=-1,5,-1,-1
+#ID 8
+textbox.username:pos=(550,75,225,30)
+textbox.username:label="Anonymous"
+textbox.username:links=-1,-1,-1,-1
+textbox.username:font=1
+
+#ID 9
+textbox.password:pos=(550,150,225,30)
+textbox.password:label=""
+textbox.password:links=-1,-1,-1,-1
+textbox.password:font=1
 
 [layer.options]
 #ID 0

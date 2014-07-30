@@ -117,7 +117,7 @@ int Server::broadcastToAllClients(Packet* data, const bool exclude, const IPaddr
 	for (ClientList::iterator itr = m_clients.begin();
 		itr != m_clients.end();
 		++itr){
-		if (exclude == false && itr->addr.host == excludeAddr.host &&
+		if (exclude == true && itr->addr.host == excludeAddr.host &&
 			itr->addr.port == excludeAddr.port){
 			continue;
 		}
