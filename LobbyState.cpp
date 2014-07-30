@@ -64,6 +64,8 @@ void LobbyState::enter(void)
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		Client::getSingletonPtr()->setPacketHandle(m_packet.get());
+		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+			"Attempting server connection...");
 	}
 }
 
@@ -516,6 +518,11 @@ void LobbyState::update(double dt)
 
 		case Packet::CONNECT_ACCEPT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
+			break;
+
+		case Packet::CONNECT_FAILED:
+			printf("Failed to connect!\n"); // TODO: add message box GUI pop-up.
+			m_quit = true;
 			break;
 		}
 	}

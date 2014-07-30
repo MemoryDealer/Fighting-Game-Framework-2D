@@ -203,7 +203,7 @@ void MenuState::handleInput(SDL_Event& e)
 		{
 			// Reload GUI and background.
 			Config c("ExtMF.cfg");
-			m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
+			//m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
 			m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
 		}
 			break;

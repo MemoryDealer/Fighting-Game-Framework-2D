@@ -106,6 +106,13 @@ int Client::update(double dt)
 				case Packet::CHAT:
 					printf("Recieved chat!\n");
 					break;
+
+				case Packet::CHECK:
+				{
+					Packet data(Packet::CHECK_ACK);
+					Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
+					break;
+				}
 				}
 
 				// Packet received from server, reset timeout timer.
@@ -117,8 +124,21 @@ int Client::update(double dt)
 		}
 	}
 	else{
+		if (!m_connected && m_pLastResponse->getTicks() > (m_timeout / 2)){
+			// Re-send connection request.
+			Packet data(Packet::CONNECT_REQUEST);
+			data.setMessage(GameManager::getSingletonPtr()->getUsername());
+			Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
+		}
+
 		if (m_pLastResponse->getTicks() > m_timeout){
-			m_connected = false;
+			if (!m_connected){
+				return Packet::CONNECT_FAILED;
+			}
+			else{
+				m_connected = false;
+				return Packet::CONNECTION_LOST;
+			}
 		}
 	}
 

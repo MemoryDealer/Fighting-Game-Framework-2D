@@ -97,7 +97,7 @@ void WidgetTextbox::render(void)
 
 	// Render label.
 	SDL_Rect dst = m_dst;
-	dst.x += 5;
+	dst.x += 5; // TODO: store this offset as a value and parse from .theme file.
 	if (m_pLabel->isCentered()){
 		dst.x += m_pLabel->getOffset();
 		dst.w -= m_pLabel->getOffset() * 2;

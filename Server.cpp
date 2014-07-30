@@ -35,7 +35,8 @@ m_sock(nullptr),
 m_sendPacket(nullptr),
 m_recvPacket(nullptr),
 m_clients(),
-m_packetHandle(nullptr)
+m_packetHandle(nullptr),
+m_clientTimeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
@@ -70,6 +71,23 @@ Server::~Server(void)
 
 int Server::update(double dt)
 {
+	// Check each client to see if any have timed out.
+	for (ClientList::iterator itr = m_clients.begin();
+		itr != m_clients.end();
+		++itr){
+		if (itr->timer->getTicks() > m_clientTimeout){
+			itr = m_clients.erase(itr);
+			printf("Client disconnected!\n");
+			if (m_clients.size() == 0){
+				break;
+			}
+		}
+		else if (itr->timer->getTicks() > (m_clientTimeout / 2)){
+			Packet data(Packet::CHECK);
+			Packet::send(m_sendPacket, m_sock, itr->addr, data);
+		}
+	}
+
 	// Process any incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
 		Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
@@ -85,6 +103,7 @@ int Server::update(double dt)
 					ClientConnection client;
 					client.addr = m_recvPacket->address;
 					client.username.assign(data->message);
+					client.timer.reset(new Timer());
 					m_clients.push_back(client);
 
 					// Send a connection acceptance.
@@ -99,7 +118,13 @@ int Server::update(double dt)
 					this->broadcastToAllClients(data, true, m_recvPacket->address);
 				}
 				break;
+
+			case Packet::CHECK_ACK:
+				break;
 			}
+
+			// Reset client's timer.
+			m_clients[this->getClient(m_recvPacket->address)].timer->restart();
 
 			data->clone(m_packetHandle);
 			return data->type;

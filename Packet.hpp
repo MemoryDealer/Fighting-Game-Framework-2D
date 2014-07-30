@@ -30,12 +30,16 @@ public:
 
 		NIL = 0,
 		CONNECT_REQUEST,
+		CONNECT_FAILED,
+		CONNECTION_LOST,
 		DISCONNECT,
 		CHAT,
+		CHECK_ACK,
 
 		// Server packet types.
 
-		CONNECT_ACCEPT
+		CONNECT_ACCEPT,
+		CHECK
 	};
 
 	// Copies str to msg.

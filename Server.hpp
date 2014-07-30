@@ -74,6 +74,7 @@ private:
 	UDPpacket* m_recvPacket;
 	ClientList m_clients;
 	Packet* m_packetHandle;
+	int m_clientTimeout;
 };
 
 // ================================================ //
