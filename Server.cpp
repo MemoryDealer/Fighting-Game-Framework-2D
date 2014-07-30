@@ -34,7 +34,8 @@ m_port(port),
 m_sock(nullptr),
 m_sendPacket(nullptr),
 m_recvPacket(nullptr),
-m_clients()
+m_clients(),
+m_packetHandle(nullptr)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
@@ -67,60 +68,65 @@ Server::~Server(void)
 
 // ================================================ //
 
-Packet* Server::update(double dt)
+int Server::update(double dt)
 {
 	// Process any incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
 		Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
-		printf("Recieved packet from %s\n", (char*)m_recvPacket->data);
+
 		if (data->header == Packet::PROTOCOL_ID){
 			switch (data->type){
 			default:
 				break;
 
 			case Packet::CONNECT_REQUEST:
-				printf("%s connected!\n", data->message);
 				{
-					Packet accept;
-					accept.type = Packet::CONNECT_ACCEPT;
-					printf("CONNECT_ACCEPT: %d\n", Packet::send(m_sendPacket, m_sock, m_recvPacket->address, accept));
-
+					// Add new client to client list.
 					ClientConnection client;
 					client.addr = m_recvPacket->address;
-					printf("port: %d\n", client.addr.port);
 					client.username.assign(data->message);
 					m_clients.push_back(client);
+
+					// Send a connection acceptance.
+					Packet accept;
+					accept.type = Packet::CONNECT_ACCEPT;
+					Packet::send(m_sendPacket, m_sock, client.addr, accept);
+					break;
 				}
-				break;
 
 			case Packet::CHAT:
 				if (this->isClientConnected(m_recvPacket->address)){
-					Packet* r = new Packet();
-					r->type = data->type;
-					r->setMessage(m_clients[this->getClient(m_recvPacket->address)].username + ": " + data->message);
-					return r;
+					this->broadcastToAllClients(data, true, m_recvPacket->address);
 				}
 				break;
 			}
+
+			data->clone(m_packetHandle);
+			return data->type;
 		}
 	}
 
-	// Update all clients.
-	/*for (ClientList::iterator itr = m_clients.begin();
+	return 0;
+}
+
+// ================================================ //
+
+int Server::broadcastToAllClients(Packet* data, const bool exclude, const IPaddress excludeAddr)
+{
+	int numSent = 0;
+	for (ClientList::iterator itr = m_clients.begin();
 		itr != m_clients.end();
 		++itr){
-		Packet data;
-		data.header = Packet::PROTOCOL_ID;
-		data.type = Packet::CONNECT_ACCEPT;
+		if (exclude == false && itr->addr.host == excludeAddr.host &&
+			itr->addr.port == excludeAddr.port){
+			continue;
+		}
+		else if (Packet::send(m_sendPacket, m_sock, itr->addr, data)){
+			++numSent;
+		}
+	}
 
-		memset(m_packet, 0, sizeof(m_packet));
-		m_packet->address = itr->addr;
-		m_packet->data = reinterpret_cast<Uint8*>(&data);
-		m_packet->len = sizeof(data)+1;
-		SDLNet_UDP_Send(m_sock, -1, m_packet);
-	}*/
-
-	return nullptr;
+	return numSent;
 }
 
 // ================================================ //

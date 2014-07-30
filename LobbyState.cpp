@@ -31,7 +31,8 @@
 
 LobbyState::LobbyState(void) :
 m_pGUI(nullptr),
-m_pBackground(nullptr)
+m_pBackground(nullptr),
+m_packet(new Packet())
 {
 	Config c("ExtMF.cfg");
 	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
@@ -59,6 +60,7 @@ void LobbyState::enter(void)
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(
 			GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString("Server initialized.");
+		Server::getSingletonPtr()->setPacketHandle(m_packet.get());
 	}
 }
 
@@ -131,7 +133,9 @@ void LobbyState::handleInput(SDL_Event& e)
 
 		case SDLK_RETURN:
 			if (m_pGUI->isEditingText()){
-				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
+				// Build message text with user name preceding the message itself.
+				std::string message = GameManager::getSingletonPtr()->getUsername() +
+					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 					printf("Chat: %d\n", Client::getSingletonPtr()->chat(message));
 				}
@@ -346,7 +350,11 @@ void LobbyState::processGUIAction(const int type)
 
 			case GUILobbyStateLayer::Root::BUTTON_SEND:
 			{
-				std::string message = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
+				std::string message = GameManager::getSingletonPtr()->getUsername() +
+					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					printf("Chat: %d\n", Client::getSingletonPtr()->chat(message));
+				}
 				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(message);
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 			}
@@ -469,23 +477,37 @@ void LobbyState::update(double dt)
 	m_pGUI->update(dt);
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		// Receive a copy of the packet data from the server and process.
-		Packet* packet = Server::getSingletonPtr()->update(dt);
-		if (packet != nullptr){
-			switch (packet->type){
+		if (Server::getSingletonPtr()->update(dt)){
+			switch (m_packet->type){
 			default:
 			case Packet::NIL:
 				break;
 
+			case Packet::CONNECT_REQUEST:
+				printf("Connect request from: %s\n", m_packet->message);
+				break;
+
 			case Packet::CHAT:
-				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(packet->message);
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(m_packet->message);
 				break;
 			}
-
-			delete packet;
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		Client::getSingletonPtr()->update(dt);
+		Packet* data = Client::getSingletonPtr()->update(dt);
+		if (data != nullptr){
+			switch (data->type){
+			default:
+			case Packet::NIL:
+				break;
+
+			case Packet::CONNECT_ACCEPT:
+				static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->addString(data->message);
+				break;
+			}
+
+			delete data;
+		}
 	}
 
 	Engine::getSingletonPtr()->renderPresent();

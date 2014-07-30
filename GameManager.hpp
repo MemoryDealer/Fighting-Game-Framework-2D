@@ -47,13 +47,20 @@ public:
 	// Returns the game mode.
 	const int getMode(void) const;
 
+	// Returns the username.
+	const std::string getUsername(void) const;
+
 	// Setters
 
 	// Sets the game mode.
 	void setMode(const int mode);
 
+	// Sets the username.
+	void setUsername(const std::string& username);
+
 private:
 	int m_mode;
+	std::string m_username;
 };
 
 // ================================================ //
@@ -64,10 +71,18 @@ inline const int GameManager::getMode(void) const{
 	return m_mode;
 }
 
+inline const std::string GameManager::getUsername(void) const{
+	return m_username;
+}
+
 // Setters
 
 inline void GameManager::setMode(const int mode){
 	m_mode = mode;
+}
+
+inline void GameManager::setUsername(const std::string& username){
+	m_username = username;
 }
 
 // ================================================ //

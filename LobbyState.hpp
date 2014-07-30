@@ -22,6 +22,7 @@
 
 class GUI;
 class Stage;
+struct Packet;
 
 // ================================================ //
 
@@ -64,6 +65,7 @@ public:
 private:
 	std::shared_ptr<GUI> m_pGUI;
 	std::shared_ptr<Stage> m_pBackground;
+	std::shared_ptr<Packet> m_packet;
 };
 
 // ================================================ //

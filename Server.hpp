@@ -30,7 +30,6 @@ class Timer;
 struct ClientConnection{
 	IPaddress addr;
 	std::string username;
-	Uint32 channel;
 	std::shared_ptr<Timer> timer;
 };
 
@@ -48,10 +47,13 @@ public:
 	~Server(void);
 
 	// Receives packets and process them.
-	Packet* update(double dt);
+	int update(double dt);
 
 	// Returns true if client address has already connected.
 	bool isClientConnected(const IPaddress& addr);
+
+	// Sends a packet to all connected clients.
+	int broadcastToAllClients(Packet* data, const bool exclude = false, const IPaddress excludeAddr = IPaddress());
 
 	// Getters
 
@@ -59,12 +61,18 @@ public:
 	// Returns -1 if not found.
 	int getClient(const IPaddress& addr);
 
+	// Setters
+
+	// Sets the handle for packet data to be copied to so game states can access it.
+	void setPacketHandle(Packet* handle);
+
 private:
 	Uint32 m_port;
 	UDPsocket m_sock;
 	UDPpacket* m_sendPacket;
 	UDPpacket* m_recvPacket;
 	ClientList m_clients;
+	Packet* m_packetHandle;
 };
 
 // ================================================ //
@@ -93,6 +101,12 @@ inline int Server::getClient(const IPaddress& addr){
 	}
 
 	return -1;
+}
+
+// Setters
+
+inline void Server::setPacketHandle(Packet* handle){
+	m_packetHandle = handle;
 }
 
 // ================================================ //

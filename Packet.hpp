@@ -25,20 +25,6 @@ public:
 	// Initializes header and id.
 	explicit Packet(void);
 
-	// Copies str to msg.
-	void setMessage(const std::string& str);
-
-	// A packet header allows the program the confirm a packet is sent
-	// from another client running Extreme Metal Fighter.
-	Uint32 header;
-	Uint32 id;
-	Uint32 type;
-
-	union{
-		char message[256];
-		int whatever;
-	};
-	
 	enum Type{
 		// Client packet types.
 
@@ -52,16 +38,46 @@ public:
 		CONNECT_ACCEPT
 	};
 
+	// Copies str to msg.
+	void setMessage(const std::string& str);
+
+	// Clones the current Packet to parameter clone.
+	void clone(Packet* clone);
+
+	// A packet header allows the program the confirm a packet is sent
+	// from another client running Extreme Metal Fighter.
+	Uint32 header;
+	Uint32 id;
+	Uint32 type;
+
+	union{
+		char message[256];
+		int whatever;
+	};
+	
+	// --- //
+
 	// A helper function that sends a packet.
 	static int send(UDPpacket* packet, UDPsocket& sock, const IPaddress& addr, Packet& data);
 
-	static const Uint32 PROTOCOL_ID;
+	// A helper function that sends a packet.
+	static int send(UDPpacket* packet, UDPsocket& sock, const IPaddress& addr, Packet* data);
+
+	static const Uint32 PROTOCOL_ID; // TODO: does this take up memory in an allocated Packet?
 };
 
 // ================================================ //
 
 inline void Packet::setMessage(const std::string& str){
 	strncpy(message, str.c_str(), str.length());
+}
+
+inline void Packet::clone(Packet* clone){
+	// Copy union by copying largest member.
+	memcpy(clone->message, this->message, sizeof(this->message));
+	clone->header = this->header;
+	clone->id = this->id;
+	clone->type = this->type;
 }
 
 // ================================================ //

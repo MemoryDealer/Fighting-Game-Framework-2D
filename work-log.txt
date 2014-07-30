@@ -319,6 +319,9 @@
 #7/30/14
 -I was previously using a single packet buffer (UDPpacket*) for both sending and receiving on the client and server. This was causing a memory interference, so 
 	I now use two packet buffers; one for sending and one for receiving. Crashes no longer seem to occur.
+-Created a Packet smart pointer in LobbyState which is passed into the Server, which the server stores. When a packet is received and
+	processed, it is copied to this stored pointer in the Server code using Packet::clone(), thus eliminating the new to use heap allocation
+	during the Server update. The same will be done for the client code.
 
 #TODO
 -check the port when starting server

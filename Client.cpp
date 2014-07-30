@@ -16,6 +16,7 @@
 #include "Engine.hpp"
 #include "Packet.hpp"
 #include "Timer.hpp"
+#include "GameManager.hpp"
 
 // ================================================ //
 
@@ -29,7 +30,9 @@ m_sock(nullptr),
 m_sendPacket(nullptr),
 m_recvPacket(nullptr),
 m_serverAddr(),
-m_pLastResponse(new Timer())
+m_pLastResponse(new Timer()),
+m_connected(false),
+m_timeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Client...");
 
@@ -49,8 +52,7 @@ m_pLastResponse(new Timer())
 	// Send connection request to server.
 	Packet data;
 	data.type = Packet::CONNECT_REQUEST;
-	data.setMessage("unixunited");
-
+	data.setMessage(GameManager::getSingletonPtr()->getUsername());
 	Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
 
 	m_pLastResponse->restart();
@@ -85,18 +87,41 @@ int Client::chat(const std::string& msg)
 
 // ================================================ //
 
-void Client::update(double dt)
+Packet* Client::update(double dt)
 {
 	// Process incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
-		Packet* packet = reinterpret_cast<Packet*>(m_recvPacket->data);
+		if (m_recvPacket->address.host == m_serverAddr.host &&
+			m_recvPacket->address.port == m_serverAddr.port){
 
-		printf("Received packet:\nHeader: %s\nID: %d\nType: %d\n",
-			packet->header, packet->id, packet->type);
+			Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
+			if (data->header == Packet::PROTOCOL_ID){
+				switch (data->type){
+				default:
+					break;
+
+				case Packet::CONNECT_ACCEPT:
+					m_connected = true;
+					{
+						Packet* r = new Packet(*data);
+						r->setMessage("Connected to server.");
+						return r;
+					}
+					break;
+				}
+
+				// Packet received from server, reset timeout timer.
+				m_pLastResponse->restart();
+			}
+		}
 	}
 	else{
-		printf("No incoming packet %s\n", SDLNet_GetError());
+		if (m_pLastResponse->getTicks() > m_timeout){
+			m_connected = false;
+		}
 	}
+
+	return nullptr;
 }
 
 // ================================================ //

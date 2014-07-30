@@ -21,6 +21,7 @@
 // ================================================ //
 
 class Timer;
+struct Packet;
 
 // ================================================ //
 
@@ -40,7 +41,7 @@ public:
 	int chat(const std::string& msg);
 
 	// Sends needed data to server.
-	void update(double dt);
+	Packet* update(double dt);
 
 private:
 	int	m_port;
@@ -48,7 +49,10 @@ private:
 	UDPpacket* m_sendPacket;
 	UDPpacket* m_recvPacket;
 	IPaddress m_serverAddr;
+	// Time since last packet received from server.
 	std::shared_ptr<Timer> m_pLastResponse;
+	bool m_connected;
+	int m_timeout;
 };
 
 // ================================================ //
