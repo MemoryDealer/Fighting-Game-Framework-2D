@@ -62,7 +62,8 @@ public:
 private:
 	Uint32 m_port;
 	UDPsocket m_sock;
-	UDPpacket* m_packet;
+	UDPpacket* m_sendPacket;
+	UDPpacket* m_recvPacket;
 	ClientList m_clients;
 };
 

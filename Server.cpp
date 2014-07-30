@@ -32,7 +32,8 @@ const Uint32 Packet::PROTOCOL_ID = 666666;
 Server::Server(const int port) :
 m_port(port),
 m_sock(nullptr),
-m_packet(),
+m_sendPacket(nullptr),
+m_recvPacket(nullptr),
 m_clients()
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
@@ -44,7 +45,8 @@ m_clients()
 	}
 
 	// Allocate space for 65 KB packets.
-	m_packet = SDLNet_AllocPacket(66560);
+	m_sendPacket = SDLNet_AllocPacket(66560);
+	m_recvPacket = SDLNet_AllocPacket(66560);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
@@ -57,8 +59,10 @@ Server::~Server(void)
 		SDLNet_UDP_Close(m_sock);
 	}
 
-	m_packet->data = nullptr;
-	SDLNet_FreePacket(m_packet);
+	m_sendPacket->data = nullptr;
+	m_recvPacket->data = nullptr;
+	SDLNet_FreePacket(m_sendPacket);
+	SDLNet_FreePacket(m_recvPacket);
 }
 
 // ================================================ //
@@ -66,9 +70,9 @@ Server::~Server(void)
 Packet* Server::update(double dt)
 {
 	// Process any incoming packets.
-	if (SDLNet_UDP_Recv(m_sock, m_packet)){
-		Packet* data = reinterpret_cast<Packet*>(m_packet->data);
-
+	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
+		Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
+		printf("Recieved packet from %s\n", (char*)m_recvPacket->data);
 		if (data->header == Packet::PROTOCOL_ID){
 			switch (data->type){
 			default:
@@ -79,20 +83,21 @@ Packet* Server::update(double dt)
 				{
 					Packet accept;
 					accept.type = Packet::CONNECT_ACCEPT;
-					printf("CONNECT_ACCEPT: %d\n", Packet::send(m_packet, m_sock, m_packet->address, accept));
+					printf("CONNECT_ACCEPT: %d\n", Packet::send(m_sendPacket, m_sock, m_recvPacket->address, accept));
 
 					ClientConnection client;
-					client.addr = m_packet->address;
+					client.addr = m_recvPacket->address;
+					printf("port: %d\n", client.addr.port);
 					client.username.assign(data->message);
 					m_clients.push_back(client);
 				}
 				break;
 
 			case Packet::CHAT:
-				if (this->isClientConnected(m_packet->address)){
+				if (this->isClientConnected(m_recvPacket->address)){
 					Packet* r = new Packet();
-					r->setMessage(m_clients[this->getClient(m_packet->address)].username + ": " + data->message);
 					r->type = data->type;
+					r->setMessage(m_clients[this->getClient(m_recvPacket->address)].username + ": " + data->message);
 					return r;
 				}
 				break;

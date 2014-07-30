@@ -45,7 +45,8 @@ public:
 private:
 	int	m_port;
 	UDPsocket m_sock;
-	UDPpacket* m_packet;
+	UDPpacket* m_sendPacket;
+	UDPpacket* m_recvPacket;
 	IPaddress m_serverAddr;
 	std::shared_ptr<Timer> m_pLastResponse;
 };

@@ -32,9 +32,11 @@ int Packet::send(UDPpacket* packet, UDPsocket& sock, const IPaddress& addr, Pack
 {
 	packet->address = addr;
 	packet->data = reinterpret_cast<Uint8*>(&data);
-	packet->len = sizeof(data)+1;
+	packet->len = sizeof(Packet)+1;
 
-	return SDLNet_UDP_Send(sock, -1, packet);
+	int ret = SDLNet_UDP_Send(sock, -1, packet);
+
+	return ret;
 }
 
 // ================================================ //

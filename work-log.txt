@@ -316,6 +316,10 @@
 -Added static function Packet::send() to reduce code size in client and server.
 -Changed the Packet struct to use a char array rather than std::string for simplicity of sending it over a network.
 
+#7/30/14
+-I was previously using a single packet buffer (UDPpacket*) for both sending and receiving on the client and server. This was causing a memory interference, so 
+	I now use two packet buffers; one for sending and one for receiving. Crashes no longer seem to occur.
+
 #TODO
 -check the port when starting server
 -add offsets in themes for text
@@ -351,7 +355,6 @@
 
 #BUGS
 -serious problems with GUI reloading textures between states, something weird with GUILayer::parse() perhaps.
--Textbox and button adjacent don't de-select correctly in lobby state.
 -If holding down a movement key when exiting game state, the key is still registered as down when returning. This may resolve itself once PlayerManager
 	is re-allocated per entry to game state. 
 -When unplugging an xbox360 controller, it sends input from seemingly random buttons. 

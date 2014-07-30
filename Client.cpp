@@ -26,7 +26,8 @@ template<> Client* Singleton<Client>::msSingleton = nullptr;
 Client::Client(const std::string& server, const int port) :
 m_port(port),
 m_sock(nullptr),
-m_packet(),
+m_sendPacket(nullptr),
+m_recvPacket(nullptr),
 m_serverAddr(),
 m_pLastResponse(new Timer())
 {
@@ -42,14 +43,15 @@ m_pLastResponse(new Timer())
 		throw std::exception(std::string("Failed to resolve host" + server).c_str());
 	}
 
-	m_packet = SDLNet_AllocPacket(66560);
+	m_sendPacket = SDLNet_AllocPacket(66560);
+	m_recvPacket = SDLNet_AllocPacket(66560);
 
 	// Send connection request to server.
 	Packet data;
 	data.type = Packet::CONNECT_REQUEST;
 	data.setMessage("unixunited");
 
-	Packet::send(m_packet, m_sock, m_serverAddr, data);
+	Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
 
 	m_pLastResponse->restart();
 
@@ -64,8 +66,10 @@ Client::~Client(void)
 		SDLNet_UDP_Close(m_sock);
 	}
 	
-	m_packet->data = nullptr;
-	SDLNet_FreePacket(m_packet);
+	m_sendPacket->data = nullptr;
+	m_recvPacket->data = nullptr;
+	SDLNet_FreePacket(m_sendPacket);
+	SDLNet_FreePacket(m_recvPacket);
 }
 
 // ================================================ //
@@ -76,7 +80,7 @@ int Client::chat(const std::string& msg)
 	data.type = Packet::CHAT;
 	data.setMessage(msg);
 	
-	return Packet::send(m_packet, m_sock, m_serverAddr, data);
+	return Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
 }
 
 // ================================================ //
@@ -84,18 +88,15 @@ int Client::chat(const std::string& msg)
 void Client::update(double dt)
 {
 	// Process incoming packets.
-	/*m_packet->data = nullptr;
-	if (SDLNet_UDP_Recv(m_sock, m_packet)){
-		Packet* packet = reinterpret_cast<Packet*>(m_packet->data);
+	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
+		Packet* packet = reinterpret_cast<Packet*>(m_recvPacket->data);
 
 		printf("Received packet:\nHeader: %s\nID: %d\nType: %d\n",
 			packet->header, packet->id, packet->type);
 	}
 	else{
-		printf("No incoming packet\n");
-	}*/
-
-
+		printf("No incoming packet %s\n", SDLNet_GetError());
+	}
 }
 
 // ================================================ //
