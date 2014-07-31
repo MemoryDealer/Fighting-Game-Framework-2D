@@ -23,6 +23,7 @@
 struct Packet;
 struct ClientConnection;
 typedef std::vector<ClientConnection> ClientList;
+typedef std::queue<Packet> PacketQueue;
 class Timer;
 
 // ================================================ //
@@ -74,6 +75,7 @@ private:
 	UDPpacket* m_recvPacket;
 	ClientList m_clients;
 	Packet* m_packetHandle;
+	PacketQueue m_packetQueue;
 	int m_clientTimeout;
 };
 

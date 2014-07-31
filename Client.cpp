@@ -31,6 +31,7 @@ m_sendPacket(nullptr),
 m_recvPacket(nullptr),
 m_serverAddr(),
 m_packetHandle(nullptr),
+m_packetQueue(),
 m_pLastResponse(new Timer()),
 m_connected(false),
 m_timeout(10000)

@@ -19,6 +19,7 @@ Packet::Packet(int type) :
 header(Packet::PROTOCOL_ID),
 id(0),
 type(type),
+ack(false),
 message()
 {
 	static Uint32 idctr = 0;

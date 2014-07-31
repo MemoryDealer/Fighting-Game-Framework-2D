@@ -53,6 +53,7 @@ public:
 	Uint32 header;
 	Uint32 id;
 	Uint32 type;
+	bool ack;
 
 	union{
 		char message[256];

@@ -36,6 +36,7 @@ m_sendPacket(nullptr),
 m_recvPacket(nullptr),
 m_clients(),
 m_packetHandle(nullptr),
+m_packetQueue(),
 m_clientTimeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
@@ -99,57 +100,47 @@ int Server::update(double dt)
 	// Process any incoming packets.
 	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
 		Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
-
 		if (data->header == Packet::PROTOCOL_ID){
-			bool clientConnected = this->isClientConnected(m_recvPacket->address);
-			switch (data->type){
-			default:
-				break;
+			if (this->isClientConnected(m_recvPacket->address)){
+				switch (data->type){
+				default:
+					break;
 
-			case Packet::CONNECT_REQUEST:
-				{
-					// Add new client to client list.
-					ClientConnection client;
-					client.addr = m_recvPacket->address;
-					client.username.assign(data->message);
-					client.timer.reset(new Timer());
-					m_clients.push_back(client);
+				case Packet::DISCONNECT:
+					m_clients.erase(m_clients.begin() + this->getClient(m_recvPacket->address));
+					this->broadcastToAllClients(data);
+					break;
 
-					// Send a connection acceptance.
-					Packet accept;
-					accept.type = Packet::CONNECT_ACCEPT;
-					Packet::send(m_sendPacket, m_sock, client.addr, accept);
-
-					clientConnected = true;
-
-					// Notify all clients of new client.
+				case Packet::CHAT:
 					this->broadcastToAllClients(data, true, m_recvPacket->address);
+					break;
+
+				case Packet::ACK:
 					break;
 				}
 
-			case Packet::DISCONNECT:
-				if (clientConnected){
-					m_clients.erase(m_clients.begin() + this->getClient(m_recvPacket->address));
-					this->broadcastToAllClients(data);
-					clientConnected = false;
-				}
-				break;
-
-			case Packet::CHAT:
-				if (clientConnected){
-					this->broadcastToAllClients(data, true, m_recvPacket->address);
-				}
-				break;
-
-			case Packet::ACK:
-				break;
-			}
-
-			if (clientConnected){
 				// Reset client's timer.
 				m_clients[this->getClient(m_recvPacket->address)].timer->restart();
 			}
+			else{
+				// Add new client to client list.
+				ClientConnection client;
+				client.addr = m_recvPacket->address;
+				client.username.assign(data->message);
+				client.timer.reset(new Timer());
+				client.timer->restart();
+				m_clients.push_back(client);
 
+				// Send a connection acceptance.
+				Packet accept;
+				accept.type = Packet::CONNECT_ACCEPT;
+				Packet::send(m_sendPacket, m_sock, client.addr, accept);
+
+				// Notify all clients of new client.
+				this->broadcastToAllClients(data, true, m_recvPacket->address);
+			}
+
+			// Store the packet data in game state's handle.
 			data->clone(m_packetHandle);
 			return data->type;
 		}
