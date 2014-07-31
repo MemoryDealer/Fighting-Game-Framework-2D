@@ -37,6 +37,9 @@ public:
 
 	// Send-to-server functions.
 
+	// Sends disconnect message to server if connected, returns 0 if not.
+	int disconnect(void);
+
 	// Sends a chat message to server.
 	int chat(const std::string& msg);
 

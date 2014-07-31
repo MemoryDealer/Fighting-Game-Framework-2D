@@ -76,6 +76,20 @@ Client::~Client(void)
 
 // ================================================ //
 
+int Client::disconnect(void)
+{
+	if (m_connected){
+		Packet data(Packet::DISCONNECT);
+		data.setMessage(GameManager::getSingletonPtr()->getUsername());
+
+		return Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
+	}
+	
+	return 0;
+}
+
+// ================================================ //
+
 int Client::chat(const std::string& msg)
 {
 	Packet data(Packet::CHAT);
@@ -103,13 +117,9 @@ int Client::update(double dt)
 					m_connected = true;
 					break;
 
-				case Packet::CHAT:
-					printf("Recieved chat!\n");
-					break;
-
 				case Packet::CHECK:
 				{
-					Packet data(Packet::CHECK_ACK);
+					Packet data(Packet::ACK);
 					Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
 					break;
 				}
@@ -124,13 +134,6 @@ int Client::update(double dt)
 		}
 	}
 	else{
-		if (!m_connected && m_pLastResponse->getTicks() > (m_timeout / 2)){
-			// Re-send connection request.
-			Packet data(Packet::CONNECT_REQUEST);
-			data.setMessage(GameManager::getSingletonPtr()->getUsername());
-			Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
-		}
-
 		if (m_pLastResponse->getTicks() > m_timeout){
 			if (!m_connected){
 				return Packet::CONNECT_FAILED;

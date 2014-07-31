@@ -73,18 +73,26 @@ int Server::update(double dt)
 {
 	// Check each client to see if any have timed out.
 	for (ClientList::iterator itr = m_clients.begin();
-		itr != m_clients.end();
-		++itr){
+		itr != m_clients.end();){
 		if (itr->timer->getTicks() > m_clientTimeout){
+			// Notify game state of disconnection
+			Packet data(Packet::DISCONNECT);
+			data.setMessage(itr->username);
+
 			itr = m_clients.erase(itr);
-			printf("Client disconnected!\n");
-			if (m_clients.size() == 0){
-				break;
+
+			this->broadcastToAllClients(&data);
+			data.clone(m_packetHandle);
+			return data.type;
+		} 
+		else{
+			// If it's been more than half the timeout, send a check-in packet.
+			if (itr->timer->getTicks() > (m_clientTimeout / 2)){
+				Packet data(Packet::CHECK);
+				Packet::send(m_sendPacket, m_sock, itr->addr, data);
 			}
-		}
-		else if (itr->timer->getTicks() > (m_clientTimeout / 2)){
-			Packet data(Packet::CHECK);
-			Packet::send(m_sendPacket, m_sock, itr->addr, data);
+
+			++itr;
 		}
 	}
 
@@ -93,6 +101,7 @@ int Server::update(double dt)
 		Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
 
 		if (data->header == Packet::PROTOCOL_ID){
+			bool clientConnected = this->isClientConnected(m_recvPacket->address);
 			switch (data->type){
 			default:
 				break;
@@ -110,21 +119,36 @@ int Server::update(double dt)
 					Packet accept;
 					accept.type = Packet::CONNECT_ACCEPT;
 					Packet::send(m_sendPacket, m_sock, client.addr, accept);
+
+					clientConnected = true;
+
+					// Notify all clients of new client.
+					this->broadcastToAllClients(data, true, m_recvPacket->address);
 					break;
 				}
 
+			case Packet::DISCONNECT:
+				if (clientConnected){
+					m_clients.erase(m_clients.begin() + this->getClient(m_recvPacket->address));
+					this->broadcastToAllClients(data);
+					clientConnected = false;
+				}
+				break;
+
 			case Packet::CHAT:
-				if (this->isClientConnected(m_recvPacket->address)){
+				if (clientConnected){
 					this->broadcastToAllClients(data, true, m_recvPacket->address);
 				}
 				break;
 
-			case Packet::CHECK_ACK:
+			case Packet::ACK:
 				break;
 			}
 
-			// Reset client's timer.
-			m_clients[this->getClient(m_recvPacket->address)].timer->restart();
+			if (clientConnected){
+				// Reset client's timer.
+				m_clients[this->getClient(m_recvPacket->address)].timer->restart();
+			}
 
 			data->clone(m_packetHandle);
 			return data->type;

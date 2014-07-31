@@ -34,7 +34,7 @@ public:
 		CONNECTION_LOST,
 		DISCONNECT,
 		CHAT,
-		CHECK_ACK,
+		ACK,
 
 		// Server packet types.
 

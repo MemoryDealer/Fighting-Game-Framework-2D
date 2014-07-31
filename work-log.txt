@@ -312,11 +312,11 @@
 -Got basic client-to-server chat working however I'm not pleased with how I must allocte a copy of the Packet in Server::update() and return it to LobbyState::update(). This kind
 	of heap allocation can cause a lot of overhead and I should find an alternative.
 
-#7/29/14
+#7/28/14
 -Added static function Packet::send() to reduce code size in client and server.
 -Changed the Packet struct to use a char array rather than std::string for simplicity of sending it over a network.
 
-#7/30/14
+#7/29/14
 -I was previously using a single packet buffer (UDPpacket*) for both sending and receiving on the client and server. This was causing a memory interference, so 
 	I now use two packet buffers; one for sending and one for receiving. Crashes no longer seem to occur.
 -Created a Packet smart pointer in LobbyState which is passed into the Server, which the server stores. When a packet is received and
@@ -324,6 +324,10 @@
 	during the Server update. The same will be done for the client code.
 -Added username textbox in Host/Join GUIlayers. Also a password field for future.
 -The username is retrieved when the Client/Server is started and stored in GameManager.
+
+#7/30/14
+-Added more broadcasting from the server to clients (for new connected clients and disconnections).
+-Added disconnection detection for client and server.
 
 #TODO
 -check the port when starting server

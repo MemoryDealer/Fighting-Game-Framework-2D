@@ -73,6 +73,11 @@ void LobbyState::enter(void)
 
 void LobbyState::exit(void)
 {
+	// Notify server of disconnection if client.
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		Client::getSingletonPtr()->disconnect();
+	}
+
 	delete StageManager::getSingletonPtr();
 
 	static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->clear();
@@ -501,6 +506,11 @@ void LobbyState::update(double dt)
 				m_packet->message + std::string(" connected!"));
 			break;
 
+		case Packet::DISCONNECT:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				m_packet->message + std::string(" disconnected!"));
+			break;
+
 		case Packet::CHAT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
 			break;
@@ -516,6 +526,11 @@ void LobbyState::update(double dt)
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
 			break;
 
+		case Packet::CONNECT_REQUEST:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				m_packet->message + std::string(" connected!"));
+			break;
+
 		case Packet::CONNECT_ACCEPT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
 			break;
@@ -523,6 +538,11 @@ void LobbyState::update(double dt)
 		case Packet::CONNECT_FAILED:
 			printf("Failed to connect!\n"); // TODO: add message box GUI pop-up.
 			m_quit = true;
+			break;
+
+		case Packet::DISCONNECT:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				m_packet->message + std::string(" disconnected!"));
 			break;
 		}
 	}
