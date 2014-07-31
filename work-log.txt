@@ -330,6 +330,7 @@
 -Added disconnection detection for client and server.
 
 #TODO
+-Create a Metal UDP (MUDP) class/namespace that has a single socket descriptor variable that can be used to send/receive packets. SImplify netcode.
 -check the port when starting server
 -add offsets in themes for text
 -Create a component to add to each state that handles duplicate procedures

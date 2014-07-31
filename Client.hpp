@@ -22,7 +22,6 @@
 
 class Timer;
 struct Packet;
-typedef std::queue<Packet> PacketQueue;
 
 // ================================================ //
 
@@ -59,7 +58,6 @@ private:
 	UDPpacket* m_recvPacket;
 	IPaddress m_serverAddr;
 	Packet* m_packetHandle;
-	PacketQueue m_packetQueue;
 	// Time since last packet received from server.
 	std::shared_ptr<Timer> m_pLastResponse;
 	bool m_connected;

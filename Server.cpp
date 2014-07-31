@@ -36,7 +36,6 @@ m_sendPacket(nullptr),
 m_recvPacket(nullptr),
 m_clients(),
 m_packetHandle(nullptr),
-m_packetQueue(),
 m_clientTimeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
@@ -109,7 +108,8 @@ int Server::update(double dt)
 				case Packet::DISCONNECT:
 					m_clients.erase(m_clients.begin() + this->getClient(m_recvPacket->address));
 					this->broadcastToAllClients(data);
-					break;
+					data->clone(m_packetHandle);
+					return data->type;
 
 				case Packet::CHAT:
 					this->broadcastToAllClients(data, true, m_recvPacket->address);
@@ -121,8 +121,15 @@ int Server::update(double dt)
 
 				// Reset client's timer.
 				m_clients[this->getClient(m_recvPacket->address)].timer->restart();
+
+				Packet ack(Packet::ACK);
+				Packet::send(m_sendPacket, m_sock, m_recvPacket->address, ack);
+
+				// Store the packet data in game state's handle.
+				data->clone(m_packetHandle);
+				return data->type;
 			}
-			else{
+			else if(data->type == Packet::CONNECT_REQUEST){
 				// Add new client to client list.
 				ClientConnection client;
 				client.addr = m_recvPacket->address;
@@ -138,11 +145,11 @@ int Server::update(double dt)
 
 				// Notify all clients of new client.
 				this->broadcastToAllClients(data, true, m_recvPacket->address);
-			}
 
-			// Store the packet data in game state's handle.
-			data->clone(m_packetHandle);
-			return data->type;
+				// Store the packet data in game state's handle.
+				data->clone(m_packetHandle);
+				return data->type;
+			}
 		}
 	}
 
