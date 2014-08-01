@@ -14,7 +14,6 @@
 #include "Client.hpp"
 #include "Log.hpp"
 #include "Engine.hpp"
-#include "Packet.hpp"
 #include "Timer.hpp"
 #include "GameManager.hpp"
 
@@ -25,37 +24,14 @@ template<> Client* Singleton<Client>::msSingleton = nullptr;
 // ================================================ //
 
 Client::Client(const std::string& server, const int port) :
-m_port(port),
-m_sock(nullptr),
-m_sendPacket(nullptr),
-m_recvPacket(nullptr),
-m_serverAddr(),
-m_packetHandle(nullptr),
+m_pSD(new MUDP::Socket(0)),
+m_serverAddress(server, port),
+m_packet(nullptr),
 m_pLastResponse(new Timer()),
 m_connected(false),
 m_timeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Client...");
-
-	m_sock = SDLNet_UDP_Open(0);
-	if (!m_sock){
-		throw std::exception(std::string("Failed to open UDP client socket on port " +
-			Engine::toString(m_port)).c_str());
-	}
-
-	if (SDLNet_ResolveHost(&m_serverAddr, server.c_str(), m_port) == -1){
-		throw std::exception(std::string("Failed to resolve host" + server).c_str());
-	}
-
-	m_sendPacket = SDLNet_AllocPacket(66560);
-	m_recvPacket = SDLNet_AllocPacket(66560);
-
-	// Send connection request to server.
-	Packet data(Packet::CONNECT_REQUEST);
-	data.setMessage(GameManager::getSingletonPtr()->getUsername());
-	Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
-
-	m_pLastResponse->restart();
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");
 }
@@ -64,14 +40,23 @@ m_timeout(10000)
 
 Client::~Client(void)
 {
-	if (m_sock){
-		SDLNet_UDP_Close(m_sock);
-	}
 	
-	m_sendPacket->data = nullptr;
-	m_recvPacket->data = nullptr;
-	SDLNet_FreePacket(m_sendPacket);
-	SDLNet_FreePacket(m_recvPacket);
+}
+
+// ================================================ //
+
+int Client::connect(void)
+{
+	if (!m_connected){
+		// Send connection request to server.
+		m_packet->type = MUDP::Packet::CONNECT_REQUEST;
+		m_packet->setMessage(GameManager::getSingletonPtr()->getUsername());
+		m_pSD->send(m_packet, m_serverAddress);
+
+		m_pLastResponse->restart();
+	}
+
+	return 0;
 }
 
 // ================================================ //
@@ -79,10 +64,10 @@ Client::~Client(void)
 int Client::disconnect(void)
 {
 	if (m_connected){
-		Packet data(Packet::DISCONNECT);
-		data.setMessage(GameManager::getSingletonPtr()->getUsername());
+		m_packet->type = MUDP::Packet::DISCONNECT;
+		m_packet->setMessage(GameManager::getSingletonPtr()->getUsername());
 
-		return Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
+		return m_pSD->send(m_packet, m_serverAddress);
 	}
 	
 	return 0;
@@ -92,10 +77,10 @@ int Client::disconnect(void)
 
 int Client::chat(const std::string& msg)
 {
-	Packet data(Packet::CHAT);
-	data.setMessage(msg);
+	m_packet->type = MUDP::Packet::CHAT;
+	m_packet->setMessage(msg);
 	
-	return Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
+	return m_pSD->send(m_packet, m_serverAddress);
 }
 
 // ================================================ //
@@ -103,47 +88,41 @@ int Client::chat(const std::string& msg)
 int Client::update(double dt)
 {
 	// Process incoming packets.
-	if (SDLNet_UDP_Recv(m_sock, m_recvPacket)){
-		if (m_recvPacket->address.host == m_serverAddr.host &&
-			m_recvPacket->address.port == m_serverAddr.port){
+	MUDP::IP source;
+	if (m_pSD->recv(m_packet, source)){
+		if (source == m_serverAddress){
+			switch (m_packet->type){
+			default:
+				break;
 
-			Packet* data = reinterpret_cast<Packet*>(m_recvPacket->data);
-			if (data->header == Packet::PROTOCOL_ID){
-				switch (data->type){
-				default:
-					break;
+			case MUDP::Packet::CONNECT_ACCEPT:
+				m_connected = true;
+				break;
 
-				case Packet::CONNECT_ACCEPT:
-					m_connected = true;
-					break;
-
-				case Packet::CHECK:
-				{
-					Packet data(Packet::ACK);
-					Packet::send(m_sendPacket, m_sock, m_serverAddr, data);
-					break;
-				}
-				}
-
-				// Packet received from server, reset timeout timer.
-				m_pLastResponse->restart();
-
-				data->clone(m_packetHandle);
-				return data->type;
+			case MUDP::Packet::CHECK:
+				
+				break;
 			}
+
+			/*m_packet->type = MUDP::Packet::ACK;
+			m_pSD->send(m_packet, m_serverAddress);*/
+
+			m_pLastResponse->restart();
+
+			return m_packet->type;
 		}
 	}
-	else{
-		if (m_pLastResponse->getTicks() > m_timeout){
-			if (!m_connected){
-				return Packet::CONNECT_FAILED;
-			}
-			else{
-				m_connected = false;
-				return Packet::CONNECTION_LOST;
-			}
+	
+	// No response from server, check timeout.
+	/*if (m_pLastResponse->getTicks() > m_timeout){
+		if (!m_connected){
+			return MUDP::Packet::CONNECT_FAILED;
 		}
-	}
+		else{
+			m_connected = false;
+			return MUDP::Packet::CONNECTION_LOST;
+		}
+	}*/
 
 	return 0;
 }

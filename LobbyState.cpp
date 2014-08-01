@@ -22,7 +22,6 @@
 #include "App.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
-#include "Packet.hpp"
 #include "Widget.hpp"
 #include "WidgetListbox.hpp"
 #include "Label.hpp"
@@ -32,7 +31,7 @@
 LobbyState::LobbyState(void) :
 m_pGUI(nullptr),
 m_pBackground(nullptr),
-m_packet(new Packet())
+m_packet(new MUDP::Packet())
 {
 	Config c("ExtMF.cfg");
 	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
@@ -66,6 +65,7 @@ void LobbyState::enter(void)
 		Client::getSingletonPtr()->setPacketHandle(m_packet.get());
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Attempting server connection...");
+		Client::getSingletonPtr()->connect();
 	}
 }
 
@@ -147,9 +147,9 @@ void LobbyState::handleInput(SDL_Event& e)
 				std::string message = GameManager::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-					std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
+					/*std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
 					data->setMessage(message);
-					Server::getSingletonPtr()->broadcastToAllClients(data.get());
+					Server::getSingletonPtr()->broadcastToAllClients(data.get());*/
 				}
 				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 					Client::getSingletonPtr()->chat(message);
@@ -368,9 +368,9 @@ void LobbyState::processGUIAction(const int type)
 				std::string message = GameManager::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-					std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
+					/*std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
 					data->setMessage(message);
-					Server::getSingletonPtr()->broadcastToAllClients(data.get());
+					Server::getSingletonPtr()->broadcastToAllClients(data.get());*/
 				}
 				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 					Client::getSingletonPtr()->chat(message);
@@ -498,20 +498,20 @@ void LobbyState::update(double dt)
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		switch (Server::getSingletonPtr()->update(dt)){
 		default:
-		case Packet::NIL:
+		case MUDP::Packet::NIL:
 			break;
 
-		case Packet::CONNECT_REQUEST:
+		case MUDP::Packet::CONNECT_REQUEST:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				m_packet->message + std::string(" connected!"));
 			break;
 
-		case Packet::DISCONNECT:
+		case MUDP::Packet::DISCONNECT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				m_packet->message + std::string(" disconnected!"));
 			break;
 
-		case Packet::CHAT:
+		case MUDP::Packet::CHAT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
 			break;
 		}
@@ -519,28 +519,28 @@ void LobbyState::update(double dt)
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		switch (Client::getSingletonPtr()->update(dt)){
 		default:
-		case Packet::NIL:
+		case MUDP::Packet::NIL:
 			break;
 
-		case Packet::CHAT:
+		case MUDP::Packet::CHAT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
 			break;
 
-		case Packet::CONNECT_REQUEST:
+		case MUDP::Packet::CONNECT_REQUEST:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				m_packet->message + std::string(" connected!"));
 			break;
 
-		case Packet::CONNECT_ACCEPT:
+		case MUDP::Packet::CONNECT_ACCEPT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
 			break;
 
-		case Packet::CONNECT_FAILED:
+		case MUDP::Packet::CONNECT_FAILED:
 			printf("Failed to connect!\n"); // TODO: add message box GUI pop-up.
 			m_quit = true;
 			break;
 
-		case Packet::DISCONNECT:
+		case MUDP::Packet::DISCONNECT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				m_packet->message + std::string(" disconnected!"));
 			break;

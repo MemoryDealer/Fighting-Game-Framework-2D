@@ -329,8 +329,11 @@
 -Added more broadcasting from the server to clients (for new connected clients and disconnections).
 -Added disconnection detection for client and server.
 
+#7/31/14
+-Removed Packet header and source files and created MUDP(Metal UDP) class. It is not fully working as of now, and I'm still considering
+	the possibility of using TCP but I think it's unlikely, as the latency would be a big issue over the Internet.
+
 #TODO
--Create a Metal UDP (MUDP) class/namespace that has a single socket descriptor variable that can be used to send/receive packets. SImplify netcode.
 -check the port when starting server
 -add offsets in themes for text
 -Create a component to add to each state that handles duplicate procedures

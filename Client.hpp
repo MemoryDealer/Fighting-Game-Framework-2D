@@ -17,11 +17,11 @@
 // ================================================ //
 
 #include "stdafx.hpp"
+#include "MUDP.hpp"
 
 // ================================================ //
 
 class Timer;
-struct Packet;
 
 // ================================================ //
 
@@ -29,13 +29,16 @@ struct Packet;
 class Client : public Singleton<Client>
 {
 public:
-	// Opens a UDP socket and sends connection request to server.
+	// Allocates socket and server IP.
 	explicit Client(const std::string& server, const int port);
 
-	// Closes the socket and frees the packet buffer.
+	// Empty destructor.
 	~Client(void);
 
 	// Send-to-server functions.
+
+	// Sends a connect request to server.
+	int connect(void);
 
 	// Sends disconnect message to server if connected, returns 0 if not.
 	int disconnect(void);
@@ -49,15 +52,12 @@ public:
 	// Setters
 
 	// Sets the handle for packet data to be copied to so game states can access it.
-	void setPacketHandle(Packet* handle);
+	void setPacketHandle(MUDP::Packet* handle);
 
 private:
-	int	m_port;
-	UDPsocket m_sock;
-	UDPpacket* m_sendPacket;
-	UDPpacket* m_recvPacket;
-	IPaddress m_serverAddr;
-	Packet* m_packetHandle;
+	std::shared_ptr<MUDP::Socket> m_pSD;
+	MUDP::IP m_serverAddress;
+	MUDP::Packet* m_packet;
 	// Time since last packet received from server.
 	std::shared_ptr<Timer> m_pLastResponse;
 	bool m_connected;
@@ -66,8 +66,8 @@ private:
 
 // ================================================ //
 
-inline void Client::setPacketHandle(Packet* handle){
-	m_packetHandle = handle;
+inline void Client::setPacketHandle(MUDP::Packet* handle){
+	m_packet = handle;
 }
 
 // ================================================ //

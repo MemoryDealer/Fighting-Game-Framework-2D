@@ -180,13 +180,13 @@
     <ClInclude Include="..\WidgetListbox.hpp">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Packet.hpp">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="..\Server.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\Client.hpp">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MUDP.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
@@ -317,7 +317,7 @@
     <ClCompile Include="..\Client.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="..\Packet.cpp">
+    <ClCompile Include="..\MUDP.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
