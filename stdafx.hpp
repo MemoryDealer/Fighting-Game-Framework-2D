@@ -41,7 +41,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <SDL_net.h>
+
+// RakNet
+#include <RakPeerInterface.h>
+#include <MessageIdentifiers.h>
 
 // Project
 #include "Singleton.hpp"

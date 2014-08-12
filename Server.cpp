@@ -36,7 +36,9 @@ m_clientTimeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
-	
+	RakNet::RakPeerInterface *peer = RakNet::RakPeerInterface::GetInstance();
+	RakNet::SocketDescriptor sd(port, 0);
+	peer->Startup(1, &sd, 1);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
