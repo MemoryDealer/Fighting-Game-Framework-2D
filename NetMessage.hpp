@@ -20,6 +20,8 @@ namespace NetMessage{
 		BEGIN = ID_USER_PACKET_ENUM,
 
 		SYSTEM_MESSAGE,
+		SET_USERNAME,
+		CHAT,
 
 		END
 	};

@@ -27,7 +27,6 @@ template<> Client* Singleton<Client>::msSingleton = nullptr;
 Client::Client(const std::string& server, const int port) :
 m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
-m_buffer(),
 m_server(server),
 m_port(port),
 m_connected(false),
@@ -78,11 +77,10 @@ int Client::disconnect(void)
 
 int Client::chat(const std::string& msg)
 {
-	/*m_packet->type = MUDP::Packet::CHAT;
-	m_packet->setMessage(msg);
-	
-	return m_pSD->send(m_packet, m_serverAddress);*/
-	return 0;
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CHAT));
+	bit.Write(msg.c_str());
+	return m_peer->Send(&bit, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_serverAddr, false);
 }
 
 // ================================================ //
@@ -101,9 +99,13 @@ int Client::update(double dt)
 			printf("Connected to server!\n");
 			{
 				RakNet::BitStream bit;
-				bit.Write(static_cast<RakNet::MessageID>(NetMessage::SYSTEM_MESSAGE));
-				bit.Write("Hello There! This is Satan.");
+				bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
+				printf("Sending username: %s\n", GameManager::getSingletonPtr()->getUsername().c_str());
+				bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
 				m_peer->Send(&bit, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_packet->systemAddress, false);
+
+				// Store the server system address for future use.
+				m_serverAddr = m_packet->systemAddress;
 			}
 			break;
 		}

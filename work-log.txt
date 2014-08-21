@@ -333,6 +333,10 @@
 -Removed Packet header and source files and created MUDP(Metal UDP) class. It is not fully working as of now, and I'm still considering
 	the possibility of using TCP but I think it's unlikely, as the latency would be a big issue over the Internet.
 
+#8/21/14
+-Removed old netcode and compiled RakNet to use with ExtMF. I've added basic client/server code using RakNet. This is the better option
+	to ensure reliability and ordered arrival of UDP packets. 
+
 #TODO
 -check the port when starting server
 -add offsets in themes for text

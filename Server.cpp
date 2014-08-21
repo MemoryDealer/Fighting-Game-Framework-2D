@@ -81,6 +81,22 @@ int Server::update(double dt)
 				printf("Client says: %s\n", rs.C_String());
 			}
 			return NetMessage::SYSTEM_MESSAGE;
+
+		case NetMessage::SET_USERNAME:
+			{
+				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
+				RakNet::RakString rs;
+				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+				bit.Read(rs);
+				printf("%s connected!\n", rs.C_String());
+				// Add them to the client list.
+				this->registerClient(rs.C_String(), m_packet->systemAddress);
+			}
+			return NetMessage::SET_USERNAME;
+
+		case NetMessage::CHAT:
+
+			return NetMessage::CHAT;
 		}
 	}
 
@@ -92,9 +108,8 @@ int Server::update(double dt)
 void Server::registerClient(const char* username, const RakNet::SystemAddress& addr)
 {
 	ClientConnection client;
+	client.username = username;
 	client.addr = addr;
-	client.timer.reset(new Timer());
-	client.timer->restart();
 	m_clients.push_back(client);
 }
 
@@ -123,6 +138,20 @@ int Server::broadcastToAllClients(RakNet::Packet* packet, const bool exclude,
 	}
 
 	return numSent;
+}
+
+// ================================================ //
+
+void Server::dbgPrintAllConnectedClients(void)
+{
+	printf("CURRENTLY CONNECTED CLIENTS:\n");
+	for (ClientList::iterator itr = m_clients.begin();
+		itr != m_clients.end();
+		++itr){
+		printf("Username: %s\nAddress: %s\n-----------",
+			itr->username.c_str(), itr->addr.ToString());
+	}
+	printf("\n\n");
 }
 
 // ================================================ //

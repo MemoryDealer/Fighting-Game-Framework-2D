@@ -64,7 +64,6 @@ public:
 private:
 	std::shared_ptr<GUI> m_pGUI;
 	std::shared_ptr<Stage> m_pBackground;
-	std::string m_buffer;
 };
 
 // ================================================ //

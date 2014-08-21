@@ -22,6 +22,7 @@
 #include "App.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "NetMessage.hpp"
 #include "Widget.hpp"
 #include "WidgetListbox.hpp"
 #include "Label.hpp"
@@ -30,8 +31,7 @@
 
 LobbyState::LobbyState(void) :
 m_pGUI(nullptr),
-m_pBackground(nullptr),
-m_buffer()
+m_pBackground(nullptr)
 {
 	Config c("ExtMF.cfg");
 	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
@@ -59,10 +59,8 @@ void LobbyState::enter(void)
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Server initialized.");
-		Server::getSingletonPtr()->setBufferHandle(m_buffer);
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		Client::getSingletonPtr()->setBufferHandle(m_buffer);
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Attempting server connection...");
 		Client::getSingletonPtr()->connect();
@@ -215,7 +213,7 @@ void LobbyState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_i:
-			
+			Server::getSingletonPtr()->dbgPrintAllConnectedClients();
 			break;
 		}
 	}
@@ -499,6 +497,19 @@ void LobbyState::update(double dt)
 		switch (Server::getSingletonPtr()->update(dt)){
 		default:
 			break;
+
+		case NetMessage::CHAT:
+			{
+				RakNet::BitStream bit(Server::getSingletonPtr()->getLastPacket()->data, 
+					Server::getSingletonPtr()->getLastPacket()->length, false);
+				RakNet::RakString rs;
+				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+				bit.Read(rs);
+				printf("Chat: %s\n", rs.C_String());
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(rs.C_String());
+			}
+			break;
+
 		/*case MUDP::Packet::NIL:
 			break;
 
@@ -521,7 +532,10 @@ void LobbyState::update(double dt)
 		switch (Client::getSingletonPtr()->update(dt)){
 		default:
 			break;
-		//	break;
+
+		case NetMessage::CHAT:
+			
+			break;
 
 		//case MUDP::Packet::CHAT:
 		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);

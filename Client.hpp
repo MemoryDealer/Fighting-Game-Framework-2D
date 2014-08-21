@@ -50,24 +50,15 @@ public:
 
 	// Setters
 
-	// Sets the handle for packet data to be copied to so game states can access it.
-	void setBufferHandle(std::string& buffer);
-
 private:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
-	std::string m_buffer;
+	RakNet::SystemAddress m_serverAddr;
 	std::string m_server;
 	unsigned short m_port;
 	bool m_connected;
 	int m_timeout;
 };
-
-// ================================================ //
-
-inline void Client::setBufferHandle(std::string& buffer){
-	m_buffer = buffer;
-}
 
 // ================================================ //
 

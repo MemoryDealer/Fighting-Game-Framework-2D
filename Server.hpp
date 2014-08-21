@@ -30,7 +30,6 @@ class Timer;
 struct ClientConnection{
 	RakNet::SystemAddress addr;
 	std::string username;
-	std::shared_ptr<Timer> timer;
 };
 
 // ================================================ //
@@ -62,16 +61,22 @@ public:
 	int broadcastToAllClients(RakNet::Packet* packet, const bool exclude = false, 
 		const RakNet::SystemAddress& excludeAddress = nullptr);
 
+	// Debugging
+
+	// Prints all connected clients addresses and usernames.
+	void dbgPrintAllConnectedClients(void);
+
 	// Getters
 
 	// Returns index of client matching the specified IPaddress.
 	// Returns -1 if not found.
 	int getClient(const RakNet::SystemAddress& addr);
 
-	// Setters
+	// Returns the internal pointer to the RakNet::Packet which is updated
+	// with each step.
+	RakNet::Packet* getLastPacket(void) const;
 
-	// Sets the handle for packet data to be copied to so game states can access it.
-	void setBufferHandle(std::string& buffer);
+	// Setters
 
 	// --- //
 
@@ -80,7 +85,6 @@ public:
 private:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
-	std::string m_buffer;
 	ClientList m_clients;
 	int m_clientTimeout;
 };
@@ -111,11 +115,11 @@ inline int Server::getClient(const RakNet::SystemAddress& addr){
 	return -1;
 }
 
-// Setters
-
-inline void Server::setBufferHandle(std::string& buffer){
-	m_buffer = buffer;
+inline RakNet::Packet* Server::getLastPacket(void) const{
+	return m_packet;
 }
+
+// Setters
 
 // ================================================ //
 
