@@ -45,6 +45,8 @@
 // RakNet
 #include <RakPeerInterface.h>
 #include <MessageIdentifiers.h>
+#include <RakNetTypes.h>
+#include <BitStream.h>
 
 // Project
 #include "Singleton.hpp"

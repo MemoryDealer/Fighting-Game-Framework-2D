@@ -17,7 +17,6 @@
 // ================================================ //
 
 #include "stdafx.hpp"
-#include "MUDP.hpp"
 
 // ================================================ //
 
@@ -29,7 +28,7 @@ class Timer;
 // ================================================ //
 
 struct ClientConnection{
-	MUDP::IP address;
+	RakNet::SystemAddress addr;
 	std::string username;
 	std::shared_ptr<Timer> timer;
 };
@@ -50,48 +49,49 @@ public:
 	int update(double dt);
 
 	// Adds a client to the list of connected clients.
-	void registerClient(const char* username, const MUDP::IP& address);
+	void registerClient(const char* username, const RakNet::SystemAddress& addr);
 
 	// Removes a client from the list of connected clients.
-	void removeClient(const MUDP::IP& address);
+	void removeClient(const RakNet::SystemAddress& addr);
 
 	// Returns true if client address has already connected.
-	bool isClientConnected(const MUDP::IP& address);
-
-	// Resets a client's timer, checking to be sure they are connected.
-	void resetClientTimer(const MUDP::IP& address);
+	bool isClientConnected(const RakNet::SystemAddress& addr);
 
 	// Sends a packet to all connected clients. Excludes excludeAddr if exclude
 	// parameter is true.
-	int broadcastToAllClients(MUDP::Packet* packet, const bool exclude = false, 
-		const MUDP::IP excludeAddress = MUDP::IP());
+	int broadcastToAllClients(RakNet::Packet* packet, const bool exclude = false, 
+		const RakNet::SystemAddress& excludeAddress = nullptr);
 
 	// Getters
 
 	// Returns index of client matching the specified IPaddress.
 	// Returns -1 if not found.
-	int getClient(const MUDP::IP& address);
+	int getClient(const RakNet::SystemAddress& addr);
 
 	// Setters
 
 	// Sets the handle for packet data to be copied to so game states can access it.
-	void setPacketHandle(MUDP::Packet* handle);
+	void setBufferHandle(std::string& buffer);
+
+	// --- //
+
+	static const int MaxClients = 10;
 
 private:
-	// Socket descriptor.
-	std::shared_ptr<MUDP::Socket> m_pSD;
+	RakNet::RakPeerInterface* m_peer;
+	RakNet::Packet* m_packet;
+	std::string m_buffer;
 	ClientList m_clients;
-	MUDP::Packet* m_packet;
 	int m_clientTimeout;
 };
 
 // ================================================ //
 
-inline bool Server::isClientConnected(const MUDP::IP& address){
+inline bool Server::isClientConnected(const RakNet::SystemAddress& addr){
 	for (ClientList::iterator itr = m_clients.begin();
 		itr != m_clients.end();
 		++itr){
-		if (address == itr->address){
+		if (addr == itr->addr){
 			return true;
 		}
 	}
@@ -101,9 +101,9 @@ inline bool Server::isClientConnected(const MUDP::IP& address){
 
 // Getters
 
-inline int Server::getClient(const MUDP::IP& address){
+inline int Server::getClient(const RakNet::SystemAddress& addr){
 	for (unsigned int i = 0; i < m_clients.size(); ++i){
-		if (address == m_clients[i].address){
+		if (addr == m_clients[i].addr){
 			return i;
 		}
 	}
@@ -113,8 +113,8 @@ inline int Server::getClient(const MUDP::IP& address){
 
 // Setters
 
-inline void Server::setPacketHandle(MUDP::Packet* handle){
-	m_packet = handle;
+inline void Server::setBufferHandle(std::string& buffer){
+	m_buffer = buffer;
 }
 
 // ================================================ //

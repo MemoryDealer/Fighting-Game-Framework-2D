@@ -17,7 +17,6 @@
 // ================================================ //
 
 #include "stdafx.hpp"
-#include "MUDP.hpp"
 
 // ================================================ //
 
@@ -52,22 +51,22 @@ public:
 	// Setters
 
 	// Sets the handle for packet data to be copied to so game states can access it.
-	void setPacketHandle(MUDP::Packet* handle);
+	void setBufferHandle(std::string& buffer);
 
 private:
-	std::shared_ptr<MUDP::Socket> m_pSD;
-	MUDP::IP m_serverAddress;
-	MUDP::Packet* m_packet;
-	// Time since last packet received from server.
-	std::shared_ptr<Timer> m_pLastResponse;
+	RakNet::RakPeerInterface* m_peer;
+	RakNet::Packet* m_packet;
+	std::string m_buffer;
+	std::string m_server;
+	unsigned short m_port;
 	bool m_connected;
 	int m_timeout;
 };
 
 // ================================================ //
 
-inline void Client::setPacketHandle(MUDP::Packet* handle){
-	m_packet = handle;
+inline void Client::setBufferHandle(std::string& buffer){
+	m_buffer = buffer;
 }
 
 // ================================================ //

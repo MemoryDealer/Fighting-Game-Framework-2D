@@ -51,12 +51,6 @@ Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINO
 		throw std::exception("Failed to load engine.cfg");
 	}
 
-	if (SDLNet_Init() < 0){
-		throw std::exception(("SDLNet_Init() failed."));
-	}
-
-	Log::getSingletonPtr()->logMessage("SDL_net initialized");
-
 	// Create the rendering window.
 	m_width = cfg.parseIntValue("window", "width");
 	m_height = cfg.parseIntValue("window", "height");
@@ -93,7 +87,6 @@ EngineImpl::~EngineImpl(void)
 	SDL_DestroyWindow(m_pWindow);
 
 	Log::getSingletonPtr()->logMessage("Quitting SDL...");
-	SDLNet_Quit();
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();

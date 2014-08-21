@@ -59,7 +59,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;RakNet-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;ws2_32.lib;RakNet-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <AdditionalOptions>/NODEFAULTLIB:msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -84,7 +84,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;RakNet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;SDL2_image.lib;SDL2_ttf.lib;ws2_32.lib;RakNet.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -95,7 +95,7 @@
     <ClInclude Include="..\Client.hpp" />
     <ClInclude Include="..\GameManager.hpp" />
     <ClInclude Include="..\GUILobbyState.hpp" />
-    <ClInclude Include="..\MUDP.hpp" />
+    <ClInclude Include="..\NetMessage.hpp" />
     <ClInclude Include="..\WidgetButton.hpp" />
     <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Config.hpp" />
@@ -142,7 +142,6 @@
     <ClCompile Include="..\Client.cpp" />
     <ClCompile Include="..\GameManager.cpp" />
     <ClCompile Include="..\GUILobbyState.cpp" />
-    <ClCompile Include="..\MUDP.cpp" />
     <ClCompile Include="..\WidgetButton.cpp" />
     <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />

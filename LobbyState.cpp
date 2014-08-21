@@ -31,7 +31,7 @@
 LobbyState::LobbyState(void) :
 m_pGUI(nullptr),
 m_pBackground(nullptr),
-m_packet(new MUDP::Packet())
+m_buffer()
 {
 	Config c("ExtMF.cfg");
 	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
@@ -59,10 +59,10 @@ void LobbyState::enter(void)
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Server initialized.");
-		Server::getSingletonPtr()->setPacketHandle(m_packet.get());
+		Server::getSingletonPtr()->setBufferHandle(m_buffer);
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		Client::getSingletonPtr()->setPacketHandle(m_packet.get());
+		Client::getSingletonPtr()->setBufferHandle(m_buffer);
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Attempting server connection...");
 		Client::getSingletonPtr()->connect();
@@ -498,7 +498,8 @@ void LobbyState::update(double dt)
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		switch (Server::getSingletonPtr()->update(dt)){
 		default:
-		case MUDP::Packet::NIL:
+			break;
+		/*case MUDP::Packet::NIL:
 			break;
 
 		case MUDP::Packet::CONNECT_REQUEST:
@@ -513,37 +514,37 @@ void LobbyState::update(double dt)
 
 		case MUDP::Packet::CHAT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
-			break;
+			break;*/
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		switch (Client::getSingletonPtr()->update(dt)){
 		default:
-		case MUDP::Packet::NIL:
 			break;
+		//	break;
 
-		case MUDP::Packet::CHAT:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
-			break;
+		//case MUDP::Packet::CHAT:
+		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
+		//	break;
 
-		case MUDP::Packet::CONNECT_REQUEST:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-				m_packet->message + std::string(" connected!"));
-			break;
+		//case MUDP::Packet::CONNECT_REQUEST:
+		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+		//		m_packet->message + std::string(" connected!"));
+		//	break;
 
-		case MUDP::Packet::CONNECT_ACCEPT:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
-			break;
+		//case MUDP::Packet::CONNECT_ACCEPT:
+		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
+		//	break;
 
-		case MUDP::Packet::CONNECT_FAILED:
-			printf("Failed to connect!\n"); // TODO: add message box GUI pop-up.
-			m_quit = true;
-			break;
+		//case MUDP::Packet::CONNECT_FAILED:
+		//	printf("Failed to connect!\n"); // TODO: add message box GUI pop-up.
+		//	m_quit = true;
+		//	break;
 
-		case MUDP::Packet::DISCONNECT:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-				m_packet->message + std::string(" disconnected!"));
-			break;
+		//case MUDP::Packet::DISCONNECT:
+		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+		//		m_packet->message + std::string(" disconnected!"));
+		//	break;
 		}
 	}
 

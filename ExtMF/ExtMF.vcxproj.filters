@@ -186,7 +186,7 @@
     <ClInclude Include="..\Client.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="..\MUDP.hpp">
+    <ClInclude Include="..\NetMessage.hpp">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
   </ItemGroup>
@@ -315,9 +315,6 @@
       <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="..\Client.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\MUDP.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
