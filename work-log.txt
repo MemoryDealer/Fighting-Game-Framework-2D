@@ -337,6 +337,10 @@
 -Removed old netcode and compiled RakNet to use with ExtMF. I've added basic client/server code using RakNet. This is the better option
 	to ensure reliability and ordered arrival of UDP packets. 
 
+#8/22/14
+-Previously I was broadcasting ID_DISCONNECTION_NOTIFICATION to all other clients from the server when one client disconnected, this
+	caused all the clients to be disconnected, so I must use a separate ID, which I have created in NetMessage.hpp.
+
 #TODO
 -check the port when starting server
 -add offsets in themes for text

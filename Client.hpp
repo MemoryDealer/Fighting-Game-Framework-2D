@@ -36,17 +36,34 @@ public:
 
 	// Send-to-server functions.
 
+	// Sends a packet to the server using a BitStream.
+	Uint32 send(const RakNet::BitStream& bit, const PacketPriority priority = HIGH_PRIORITY);
+
 	// Sends a connect request to server.
-	int connect(void);
+	Uint32 connect(void);
 
 	// Sends disconnect message to server if connected, returns 0 if not.
-	int disconnect(void);
+	void disconnect(void);
 
 	// Sends a chat message to server.
-	int chat(const std::string& msg);
+	Uint32 chat(const std::string& msg);
 
 	// Sends needed data to server.
 	int update(double dt);
+
+	// Getters
+
+	// Returns the internal pointer to the RakNet::Packet which is updated
+	// with each step.
+	RakNet::Packet* getLastPacket(void) const;
+
+	// Returns a string of the first set of data of the last packet (skipping
+	// the first byte).
+	const char* getLastPacketStrData(void) const;
+
+	// Returns the internal std::string buffer for passing data between Server 
+	// and game states.
+	std::string getBuffer(void) const;
 
 	// Setters
 
@@ -56,9 +73,22 @@ private:
 	RakNet::SystemAddress m_serverAddr;
 	std::string m_server;
 	unsigned short m_port;
+	std::string m_buffer;
 	bool m_connected;
 	int m_timeout;
 };
+
+// ================================================ //
+
+// Getters
+
+inline RakNet::Packet* Client::getLastPacket(void) const{
+	return m_packet;
+}
+
+inline std::string Client::getBuffer(void) const{
+	return m_buffer;
+}
 
 // ================================================ //
 

@@ -366,9 +366,7 @@ void LobbyState::processGUIAction(const int type)
 				std::string message = GameManager::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-					/*std::shared_ptr<Packet> data(new Packet(Packet::CHAT));
-					data->setMessage(message);
-					Server::getSingletonPtr()->broadcastToAllClients(data.get());*/
+					Server::getSingletonPtr()->chat(message);
 				}
 				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 					Client::getSingletonPtr()->chat(message);
@@ -498,34 +496,25 @@ void LobbyState::update(double dt)
 		default:
 			break;
 
+		case ID_DISCONNECTION_NOTIFICATION:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Server::getSingletonPtr()->getBuffer() + " disconnected!");
+			break;
+
+		case ID_CONNECTION_LOST:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Server::getSingletonPtr()->getBuffer() + " lost connection!");
+			break;
+
+		case NetMessage::SET_USERNAME:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Server::getSingletonPtr()->getLastPacketStrData() + std::string(" connected!"));
+			break;
+
 		case NetMessage::CHAT:
-			{
-				RakNet::BitStream bit(Server::getSingletonPtr()->getLastPacket()->data, 
-					Server::getSingletonPtr()->getLastPacket()->length, false);
-				RakNet::RakString rs;
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
-				bit.Read(rs);
-				printf("Chat: %s\n", rs.C_String());
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(rs.C_String());
-			}
-			break;
-
-		/*case MUDP::Packet::NIL:
-			break;
-
-		case MUDP::Packet::CONNECT_REQUEST:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-				m_packet->message + std::string(" connected!"));
+				Server::getSingletonPtr()->getLastPacketStrData());
 			break;
-
-		case MUDP::Packet::DISCONNECT:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-				m_packet->message + std::string(" disconnected!"));
-			break;
-
-		case MUDP::Packet::CHAT:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
-			break;*/
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
@@ -533,32 +522,33 @@ void LobbyState::update(double dt)
 		default:
 			break;
 
-		case NetMessage::CHAT:
-			
+		case ID_CONNECTION_REQUEST_ACCEPTED:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
 			break;
 
-		//case MUDP::Packet::CHAT:
-		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(m_packet->message);
-		//	break;
+		case ID_CONNECTION_LOST:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Lost connection to server.");
+			break;
 
-		//case MUDP::Packet::CONNECT_REQUEST:
-		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-		//		m_packet->message + std::string(" connected!"));
-		//	break;
+		case NetMessage::SET_USERNAME:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Client::getSingletonPtr()->getLastPacketStrData() + std::string(" connected!"));
+			break;
 
-		//case MUDP::Packet::CONNECT_ACCEPT:
-		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
-		//	break;
+		case NetMessage::CLIENT_DISCONNECTED:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Client::getSingletonPtr()->getBuffer() + " disconnected!");
+			break;
 
-		//case MUDP::Packet::CONNECT_FAILED:
-		//	printf("Failed to connect!\n"); // TODO: add message box GUI pop-up.
-		//	m_quit = true;
-		//	break;
+		case NetMessage::CLIENT_LOST_CONNECTION:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Client::getSingletonPtr()->getBuffer() + " lost connection!");
+			break;
 
-		//case MUDP::Packet::DISCONNECT:
-		//	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-		//		m_packet->message + std::string(" disconnected!"));
-		//	break;
+		case NetMessage::CHAT:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Client::getSingletonPtr()->getLastPacketStrData());
+			break;
 		}
 	}
 

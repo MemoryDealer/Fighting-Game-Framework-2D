@@ -24,22 +24,18 @@ template<> Server* Singleton<Server>::msSingleton = nullptr;
 
 // ================================================ //
 
-// Define ExtMF's packet header protocol ID.
-
-
-// ================================================ //
-
 Server::Server(const int port) :
 m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
+m_buffer(),
 m_clients(),
 m_clientTimeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
 	RakNet::SocketDescriptor sd(port, 0);
-	m_peer->Startup(MaxClients, &sd, 1);
-	m_peer->SetMaximumIncomingConnections(MaxClients);
+	m_peer->Startup(Server::MaxClients, &sd, 1);
+	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
@@ -53,6 +49,43 @@ Server::~Server(void)
 
 // ================================================ //
 
+Uint32 Server::send(const RakNet::BitStream& bit, const RakNet::SystemAddress& addr,
+	const PacketPriority priority)
+{
+	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, addr, false);
+}
+
+// ================================================ //
+
+Uint32 Server::broadcast(const RakNet::Packet* packet, const RakNet::SystemAddress& exclude,
+	const PacketPriority priority)
+{
+	RakNet::BitStream bit(packet->data, packet->length, false);
+	
+	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, exclude, true);
+}
+
+// ================================================ //
+
+Uint32 Server::broadcast(const RakNet::BitStream& bit, const RakNet::SystemAddress& exclude,
+	const PacketPriority priority)
+{
+	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, exclude, true);
+}
+
+// ================================================ //
+
+Uint32 Server::chat(const std::string& msg)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CHAT));
+	bit.Write(msg.c_str());
+
+	return this->broadcast(bit);
+}
+
+// ================================================ //
+
 int Server::update(double dt)
 {
 	// Process any incoming packets.
@@ -60,16 +93,40 @@ int Server::update(double dt)
 		m_packet; 
 		m_peer->DeallocatePacket(m_packet), m_packet = m_peer->Receive()){
 		switch (m_packet->data[0]){
+		default:
+
+			break;
+
 		case ID_NEW_INCOMING_CONNECTION:
-			printf("Connection incoming...\n");
+			// Wait for SET_USERNAME message.
 			break;
 
 		case ID_DISCONNECTION_NOTIFICATION:
-			printf("A client has disconnected.\n");
+			m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
+			Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
+				std::string(m_packet->systemAddress.ToString()) + "]");
+			this->removeClient(m_packet->systemAddress);
+
+			// Tell all other clients.
+			{
+				RakNet::BitStream bit;
+				bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
+				bit.Write(m_buffer.c_str());
+				this->broadcast(bit);
+			}
 			break;
 
 		case ID_CONNECTION_LOST:
-			printf("Connection lost from client.\n");
+			m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
+			Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
+				std::string(m_packet->systemAddress.ToString()) + "]");
+			this->removeClient(m_packet->systemAddress);
+			{
+				RakNet::BitStream bit;
+				bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_LOST_CONNECTION));
+				bit.Write(m_buffer.c_str());
+				this->broadcast(bit);
+			}
 			break;
 
 		case NetMessage::SYSTEM_MESSAGE:
@@ -80,7 +137,7 @@ int Server::update(double dt)
 				bit.Read(rs);
 				printf("Client says: %s\n", rs.C_String());
 			}
-			return NetMessage::SYSTEM_MESSAGE;
+			break;
 
 		case NetMessage::SET_USERNAME:
 			{
@@ -88,16 +145,23 @@ int Server::update(double dt)
 				RakNet::RakString rs;
 				bit.IgnoreBytes(sizeof(RakNet::MessageID));
 				bit.Read(rs);
-				printf("%s connected!\n", rs.C_String());
+
+				Log::getSingletonPtr()->logMessage("SERVER: Client [" + std::string(m_packet->systemAddress.ToString()) +
+					"] connected with username \"" + rs.C_String() + "\"");
+				
 				// Add them to the client list.
 				this->registerClient(rs.C_String(), m_packet->systemAddress);
+
+				this->broadcast(m_packet, m_packet->systemAddress);
 			}
-			return NetMessage::SET_USERNAME;
+			break;
 
 		case NetMessage::CHAT:
-
-			return NetMessage::CHAT;
+			this->broadcast(m_packet, m_packet->systemAddress);
+			break;
 		}
+
+		return m_packet->data[0];
 	}
 
 	return 0;
@@ -122,36 +186,32 @@ void Server::removeClient(const RakNet::SystemAddress& addr)
 
 // ================================================ //
 
-int Server::broadcastToAllClients(RakNet::Packet* packet, const bool exclude,
-	const RakNet::SystemAddress& excludeAddress)
+void Server::dbgPrintAllConnectedClients(void)
 {
-	int numSent = 0;
-	for (ClientList::iterator itr = m_clients.begin();
-		itr != m_clients.end();
-		++itr){
-		if (exclude == true && itr->addr == excludeAddress){
-			continue;
-		}
-		/*else if (m_pSD->send(packet, itr->address)){
-			++numSent;
-		}*/
+	if (m_clients.size() == 0){
+		printf("NO CONNECTED CLIENTS.\n");
 	}
-
-	return numSent;
+	else{
+		printf("CURRENTLY CONNECTED CLIENTS:\n");
+		for (ClientList::iterator itr = m_clients.begin();
+			itr != m_clients.end();
+			++itr){
+			printf("-----------\nUsername: %s\nAddress: %s\n",
+				itr->username.c_str(), itr->addr.ToString());
+		}
+		printf("\n");
+	}
 }
 
 // ================================================ //
 
-void Server::dbgPrintAllConnectedClients(void)
+const char* Server::getLastPacketStrData(void) const
 {
-	printf("CURRENTLY CONNECTED CLIENTS:\n");
-	for (ClientList::iterator itr = m_clients.begin();
-		itr != m_clients.end();
-		++itr){
-		printf("Username: %s\nAddress: %s\n-----------",
-			itr->username.c_str(), itr->addr.ToString());
-	}
-	printf("\n\n");
+	RakNet::BitStream bit(m_packet->data, m_packet->length, false);
+	RakNet::RakString rs;
+	bit.IgnoreBytes(sizeof(RakNet::MessageID));
+	bit.Read(rs);
+	return rs.C_String();
 }
 
 // ================================================ //

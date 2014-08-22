@@ -44,6 +44,19 @@ public:
 	// Empty destructor.
 	~Server(void);
 
+	// Sends a packet to the specified client using a BitStream.
+	Uint32 send(const RakNet::BitStream& bit, const RakNet::SystemAddress& addr,
+		const PacketPriority priority = HIGH_PRIORITY);
+
+	// Sends a packet to all connected clients, except the excluded address if specified.
+	Uint32 broadcast(const RakNet::Packet* packet, const RakNet::SystemAddress& exclude = RakNet::UNASSIGNED_SYSTEM_ADDRESS,
+		const PacketPriority priority = HIGH_PRIORITY);
+	Uint32 broadcast(const RakNet::BitStream& bit, const RakNet::SystemAddress& exclude = RakNet::UNASSIGNED_SYSTEM_ADDRESS,
+		const PacketPriority priority = HIGH_PRIORITY);
+
+	// Sends a chat message to all clients.
+	Uint32 chat(const std::string& msg);
+
 	// Receives packets and process them.
 	int update(double dt);
 
@@ -55,11 +68,6 @@ public:
 
 	// Returns true if client address has already connected.
 	bool isClientConnected(const RakNet::SystemAddress& addr);
-
-	// Sends a packet to all connected clients. Excludes excludeAddr if exclude
-	// parameter is true.
-	int broadcastToAllClients(RakNet::Packet* packet, const bool exclude = false, 
-		const RakNet::SystemAddress& excludeAddress = nullptr);
 
 	// Debugging
 
@@ -76,6 +84,14 @@ public:
 	// with each step.
 	RakNet::Packet* getLastPacket(void) const;
 
+	// Returns a string of the first set of data of the last packet (skipping
+	// the first byte).
+	const char* getLastPacketStrData(void) const;
+
+	// Returns the internal std::string buffer for passing data between Server 
+	// and game states.
+	std::string getBuffer(void) const;
+
 	// Setters
 
 	// --- //
@@ -85,6 +101,7 @@ public:
 private:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
+	std::string m_buffer;
 	ClientList m_clients;
 	int m_clientTimeout;
 };
@@ -95,7 +112,7 @@ inline bool Server::isClientConnected(const RakNet::SystemAddress& addr){
 	for (ClientList::iterator itr = m_clients.begin();
 		itr != m_clients.end();
 		++itr){
-		if (addr == itr->addr){
+		if (addr == itr->addr && addr.GetPort() == itr->addr.GetPort()){
 			return true;
 		}
 	}
@@ -117,6 +134,10 @@ inline int Server::getClient(const RakNet::SystemAddress& addr){
 
 inline RakNet::Packet* Server::getLastPacket(void) const{
 	return m_packet;
+}
+
+inline std::string Server::getBuffer(void) const{
+	return m_buffer;
 }
 
 // Setters

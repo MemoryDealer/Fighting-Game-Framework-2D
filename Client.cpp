@@ -29,6 +29,7 @@ m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
 m_server(server),
 m_port(port),
+m_buffer(),
 m_connected(false),
 m_timeout(10000)
 {
@@ -44,12 +45,19 @@ m_timeout(10000)
 
 Client::~Client(void)
 {
-	
+	RakNet::RakPeerInterface::DestroyInstance(m_peer);
 }
 
 // ================================================ //
 
-int Client::connect(void)
+Uint32 Client::send(const RakNet::BitStream& bit, const PacketPriority priority)
+{
+	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, m_serverAddr, false);
+}
+
+// ================================================ //
+
+Uint32 Client::connect(void)
 {
 	if (!m_connected){
 		// Send connection request to server.
@@ -61,26 +69,20 @@ int Client::connect(void)
 
 // ================================================ //
 
-int Client::disconnect(void)
+void Client::disconnect(void)
 {
-	/*if (m_connected){
-		m_packet->type = MUDP::Packet::DISCONNECT;
-		m_packet->setMessage(GameManager::getSingletonPtr()->getUsername());
-
-		return m_pSD->send(m_packet, m_serverAddress);
-	}*/
-	
-	return 0;
+	m_peer->CloseConnection(m_serverAddr, true, 0, IMMEDIATE_PRIORITY);
 }
 
 // ================================================ //
 
-int Client::chat(const std::string& msg)
+Uint32 Client::chat(const std::string& msg)
 {
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CHAT));
 	bit.Write(msg.c_str());
-	return m_peer->Send(&bit, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_serverAddr, false);
+
+	return this->send(bit);
 }
 
 // ================================================ //
@@ -96,22 +98,53 @@ int Client::update(double dt)
 			break;
 
 		case ID_CONNECTION_REQUEST_ACCEPTED:
-			printf("Connected to server!\n");
 			{
-				RakNet::BitStream bit;
-				bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
-				printf("Sending username: %s\n", GameManager::getSingletonPtr()->getUsername().c_str());
-				bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
-				m_peer->Send(&bit, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_packet->systemAddress, false);
-
 				// Store the server system address for future use.
 				m_serverAddr = m_packet->systemAddress;
+
+				// Send the server the username.
+				RakNet::BitStream bit;
+				bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
+				Log::getSingletonPtr()->logMessage("Sending username \"" + 
+					GameManager::getSingletonPtr()->getUsername() + "\" to server.");
+				bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
+				this->send(bit);
 			}
 			break;
+
+		case ID_CONNECTION_LOST:
+
+			break;
+
+		case NetMessage::SET_USERNAME:
+
+			break;
+
+		case NetMessage::CLIENT_DISCONNECTED:
+		case NetMessage::CLIENT_LOST_CONNECTION:
+			m_buffer = this->getLastPacketStrData();
+			break;
+
+		case NetMessage::CHAT:
+
+			break;
 		}
+
+		return m_packet->data[0];
 	}
 
 	return 0;
+}
+
+// ================================================ //
+
+const char* Client::getLastPacketStrData(void) const
+{
+	RakNet::BitStream bit(m_packet->data, m_packet->length, false);
+	RakNet::RakString rs;
+	bit.IgnoreBytes(sizeof(RakNet::MessageID));
+	bit.Read(rs);
+	return rs.C_String();
 }
 
 // ================================================ //
