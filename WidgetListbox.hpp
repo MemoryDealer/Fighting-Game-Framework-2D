@@ -54,18 +54,23 @@ public:
 	// Getters
 
 	// Returns the index of Font to use for all labels.
-	const int getFont(void) const;
+	virtual const int getFont(void) const;
 
 	// Setters
 
 	// Sets the index of the Font to use for all labels.
 	virtual void setFont(const int font);
 
+	// Sets the offset of the border from the listbox texture.
+	virtual void setBorderOffset(const int offset);
+
 private:
 	// Starting index for labels to display.
 	int m_index;
 	int m_font;
 	std::vector<std::shared_ptr<Label>> m_labels;
+	SDL_Texture* m_pBorder;
+	int m_borderOffset;
 };
 
 // ================================================ //
@@ -89,6 +94,10 @@ inline const int WidgetListbox::getFont(void) const{
 
 inline void WidgetListbox::setFont(const int font){
 	m_font = font;
+}
+
+inline void WidgetListbox::setBorderOffset(const int offset){
+	m_borderOffset = offset;
 }
 
 // ================================================ //

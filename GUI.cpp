@@ -156,13 +156,6 @@ m_selectorPressed(false)
 	ok->setLabel("Ok", 25);
 	messageBox->addWidget(ok);
 
-	std::shared_ptr<WidgetStatic> panel(new WidgetStatic(GUILayerMessageBox::STATIC_PANEL));
-	rc = theme.parseRect("messagebox", "panel");
-	panel->setTexture(Engine::getSingletonPtr()->loadTexture("Data/GUI/Textures/hex.jpg"));
-	panel->setPosition(rc);
-	panel->setAppearance(Widget::Appearance::IDLE);
-	messageBox->addWidget(panel);
-
 	std::shared_ptr<WidgetListbox> text(new WidgetListbox(GUILayerMessageBox::LISTBOX_TEXT));
 	text->setAppearance(Widget::Appearance::IDLE);
 	rc = theme.parseRect("messagebox", "text");
@@ -396,6 +389,7 @@ void GUITheme::load(const std::string& file)
 		TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
 
 		ListboxTexture.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("listbox", "tex")), SDL_DestroyTexture);
+		ListboxBorder.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("listbox", "border")), SDL_DestroyTexture);
 
 		Log::getSingletonPtr()->logMessage("Theme loaded successfully from \"" + file + "\"");
 	}

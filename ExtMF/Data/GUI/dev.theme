@@ -9,9 +9,8 @@ file=Data/GUI/Fonts/DejaVuSans.ttf
 size=16
 
 [messagebox]
-panel=(227,90,400,250)
-text=(232,95,390,240)
 ok=(375,341,100,50)
+text=(232,95,390,240)
 
 [button]
 tex=Data/GUI/Textures/button1.png
@@ -26,4 +25,5 @@ cursor=Data/GUI/Textures/textbox1cursor.png
 
 [listbox]
 tex=Data/GUI/Textures/listbox1.png
+border=Data/GUI/Textures/listboxborder1.jpg
 

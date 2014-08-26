@@ -287,7 +287,6 @@ public:
 
 	enum{
 		BUTTON_OK = 0,
-		STATIC_PANEL,
 		LISTBOX_TEXT,
 	};
 };
@@ -392,7 +391,7 @@ struct GUITheme : public Singleton<GUITheme>
 	std::shared_ptr<SDL_Texture> ButtonTexture[3];
 	std::shared_ptr<SDL_Texture> TextboxTexture[3];
 	std::shared_ptr<SDL_Texture> TextboxCursor;
-	std::shared_ptr<SDL_Texture> ListboxTexture;
+	std::shared_ptr<SDL_Texture> ListboxTexture, ListboxBorder;
 };
 
 // ================================================ //

@@ -12,6 +12,7 @@
 // ================================================ //
 
 #include "WidgetListbox.hpp"
+#include "GUI.hpp"
 #include "Label.hpp"
 #include "Engine.hpp"
 
@@ -21,7 +22,9 @@ WidgetListbox::WidgetListbox(const int id) :
 Widget(id),
 m_index(0),
 m_font(0),
-m_labels()
+m_labels(),
+m_pBorder(GUITheme::getSingletonPtr()->ListboxBorder.get()),
+m_borderOffset(5)
 {
 	this->setType(Widget::Type::LISTBOX);
 }
@@ -81,9 +84,19 @@ void WidgetListbox::update(double dt)
 
 void WidgetListbox::render(void)
 {
-	Object::render();
+	SDL_Rect pos = m_dst;
+	
+	// Render border.
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pBorder, &m_src, &pos, 0, nullptr, m_flip);
 
-	SDL_Rect pos = this->getPosition();
+	// Render listbox texture.
+	pos.x += m_borderOffset;
+	pos.y += m_borderOffset;
+	pos.w -= (m_borderOffset * 2);
+	pos.h -= (m_borderOffset * 2);
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &pos, 0, nullptr, m_flip);
+
+	pos = this->getPosition();
 	pos.y += 5;
 	pos.x += 5;
 
@@ -99,7 +112,7 @@ void WidgetListbox::render(void)
 
 		// If the listbox is full, hide first message and display the next
 		// one at the bottom.
-		if (pos.y >= (Engine::getSingletonPtr()->getWindowHeight() + this->getPosition().h)){
+		if (pos.y >= (this->getPosition().y + this->getPosition().h)){
 			m_index++;
 			break;
 		}

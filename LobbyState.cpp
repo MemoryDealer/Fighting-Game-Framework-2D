@@ -226,7 +226,7 @@ void LobbyState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_j:
-			m_pGUI->setMessageBoxText("Hello there.");
+			m_pGUI->setMessageBoxText("Hello there, this is a test message from Satan.");
 			m_pGUI->showMessageBox(true);
 			break;
 

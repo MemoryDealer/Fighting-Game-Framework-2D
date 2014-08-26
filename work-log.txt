@@ -349,6 +349,9 @@
 	added to a GUI must start at index 1. The message box can be shown by calling GUI::showMessageBox(true), in which the previous layer will be partially blacked
 	out but still rendered, while the message box layer is rendered on top.
 
+#8/26/14
+-Added border to the listbox, which is just another texture pointer. The offset from the border is calculated in the render() function.
+
 #TODO
 -check the port when starting server
 -add offsets in themes for text
@@ -370,17 +373,7 @@
 -When colliding make the forward moving player push the other one into a walking back state
 -LoadResources in Engine
 -For release builds enable code optimization in Project Options->C/C++->Optimization
--For net security: "Ty TheBeast: just create an rc4 key based off some msg from the server
-	(1:11:52 AM) Ty TheBeast: then that rc4 key gets salted with each new packet sent
-	(1:12:05 AM) Ty TheBeast: so any old packet would not decrypt properly and the checksum would fail
-	Ty TheBeast: well if it were me
-	(1:16:43 AM) Ty TheBeast: I would generate a private/public key pair
-	(1:17:01 AM) Ty TheBeast: server sends its private key and a random salt
-	(1:17:26 AM) Ty TheBeast: then you create a packet with your private key and encrypt it using the servers private key and add the salt
-	(1:17:47 AM) Ty TheBeast: and no, encryption could be hacked I suppose
-	(1:17:54 AM) Ty TheBeast: but your limited by computing power lol
-	(1:18:05 AM) Ty TheBeast: reversing a 1024 bit rsa key would still take like 1000 years
-	(1:18:12 AM) Ty TheBeast: factoring the prime #s"
+-For net security: http://www.raknet.net/raknet/manual/secureconnections.html
 
 #BUGS
 -serious problems with GUI reloading textures between states, something weird with GUILayer::parse() perhaps.
