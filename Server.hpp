@@ -20,17 +20,22 @@
 
 // ================================================ //
 
-struct Packet;
-struct ClientConnection;
-typedef std::vector<ClientConnection> ClientList;
-class Timer;
-
-// ================================================ //
-
 struct ClientConnection{
 	RakNet::SystemAddress addr;
 	std::string username;
 };
+
+struct ClientReady{
+	std::string username;
+	Uint32 fighter;
+};
+
+// ================================================ //
+
+struct Packet;
+typedef std::vector<ClientConnection> ClientList;
+typedef std::list<ClientReady> ReadyQueue;
+class Timer;
 
 // ================================================ //
 
@@ -58,7 +63,7 @@ public:
 	Uint32 chat(const std::string& msg);
 
 	// Broadcasts READY packet and adds server player to ready queue.
-	Uint32 ready(const int fighter);
+	Uint32 ready(const Uint32 fighter);
 
 	// Broadcasts a SERVER_STARTING_GAME packet.
 	Uint32 startGame(void);
@@ -84,7 +89,7 @@ public:
 
 	// Adds username to ready queue if it doesn't exist in the queue.
 	// Returns true if successfully added, false means it already exists.
-	bool addToReadyQueue(const std::string& username);
+	bool addToReadyQueue(const std::string& username, const Uint32 fighter);
 
 	// Removes a client from the ready queue.
 	void removeFromReadyQueue(const std::string& username);
@@ -131,7 +136,7 @@ private:
 	// first come, first server; so first to ready up will play first. After
 	// the game starts, they are removed from the queue and the next two play.
 	// The std::string should specify the username.
-	std::list<std::string> m_readyQueue;
+	ReadyQueue m_readyQueue;
 
 	int m_clientTimeout;
 };
@@ -150,27 +155,30 @@ inline bool Server::isClientConnected(const RakNet::SystemAddress& addr){
 	return false;
 }
 
-inline bool Server::addToReadyQueue(const std::string& username){
+inline bool Server::addToReadyQueue(const std::string& username, const Uint32 fighter){
 	// See if username is already in queue.
-	for (std::list<std::string>::iterator itr = m_readyQueue.begin();
+	for (ReadyQueue::iterator itr = m_readyQueue.begin();
 		itr != m_readyQueue.end();
 		++itr){
-		if (itr->compare(username) == 0){
+		if (itr->username.compare(username) == 0){
 			return false;
 		}
 	}
 
-	m_readyQueue.push_back(username);
+	ClientReady ready;
+	ready.username = username;
+	ready.fighter = fighter;
+	m_readyQueue.push_back(ready);
 	return true;
 }
 
 inline void Server::removeFromReadyQueue(const std::string& username){
 	Log::getSingletonPtr()->logMessage("SERVER: Removing client " + 
 		username + " from ready queue.");
-	for (std::list<std::string>::iterator itr = m_readyQueue.begin();
+	for (ReadyQueue::iterator itr = m_readyQueue.begin();
 		itr != m_readyQueue.end();
 		++itr){
-		if (itr->compare(username) == 0){
+		if (itr->username.compare(username) == 0){
 			itr = m_readyQueue.erase(itr);
 			return;
 		}

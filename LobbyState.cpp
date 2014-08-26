@@ -633,6 +633,7 @@ void LobbyState::update(double dt)
 		case NetMessage::READY:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				std::string(Client::getSingletonPtr()->getLastPacketStrData()) + " is ready!");
+			// Show fighter...
 			break;
 		}
 	}

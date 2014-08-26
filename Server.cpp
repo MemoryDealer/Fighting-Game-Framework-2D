@@ -88,9 +88,9 @@ Uint32 Server::chat(const std::string& msg)
 
 // ================================================ //
 
-Uint32 Server::ready(const int fighter)
+Uint32 Server::ready(const Uint32 fighter)
 {
-	if (this->addToReadyQueue(GameManager::getSingletonPtr()->getUsername())){
+	if (this->addToReadyQueue(GameManager::getSingletonPtr()->getUsername(), fighter)){
 		RakNet::BitStream bit;
 		bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
 		bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
@@ -234,12 +234,17 @@ int Server::update(double dt)
 			// Add username to ready queue and broadcast.
 			if (this->isClientConnected(m_packet->systemAddress)){
 				int client = this->getClient(m_packet->systemAddress);
-				if (this->addToReadyQueue(m_clients[client].username)){
+				RakNet::BitStream data(m_packet->data, m_packet->length, false);
+				data.IgnoreBytes(sizeof(RakNet::MessageID));
+				Uint32 fighter;
+				data.Read(fighter);
+				if (this->addToReadyQueue(m_clients[client].username, fighter)){
 					m_buffer = m_clients[client].username;
 
 					RakNet::BitStream bit;
 					bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
 					bit.Write(m_buffer.c_str());
+					bit.Write(fighter);
 
 					this->broadcast(bit, m_packet->systemAddress);
 					return m_packet->data[0];
@@ -325,10 +330,10 @@ void Server::dbgPrintReadyQueue(void)
 	else{
 		printf("READY QUEUE:\n");
 		Uint32 i = 1;
-		for (std::list<std::string>::iterator itr = m_readyQueue.begin();
+		for (ReadyQueue::iterator itr = m_readyQueue.begin();
 			itr != m_readyQueue.end();
 			++itr, ++i){
-			printf("%d - %s\n", i, itr->c_str());
+			printf("%d - %s / %d\n", i, itr->username.c_str(), itr->fighter);
 		}
 	}
 }
