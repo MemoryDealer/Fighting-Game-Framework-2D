@@ -24,6 +24,7 @@
 #include "MessageRouter.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "NetMessage.hpp"
 #include "AppState.hpp"
 #include "App.hpp"
 #include "GamepadManager.hpp"
@@ -98,6 +99,16 @@ void MenuState::resume(void)
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		delete Client::getSingletonPtr();
+	}
+
+	switch (GameManager::getSingletonPtr()->getState()){
+	default:
+		break;
+
+	case NetMessage::USERNAME_IN_USE:
+		m_pGUI->setMessageBoxText("Username already in use!");
+		m_pGUI->showMessageBox(true);
+		break;
 	}
 
 	GameManager::getSingletonPtr()->setMode(GameManager::IDLE);
@@ -345,6 +356,17 @@ void MenuState::processGUIAction(const int type)
 		default:
 			break;
 
+		case GUI::MESSAGEBOX:
+			switch (m_pGUI->getSelectedWidget()){
+			default:
+				break;
+
+			case GUILayerMessageBox::BUTTON_OK:
+				m_pGUI->showMessageBox(false);
+				break;
+			}
+			break;
+
 		case GUIMenuState::Layer::ROOT:
 			switch (m_pGUI->getSelectedWidget()){
 			default:
@@ -445,8 +467,12 @@ void MenuState::processGUIAction(const int type)
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
 				GameManager::getSingletonPtr()->setMode(GameManager::SERVER);
 				{
-					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getText();
 					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_USERNAME)->getText();
+					if (username.length() > GameManager::MAX_USERNAME_LENGTH){
+						break;
+					}
+					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getText();
+					
 					GameManager::getSingletonPtr()->setUsername(username);
 					new Server(std::stoi(port));
 				}
@@ -483,9 +509,13 @@ void MenuState::processGUIAction(const int type)
 			case GUIMenuStateLayer::Join::BUTTON_JOIN:
 				GameManager::getSingletonPtr()->setMode(GameManager::CLIENT);
 				{
+					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_USERNAME)->getText();
+					if (username.length() > GameManager::MAX_USERNAME_LENGTH){
+						break;
+					}
 					std::string server = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_SERVER)->getText();
 					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_PORT)->getText();
-					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_USERNAME)->getText();
+					
 					GameManager::getSingletonPtr()->setUsername(username);
 					new Client(server, std::stoi(port));
 				}

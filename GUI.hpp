@@ -32,7 +32,7 @@ typedef std::vector<std::string> StringList;
 
 // ================================================ //
 
-// A polymorphic, abstract class defining a layer within a GUI system. 
+// A class defining a layer within a GUI system. 
 // A GUI object holds a list of GUILayers, and only displays one GUILayer at a time. 
 // GUILayer holds a list of Widgets which are updated each frame, and rendered if 
 // it's the active GUILayer.
@@ -174,6 +174,12 @@ public:
 	// Modifies the label of the Widget under control of the cursor.
 	void handleTextInput(const char* text, const bool backspace = false);
 
+	// Sets the text the message box layer will show.
+	void setMessageBoxText(const std::string& text);
+
+	// Shows the message box layer if true.
+	void showMessageBox(const bool show);
+
 	// Getters
 
 	// Returns index value of current layer.
@@ -204,6 +210,9 @@ public:
 
 	// Returns true if a Widget has the cursor and is processing text input.
 	const bool isEditingText(void) const;
+
+	// Returns true if the message box is being rendered.
+	const bool isMessageBoxVisible(void) const;
 	
 	// Setters
 
@@ -235,12 +244,20 @@ public:
 	// Update the GUI and current GUILayer with delta time.
 	virtual void update(double dt);
 
+	// Enumerate message box layer as index zero.
+	enum{
+		MESSAGEBOX = 0
+	};
+
 private:
 	// List of all GUILayer's used by this GUI.
 	GUILayerList m_layers;
 
 	// Active stack of layers.
 	std::stack<int> m_layerStack;
+
+	// The layer directly underneath the message box.
+	int m_nextLayer;
 
 	// Index of currently selected Widget from the current GUILayer.
 	int m_selectedWidget;
@@ -263,8 +280,32 @@ private:
 
 // ================================================ //
 
+class GUILayerMessageBox : public GUILayer
+{
+public:
+	explicit GUILayerMessageBox(void);
+
+	enum{
+		BUTTON_OK = 0,
+		STATIC_PANEL,
+		LISTBOX_TEXT,
+	};
+};
+
+// ================================================ //
+
 inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 	m_layers.push_back(layer);
+}
+
+inline void GUI::showMessageBox(const bool show){
+	if (show == true && m_layerStack.top() != GUI::MESSAGEBOX){
+		m_nextLayer = m_layerStack.top();
+		this->pushLayer(GUI::MESSAGEBOX);
+	}
+	else if(show == false && this->getCurrentLayer() == GUI::MESSAGEBOX){
+		this->popLayer();
+	}
 }
 
 // Getters
@@ -303,6 +344,10 @@ inline Widget* GUI::getSelectedWidgetPtr(void) const{
 
 inline const bool GUI::isEditingText(void) const{
 	return (m_cursor != -1);
+}
+
+inline const bool GUI::isMessageBoxVisible(void) const{
+	return (m_layerStack.top() == GUI::MESSAGEBOX);
 }
 
 // Setters

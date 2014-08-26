@@ -34,7 +34,7 @@ public:
 
 	// Layer names.
 	enum Layer{
-		ROOT = 0
+		ROOT = 1
 	};
 
 	// Calls GUI::update().

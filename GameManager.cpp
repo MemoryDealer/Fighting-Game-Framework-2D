@@ -21,6 +21,7 @@ template<> GameManager* Singleton<GameManager>::msSingleton = nullptr;
 
 GameManager::GameManager(void) :
 m_mode(IDLE),
+m_state(0),
 m_username("Anonymous")
 {
 

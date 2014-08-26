@@ -134,6 +134,7 @@ void GUILayer::update(double dt)
 GUI::GUI(void) :
 m_layers(),
 m_layerStack(),
+m_nextLayer(GUI::MESSAGEBOX),
 m_selectedWidget(Widget::NONE),
 m_cursor(Widget::NONE),
 m_navMode(NavMode::MOUSE),
@@ -143,7 +144,34 @@ m_leftMouseDown(false),
 m_rightMouseDown(false),
 m_selectorPressed(false)
 {
-	
+	// Setup message box.
+	Config e("ExtMF.cfg");
+	Config theme(e.parseValue("GUI", "theme"));
+	std::shared_ptr<GUILayer> messageBox(new GUILayerMessageBox());
+
+	SDL_Rect rc = theme.parseRect("messagebox", "ok");
+	std::shared_ptr<WidgetButton> ok(new WidgetButton(GUILayerMessageBox::BUTTON_OK));
+	ok->setPosition(rc);
+	ok->setAppearance(Widget::Appearance::IDLE);
+	ok->setLabel("Ok", 25);
+	messageBox->addWidget(ok);
+
+	std::shared_ptr<WidgetStatic> panel(new WidgetStatic(GUILayerMessageBox::STATIC_PANEL));
+	rc = theme.parseRect("messagebox", "panel");
+	panel->setTexture(Engine::getSingletonPtr()->loadTexture("Data/GUI/Textures/hex.jpg"));
+	panel->setPosition(rc);
+	panel->setAppearance(Widget::Appearance::IDLE);
+	messageBox->addWidget(panel);
+
+	std::shared_ptr<WidgetListbox> text(new WidgetListbox(GUILayerMessageBox::LISTBOX_TEXT));
+	text->setAppearance(Widget::Appearance::IDLE);
+	rc = theme.parseRect("messagebox", "text");
+	text->setPosition(rc);
+	text->setEnabled(false);
+	text->addString("Message");
+	messageBox->addWidget(text);
+
+	this->addLayer(messageBox);
 }
 
 // ================================================ //
@@ -207,6 +235,12 @@ void GUI::handleTextInput(const char* text, const bool backspace)
 
 // ================================================ //
 
+void GUI::setMessageBoxText(const std::string& text){
+	m_layers[GUI::MESSAGEBOX]->getWidgetPtr(GUILayerMessageBox::LISTBOX_TEXT)->setEntry(0, text);
+}
+
+// ================================================ //
+
 void GUI::setSelectedWidget(const int n)
 {
 	if (n != Widget::NONE){
@@ -256,20 +290,20 @@ void GUI::setEditingText(const int n)
 void GUI::update(double dt)
 {
 	if (m_navMode == NavMode::MOUSE){
-		m_selectedWidget = Widget::NONE;
-
-		// Determines if a reset check for all Widgets should take place.
-		static bool resetAllWidgets = false;
-		
 		// Create a pixel to represent the mouse position for collision testing.
 		SDL_Rect mouse;
 		mouse.x = m_mouseX;
 		mouse.y = m_mouseY;
 		mouse.w = mouse.h = 1;
 
+		m_selectedWidget = Widget::NONE;
+
+		// Determines if a reset check for all Widgets should take place.
+		static bool resetAllWidgets = false;
+
 		// See if mouse is inside bounds of each widget.
 		for (int i = 0; i < m_layers[m_layerStack.top()]->getNumWidgets(); ++i){
-			if (m_layers[m_layerStack.top()]->getWidgetPtr(i)->isEnabled() && 
+			if (m_layers[m_layerStack.top()]->getWidgetPtr(i)->isEnabled() &&
 				SDL_HasIntersection(&mouse, &m_layers[m_layerStack.top()]->getWidgetPtr(i)->getPosition())){
 				if (this->getWidgetPtr(i)->getType() == Widget::Type::BUTTON ||
 					this->getWidgetPtr(i)->getType() == Widget::Type::TEXTBOX){
@@ -292,14 +326,35 @@ void GUI::update(double dt)
 				m_layers[m_layerStack.top()]->resetAllWidgets(m_cursor);
 
 				// Prevent resetAllWidgets() from being called when not necessary.
-				resetAllWidgets = false; 
+				resetAllWidgets = false;
 			}
 		}
+	}
+
+	// If the message box is being rendered, render the next layer on the stack
+	// along with a blended black rectangle.
+	if (m_layerStack.top() == GUI::MESSAGEBOX){
+		m_layers[m_nextLayer]->render();
+		SDL_Rect rc;
+		rc.x = rc.y = 0;
+		rc.w = Engine::getSingletonPtr()->getWindowWidth();
+		rc.h = Engine::getSingletonPtr()->getWindowHeight();
+		SDL_SetRenderDrawBlendMode(Engine::getSingletonPtr()->getRenderer(), SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawColor(Engine::getSingletonPtr()->getRenderer(), 0, 0, 0, 150);
+		SDL_RenderFillRect(Engine::getSingletonPtr()->getRenderer(), &rc);
 	}
 
 	// Update and render the current layer.
 	m_layers[m_layerStack.top()]->update(dt);
 	m_layers[m_layerStack.top()]->render();
+}
+
+// ================================================ //
+
+GUILayerMessageBox::GUILayerMessageBox(void)
+{
+	this->setID(GUI::MESSAGEBOX);
+	this->setLayerName("messagebox");
 }
 
 // ================================================ //

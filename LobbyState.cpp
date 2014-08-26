@@ -69,6 +69,8 @@ void LobbyState::enter(void)
 	// Add username to player list.
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
 		GameManager::getSingletonPtr()->getUsername());
+
+	GameManager::getSingletonPtr()->setState(0);
 }
 
 // ================================================ //
@@ -209,18 +211,27 @@ void LobbyState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_r:
-		{
-			// Reload GUI and background.
-			//Config c("ExtMF.cfg");
-			//m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
-			m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
-		}
+			{
+				// Reload GUI and background.
+				//Config c("ExtMF.cfg");
+				//m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
+				m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
+			}
 			break;
 
 		case SDLK_i:
 			if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 				Server::getSingletonPtr()->dbgPrintAllConnectedClients();
 			}
+			break;
+
+		case SDLK_j:
+			m_pGUI->setMessageBoxText("Hello there.");
+			m_pGUI->showMessageBox(true);
+			break;
+
+		case SDLK_k:
+			m_pGUI->showMessageBox(false);
 			break;
 		}
 	}
@@ -353,6 +364,11 @@ void LobbyState::processGUIAction(const int type)
 		// Find the current layer, then test that layer's widgets for actions.
 		switch (m_pGUI->getCurrentLayerPtr()->getID()){
 		default:
+			break;
+
+		case GUI::MESSAGEBOX:
+			if (m_pGUI->getSelectedWidget() == GUILayerMessageBox::BUTTON_OK)
+				m_pGUI->showMessageBox(false);
 			break;
 
 		case GUILobbyState::Layer::ROOT:
@@ -557,7 +573,8 @@ void LobbyState::update(double dt)
 			break;
 
 		case NetMessage::USERNAME_IN_USE:
-			printf("USERNAME IN USE!\n");
+			GameManager::getSingletonPtr()->setState(NetMessage::USERNAME_IN_USE);
+			m_quit = true;
 			break;
 
 		case NetMessage::CLIENT_DISCONNECTED:
@@ -576,6 +593,7 @@ void LobbyState::update(double dt)
 
 		case NetMessage::PLAYER_LIST:
 			{
+				// Extract each player username and add to list.										
 				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data, 
 					Client::getSingletonPtr()->getLastPacket()->length, false);
 				bit.IgnoreBytes(sizeof(RakNet::MessageID));

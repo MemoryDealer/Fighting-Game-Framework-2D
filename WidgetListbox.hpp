@@ -33,12 +33,15 @@ public:
 	// Adds a new string to the listbox.
 	virtual void addString(const std::string& str);
 
+	// Sets the label value of entry n.
+	virtual void setEntry(const int n, const std::string& str);
+
 	// Adds to the index (offset for rendering).
 	virtual void addIndex(const int amount);
 
 	// Removes first entry from the listbox that matches the string.
 	virtual void removeEntry(const std::string& str);
-
+	
 	// Removes all strings from the listbox and resets index.
 	virtual void clear(void);
 

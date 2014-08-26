@@ -345,6 +345,9 @@
 -Added username checking on the server to avoid duplicates.
 -Added a player listbox which lists all currently connected players by their username on both the server and client. It is updated when a player connects or 
 	disconnects, and when a new client connects the whole list of usernames is sent to them.
+-Added Message box layer to the GUI class. It is a GUILayer call GUILayerMessageBox and has the index of zero in the GUI class by default. So any other layers
+	added to a GUI must start at index 1. The message box can be shown by calling GUI::showMessageBox(true), in which the previous layer will be partially blacked
+	out but still rendered, while the message box layer is rendered on top.
 
 #TODO
 -check the port when starting server

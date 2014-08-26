@@ -81,9 +81,10 @@ public:
 	// Empty functions for derived widgets.
 
 	virtual void addString(const std::string& str){}
+	virtual void setEntry(const int n, const std::string& str){}
 	virtual void removeEntry(const std::string& str){}
 	virtual void clear(void){}
-
+	
 	// Getters
 
 	// Returns the local ID for this Widget. Each GUILayer contains its own Widget IDs 

@@ -50,6 +50,9 @@ public:
 	// Returns the username.
 	const std::string getUsername(void) const;
 
+	// Returns state.
+	const int getState(void) const;
+
 	// Setters
 
 	// Sets the game mode.
@@ -58,11 +61,21 @@ public:
 	// Sets the username.
 	void setUsername(const std::string& username);
 
+	// Sets state.
+	void setState(const int state);
+
 	// --- //
+
 	static const int MAX_USERNAME_LENGTH = 16;
 
 private:
+	// Game mode for use across game states.
 	int m_mode;
+
+	// State of game for any use as needed.
+	int m_state;
+
+	// The local username of the player.
 	std::string m_username;
 };
 
@@ -78,6 +91,10 @@ inline const std::string GameManager::getUsername(void) const{
 	return m_username;
 }
 
+inline const int GameManager::getState(void) const{
+	return m_state;
+}
+
 // Setters
 
 inline void GameManager::setMode(const int mode){
@@ -86,6 +103,10 @@ inline void GameManager::setMode(const int mode){
 
 inline void GameManager::setUsername(const std::string& username){
 	m_username = username;
+}
+
+inline void GameManager::setState(const int state){
+	m_state = state;
 }
 
 // ================================================ //

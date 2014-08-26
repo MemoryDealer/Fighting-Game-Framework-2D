@@ -46,8 +46,14 @@ void WidgetListbox::addString(const std::string& str)
 	label->setFont(m_font);
 	label->create(str, this->getPosition().w);
 
-
 	m_labels.push_back(label);
+}
+
+// ================================================ //
+
+void WidgetListbox::setEntry(const int n, const std::string& str)
+{
+	m_labels[n]->create(str, this->getPosition().w);
 }
 
 // ================================================ //
@@ -93,7 +99,7 @@ void WidgetListbox::render(void)
 
 		// If the listbox is full, hide first message and display the next
 		// one at the bottom.
-		if (pos.y >= (this->getPosition().h - this->getPosition().y)){
+		if (pos.y >= (Engine::getSingletonPtr()->getWindowHeight() + this->getPosition().h)){
 			m_index++;
 			break;
 		}
