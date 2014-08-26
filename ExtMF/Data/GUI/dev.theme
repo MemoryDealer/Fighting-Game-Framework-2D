@@ -19,3 +19,6 @@ tex.selected=Data/GUI/Textures/textbox1selected.png
 tex.pressed=Data/GUI/Textures/textbox1.png
 cursor=Data/GUI/Textures/textbox1cursor.png
 
+[listbox]
+tex=Data/GUI/Textures/listbox1.png
+

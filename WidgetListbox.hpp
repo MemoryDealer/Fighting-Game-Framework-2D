@@ -34,10 +34,13 @@ public:
 	virtual void addString(const std::string& str);
 
 	// Adds to the index (offset for rendering).
-	void addIndex(const int amount);
+	virtual void addIndex(const int amount);
+
+	// Removes first entry from the listbox that matches the string.
+	virtual void removeEntry(const std::string& str);
 
 	// Removes all strings from the listbox and resets index.
-	void clear(void);
+	virtual void clear(void);
 
 	// Updates with delta time.
 	virtual void update(double dt);
@@ -53,7 +56,7 @@ public:
 	// Setters
 
 	// Sets the index of the Font to use for all labels.
-	void setFont(const int font);
+	virtual void setFont(const int font);
 
 private:
 	// Starting index for labels to display.

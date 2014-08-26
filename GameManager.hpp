@@ -58,6 +58,9 @@ public:
 	// Sets the username.
 	void setUsername(const std::string& username);
 
+	// --- //
+	static const int MAX_USERNAME_LENGTH = 16;
+
 private:
 	int m_mode;
 	std::string m_username;

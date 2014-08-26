@@ -55,6 +55,9 @@ public:
 	// Returns the height of the generated label.
 	const int getHeight(void) const;
 
+	// Returns the actual text of the label.
+	const std::string getText(void) const;
+
 	// Returns index of Font to use from FontManager.
 	const int getFont(void) const;
 
@@ -80,6 +83,7 @@ private:
 	SDL_Color m_color;
 	bool m_centered;
 	int m_width, m_height;
+	std::string m_text;
 	// Index of font to use from FontManager.
 	int m_font;
 
@@ -113,6 +117,10 @@ inline const int Label::getWidth(void) const{
 
 inline const int Label::getHeight(void) const{
 	return m_height;
+}
+
+inline const std::string Label::getText(void) const{
+	return m_text;
 }
 
 inline const int Label::getFont(void) const{

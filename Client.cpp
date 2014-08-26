@@ -71,6 +71,8 @@ Uint32 Client::connect(void)
 
 void Client::disconnect(void)
 {
+	// Send this with immediate priority because the peer connection 
+	// will be closed soon after this function is called.
 	m_peer->CloseConnection(m_serverAddr, true, 0, IMMEDIATE_PRIORITY);
 }
 
@@ -112,21 +114,13 @@ int Client::update(double dt)
 			}
 			break;
 
-		case ID_CONNECTION_LOST:
-
-			break;
-
-		case NetMessage::SET_USERNAME:
-
-			break;
-
 		case NetMessage::CLIENT_DISCONNECTED:
 		case NetMessage::CLIENT_LOST_CONNECTION:
 			m_buffer = this->getLastPacketStrData();
 			break;
 
-		case NetMessage::CHAT:
-
+		case NetMessage::USERNAME_IN_USE:
+			this->disconnect();
 			break;
 		}
 

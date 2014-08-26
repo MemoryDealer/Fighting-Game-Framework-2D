@@ -16,6 +16,7 @@
 #include "Engine.hpp"
 #include "Config.hpp"
 #include "Timer.hpp"
+#include "GameManager.hpp"
 #include "Log.hpp"
 
 // ================================================ //
@@ -86,6 +87,29 @@ Uint32 Server::chat(const std::string& msg)
 
 // ================================================ //
 
+Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYER_LIST));
+
+	// Write number of connected clients, plus the server.
+	bit.Write(static_cast<Uint32>(m_clients.size() + 1));
+
+	// Write server username.
+	bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
+
+	// Write each client username.
+	for (ClientList::iterator itr = m_clients.begin();
+		itr != m_clients.end();
+		++itr){
+		bit.Write(itr->username.c_str());
+	}
+
+	return this->send(bit, addr);
+}
+
+// ================================================ //
+
 int Server::update(double dt)
 {
 	// Process any incoming packets.
@@ -102,17 +126,22 @@ int Server::update(double dt)
 			break;
 
 		case ID_DISCONNECTION_NOTIFICATION:
-			m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
-			Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
-				std::string(m_packet->systemAddress.ToString()) + "]");
-			this->removeClient(m_packet->systemAddress);
+			if (this->isClientConnected(m_packet->systemAddress)){
+				m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
+				Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
+					std::string(m_packet->systemAddress.ToString()) + "]");
+				this->removeClient(m_packet->systemAddress);
 
-			// Tell all other clients.
-			{
-				RakNet::BitStream bit;
-				bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
-				bit.Write(m_buffer.c_str());
-				this->broadcast(bit);
+				// Tell all other clients.
+				{
+					RakNet::BitStream bit;
+					bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
+					bit.Write(m_buffer.c_str());
+					this->broadcast(bit);
+				}
+			}
+			else{
+				return 0;
 			}
 			break;
 
@@ -146,13 +175,25 @@ int Server::update(double dt)
 				bit.IgnoreBytes(sizeof(RakNet::MessageID));
 				bit.Read(rs);
 
-				Log::getSingletonPtr()->logMessage("SERVER: Client [" + std::string(m_packet->systemAddress.ToString()) +
-					"] connected with username \"" + rs.C_String() + "\"");
-				
-				// Add them to the client list.
-				this->registerClient(rs.C_String(), m_packet->systemAddress);
+				if (this->isUsernameInUse(rs.C_String())){
+					RakNet::BitStream reject;
+					reject.Write(static_cast<RakNet::MessageID>(NetMessage::USERNAME_IN_USE));
 
-				this->broadcast(m_packet, m_packet->systemAddress);
+					this->send(reject, m_packet->systemAddress);
+					return 0;
+				}
+				else{
+					Log::getSingletonPtr()->logMessage("SERVER: Client [" + std::string(m_packet->systemAddress.ToString()) +
+						"] connected with username \"" + rs.C_String() + "\"");
+
+					// Send a list of players to newly connected client.
+					this->sendPlayerList(m_packet->systemAddress);
+
+					// Add them to the client list.
+					this->registerClient(rs.C_String(), m_packet->systemAddress);
+
+					this->broadcast(m_packet, m_packet->systemAddress);
+				}
 			}
 			break;
 
@@ -186,20 +227,45 @@ void Server::removeClient(const RakNet::SystemAddress& addr)
 
 // ================================================ //
 
+bool Server::isUsernameInUse(const std::string& username)
+{
+	if (username.compare(GameManager::getSingletonPtr()->getUsername()) == 0){
+		return true;
+	}
+	for (ClientList::iterator itr = m_clients.begin();
+		itr != m_clients.end();
+		++itr){
+		if (username.compare(itr->username) == 0){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+// ================================================ //
+
 void Server::dbgPrintAllConnectedClients(void)
 {
 	if (m_clients.size() == 0){
 		printf("NO CONNECTED CLIENTS.\n");
 	}
 	else{
-		printf("CURRENTLY CONNECTED CLIENTS:\n");
+		printf("CURRENTLY CONNECTED CLIENTS (FROM CLIENT LIST):\n");
 		for (ClientList::iterator itr = m_clients.begin();
 			itr != m_clients.end();
 			++itr){
 			printf("-----------\nUsername: %s\nAddress: %s\n",
 				itr->username.c_str(), itr->addr.ToString());
 		}
-		printf("\n");
+		printf("\nCONNECTED SYSTEMS:\n");
+		unsigned short num = Server::MaxClients;
+		RakNet::SystemAddress* addrs = new RakNet::SystemAddress[num];
+		m_peer->GetConnectionList(addrs, &num);
+		for (USHORT u = 0; u < num; ++u){
+			printf("%s\n", addrs[u].ToString());
+		}
+		printf("DONE.\n");
 	}
 }
 

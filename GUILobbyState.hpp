@@ -63,6 +63,7 @@ namespace GUILobbyStateLayer{
 			BUTTON_SEND,
 			BUTTON_EXIT,
 			TEXTBOX_SEND,
+			LISTBOX_PLAYERS,
 			LISTBOX_CHAT
 		};
 	};

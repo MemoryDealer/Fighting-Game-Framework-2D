@@ -341,6 +341,11 @@
 -Previously I was broadcasting ID_DISCONNECTION_NOTIFICATION to all other clients from the server when one client disconnected, this
 	caused all the clients to be disconnected, so I must use a separate ID, which I have created in NetMessage.hpp.
 
+#8/25/14
+-Added username checking on the server to avoid duplicates.
+-Added a player listbox which lists all currently connected players by their username on both the server and client. It is updated when a player connects or 
+	disconnects, and when a new client connects the whole list of usernames is sent to them.
+
 #TODO
 -check the port when starting server
 -add offsets in themes for text

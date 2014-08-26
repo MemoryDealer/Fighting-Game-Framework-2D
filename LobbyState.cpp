@@ -65,20 +65,25 @@ void LobbyState::enter(void)
 			"Attempting server connection...");
 		Client::getSingletonPtr()->connect();
 	}
+
+	// Add username to player list.
+	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
+		GameManager::getSingletonPtr()->getUsername());
 }
 
 // ================================================ //
 
 void LobbyState::exit(void)
 {
-	// Notify server of disconnection if client.
+	// Notify server of disconnection if we are a client.
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		Client::getSingletonPtr()->disconnect();
 	}
 
 	delete StageManager::getSingletonPtr();
 
-	static_cast<WidgetListbox*>(m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT))->clear();
+	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->clear();
+	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->clear();
 
 	Log::getSingletonPtr()->logMessage("Exiting LobbyState...");
 }
@@ -213,7 +218,9 @@ void LobbyState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_i:
-			Server::getSingletonPtr()->dbgPrintAllConnectedClients();
+			if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+				Server::getSingletonPtr()->dbgPrintAllConnectedClients();
+			}
 			break;
 		}
 	}
@@ -499,16 +506,25 @@ void LobbyState::update(double dt)
 		case ID_DISCONNECTION_NOTIFICATION:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				Server::getSingletonPtr()->getBuffer() + " disconnected!");
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
+				Server::getSingletonPtr()->getBuffer());
 			break;
 
 		case ID_CONNECTION_LOST:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				Server::getSingletonPtr()->getBuffer() + " lost connection!");
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
+				Server::getSingletonPtr()->getBuffer());
 			break;
 
 		case NetMessage::SET_USERNAME:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-				Server::getSingletonPtr()->getLastPacketStrData() + std::string(" connected!"));
+			{
+				std::string username = Server::getSingletonPtr()->getLastPacketStrData();
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+					username + std::string(" connected!"));
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
+					username);
+			}
 			break;
 
 		case NetMessage::CHAT:
@@ -531,18 +547,46 @@ void LobbyState::update(double dt)
 			break;
 
 		case NetMessage::SET_USERNAME:
-			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-				Client::getSingletonPtr()->getLastPacketStrData() + std::string(" connected!"));
+			{
+				std::string username = Client::getSingletonPtr()->getLastPacketStrData();
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+					username + std::string(" connected!"));
+				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
+					username);
+			}
+			break;
+
+		case NetMessage::USERNAME_IN_USE:
+			printf("USERNAME IN USE!\n");
 			break;
 
 		case NetMessage::CLIENT_DISCONNECTED:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				Client::getSingletonPtr()->getBuffer() + " disconnected!");
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
+				Client::getSingletonPtr()->getBuffer());
 			break;
 
 		case NetMessage::CLIENT_LOST_CONNECTION:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				Client::getSingletonPtr()->getBuffer() + " lost connection!");
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
+				Client::getSingletonPtr()->getBuffer());
+			break;
+
+		case NetMessage::PLAYER_LIST:
+			{
+				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data, 
+					Client::getSingletonPtr()->getLastPacket()->length, false);
+				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+				Uint32 numPlayers = 0;
+				bit.Read(static_cast<Uint32&>(numPlayers));
+				for (Uint32 i = 0; i < numPlayers; ++i){
+					char player[GameManager::MAX_USERNAME_LENGTH + 1];
+					bit.Read(player);
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(player);
+				}
+			}
 			break;
 
 		case NetMessage::CHAT:

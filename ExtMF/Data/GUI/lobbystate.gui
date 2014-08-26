@@ -24,6 +24,11 @@ textbox.send:links=-1,-1,0,2
 textbox.send:font=1
 
 #ID 6
+listbox.players:pos=(354,1,175,399)
+listbox.players:disabled=0
+listbox.players:font=1
+
+#ID 7
 listbox.chat:pos=(554,1,300,399)
 listbox.chat:disabled=0
 listbox.chat:font=1

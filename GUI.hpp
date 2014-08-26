@@ -343,9 +343,11 @@ struct GUITheme : public Singleton<GUITheme>
 	void load(const std::string& file);
 
 	// SDL Texture pointers for theme.
+
 	std::shared_ptr<SDL_Texture> ButtonTexture[3];
 	std::shared_ptr<SDL_Texture> TextboxTexture[3];
 	std::shared_ptr<SDL_Texture> TextboxCursor;
+	std::shared_ptr<SDL_Texture> ListboxTexture;
 };
 
 // ================================================ //

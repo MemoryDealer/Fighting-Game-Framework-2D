@@ -23,6 +23,7 @@ m_color(),
 m_centered(centered),
 m_width(0),
 m_height(0),
+m_text(),
 m_font(FontManager::MAIN),
 m_offset(0)
 {
@@ -73,6 +74,8 @@ void Label::create(const std::string& label, const int wrap)
 
 	// The surface is no longer needed, the memory was copied to the texture.
 	SDL_FreeSurface(surf);
+
+	m_text = label;
 }
 
 // ================================================ //

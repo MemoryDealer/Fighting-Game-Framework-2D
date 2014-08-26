@@ -52,6 +52,20 @@ void WidgetListbox::addString(const std::string& str)
 
 // ================================================ //
 
+void WidgetListbox::removeEntry(const std::string& str)
+{
+	for (std::vector<std::shared_ptr<Label>>::iterator itr = m_labels.begin();
+		itr != m_labels.end();
+		++itr){
+		if (str.compare(itr->get()->getText()) == 0){
+			itr = m_labels.erase(itr);
+			return;
+		}
+	}
+}
+
+// ================================================ //
+
 void WidgetListbox::update(double dt)
 {
 

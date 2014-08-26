@@ -57,6 +57,10 @@ public:
 	// Sends a chat message to all clients.
 	Uint32 chat(const std::string& msg);
 
+	// Sends a list of players to the client. Should be called before the new client
+	// is added to the client list.
+	Uint32 sendPlayerList(const RakNet::SystemAddress& addr);
+
 	// Receives packets and process them.
 	int update(double dt);
 
@@ -68,6 +72,9 @@ public:
 
 	// Returns true if client address has already connected.
 	bool isClientConnected(const RakNet::SystemAddress& addr);
+
+	// Returns true if a connected client is using the username.
+	bool isUsernameInUse(const std::string& username);
 
 	// Debugging
 

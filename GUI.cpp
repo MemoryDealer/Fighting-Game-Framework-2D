@@ -340,6 +340,8 @@ void GUITheme::load(const std::string& file)
 		TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
 		TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
 
+		ListboxTexture.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("listbox", "tex")), SDL_DestroyTexture);
+
 		Log::getSingletonPtr()->logMessage("Theme loaded successfully from \"" + file + "\"");
 	}
 	else{

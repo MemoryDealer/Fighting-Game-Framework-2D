@@ -78,8 +78,11 @@ public:
 	// a button map (.bmap) file. 
 	void parseLinks(const std::string& links);
 
-	// Empty function for derived widgets.
+	// Empty functions for derived widgets.
+
 	virtual void addString(const std::string& str){}
+	virtual void removeEntry(const std::string& str){}
+	virtual void clear(void){}
 
 	// Getters
 

@@ -37,7 +37,7 @@ GUI()
 	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	names = StringList{ "send" };
 	layer->parse<WidgetTextbox>(c, Widget::Type::TEXTBOX, names);
-	names = StringList{ "chat" };
+	names = StringList{ "players", "chat" };
 	layer->parse<WidgetListbox>(c, Widget::Type::LISTBOX, names);
 	this->addLayer(layer);
 
