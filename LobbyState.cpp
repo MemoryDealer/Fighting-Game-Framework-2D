@@ -225,6 +225,12 @@ void LobbyState::handleInput(SDL_Event& e)
 			}
 			break;
 
+		case SDLK_o:
+			if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+				Server::getSingletonPtr()->dbgPrintReadyQueue();
+			}
+			break;
+
 		case SDLK_j:
 			m_pGUI->setMessageBoxText("Hello there, this is a test message from Satan.");
 			m_pGUI->showMessageBox(true);
@@ -377,7 +383,14 @@ void LobbyState::processGUIAction(const int type)
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_READY:
-
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+					Server::getSingletonPtr()->ready(0);
+				}
+				else if(GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					Client::getSingletonPtr()->ready(0);
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+						"You are ready!");
+				}
 				break;
 
 			case GUILobbyStateLayer::Root::TEXTBOX_SEND:
@@ -547,6 +560,11 @@ void LobbyState::update(double dt)
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				Server::getSingletonPtr()->getLastPacketStrData());
 			break;
+
+		case NetMessage::READY:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				Server::getSingletonPtr()->getBuffer() + " is ready!");
+			break;
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
@@ -610,6 +628,11 @@ void LobbyState::update(double dt)
 		case NetMessage::CHAT:
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				Client::getSingletonPtr()->getLastPacketStrData());
+			break;
+
+		case NetMessage::READY:
+			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+				std::string(Client::getSingletonPtr()->getLastPacketStrData()) + " is ready!");
 			break;
 		}
 	}

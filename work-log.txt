@@ -353,6 +353,7 @@
 -Added border to the listbox, which is just another texture pointer. The offset from the border is calculated in the render() function.
 
 #TODO
+-Add ability to select an entry in listbox if enabled.
 -check the port when starting server
 -add offsets in themes for text
 -Create a component to add to each state that handles duplicate procedures

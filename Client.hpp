@@ -48,6 +48,9 @@ public:
 	// Sends a chat message to server.
 	Uint32 chat(const std::string& msg);
 
+	// Sends a READY packet to server.
+	Uint32 ready(const Uint32 fighter);
+
 	// Sends needed data to server.
 	int update(double dt);
 

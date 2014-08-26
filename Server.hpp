@@ -57,6 +57,12 @@ public:
 	// Sends a chat message to all clients.
 	Uint32 chat(const std::string& msg);
 
+	// Broadcasts READY packet and adds server player to ready queue.
+	Uint32 ready(const int fighter);
+
+	// Broadcasts a SERVER_STARTING_GAME packet.
+	Uint32 startGame(void);
+
 	// Sends a list of players to the client. Should be called before the new client
 	// is added to the client list.
 	Uint32 sendPlayerList(const RakNet::SystemAddress& addr);
@@ -76,10 +82,20 @@ public:
 	// Returns true if a connected client is using the username.
 	bool isUsernameInUse(const std::string& username);
 
+	// Adds username to ready queue if it doesn't exist in the queue.
+	// Returns true if successfully added, false means it already exists.
+	bool addToReadyQueue(const std::string& username);
+
+	// Removes a client from the ready queue.
+	void removeFromReadyQueue(const std::string& username);
+
 	// Debugging
 
 	// Prints all connected clients addresses and usernames.
 	void dbgPrintAllConnectedClients(void);
+
+	// Prints the ready queue.
+	void dbgPrintReadyQueue(void);
 
 	// Getters
 
@@ -110,6 +126,13 @@ private:
 	RakNet::Packet* m_packet;
 	std::string m_buffer;
 	ClientList m_clients;
+
+	// The order in which players "ready up." The server process this as 
+	// first come, first server; so first to ready up will play first. After
+	// the game starts, they are removed from the queue and the next two play.
+	// The std::string should specify the username.
+	std::list<std::string> m_readyQueue;
+
 	int m_clientTimeout;
 };
 
@@ -125,6 +148,34 @@ inline bool Server::isClientConnected(const RakNet::SystemAddress& addr){
 	}
 
 	return false;
+}
+
+inline bool Server::addToReadyQueue(const std::string& username){
+	// See if username is already in queue.
+	for (std::list<std::string>::iterator itr = m_readyQueue.begin();
+		itr != m_readyQueue.end();
+		++itr){
+		if (itr->compare(username) == 0){
+			return false;
+		}
+	}
+
+	m_readyQueue.push_back(username);
+	return true;
+}
+
+inline void Server::removeFromReadyQueue(const std::string& username){
+	Log::getSingletonPtr()->logMessage("SERVER: Removing client " + 
+		username + " from ready queue.");
+	for (std::list<std::string>::iterator itr = m_readyQueue.begin();
+		itr != m_readyQueue.end();
+		++itr){
+		if (itr->compare(username) == 0){
+			itr = m_readyQueue.erase(itr);
+			return;
+		}
+	}
+	Log::getSingletonPtr()->logMessage("SERVER: Client not found in ready queue..");
 }
 
 // Getters

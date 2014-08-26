@@ -30,6 +30,7 @@ m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
 m_buffer(),
 m_clients(),
+m_readyQueue(),
 m_clientTimeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
@@ -87,6 +88,31 @@ Uint32 Server::chat(const std::string& msg)
 
 // ================================================ //
 
+Uint32 Server::ready(const int fighter)
+{
+	if (this->addToReadyQueue(GameManager::getSingletonPtr()->getUsername())){
+		RakNet::BitStream bit;
+		bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
+		bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
+
+		return this->broadcast(bit);
+	}
+
+	return 0;
+}
+
+// ================================================ //
+
+Uint32 Server::startGame(void)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::SERVER_STARTING_GAME));
+
+	return this->broadcast(bit);
+}
+
+// ================================================ //
+
 Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
 {
 	RakNet::BitStream bit;
@@ -130,6 +156,7 @@ int Server::update(double dt)
 				m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
 				Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
 					std::string(m_packet->systemAddress.ToString()) + "]");
+				this->removeFromReadyQueue(m_buffer);
 				this->removeClient(m_packet->systemAddress);
 
 				// Tell all other clients.
@@ -149,7 +176,9 @@ int Server::update(double dt)
 			m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
 			Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
 				std::string(m_packet->systemAddress.ToString()) + "]");
+			this->removeFromReadyQueue(m_buffer);
 			this->removeClient(m_packet->systemAddress);
+
 			{
 				RakNet::BitStream bit;
 				bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_LOST_CONNECTION));
@@ -200,6 +229,23 @@ int Server::update(double dt)
 		case NetMessage::CHAT:
 			this->broadcast(m_packet, m_packet->systemAddress);
 			break;
+
+		case NetMessage::READY:
+			// Add username to ready queue and broadcast.
+			if (this->isClientConnected(m_packet->systemAddress)){
+				int client = this->getClient(m_packet->systemAddress);
+				if (this->addToReadyQueue(m_clients[client].username)){
+					m_buffer = m_clients[client].username;
+
+					RakNet::BitStream bit;
+					bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
+					bit.Write(m_buffer.c_str());
+
+					this->broadcast(bit, m_packet->systemAddress);
+					return m_packet->data[0];
+				}
+			}
+			return 0;
 		}
 
 		return m_packet->data[0];
@@ -266,6 +312,24 @@ void Server::dbgPrintAllConnectedClients(void)
 			printf("%s\n", addrs[u].ToString());
 		}
 		printf("DONE.\n");
+	}
+}
+
+// ================================================ //
+
+void Server::dbgPrintReadyQueue(void)
+{
+	if (m_readyQueue.size() == 0){
+		printf("EMPTY READY QUEUE.\n");
+	}
+	else{
+		printf("READY QUEUE:\n");
+		Uint32 i = 1;
+		for (std::list<std::string>::iterator itr = m_readyQueue.begin();
+			itr != m_readyQueue.end();
+			++itr, ++i){
+			printf("%d - %s\n", i, itr->c_str());
+		}
 	}
 }
 

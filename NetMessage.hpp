@@ -26,6 +26,8 @@ namespace NetMessage{
 		CLIENT_LOST_CONNECTION,
 		PLAYER_LIST,
 		CHAT,
+		READY,
+		SERVER_STARTING_GAME,
 
 		END
 	};
