@@ -101,6 +101,18 @@ Uint32 Client::ready(const Uint32 fighter)
 
 // ================================================ //
 
+Uint32 Client::sendInput(const Uint32 input, const bool value)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_INPUT));
+	bit.Write(static_cast<Uint32>(input));
+	bit.Write(static_cast<bool>(value));
+
+	return this->send(bit);
+}
+
+// ================================================ //
+
 int Client::update(double dt)
 {
 	// Process incoming packets.

@@ -358,6 +358,7 @@
 	are playing.
 
 #TODO
+-Can't resume game state after exiting it.
 -Add ability to select an entry in listbox if enabled.
 -check the port when starting server
 -add offsets in themes for text

@@ -78,9 +78,10 @@ public:
 	// Updates Red and Blue Players, and tests for collisions.
 	void update(double dt);
 
-private:
 	std::shared_ptr<Player> m_pRedPlayer;
 	std::shared_ptr<Player> m_pBluePlayer;
+private:
+	
 	std::string m_redFighterFile, m_blueFighterFile;
 
 	// The right edge of the screen minus player width (pixels).

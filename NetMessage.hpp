@@ -31,6 +31,7 @@ namespace NetMessage{
 		PLAYING_BLUE,
 		SERVER_STARTING_GAME,
 		UPDATE_PLAYERS,
+		CLIENT_INPUT,
 
 		END
 	};

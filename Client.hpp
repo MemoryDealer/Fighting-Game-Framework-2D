@@ -51,6 +51,9 @@ public:
 	// Sends a READY packet to server.
 	Uint32 ready(const Uint32 fighter);
 
+	// Sends an input value to the server.
+	Uint32 sendInput(const Uint32 input, const bool value);
+
 	// Sends needed data to server.
 	int update(double dt);
 

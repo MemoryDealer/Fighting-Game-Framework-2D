@@ -45,7 +45,7 @@ public:
 	virtual ~Player(void);
 
 	// Adds an input value to the input queue.
-	virtual void enqueueInput(const Uint32 input);
+	void enqueueInput(const Uint32 input);
 
 	// Getters
 

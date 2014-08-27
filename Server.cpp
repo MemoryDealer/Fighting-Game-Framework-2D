@@ -18,6 +18,7 @@
 #include "Timer.hpp"
 #include "GameManager.hpp"
 #include "PlayerManager.hpp"
+#include "Input.hpp"
 #include "Log.hpp"
 
 // ================================================ //
@@ -175,12 +176,10 @@ Uint32 Server::updatePlayers(void)
 	// Write red player data.
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
 	bit.Write(red->getPosition());
-	bit.Write(red->getCurrentState());
 
 	// Write blue player data.
 	Player* blue = PlayerManager::getSingletonPtr()->getBluePlayer();
 	bit.Write(blue->getPosition());
-	bit.Write(blue->getCurrentState());
 
 	return this->broadcast(bit);
 }
@@ -302,6 +301,23 @@ int Server::update(double dt)
 				}
 			}
 			return 0;
+
+		case NetMessage::CLIENT_INPUT:
+			if (m_packet->systemAddress == m_redAddr || m_packet->systemAddress == m_blueAddr){
+				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
+				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+				Uint32 button = 0;
+				bool value = false;
+				bit.Read(button);
+				bit.Read(value);
+				if (m_packet->systemAddress == m_redAddr){
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
+				}
+				else{
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);
+				}
+			}
+			break;
 		}
 
 		return m_packet->data[0];
