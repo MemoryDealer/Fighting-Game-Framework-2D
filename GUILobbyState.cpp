@@ -33,7 +33,7 @@ GUI()
 
 	// Add each layer to the GUI.
 	std::shared_ptr<GUILayer> layer(new GUILobbyStateLayer::Root());
-	names = StringList{ "ready", "send", "exit" };
+	names = StringList{ "ready", "start", "send", "exit" };
 	layer->parse<WidgetButton>(c, Widget::Type::BUTTON, names);
 	names = StringList{ "send" };
 	layer->parse<WidgetTextbox>(c, Widget::Type::TEXTBOX, names);

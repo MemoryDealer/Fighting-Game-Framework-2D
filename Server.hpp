@@ -25,7 +25,7 @@ struct ClientConnection{
 	std::string username;
 };
 
-struct ClientReady{
+struct ReadyClient{
 	std::string username;
 	Uint32 fighter;
 };
@@ -34,7 +34,7 @@ struct ClientReady{
 
 struct Packet;
 typedef std::vector<ClientConnection> ClientList;
-typedef std::list<ClientReady> ReadyQueue;
+typedef std::list<ReadyClient> ReadyQueue;
 class Timer;
 
 // ================================================ //
@@ -71,6 +71,9 @@ public:
 	// Sends a list of players to the client. Should be called before the new client
 	// is added to the client list.
 	Uint32 sendPlayerList(const RakNet::SystemAddress& addr);
+	
+	// Broadcasts all relevant player information to clients.
+	Uint32 updatePlayers(void);
 
 	// Receives packets and process them.
 	int update(double dt);
@@ -108,6 +111,21 @@ public:
 	// Returns -1 if not found.
 	int getClient(const RakNet::SystemAddress& addr);
 
+	// Returns index of client matching the username.
+	int getClient(const std::string& username);
+
+	// Returns the size of the ready queue.
+	const int getReadyQueueSize(void) const;
+
+	// Returns ClientReady object from the ready client queue.
+	ReadyClient getReadyClient(const Uint32 n);
+
+	// Returns the next client in the ready queue.
+	ReadyClient getNextRedPlayer(void);
+
+	// Returns the 2nd next client in the ready queue.
+	ReadyClient getNextBluePlayer(void);
+
 	// Returns the internal pointer to the RakNet::Packet which is updated
 	// with each step.
 	RakNet::Packet* getLastPacket(void) const;
@@ -131,6 +149,8 @@ private:
 	RakNet::Packet* m_packet;
 	std::string m_buffer;
 	ClientList m_clients;
+
+	RakNet::SystemAddress m_redAddr, m_blueAddr;
 
 	// The order in which players "ready up." The server process this as 
 	// first come, first server; so first to ready up will play first. After
@@ -165,7 +185,7 @@ inline bool Server::addToReadyQueue(const std::string& username, const Uint32 fi
 		}
 	}
 
-	ClientReady ready;
+	ReadyClient ready;
 	ready.username = username;
 	ready.fighter = fighter;
 	m_readyQueue.push_back(ready);
@@ -196,6 +216,47 @@ inline int Server::getClient(const RakNet::SystemAddress& addr){
 	}
 
 	return -1;
+}
+
+inline int Server::getClient(const std::string& username){
+	for (unsigned int i = 0; i < m_clients.size(); ++i){
+		if (username.compare(m_clients[i].username) == 0){
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+inline const int Server::getReadyQueueSize(void) const{
+	return m_readyQueue.size();
+}
+
+inline ReadyClient Server::getReadyClient(const Uint32 n){
+	int i = 0;
+	for (ReadyQueue::iterator itr = m_readyQueue.begin();
+		itr != m_readyQueue.end();
+		++itr, ++i){
+		if (i == n){
+			return *itr;
+		}
+	}
+
+	ReadyClient nil;
+	nil.username = "nul";
+	nil.fighter = -1;
+	return nil;
+}
+
+inline ReadyClient Server::getNextRedPlayer(void){
+	ReadyQueue::iterator itr = m_readyQueue.begin();
+	return *itr;
+}
+
+inline ReadyClient Server::getNextBluePlayer(void){
+	ReadyQueue::iterator itr = m_readyQueue.begin();
+	++itr;
+	return *itr;
 }
 
 inline RakNet::Packet* Server::getLastPacket(void) const{

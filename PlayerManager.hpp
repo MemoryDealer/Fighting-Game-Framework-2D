@@ -46,6 +46,9 @@ public:
 	// Allocates both Player objects and sets up default data.
 	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
 
+	// Finds fighter files and calls other load() function with filenames.
+	bool load(const Uint32 redFighter, const Uint32 blueFighter);
+
 	// Calls load() with last used fighter file names.
 	bool reload(void);
 

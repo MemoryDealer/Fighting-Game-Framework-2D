@@ -42,6 +42,13 @@ public:
 		CLIENT
 	};
 
+	// Some states.
+	enum{
+		PLAYING_RED = 0,
+		PLAYING_BLUE,
+		SPECTATING
+	};
+
 	// Getters
 
 	// Returns the game mode.

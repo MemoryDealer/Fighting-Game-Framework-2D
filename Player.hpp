@@ -44,6 +44,9 @@ public:
 	// Empty destructor.
 	virtual ~Player(void);
 
+	// Adds an input value to the input queue.
+	virtual void enqueueInput(const Uint32 input);
+
 	// Getters
 
 	// Returns the side the Player is on (e.g., LEFT or RIGHT).
@@ -74,6 +77,9 @@ public:
 
 	// Sets the side value of the Player (e.g., LEFT or RIGHT).
 	void setSide(const int side);
+
+	// Sets the current state in the core FSM.
+	void setCurrentState(const int state);
 
 	// Sets the colliding value of the Player.
 	void setColliding(const bool colliding);
@@ -118,6 +124,7 @@ private:
 	int	m_playerSide;
 
 	std::shared_ptr<Input> m_pInput;
+	std::queue<Uint32> m_inputQueue;
 	int	m_mode;
 
 	MoveList m_moves;
@@ -130,6 +137,10 @@ private:
 };
 
 // ================================================ //
+
+inline void Player::enqueueInput(const Uint32 input){
+	m_inputQueue.push(input);
+}
 
 // Getters
 

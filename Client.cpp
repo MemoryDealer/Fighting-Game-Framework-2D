@@ -17,6 +17,7 @@
 #include "Engine.hpp"
 #include "Timer.hpp"
 #include "GameManager.hpp"
+#include "PlayerManager.hpp"
 
 // ================================================ //
 
@@ -132,6 +133,27 @@ int Client::update(double dt)
 
 		case NetMessage::USERNAME_IN_USE:
 			this->disconnect();
+			break;
+
+		case NetMessage::SERVER_STARTING_GAME:
+			GameManager::getSingletonPtr()->setState(GameManager::SPECTATING);
+			// Load the fighters being used this match.
+			{
+				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
+				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+				Uint32 red = 0, blue = 0;
+				bit.Read(red);
+				bit.Read(blue);
+				PlayerManager::getSingletonPtr()->load(red, blue);
+			}
+			break;
+
+		case NetMessage::PLAYING_RED:
+			GameManager::getSingletonPtr()->setState(GameManager::PLAYING_RED);
+			break;
+
+		case NetMessage::PLAYING_BLUE:
+			GameManager::getSingletonPtr()->setState(GameManager::PLAYING_BLUE);
 			break;
 		}
 

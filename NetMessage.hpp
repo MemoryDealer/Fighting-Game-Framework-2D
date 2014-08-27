@@ -27,7 +27,10 @@ namespace NetMessage{
 		PLAYER_LIST,
 		CHAT,
 		READY,
+		PLAYING_RED, // Let's a client know they are playing next match.
+		PLAYING_BLUE,
 		SERVER_STARTING_GAME,
+		UPDATE_PLAYERS,
 
 		END
 	};

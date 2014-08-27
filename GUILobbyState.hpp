@@ -60,6 +60,7 @@ namespace GUILobbyStateLayer{
 
 		enum Widget{
 			BUTTON_READY = 0,
+			BUTTON_START,
 			BUTTON_SEND,
 			BUTTON_EXIT,
 			TEXTBOX_SEND,

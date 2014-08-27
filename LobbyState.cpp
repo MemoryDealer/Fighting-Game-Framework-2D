@@ -52,10 +52,6 @@ void LobbyState::enter(void)
 
 	m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
 
-	// Allocate data for LobbyState and GameState.
-	new StageManager();
-	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
-
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Server initialized.");
@@ -81,8 +77,6 @@ void LobbyState::exit(void)
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		Client::getSingletonPtr()->disconnect();
 	}
-
-	delete StageManager::getSingletonPtr();
 
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->clear();
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->clear();
@@ -393,6 +387,42 @@ void LobbyState::processGUIAction(const int type)
 				}
 				break;
 
+			case GUILobbyStateLayer::Root::BUTTON_START:
+				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+					// Load fighters being used by players.
+					if (Server::getSingletonPtr()->getReadyQueueSize() < 2){
+						m_pGUI->setMessageBoxText("Not enough players are ready!");
+						m_pGUI->showMessageBox(true);
+						break;
+					}
+					ReadyClient red = Server::getSingletonPtr()->getNextRedPlayer();
+					ReadyClient blue = Server::getSingletonPtr()->getNextBluePlayer();
+					if (PlayerManager::getSingletonPtr()->load(red.fighter, blue.fighter)){
+						// Assign each player's mode, checking for local or net play.
+						if (red.username.compare(GameManager::getSingletonPtr()->getUsername())){
+							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(PlayerMode::LOCAL);
+							GameManager::getSingletonPtr()->setState(GameManager::PLAYING_RED);
+						}
+						else{
+							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(PlayerMode::NET);
+						}
+						if (blue.username.compare(GameManager::getSingletonPtr()->getUsername())){
+							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(PlayerMode::LOCAL);
+							GameManager::getSingletonPtr()->setState(GameManager::PLAYING_BLUE);
+						}
+						else{
+							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(PlayerMode::NET);
+						}
+
+						Server::getSingletonPtr()->startGame();
+						this->pushAppState(this->findByName(GAME_STATE));
+					}
+					else{
+						Log::getSingletonPtr()->logMessage("Failed to load fighters!");
+					}
+				}
+				break;
+
 			case GUILobbyStateLayer::Root::TEXTBOX_SEND:
 				m_pGUI->setEditingText(GUILobbyStateLayer::Root::TEXTBOX_SEND);
 				break;
@@ -634,6 +664,10 @@ void LobbyState::update(double dt)
 			m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 				std::string(Client::getSingletonPtr()->getLastPacketStrData()) + " is ready!");
 			// Show fighter...
+			break;
+
+		case NetMessage::SERVER_STARTING_GAME:
+			this->pushAppState(this->findByName(GAME_STATE));
 			break;
 		}
 	}

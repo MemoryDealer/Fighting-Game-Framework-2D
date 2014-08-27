@@ -35,6 +35,7 @@ m_yMax(0),
 m_currentAction(PlayerAction::NONE),
 m_playerSide(PlayerSide::LEFT),
 m_pInput(new Input(buttonMapFile)),
+m_inputQueue(),
 m_mode(mode),
 m_moves(),
 m_pCurrentMove(nullptr),
@@ -98,6 +99,13 @@ Player::~Player(void)
 const int Player::getCurrentState(void) const
 {
 	return m_pFSM->getCurrentStateID();
+}
+
+// ================================================ //
+
+void Player::setCurrentState(const int state)
+{
+	m_pFSM->setCurrentState(state);
 }
 
 // ================================================ //
@@ -322,10 +330,7 @@ void Player::setColliding(const bool colliding)
 
 void Player::update(double dt)
 {
-	if (m_mode == PlayerMode::LOCAL){
-		this->updateLocalInput();
-	}
-
+	this->updateLocalInput();
 	this->updateMove(dt);
 
 	if (m_colliding){

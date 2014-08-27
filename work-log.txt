@@ -354,6 +354,8 @@
 -Created a "ready queue" in the server. Whenever a client or the server clicks the ready button, they are added to the ready queue. Matches will play out in 
 	the order of those in the ready queue, each subsequent player facing the previous victor (at least in default mode). Eventually the player will select which
 	fighter they are using before clicking ready.
+-Added a start button in the lobby state, which calls Server::startGame(), which lets all the clients know the game is starting and tells the clients which ones
+	are playing.
 
 #TODO
 -Add ability to select an entry in listbox if enabled.

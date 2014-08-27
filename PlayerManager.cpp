@@ -45,8 +45,8 @@ m_fighters()
 		FighterEntry fighter;
 		std::string fighterName = "fighter" + Engine::toString(i);
 
-		fighter.name = c.parseValue(fighterName.c_str(), "name");
-		fighter.file = c.parseValue(fighterName.c_str(), "file");
+		fighter.name = c.parseValue(fighterName.c_str(), "name", true);
+		fighter.file = c.parseValue(fighterName.c_str(), "file", true);
 
 		// TODO: load portrait texture.
 
@@ -99,6 +99,14 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_blueMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w;
 
 	return (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr);
+}
+
+// ================================================ //
+
+bool PlayerManager::load(const Uint32 redFighter, const Uint32 blueFighter)
+{
+	return this->load("Data/Fighters/" + m_fighters[redFighter].file, 
+		"Data/Fighters/" + m_fighters[blueFighter].file);
 }
 
 // ================================================ //

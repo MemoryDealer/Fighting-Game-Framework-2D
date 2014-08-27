@@ -61,6 +61,9 @@ void MenuState::enter(void)
 	new PlayerManager();
 	PlayerManager::getSingletonPtr()->reset();
 
+	new StageManager();
+	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
+
 	new Camera();
 }
 
@@ -71,6 +74,7 @@ void MenuState::exit(void)
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 	
 	delete PlayerManager::getSingletonPtr();
+	delete StageManager::getSingletonPtr();
 	delete Camera::getSingletonPtr();
 }
 

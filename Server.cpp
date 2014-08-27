@@ -17,6 +17,7 @@
 #include "Config.hpp"
 #include "Timer.hpp"
 #include "GameManager.hpp"
+#include "PlayerManager.hpp"
 #include "Log.hpp"
 
 // ================================================ //
@@ -30,6 +31,8 @@ m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
 m_buffer(),
 m_clients(),
+m_redAddr(),
+m_blueAddr(),
 m_readyQueue(),
 m_clientTimeout(10000)
 {
@@ -105,10 +108,38 @@ Uint32 Server::ready(const Uint32 fighter)
 
 Uint32 Server::startGame(void)
 {
+	// First let's tell every client that the game is starting.
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::SERVER_STARTING_GAME));
+	// Write red and blue fighters in order.
+	bit.Write(static_cast<Uint32>(this->getNextRedPlayer().fighter));
+	bit.Write(static_cast<Uint32>(this->getNextBluePlayer().fighter));
+	this->broadcast(bit);
 
-	return this->broadcast(bit);
+	// Then tell any clients that are playing that they are actually playing.
+	// Check red player.
+	if (GameManager::getSingletonPtr()->getState() != GameManager::PLAYING_RED){
+		ReadyClient red = this->getNextRedPlayer();
+		ClientConnection redConnection = m_clients[this->getClient(red.username)];
+		m_redAddr = redConnection.addr;
+
+		RakNet::BitStream play;
+		play.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYING_RED));
+		this->send(play, m_redAddr);
+	}
+
+	// Check blue player.
+	if (GameManager::getSingletonPtr()->getState() != GameManager::PLAYING_BLUE){
+		ReadyClient blue = this->getNextRedPlayer();
+		ClientConnection blueConnection = m_clients[this->getClient(blue.username)];
+		m_blueAddr = blueConnection.addr;
+
+		RakNet::BitStream play;
+		play.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYING_BLUE));
+		this->send(play, m_blueAddr);
+	}
+
+	return 1;
 }
 
 // ================================================ //
@@ -132,6 +163,26 @@ Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
 	}
 
 	return this->send(bit, addr);
+}
+
+// ================================================ //
+
+Uint32 Server::updatePlayers(void)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_PLAYERS));
+
+	// Write red player data.
+	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
+	bit.Write(red->getPosition());
+	bit.Write(red->getCurrentState());
+
+	// Write blue player data.
+	Player* blue = PlayerManager::getSingletonPtr()->getBluePlayer();
+	bit.Write(blue->getPosition());
+	bit.Write(blue->getCurrentState());
+
+	return this->broadcast(bit);
 }
 
 // ================================================ //
