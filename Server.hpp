@@ -51,13 +51,13 @@ public:
 
 	// Sends a packet to the specified client using a BitStream.
 	Uint32 send(const RakNet::BitStream& bit, const RakNet::SystemAddress& addr,
-		const PacketPriority priority = HIGH_PRIORITY);
+		const PacketPriority priority = HIGH_PRIORITY, const PacketReliability reliability = UNRELIABLE);
 
 	// Sends a packet to all connected clients, except the excluded address if specified.
-	Uint32 broadcast(const RakNet::Packet* packet, const RakNet::SystemAddress& exclude = RakNet::UNASSIGNED_SYSTEM_ADDRESS,
-		const PacketPriority priority = HIGH_PRIORITY);
-	Uint32 broadcast(const RakNet::BitStream& bit, const RakNet::SystemAddress& exclude = RakNet::UNASSIGNED_SYSTEM_ADDRESS,
-		const PacketPriority priority = HIGH_PRIORITY);
+	Uint32 broadcast(const RakNet::Packet* packet, const PacketPriority priority = HIGH_PRIORITY,
+		const PacketReliability reliability = UNRELIABLE, const RakNet::SystemAddress& exclude = RakNet::UNASSIGNED_SYSTEM_ADDRESS);
+	Uint32 broadcast(const RakNet::BitStream& bit, const PacketPriority priority = HIGH_PRIORITY, 
+		const PacketReliability reliability = UNRELIABLE, const RakNet::SystemAddress& exclude = RakNet::UNASSIGNED_SYSTEM_ADDRESS);
 
 	// Sends a chat message to all clients.
 	Uint32 chat(const std::string& msg);
@@ -114,6 +114,9 @@ public:
 	// Returns index of client matching the username.
 	int getClient(const std::string& username);
 
+	// Returns ClientConnection object of client matching username.
+	ClientConnection getClientPtr(const std::string& username);
+
 	// Returns the size of the ready queue.
 	const int getReadyQueueSize(void) const;
 
@@ -158,7 +161,8 @@ private:
 	// The std::string should specify the username.
 	ReadyQueue m_readyQueue;
 
-	int m_clientTimeout;
+	// The timer which controls when player updates are sent to the clients.
+	std::shared_ptr<Timer> m_pUpdateTimer;
 };
 
 // ================================================ //
@@ -226,6 +230,11 @@ inline int Server::getClient(const std::string& username){
 	}
 
 	return -1;
+}
+
+inline ClientConnection Server::getClientPtr(const std::string& username){
+	int n = this->getClient(username);
+	return m_clients[n];
 }
 
 inline const int Server::getReadyQueueSize(void) const{

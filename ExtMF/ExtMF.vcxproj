@@ -122,7 +122,6 @@
     <ClInclude Include="..\Object.hpp" />
     <ClInclude Include="..\ObjectManager.hpp" />
     <ClInclude Include="..\Player.hpp" />
-    <ClInclude Include="..\PlayerData.hpp" />
     <ClInclude Include="..\PlayerManager.hpp" />
     <ClInclude Include="..\Server.hpp" />
     <ClInclude Include="..\Singleton.hpp" />

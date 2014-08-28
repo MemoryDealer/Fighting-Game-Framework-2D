@@ -357,6 +357,13 @@
 -Added a start button in the lobby state, which calls Server::startGame(), which lets all the clients know the game is starting and tells the clients which ones
 	are playing.
 
+#8/27/14
+-Deleted Player class code, restarted. Right now it just renders a green box. I may remove the "player action" feature and just use the state machine directly
+	so that networked state changes work properly. Updating the position on the client from the server was very choppy, and on localhost, too. Updating the velocity
+	and acceleration, then the position helps a lot with the choppiness. It does however still stutter at times, I will need to experiment more to get fluid motions
+	on the client that's playing, because something is different from the way the movement is calculated, perhaps teh game clocks being run at different tiems.
+	A timestamp feature in RakNet may prove useful for this.
+
 #TODO
 -Can't resume game state after exiting it.
 -Add ability to select an entry in listbox if enabled.

@@ -17,7 +17,6 @@
 // ================================================ //
 
 #include "Object.hpp"
-#include "PlayerData.hpp"
 
 // ================================================ //
 
@@ -37,153 +36,109 @@ typedef std::vector<std::shared_ptr<Hitbox>> HitboxList;
 class Player : public Object
 {
 public:
+	// Enumerations
+
+	enum Side{
+		LEFT = 0,
+		RIGHT
+	};
+
+	enum Mode{
+		LOCAL = 0,
+		AI,
+		NET
+	};
+
+	enum State{
+		IDLE = 0,
+		WALKING_FORWARD,
+		WALKING_BACK,
+		BLOCKING,
+		ATTACKING,
+		SPECIAL_OPENER,
+		SPECIAL_NONOPENER,
+		AUTO_DOUBLE,
+		LINKER,
+		ENDER
+	};
+
+	enum Action{
+		NONE = 0,
+		WALK_BACK, WALK_FORWARD,
+		CROUCH,
+		JUMP,
+		LIGHT_PUNCH, MEDIUM_PUNCH, HEAVY_PUNCH,
+		LIGHT_KICK, MEDIUM_KICK, HEAVY_KICK,
+		SPECIAL1,
+		SPECIAL2,
+		SPECIAL3,
+		SPECIAL4,
+		SPECIAL5
+	};
+
 	// Allocates the Input object, which loads the button map from the specified file.
 	// Loads all fighter data and moves. Builds the FSM.
-	explicit Player(const std::string& fighterFile, const std::string& buttomMapFile = "", const int mode = PlayerMode::LOCAL);
+	explicit Player(const std::string& fighterFile, const std::string& buttomMapFile = "", const int mode = Player::Mode::LOCAL);
 
 	// Empty destructor.
 	virtual ~Player(void);
 
-	// Adds an input value to the input queue.
-	void enqueueInput(const Uint32 input);
+	// Processes local input for player, adjusting its state.
+	void processInput(void);
+
+	// Updates the current Move, handles collision.
+	virtual void update(double dt);
+
+	// Renders the Player sprite.
+	virtual void render(void);
 
 	// Getters
 
-	// Returns the side the Player is on (e.g., LEFT or RIGHT).
-	const int getSide(void) const;
-
-	// Returns the Hitbox at the specified index.
-	Hitbox* getHitbox(const int index);
-
-	// Returns the current state ID.
-	const int getCurrentState(void) const;
-
-	// Returns true if the Player is colliding with the other Player (redundant...).
-	const bool isColliding(void) const;
-
-	// Returns the X-velocity.
-	const int getVelocityX(void) const;
-
-	// Returns the Y-velocity.
-	const int getVelocityY(void) const;
-
-	// Returns the mode (e.g., LOCAL, NET, or AI).
-	const int getMode(void) const;
-
-	// Returns the internal Input object.
+	// Returns the Input object.
 	Input* getInput(void) const;
+
+	// Returns the mode the player is currently in.
+	const Uint32 getMode(void) const;
 
 	// Setters
 
-	// Sets the side value of the Player (e.g., LEFT or RIGHT).
-	void setSide(const int side);
+	// Sets the side of player, e.g., LEFT or RIGHT.
+	void setSide(const Uint32 side);
 
-	// Sets the current state in the core FSM.
-	void setCurrentState(const int state);
+	// Sets the mode of the player, e.g., LOCAL, NET, or AI.
+	void setMode(const Uint32 mode);
 
-	// Sets the colliding value of the Player.
-	void setColliding(const bool colliding);
+public: // Currently public for debugging purposes.
+	int m_xAccel, m_yAccel;
+	int m_xVel, m_yVel;
+	int m_xMax, m_yMax;
 
-	// Switches the state of drawing the debug hitboxes.
-	void toggleDrawHitboxes(void);
+	Uint32 m_side;
 
-	// Sets the mode (e.g., LOCAL, NET, or AI).
-	void setMode(const int mode);
-
-	// --- //
-
-	// Handles Messages.
-	virtual void sendMessage(const Message& msg);
-
-	// Updates the current Move, handles collision, and renders the Player.
-	virtual void update(double dt);
-
-private:
-	// Loads texture file(s), all fighter data, and calls loadMoves().
-	void loadFighterData(const std::string& fighterFile);
-
-	// Parses all Moves in .fighter file.
-	void loadMoves(FighterMetadata& c);
-
-	// Handles Player movement and actions according to the local input status.
-	void updateLocalInput(void);
-
-	// Updates the current Move according to the current state. Updates the current
-	// frame of the move, and calls updateHitboxes().
-	void updateMove(double dt);
-
-	// Adjust each Hitbox according to its offset (from the Player's center).
-	void updateHitboxes(void);
-
-	// --- //
-
-	int	m_xAccel, m_yAccel;
-	int	m_xVel, m_yVel;
-	int	m_xMax, m_yMax;
-	int	m_currentAction;
-	int	m_playerSide;
+	Uint32 m_mode;
 
 	std::shared_ptr<Input> m_pInput;
-	std::queue<Uint32> m_inputQueue;
-	int	m_mode;
-
-	MoveList m_moves;
-	std::shared_ptr<Move> m_pCurrentMove;
-	std::shared_ptr<Timer> m_pMoveTimer;
-
-	HitboxList m_hitboxes;
-	bool m_colliding;
-	bool m_drawHitboxes;
 };
 
 // ================================================ //
 
-inline void Player::enqueueInput(const Uint32 input){
-	m_inputQueue.push(input);
-}
-
 // Getters
-
-inline const int Player::getSide(void) const{
-	return m_playerSide;
-}
-
-inline Hitbox* Player::getHitbox(const int index){
-	return m_hitboxes[index].get();
-}
-
-inline const bool Player::isColliding(void) const{
-	return m_colliding;
-}
-
-inline const int Player::getVelocityX(void) const{
-	return m_xVel;
-}
-
-inline const int Player::getVelocityY(void) const{
-	return m_yVel;
-}
-
-inline const int Player::getMode(void) const{
-	return m_mode;
-}
 
 inline Input* Player::getInput(void) const{
 	return m_pInput.get();
 }
 
-// Setters
-
-inline void Player::setSide(const int side){
-	m_playerSide = side;
-	m_flip = (side == PlayerSide::LEFT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+inline const Uint32 Player::getMode(void) const{
+	return m_mode;
 }
 
-inline void Player::toggleDrawHitboxes(void){
-	m_drawHitboxes = !m_drawHitboxes;
+// Getters
+
+inline void Player::setSide(const Uint32 side){
+	m_side = side;
 }
 
-inline void Player::setMode(const int mode){
+inline void Player::setMode(const Uint32 mode){
 	m_mode = mode;
 }
 

@@ -15,7 +15,6 @@
 #include "Engine.hpp"
 #include "ObjectManager.hpp"
 #include "PlayerManager.hpp"
-#include "PlayerData.hpp"
 #include "StageManager.hpp"
 #include "Camera.hpp"
 #include "Input.hpp"
@@ -158,8 +157,8 @@ void GameState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_p:
-			PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
-			PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
+			//PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
+			//PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
 			break;
 
 		case SDLK_ESCAPE:
@@ -375,13 +374,14 @@ void GameState::update(double dt)
 	StageManager::getSingletonPtr()->update(dt);
 	m_pObjectManager->update(dt);
 	PlayerManager::getSingletonPtr()->update(dt);
+
+	printf("State: %d\n", GameManager::getSingletonPtr()->getState());
+
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		switch (Server::getSingletonPtr()->update(dt)){
 		default:
 			break;
 		}
-
-		Server::getSingletonPtr()->updatePlayers();
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		switch (Client::getSingletonPtr()->update(dt)){
@@ -394,10 +394,20 @@ void GameState::update(double dt)
 					Client::getSingletonPtr()->getLastPacket()->length, false);
 				bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
+				RakNet::Time time;
+				bit.Read(time);
+				//printf("UPDATE (%d)\n", time);
+
 				// Update positions.
 				SDL_Rect redPos, bluePos;
 				bit.Read(redPos);
+				bit.Read(PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xVel);
+				bit.Read(PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xAccel);
+
 				bit.Read(bluePos);
+				bit.Read(PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xVel);
+				bit.Read(PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xAccel);
+
 				PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(redPos);
 				PlayerManager::getSingletonPtr()->getBluePlayer()->setPosition(bluePos);
 			}

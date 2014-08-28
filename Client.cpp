@@ -51,9 +51,9 @@ Client::~Client(void)
 
 // ================================================ //
 
-Uint32 Client::send(const RakNet::BitStream& bit, const PacketPriority priority)
+Uint32 Client::send(const RakNet::BitStream& bit, const PacketPriority priority, const PacketReliability reliability)
 {
-	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, m_serverAddr, false);
+	return m_peer->Send(&bit, priority, reliability, 0, m_serverAddr, false);
 }
 
 // ================================================ //
@@ -85,7 +85,7 @@ Uint32 Client::chat(const std::string& msg)
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CHAT));
 	bit.Write(msg.c_str());
 
-	return this->send(bit);
+	return this->send(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 }
 
 // ================================================ //
@@ -96,7 +96,7 @@ Uint32 Client::ready(const Uint32 fighter)
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
 	bit.Write(static_cast<Uint32>(fighter));
 
-	return this->send(bit);
+	return this->send(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 }
 
 // ================================================ //
@@ -108,7 +108,7 @@ Uint32 Client::sendInput(const Uint32 input, const bool value)
 	bit.Write(static_cast<Uint32>(input));
 	bit.Write(static_cast<bool>(value));
 
-	return this->send(bit);
+	return this->send(bit, IMMEDIATE_PRIORITY, RELIABLE);
 }
 
 // ================================================ //
@@ -134,7 +134,7 @@ int Client::update(double dt)
 				Log::getSingletonPtr()->logMessage("Sending username \"" + 
 					GameManager::getSingletonPtr()->getUsername() + "\" to server.");
 				bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
-				this->send(bit);
+				this->send(bit, HIGH_PRIORITY, RELIABLE);
 			}
 			break;
 

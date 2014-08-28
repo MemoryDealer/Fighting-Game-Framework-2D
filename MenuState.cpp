@@ -14,7 +14,6 @@
 #include "MenuState.hpp"
 #include "Engine.hpp"
 #include "PlayerManager.hpp"
-#include "PlayerData.hpp"
 #include "StageManager.hpp"
 #include "GUIMenuState.hpp"
 #include "WidgetTextbox.hpp"

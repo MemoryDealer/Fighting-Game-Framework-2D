@@ -44,7 +44,8 @@ public:
 
 	// Some states.
 	enum{
-		PLAYING_RED = 0,
+		NIL = 0,
+		PLAYING_RED,
 		PLAYING_BLUE,
 		SPECTATING
 	};

@@ -108,9 +108,6 @@
     <ClInclude Include="..\Player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\PlayerData.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\PlayerManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

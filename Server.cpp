@@ -35,7 +35,7 @@ m_clients(),
 m_redAddr(),
 m_blueAddr(),
 m_readyQueue(),
-m_clientTimeout(10000)
+m_pUpdateTimer(new Timer())
 {
 	Log::getSingletonPtr()->logMessage("Initializing Server...");
 
@@ -56,27 +56,27 @@ Server::~Server(void)
 // ================================================ //
 
 Uint32 Server::send(const RakNet::BitStream& bit, const RakNet::SystemAddress& addr,
-	const PacketPriority priority)
+	const PacketPriority priority, const PacketReliability reliability)
 {
-	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, addr, false);
+	return m_peer->Send(&bit, priority, reliability, 0, addr, false);
 }
 
 // ================================================ //
 
-Uint32 Server::broadcast(const RakNet::Packet* packet, const RakNet::SystemAddress& exclude,
-	const PacketPriority priority)
+Uint32 Server::broadcast(const RakNet::Packet* packet, const PacketPriority priority,
+	const PacketReliability reliability, const RakNet::SystemAddress& exclude)
 {
 	RakNet::BitStream bit(packet->data, packet->length, false);
 	
-	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, exclude, true);
+	return m_peer->Send(&bit, priority, reliability, 0, exclude, true);
 }
 
 // ================================================ //
 
-Uint32 Server::broadcast(const RakNet::BitStream& bit, const RakNet::SystemAddress& exclude,
-	const PacketPriority priority)
+Uint32 Server::broadcast(const RakNet::BitStream& bit, const PacketPriority priority, 
+	const PacketReliability reliability, const RakNet::SystemAddress& exclude)
 {
-	return m_peer->Send(&bit, priority, RELIABLE_ORDERED, 0, exclude, true);
+	return m_peer->Send(&bit, priority, reliability, 0, exclude, true);
 }
 
 // ================================================ //
@@ -87,7 +87,7 @@ Uint32 Server::chat(const std::string& msg)
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CHAT));
 	bit.Write(msg.c_str());
 
-	return this->broadcast(bit);
+	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 }
 
 // ================================================ //
@@ -99,7 +99,7 @@ Uint32 Server::ready(const Uint32 fighter)
 		bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
 		bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
 
-		return this->broadcast(bit);
+		return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 	}
 
 	return 0;
@@ -115,7 +115,7 @@ Uint32 Server::startGame(void)
 	// Write red and blue fighters in order.
 	bit.Write(static_cast<Uint32>(this->getNextRedPlayer().fighter));
 	bit.Write(static_cast<Uint32>(this->getNextBluePlayer().fighter));
-	this->broadcast(bit);
+	this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 
 	// Then tell any clients that are playing that they are actually playing.
 	// Check red player.
@@ -126,19 +126,21 @@ Uint32 Server::startGame(void)
 
 		RakNet::BitStream play;
 		play.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYING_RED));
-		this->send(play, m_redAddr);
+		this->send(play, m_redAddr, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 	}
 
 	// Check blue player.
 	if (GameManager::getSingletonPtr()->getState() != GameManager::PLAYING_BLUE){
-		ReadyClient blue = this->getNextRedPlayer();
+		ReadyClient blue = this->getNextBluePlayer();
 		ClientConnection blueConnection = m_clients[this->getClient(blue.username)];
 		m_blueAddr = blueConnection.addr;
 
 		RakNet::BitStream play;
 		play.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYING_BLUE));
-		this->send(play, m_blueAddr);
+		this->send(play, m_blueAddr, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 	}
+
+	m_pUpdateTimer->restart();
 
 	return 1;
 }
@@ -163,7 +165,7 @@ Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
 		bit.Write(itr->username.c_str());
 	}
 
-	return this->send(bit, addr);
+	return this->send(bit, addr, HIGH_PRIORITY, RELIABLE);
 }
 
 // ================================================ //
@@ -173,21 +175,35 @@ Uint32 Server::updatePlayers(void)
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_PLAYERS));
 
+	// Write timestamp.
+	bit.Write(RakNet::GetTime());
+
 	// Write red player data.
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
 	bit.Write(red->getPosition());
+	bit.Write(red->m_xVel);
+	bit.Write(red->m_xAccel);
 
 	// Write blue player data.
 	Player* blue = PlayerManager::getSingletonPtr()->getBluePlayer();
 	bit.Write(blue->getPosition());
+	bit.Write(blue->m_xVel);
+	bit.Write(blue->m_xAccel);
 
-	return this->broadcast(bit);
+	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
 }
 
 // ================================================ //
 
 int Server::update(double dt)
 {
+	// Update players.
+	if (m_pUpdateTimer->getTicks() > 0){
+		this->updatePlayers();
+
+		m_pUpdateTimer->restart();
+	}
+
 	// Process any incoming packets.
 	for (m_packet = m_peer->Receive(); 
 		m_packet; 
@@ -214,7 +230,7 @@ int Server::update(double dt)
 					RakNet::BitStream bit;
 					bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
 					bit.Write(m_buffer.c_str());
-					this->broadcast(bit);
+					this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
 				}
 			}
 			else{
@@ -233,7 +249,7 @@ int Server::update(double dt)
 				RakNet::BitStream bit;
 				bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_LOST_CONNECTION));
 				bit.Write(m_buffer.c_str());
-				this->broadcast(bit);
+				this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
 			}
 			break;
 
@@ -258,7 +274,7 @@ int Server::update(double dt)
 					RakNet::BitStream reject;
 					reject.Write(static_cast<RakNet::MessageID>(NetMessage::USERNAME_IN_USE));
 
-					this->send(reject, m_packet->systemAddress);
+					this->send(reject, m_packet->systemAddress, HIGH_PRIORITY, RELIABLE);
 					return 0;
 				}
 				else{
@@ -271,13 +287,13 @@ int Server::update(double dt)
 					// Add them to the client list.
 					this->registerClient(rs.C_String(), m_packet->systemAddress);
 
-					this->broadcast(m_packet, m_packet->systemAddress);
+					this->broadcast(m_packet, HIGH_PRIORITY, RELIABLE, m_packet->systemAddress);
 				}
 			}
 			break;
 
 		case NetMessage::CHAT:
-			this->broadcast(m_packet, m_packet->systemAddress);
+			this->broadcast(m_packet, HIGH_PRIORITY, RELIABLE_ORDERED, m_packet->systemAddress);
 			break;
 
 		case NetMessage::READY:
@@ -296,7 +312,7 @@ int Server::update(double dt)
 					bit.Write(m_buffer.c_str());
 					bit.Write(fighter);
 
-					this->broadcast(bit, m_packet->systemAddress);
+					this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED, m_packet->systemAddress);
 					return m_packet->data[0];
 				}
 			}

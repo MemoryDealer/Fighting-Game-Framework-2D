@@ -66,7 +66,7 @@ void LobbyState::enter(void)
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
 		GameManager::getSingletonPtr()->getUsername());
 
-	GameManager::getSingletonPtr()->setState(0);
+	GameManager::getSingletonPtr()->setState(GameManager::NIL);
 }
 
 // ================================================ //
@@ -379,6 +379,8 @@ void LobbyState::processGUIAction(const int type)
 			case GUILobbyStateLayer::Root::BUTTON_READY:
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 					Server::getSingletonPtr()->ready(0);
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+						"You are ready!");
 				}
 				else if(GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 					Client::getSingletonPtr()->ready(0);
@@ -399,19 +401,19 @@ void LobbyState::processGUIAction(const int type)
 					ReadyClient blue = Server::getSingletonPtr()->getNextBluePlayer();
 					if (PlayerManager::getSingletonPtr()->load(red.fighter, blue.fighter)){
 						// Assign each player's mode, checking for local or net play.
-						if (red.username.compare(GameManager::getSingletonPtr()->getUsername())){
-							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(PlayerMode::LOCAL);
+						if (red.username.compare(GameManager::getSingletonPtr()->getUsername()) == 0){
+							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::LOCAL);
 							GameManager::getSingletonPtr()->setState(GameManager::PLAYING_RED);
 						}
 						else{
-							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(PlayerMode::NET);
+							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::NET);
 						}
-						if (blue.username.compare(GameManager::getSingletonPtr()->getUsername())){
-							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(PlayerMode::LOCAL);
+						if (blue.username.compare(GameManager::getSingletonPtr()->getUsername()) == 0){
+							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::LOCAL);
 							GameManager::getSingletonPtr()->setState(GameManager::PLAYING_BLUE);
 						}
 						else{
-							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(PlayerMode::NET);
+							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::NET);
 						}
 
 						Server::getSingletonPtr()->startGame();

@@ -37,7 +37,8 @@ public:
 	// Send-to-server functions.
 
 	// Sends a packet to the server using a BitStream.
-	Uint32 send(const RakNet::BitStream& bit, const PacketPriority priority = HIGH_PRIORITY);
+	Uint32 send(const RakNet::BitStream& bit, const PacketPriority priority = HIGH_PRIORITY,
+		const PacketReliability reliability = UNRELIABLE);
 
 	// Sends a connect request to server.
 	Uint32 connect(void);
