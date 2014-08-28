@@ -363,6 +363,10 @@
 	and acceleration, then the position helps a lot with the choppiness. It does however still stutter at times, I will need to experiment more to get fluid motions
 	on the client that's playing, because something is different from the way the movement is calculated, perhaps teh game clocks being run at different tiems.
 	A timestamp feature in RakNet may prove useful for this.
+-Added reliability parameter for network sending functions to allow more control.
+
+#8/28/14
+-Tested a better network position update.
 
 #TODO
 -Can't resume game state after exiting it.

@@ -55,6 +55,25 @@ Player::~Player(void)
 
 // ================================================ //
 
+void Player::applyPositionUpdate(const int x, const int y)
+{
+	const Uint32 snapDistance = 15;
+
+	if (std::abs(m_dst.x - x) > snapDistance){
+		m_dst.x = x;
+	}
+	else if((m_dst.x - x) != 0){
+		if (x - m_dst.x > 0){
+			m_dst.x++;
+		}
+		else{
+			m_dst.x--;
+		}
+	}
+}
+
+// ================================================ //
+
 void Player::processInput(void)
 {
 	// Checking both left and right will force the player to cancel out movement 

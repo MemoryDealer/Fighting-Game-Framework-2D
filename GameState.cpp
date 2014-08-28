@@ -408,8 +408,10 @@ void GameState::update(double dt)
 				bit.Read(PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xVel);
 				bit.Read(PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xAccel);
 
-				PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(redPos);
-				PlayerManager::getSingletonPtr()->getBluePlayer()->setPosition(bluePos);
+				PlayerManager::getSingletonPtr()->getRedPlayer()->applyPositionUpdate(redPos.x, redPos.y);
+
+				//PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(redPos);
+				//PlayerManager::getSingletonPtr()->getBluePlayer()->setPosition(bluePos);
 			}
 			break;
 		}

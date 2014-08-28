@@ -83,6 +83,11 @@ public:
 	// Empty destructor.
 	virtual ~Player(void);
 
+	// Determines whether or not to snap player to the new position, depending
+	// on the distance, otherwise it graudally slides the player. Used when
+	// receiving a network update on the client.
+	void applyPositionUpdate(const int x, const int y);
+
 	// Processes local input for player, adjusting its state.
 	void processInput(void);
 
@@ -109,9 +114,9 @@ public:
 	void setMode(const Uint32 mode);
 
 public: // Currently public for debugging purposes.
-	int m_xAccel, m_yAccel;
-	int m_xVel, m_yVel;
-	int m_xMax, m_yMax;
+	int32_t m_xAccel, m_yAccel;
+	int32_t m_xVel, m_yVel;
+	int32_t m_xMax, m_yMax;
 
 	Uint32 m_side;
 
