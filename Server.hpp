@@ -145,6 +145,15 @@ public:
 
 	// --- //
 
+	typedef struct{
+		Uint32 inputSeq;
+		int x, y;
+		int xVel, yVel;
+		int xAccel, yAccel;
+	} PlayerUpdate;
+
+	// --- //
+
 	static const int MaxClients = 10;
 
 private:
@@ -154,6 +163,7 @@ private:
 	ClientList m_clients;
 
 	RakNet::SystemAddress m_redAddr, m_blueAddr;
+	Uint32 m_redInputSeq, m_blueInputSeq;
 
 	// The order in which players "ready up." The server process this as 
 	// first come, first server; so first to ready up will play first. After

@@ -34,6 +34,8 @@ m_buffer(),
 m_clients(),
 m_redAddr(),
 m_blueAddr(),
+m_redInputSeq(0),
+m_blueInputSeq(0),
 m_readyQueue(),
 m_pUpdateTimer(new Timer())
 {
@@ -43,7 +45,7 @@ m_pUpdateTimer(new Timer())
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
-	m_peer->ApplyNetworkSimulator(0.03f, 50, 0);
+	m_peer->ApplyNetworkSimulator(0.05f, 100, 0);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
@@ -181,16 +183,24 @@ Uint32 Server::updatePlayers(void)
 	bit.Write(RakNet::GetTime());
 
 	// Write red player data.
+	PlayerUpdate redPlayer;
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
-	bit.Write(red->getPosition());
-	bit.Write(red->m_xVel);
-	bit.Write(red->m_xAccel);
+	redPlayer.inputSeq = m_redInputSeq;
+	redPlayer.x = red->getPosition().x;
+	redPlayer.y = red->getPosition().y;
+	redPlayer.xVel = red->m_xVel;
+	redPlayer.xAccel = red->m_xAccel;
+	bit.Write(redPlayer);
 
 	// Write blue player data.
+	PlayerUpdate bluePlayer;
 	Player* blue = PlayerManager::getSingletonPtr()->getBluePlayer();
-	bit.Write(blue->getPosition());
-	bit.Write(blue->m_xVel);
-	bit.Write(blue->m_xAccel);
+	bluePlayer.inputSeq = m_blueInputSeq;
+	bluePlayer.x = blue->getPosition().x;
+	bluePlayer.y = blue->getPosition().y;
+	bluePlayer.xVel = blue->m_xVel;
+	bluePlayer.xAccel = blue->m_xAccel;
+	bit.Write(bluePlayer);
 
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
 }
@@ -200,11 +210,12 @@ Uint32 Server::updatePlayers(void)
 int Server::update(double dt)
 {
 	// Update players.
-	if (m_pUpdateTimer->getTicks() > 100){
+	this->updatePlayers();
+	/*if (m_pUpdateTimer->getTicks() > 100){
 		this->updatePlayers();
 
 		m_pUpdateTimer->restart();
-	}
+	}*/
 
 	// Process any incoming packets.
 	for (m_packet = m_peer->Receive(); 
@@ -324,15 +335,19 @@ int Server::update(double dt)
 			if (m_packet->systemAddress == m_redAddr || m_packet->systemAddress == m_blueAddr){
 				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
 				bit.IgnoreBytes(sizeof(RakNet::MessageID));
-				Uint32 button = 0;
+				Uint32 button = 0, seq = 0;
 				bool value = false;
+				bit.Read(seq);
 				bit.Read(button);
 				bit.Read(value);
 				if (m_packet->systemAddress == m_redAddr){
 					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
+					m_redInputSeq = seq;
+					printf("RedSeq: %d\n", seq);
 				}
 				else{
 					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);
+					m_blueInputSeq = seq;
 				}
 			}
 			break;

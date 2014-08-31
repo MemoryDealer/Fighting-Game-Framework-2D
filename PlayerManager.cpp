@@ -259,7 +259,7 @@ void PlayerManager::update(double dt)
 	m_pRedPlayer->update(dt);
 	m_pBluePlayer->update(dt);
 
-	printf("RED: %d\nBlue: %d\n", m_pRedPlayer->getPosition().x, m_pBluePlayer->getPosition().x);
+	//printf("RED: %d\nBlue: %d\n", m_pRedPlayer->getPosition().x, m_pBluePlayer->getPosition().x);
 
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();

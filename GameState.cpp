@@ -375,8 +375,6 @@ void GameState::update(double dt)
 	m_pObjectManager->update(dt);
 	PlayerManager::getSingletonPtr()->update(dt);
 
-	printf("State: %d\n", GameManager::getSingletonPtr()->getState());
-
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		switch (Server::getSingletonPtr()->update(dt)){
 		default:
@@ -399,19 +397,18 @@ void GameState::update(double dt)
 				//printf("UPDATE (%d)\n", time);
 
 				// Update positions.
-				SDL_Rect redPos, bluePos;
-				bit.Read(redPos);
-				bit.Read(PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xVel);
-				bit.Read(PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xAccel);
+				Server::PlayerUpdate red;
+				bit.Read(red);
+				printf("RedSeq: %d\n", red.inputSeq);
+				PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xVel = red.xVel;
+				PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xAccel = red.xAccel;
+				PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(red.x, red.y);
 
-				bit.Read(bluePos);
-				bit.Read(PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xVel);
-				bit.Read(PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xAccel);
-
-				PlayerManager::getSingletonPtr()->getRedPlayer()->applyPositionUpdate(redPos.x, redPos.y);
-
-				//PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(redPos);
-				//PlayerManager::getSingletonPtr()->getBluePlayer()->setPosition(bluePos);
+				Server::PlayerUpdate blue;
+				bit.Read(blue);
+				PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xVel = blue.xVel;
+				PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xAccel = blue.xAccel;
+				PlayerManager::getSingletonPtr()->getBluePlayer()->setPosition(blue.x, blue.y);
 			}
 			break;
 		}

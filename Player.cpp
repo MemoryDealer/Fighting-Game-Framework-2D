@@ -63,11 +63,12 @@ void Player::applyPositionUpdate(const int x, const int y)
 		m_dst.x = x;
 	}
 	else if((m_dst.x - x) != 0){
+		const int32_t dist = 1;
 		if (x - m_dst.x > 0){
-			m_dst.x++;
+			m_dst.x += dist;
 		}
 		else{
-			m_dst.x--;
+			m_dst.x -= dist;
 		}
 	}
 }
@@ -117,13 +118,14 @@ void Player::processInput(void)
 
 void Player::update(double dt)
 {
-	if (m_mode == Player::Mode::LOCAL){
+	this->processInput();
+	/*if (m_mode == Player::Mode::LOCAL){
 		this->processInput();
 	}
 	else if (m_mode == Player::Mode::NET &&
 		GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		this->processInput();
-	}
+	}*/
 
 	m_dst.x += static_cast<int>(m_xVel * dt);
 }

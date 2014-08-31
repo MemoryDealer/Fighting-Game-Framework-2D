@@ -72,6 +72,8 @@ public:
 	// and game states.
 	std::string getBuffer(void) const;
 
+	Uint32 m_inputSequence;
+
 	// Setters
 
 private:
@@ -82,6 +84,7 @@ private:
 	unsigned short m_port;
 	std::string m_buffer;
 	bool m_connected;
+	
 	int m_timeout;
 };
 
