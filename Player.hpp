@@ -127,6 +127,7 @@ public: // Currently public for debugging purposes.
 	Uint32 m_mode;
 
 	std::shared_ptr<Input> m_pInput;
+	std::queue<Server::PlayerUpdate> m_playerUpdates;
 };
 
 // ================================================ //

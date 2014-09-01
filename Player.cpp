@@ -36,7 +36,8 @@ m_xMax(0),
 m_yMax(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
-m_pInput(new Input(buttonMapFile))
+m_pInput(new Input(buttonMapFile)),
+m_playerUpdates()
 {
 	m_dst.w = m_dst.h = 100;
 
@@ -58,24 +59,7 @@ Player::~Player(void)
 
 void Player::updateFromServer(const Server::PlayerUpdate& update)
 {
-	const Uint32 snapDistance = 15;
-	const int32_t x = update.x;
-	const int32_t y = update.y;
-
-	m_dst.x = x;
-	m_xVel = update.xVel;
-	m_xAccel = update.xAccel;
-
-	for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
-		itr != Client::getSingletonPtr()->m_pendingInputs.end();){
-		if (itr->seq <= update.lastProcessedInput){
-			itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
-		}
-		else{
-			this->applyInput(itr->dt);
-			++itr;
-		}
-	}
+	m_playerUpdates.push(update);
 }
 
 // ================================================ //
@@ -130,6 +114,26 @@ void Player::applyInput(double dt)
 
 void Player::update(double dt)
 {
+	while (!m_playerUpdates.empty()){
+		Server::PlayerUpdate update = m_playerUpdates.front();
+		m_dst.x = update.x;
+		m_xVel = update.xVel;
+		m_xAccel = update.xAccel;
+
+		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
+			itr != Client::getSingletonPtr()->m_pendingInputs.end();){
+			if (itr->seq <= update.lastProcessedInput){
+				itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
+			}
+			else{
+				this->applyInput(itr->dt);
+				++itr;
+			}
+		}
+
+		m_playerUpdates.pop();
+	}
+
 	this->processInput();
 	/*if (m_mode == Player::Mode::LOCAL){
 		this->processInput();

@@ -393,6 +393,7 @@ void GameState::update(double dt)
 					if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr){
 						PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
 						Server::getSingletonPtr()->m_redLastProcessedInput = seq;
+						printf("Received %d\n", seq);
 						//this->updateRedPlayer(m_redLastProcessedInput);
 					}
 					else{
@@ -402,6 +403,8 @@ void GameState::update(double dt)
 				}
 				break;
 			}
+
+			Server::getSingletonPtr()->updatePlayers();
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
