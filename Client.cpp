@@ -30,7 +30,6 @@ m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
 m_server(server),
 m_port(port),
-m_buffer(),
 m_connected(false),
 m_inputSeq(0),
 m_pendingInputs(),
@@ -139,50 +138,6 @@ int Client::update(double dt)
 		default:
 			break;
 
-		case ID_CONNECTION_REQUEST_ACCEPTED:
-			{
-				// Store the server system address for future use.
-				m_serverAddr = m_packet->systemAddress;
-
-				// Send the server the username.
-				RakNet::BitStream bit;
-				bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
-				Log::getSingletonPtr()->logMessage("Sending username \"" + 
-					GameManager::getSingletonPtr()->getUsername() + "\" to server.");
-				bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
-				this->send(bit, HIGH_PRIORITY, RELIABLE);
-			}
-			break;
-
-		case NetMessage::CLIENT_DISCONNECTED:
-		case NetMessage::CLIENT_LOST_CONNECTION:
-			m_buffer = this->getLastPacketStrData();
-			break;
-
-		case NetMessage::USERNAME_IN_USE:
-			this->disconnect();
-			break;
-
-		case NetMessage::SERVER_STARTING_GAME:
-			GameManager::getSingletonPtr()->setState(GameManager::SPECTATING);
-			// Load the fighters being used this match.
-			{
-				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
-				Uint32 red = 0, blue = 0;
-				bit.Read(red);
-				bit.Read(blue);
-				PlayerManager::getSingletonPtr()->load(red, blue);
-			}
-			break;
-
-		case NetMessage::PLAYING_RED:
-			GameManager::getSingletonPtr()->setState(GameManager::PLAYING_RED);
-			break;
-
-		case NetMessage::PLAYING_BLUE:
-			GameManager::getSingletonPtr()->setState(GameManager::PLAYING_BLUE);
-			break;
 		}
 
 		//return m_packet->data[0];

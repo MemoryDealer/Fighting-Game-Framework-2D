@@ -371,36 +371,66 @@ void GameState::update(double dt)
 	Engine::getSingletonPtr()->clearRenderer();
 
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-		switch (Server::getSingletonPtr()->update(dt)){
-		default:
-			break;
+		for (Server::getSingletonPtr()->m_packet = Server::getSingletonPtr()->m_peer->Receive();
+			Server::getSingletonPtr()->m_packet;
+			Server::getSingletonPtr()->m_peer->DeallocatePacket(Server::getSingletonPtr()->m_packet),
+			Server::getSingletonPtr()->m_packet = Server::getSingletonPtr()->m_peer->Receive()){
+			switch (Server::getSingletonPtr()->m_packet->data[0]){
+			default:
+				break;
+
+			case NetMessage::CLIENT_INPUT:
+				if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr || 
+					Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_blueAddr){
+					RakNet::BitStream bit(Server::getSingletonPtr()->m_packet->data, 
+						Server::getSingletonPtr()->m_packet->length, false);
+					bit.IgnoreBytes(sizeof(RakNet::MessageID));
+					Uint32 button = 0, seq = 0;
+					bool value = false;
+					bit.Read(seq);
+					bit.Read(button);
+					bit.Read(value);
+					if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr){
+						PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
+						Server::getSingletonPtr()->m_redLastProcessedInput = seq;
+						//this->updateRedPlayer(m_redLastProcessedInput);
+					}
+					else{
+						PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);
+						Server::getSingletonPtr()->m_blueLastProcessedInput = seq;
+					}
+				}
+				break;
+			}
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		printf("%d unprocessed inputs.\n", Client::getSingletonPtr()->m_pendingInputs.size());
-		switch (Client::getSingletonPtr()->update(dt)){
-		default:
-			break;
+		for (Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive();
+			Client::getSingletonPtr()->m_packet;
+			Client::getSingletonPtr()->m_peer->DeallocatePacket(Client::getSingletonPtr()->m_packet),
+			Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive()){
+			switch (Client::getSingletonPtr()->m_packet->data[0]){
+			default:
+				break;
 
-		case NetMessage::UPDATE_RED_PLAYER:
-			if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
-				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
-					Client::getSingletonPtr()->getLastPacket()->length, false);
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+			case NetMessage::UPDATE_RED_PLAYER:
+				if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+					RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
+						Client::getSingletonPtr()->getLastPacket()->length, false);
+					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-				Server::PlayerUpdate update;
-				bit.Read(update);
-				//if (update.inputSeq == Client::getSingletonPtr()->m_inputSequence){
+					Server::PlayerUpdate update;
+					bit.Read(update);
 					PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(update);
-				//}
-			}
-			break;
+				}
+				break;
 
-		case NetMessage::UPDATE_BLUE_PLAYER:
+			case NetMessage::UPDATE_BLUE_PLAYER:
 
-			break;
+				break;
 
-		case NetMessage::UPDATE_PLAYERS:
+			case NetMessage::UPDATE_PLAYERS:
 			{
 				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
 					Client::getSingletonPtr()->getLastPacket()->length, false);
@@ -419,7 +449,8 @@ void GameState::update(double dt)
 				bit.Read(blue);
 				PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
 			}
-			break;
+				break;
+			}
 		}
 	}
 

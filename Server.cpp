@@ -30,7 +30,6 @@ template<> Server* Singleton<Server>::msSingleton = nullptr;
 Server::Server(const int port) :
 m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
-m_buffer(),
 m_clients(),
 m_redAddr(),
 m_blueAddr(),
@@ -236,14 +235,6 @@ Uint32 Server::updateBluePlayer(const Uint32 inputSeq)
 
 int Server::update(double dt)
 {
-	// Update players.
-	//this->updatePlayers();
-	if (m_pUpdateTimer->getTicks() > 100){
-		this->updatePlayers();
-
-		m_pUpdateTimer->restart();
-	}
-
 	// Process any incoming packets.
 	for (m_packet = m_peer->Receive(); 
 		m_packet; 
@@ -253,134 +244,8 @@ int Server::update(double dt)
 
 			break;
 
-		case ID_NEW_INCOMING_CONNECTION:
-			// Wait for SET_USERNAME message.
-			break;
-
-		case ID_DISCONNECTION_NOTIFICATION:
-			if (this->isClientConnected(m_packet->systemAddress)){
-				m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
-				Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
-					std::string(m_packet->systemAddress.ToString()) + "]");
-				this->removeFromReadyQueue(m_buffer);
-				this->removeClient(m_packet->systemAddress);
-
-				// Tell all other clients.
-				{
-					RakNet::BitStream bit;
-					bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
-					bit.Write(m_buffer.c_str());
-					this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
-				}
-			}
-			else{
-				return 0;
-			}
-			break;
-
-		case ID_CONNECTION_LOST:
-			m_buffer = m_clients[this->getClient(m_packet->systemAddress)].username;
-			Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
-				std::string(m_packet->systemAddress.ToString()) + "]");
-			this->removeFromReadyQueue(m_buffer);
-			this->removeClient(m_packet->systemAddress);
-
-			{
-				RakNet::BitStream bit;
-				bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_LOST_CONNECTION));
-				bit.Write(m_buffer.c_str());
-				this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
-			}
-			break;
-
-		case NetMessage::SYSTEM_MESSAGE:
-			{
-				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
-				RakNet::RakString rs;
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
-				bit.Read(rs);
-				printf("Client says: %s\n", rs.C_String());
-			}
-			break;
-
-		case NetMessage::SET_USERNAME:
-			{
-				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
-				RakNet::RakString rs;
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
-				bit.Read(rs);
-
-				if (this->isUsernameInUse(rs.C_String())){
-					RakNet::BitStream reject;
-					reject.Write(static_cast<RakNet::MessageID>(NetMessage::USERNAME_IN_USE));
-
-					this->send(reject, m_packet->systemAddress, HIGH_PRIORITY, RELIABLE);
-					return 0;
-				}
-				else{
-					Log::getSingletonPtr()->logMessage("SERVER: Client [" + std::string(m_packet->systemAddress.ToString()) +
-						"] connected with username \"" + rs.C_String() + "\"");
-
-					// Send a list of players to newly connected client.
-					this->sendPlayerList(m_packet->systemAddress);
-
-					// Add them to the client list.
-					this->registerClient(rs.C_String(), m_packet->systemAddress);
-
-					this->broadcast(m_packet, HIGH_PRIORITY, RELIABLE, m_packet->systemAddress);
-				}
-			}
-			break;
-
-		case NetMessage::CHAT:
-			this->broadcast(m_packet, HIGH_PRIORITY, RELIABLE_ORDERED, m_packet->systemAddress);
-			break;
-
-		case NetMessage::READY:
-			// Add username to ready queue and broadcast.
-			if (this->isClientConnected(m_packet->systemAddress)){
-				int client = this->getClient(m_packet->systemAddress);
-				RakNet::BitStream data(m_packet->data, m_packet->length, false);
-				data.IgnoreBytes(sizeof(RakNet::MessageID));
-				Uint32 fighter;
-				data.Read(fighter);
-				if (this->addToReadyQueue(m_clients[client].username, fighter)){
-					m_buffer = m_clients[client].username;
-
-					RakNet::BitStream bit;
-					bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
-					bit.Write(m_buffer.c_str());
-					bit.Write(fighter);
-
-					this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED, m_packet->systemAddress);
-					return m_packet->data[0];
-				}
-			}
-			return 0;
-
-		case NetMessage::CLIENT_INPUT:
-			if (m_packet->systemAddress == m_redAddr || m_packet->systemAddress == m_blueAddr){
-				RakNet::BitStream bit(m_packet->data, m_packet->length, false);
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
-				Uint32 button = 0, seq = 0;
-				bool value = false;
-				bit.Read(seq);
-				bit.Read(button);
-				bit.Read(value);
-				if (m_packet->systemAddress == m_redAddr){
-					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
-					m_redLastProcessedInput = seq;
-					//this->updateRedPlayer(m_redLastProcessedInput);
-				}
-				else{
-					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);
-					m_blueLastProcessedInput = seq;
-				}
-			}
-			break;
+		
 		}
-
-		return m_packet->data[0];
 	}
 
 	return 0;

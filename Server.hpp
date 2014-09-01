@@ -143,10 +143,6 @@ public:
 	// the first byte).
 	const char* getLastPacketStrData(void) const;
 
-	// Returns the internal std::string buffer for passing data between Server 
-	// and game states.
-	std::string getBuffer(void) const;
-
 	// Setters
 
 	// --- //
@@ -166,7 +162,6 @@ public:
 public:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
-	std::string m_buffer;
 	ClientList m_clients;
 
 	RakNet::SystemAddress m_redAddr, m_blueAddr;
@@ -287,10 +282,6 @@ inline ReadyClient Server::getNextBluePlayer(void){
 
 inline RakNet::Packet* Server::getLastPacket(void) const{
 	return m_packet;
-}
-
-inline std::string Server::getBuffer(void) const{
-	return m_buffer;
 }
 
 // Setters
