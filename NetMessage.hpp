@@ -30,6 +30,8 @@ namespace NetMessage{
 		PLAYING_RED, // Let's a client know they are playing next match.
 		PLAYING_BLUE,
 		SERVER_STARTING_GAME,
+		UPDATE_RED_PLAYER,
+		UPDATE_BLUE_PLAYER,
 		UPDATE_PLAYERS,
 		CLIENT_INPUT,
 

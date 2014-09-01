@@ -45,7 +45,7 @@ m_pUpdateTimer(new Timer())
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
-	m_peer->ApplyNetworkSimulator(0.05f, 100, 0);
+	//m_peer->ApplyNetworkSimulator(0.05f, 50, 0);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
@@ -207,6 +207,33 @@ Uint32 Server::updatePlayers(void)
 
 // ================================================ //
 
+Uint32 Server::updateRedPlayer(const Uint32 inputSeq)
+{
+	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
+	PlayerUpdate update;
+	update.inputSeq = inputSeq;
+	update.x = red->getPosition().x;
+	update.y = red->getPosition().y;
+	update.xVel = red->m_xVel;
+	update.xAccel = red->m_xAccel;
+
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_RED_PLAYER));
+	bit.Write(update);
+
+	return this->send(bit, m_redAddr, IMMEDIATE_PRIORITY);
+}
+
+// ================================================ //
+
+Uint32 Server::updateBluePlayer(const Uint32 inputSeq)
+{
+
+	return 0;
+}
+
+// ================================================ //
+
 int Server::update(double dt)
 {
 	// Update players.
@@ -343,7 +370,7 @@ int Server::update(double dt)
 				if (m_packet->systemAddress == m_redAddr){
 					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
 					m_redInputSeq = seq;
-					printf("RedSeq: %d\n", seq);
+					//this->updateRedPlayer(m_redInputSeq);
 				}
 				else{
 					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);

@@ -40,7 +40,7 @@ m_timeout(10000)
 	RakNet::SocketDescriptor sd;
 	m_peer->Startup(1, &sd, 1);
 
-	m_peer->ApplyNetworkSimulator(0.05f, 100, 0);
+	//m_peer->ApplyNetworkSimulator(0.05f, 50, 0);
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");
 }
@@ -106,9 +106,12 @@ Uint32 Client::ready(const Uint32 fighter)
 
 Uint32 Client::sendInput(const Uint32 input, const bool value)
 {
+	m_inputSequence++;
+	printf("ClientSeq: %d\n", m_inputSequence);
+
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_INPUT));
-	bit.Write(static_cast<Uint32>(m_inputSequence++));
+	bit.Write(static_cast<Uint32>(m_inputSequence));
 	bit.Write(static_cast<Uint32>(input));
 	bit.Write(static_cast<bool>(value));
 

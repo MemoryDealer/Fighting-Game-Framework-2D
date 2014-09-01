@@ -75,6 +75,12 @@ public:
 	// Broadcasts all relevant player information to clients.
 	Uint32 updatePlayers(void);
 
+	// Sends a PlayerUpdate only to the client playing the red player.
+	Uint32 updateRedPlayer(const Uint32 inputSeq);
+
+	// Sends a PlayerUpdate only to the client playing the blue player.
+	Uint32 updateBluePlayer(const Uint32 inputSeq);
+
 	// Receives packets and process them.
 	int update(double dt);
 

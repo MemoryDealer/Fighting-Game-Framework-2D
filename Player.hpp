@@ -17,6 +17,7 @@
 // ================================================ //
 
 #include "Object.hpp"
+#include "Server.hpp"
 
 // ================================================ //
 
@@ -86,7 +87,7 @@ public:
 	// Determines whether or not to snap player to the new position, depending
 	// on the distance, otherwise it graudally slides the player. Used when
 	// receiving a network update on the client.
-	void applyPositionUpdate(const int x, const int y);
+	void updateFromServer(const Server::PlayerUpdate& update);
 
 	// Processes local input for player, adjusting its state.
 	void processInput(void);

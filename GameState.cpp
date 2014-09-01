@@ -386,6 +386,24 @@ void GameState::update(double dt)
 		default:
 			break;
 
+		case NetMessage::UPDATE_RED_PLAYER:
+			if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
+					Client::getSingletonPtr()->getLastPacket()->length, false);
+				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+				Server::PlayerUpdate update;
+				bit.Read(update);
+				//if (update.inputSeq == Client::getSingletonPtr()->m_inputSequence){
+					PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(update);
+				//}
+			}
+			break;
+
+		case NetMessage::UPDATE_BLUE_PLAYER:
+
+			break;
+
 		case NetMessage::UPDATE_PLAYERS:
 			{
 				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
@@ -399,16 +417,11 @@ void GameState::update(double dt)
 				// Update positions.
 				Server::PlayerUpdate red;
 				bit.Read(red);
-				printf("RedSeq: %d\n", red.inputSeq);
-				PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xVel = red.xVel;
-				PlayerManager::getSingletonPtr()->m_pRedPlayer->m_xAccel = red.xAccel;
-				PlayerManager::getSingletonPtr()->getRedPlayer()->setPosition(red.x, red.y);
+				PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
 
 				Server::PlayerUpdate blue;
 				bit.Read(blue);
-				PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xVel = blue.xVel;
-				PlayerManager::getSingletonPtr()->m_pBluePlayer->m_xAccel = blue.xAccel;
-				PlayerManager::getSingletonPtr()->getBluePlayer()->setPosition(blue.x, blue.y);
+				PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
 			}
 			break;
 		}

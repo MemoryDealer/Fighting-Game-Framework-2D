@@ -55,9 +55,11 @@ Player::~Player(void)
 
 // ================================================ //
 
-void Player::applyPositionUpdate(const int x, const int y)
+void Player::updateFromServer(const Server::PlayerUpdate& update)
 {
 	const Uint32 snapDistance = 15;
+	const int32_t x = update.x;
+	const int32_t y = update.y;
 
 	if (std::abs(m_dst.x - x) > snapDistance){
 		m_dst.x = x;
@@ -71,6 +73,9 @@ void Player::applyPositionUpdate(const int x, const int y)
 			m_dst.x -= dist;
 		}
 	}
+
+	m_xVel = update.xVel;
+	m_xAccel = update.xAccel;
 }
 
 // ================================================ //
