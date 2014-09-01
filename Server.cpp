@@ -34,8 +34,8 @@ m_buffer(),
 m_clients(),
 m_redAddr(),
 m_blueAddr(),
-m_redInputSeq(0),
-m_blueInputSeq(0),
+m_redLastProcessedInput(0),
+m_blueLastProcessedInput(0),
 m_readyQueue(),
 m_pUpdateTimer(new Timer())
 {
@@ -45,7 +45,7 @@ m_pUpdateTimer(new Timer())
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
-	//m_peer->ApplyNetworkSimulator(0.05f, 50, 0);
+	m_peer->ApplyNetworkSimulator(0.03f, 100, 0);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
@@ -185,7 +185,7 @@ Uint32 Server::updatePlayers(void)
 	// Write red player data.
 	PlayerUpdate redPlayer;
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
-	redPlayer.inputSeq = m_redInputSeq;
+	redPlayer.lastProcessedInput = m_redLastProcessedInput;
 	redPlayer.x = red->getPosition().x;
 	redPlayer.y = red->getPosition().y;
 	redPlayer.xVel = red->m_xVel;
@@ -195,7 +195,7 @@ Uint32 Server::updatePlayers(void)
 	// Write blue player data.
 	PlayerUpdate bluePlayer;
 	Player* blue = PlayerManager::getSingletonPtr()->getBluePlayer();
-	bluePlayer.inputSeq = m_blueInputSeq;
+	bluePlayer.lastProcessedInput = m_blueLastProcessedInput;
 	bluePlayer.x = blue->getPosition().x;
 	bluePlayer.y = blue->getPosition().y;
 	bluePlayer.xVel = blue->m_xVel;
@@ -211,7 +211,7 @@ Uint32 Server::updateRedPlayer(const Uint32 inputSeq)
 {
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
 	PlayerUpdate update;
-	update.inputSeq = inputSeq;
+	update.lastProcessedInput = inputSeq;
 	update.x = red->getPosition().x;
 	update.y = red->getPosition().y;
 	update.xVel = red->m_xVel;
@@ -237,12 +237,12 @@ Uint32 Server::updateBluePlayer(const Uint32 inputSeq)
 int Server::update(double dt)
 {
 	// Update players.
-	this->updatePlayers();
-	/*if (m_pUpdateTimer->getTicks() > 100){
+	//this->updatePlayers();
+	if (m_pUpdateTimer->getTicks() > 100){
 		this->updatePlayers();
 
 		m_pUpdateTimer->restart();
-	}*/
+	}
 
 	// Process any incoming packets.
 	for (m_packet = m_peer->Receive(); 
@@ -369,12 +369,12 @@ int Server::update(double dt)
 				bit.Read(value);
 				if (m_packet->systemAddress == m_redAddr){
 					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
-					m_redInputSeq = seq;
-					//this->updateRedPlayer(m_redInputSeq);
+					m_redLastProcessedInput = seq;
+					//this->updateRedPlayer(m_redLastProcessedInput);
 				}
 				else{
 					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);
-					m_blueInputSeq = seq;
+					m_blueLastProcessedInput = seq;
 				}
 			}
 			break;

@@ -32,7 +32,8 @@ m_server(server),
 m_port(port),
 m_buffer(),
 m_connected(false),
-m_inputSequence(0),
+m_inputSeq(0),
+m_pendingInputs(),
 m_timeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Client...");
@@ -40,7 +41,7 @@ m_timeout(10000)
 	RakNet::SocketDescriptor sd;
 	m_peer->Startup(1, &sd, 1);
 
-	//m_peer->ApplyNetworkSimulator(0.05f, 50, 0);
+	m_peer->ApplyNetworkSimulator(0.03f, 100, 0);
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");
 }
@@ -104,16 +105,24 @@ Uint32 Client::ready(const Uint32 fighter)
 
 // ================================================ //
 
-Uint32 Client::sendInput(const Uint32 input, const bool value)
+Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 {
-	m_inputSequence++;
-	printf("ClientSeq: %d\n", m_inputSequence);
+	const Uint32 seq = m_inputSeq++;
+	printf("ClientSeq: %d\n", seq);
 
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_INPUT));
-	bit.Write(static_cast<Uint32>(m_inputSequence));
+	bit.Write(static_cast<Uint32>(seq));
 	bit.Write(static_cast<Uint32>(input));
 	bit.Write(static_cast<bool>(value));
+
+	// Save input for later reconciliation.
+	ClientInput clientInput;
+	clientInput.input = input;
+	clientInput.value = value;
+	clientInput.seq = seq;
+	clientInput.dt = dt;
+	m_pendingInputs.push_back(clientInput);
 
 	return this->send(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 }
@@ -176,7 +185,7 @@ int Client::update(double dt)
 			break;
 		}
 
-		return m_packet->data[0];
+		//return m_packet->data[0];
 	}
 
 	return 0;

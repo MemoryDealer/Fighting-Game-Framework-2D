@@ -51,7 +51,8 @@ public:
 	void resume(void);
 
 	// Process input for both Players.
-	void handleInput(SDL_Event& e);
+	void handleInput(SDL_Event& e){}
+	void handleInputDt(SDL_Event& e, double dt);
 
 	// Processes SDL_Event, updates the Stage, Player, and Object Managers.
 	void update(double dt);

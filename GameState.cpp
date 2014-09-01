@@ -73,7 +73,7 @@ void GameState::resume(void)
 
 // ================================================ //
 
-void GameState::handleInput(SDL_Event& e)
+void GameState::handleInputDt(SDL_Event& e, double dt)
 {
 	// Acquire a pointer to the player under the control of the current gamepad 
 	// here (avoids copied & pasted code below).
@@ -102,14 +102,14 @@ void GameState::handleInput(SDL_Event& e)
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, true);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, true);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
 				}
 				break;
 			}
@@ -124,14 +124,14 @@ void GameState::handleInput(SDL_Event& e)
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LEFT, true);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, true);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
 				}
 				break;
 			}
@@ -177,14 +177,14 @@ void GameState::handleInput(SDL_Event& e)
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, false);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, false);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, false, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, false);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false, dt);
 				}
 				break;
 			}
@@ -199,14 +199,14 @@ void GameState::handleInput(SDL_Event& e)
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LEFT, false);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, false);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, false, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, false);
 				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false);
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false, dt);
 				}
 				break;
 			}
@@ -326,7 +326,7 @@ void GameState::update(double dt)
 
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
-			this->handleInput(e);
+			this->handleInputDt(e, dt);
 			break;
 
 		case SDL_CONTROLLERDEVICEADDED:
@@ -359,21 +359,16 @@ void GameState::update(double dt)
 
 		case SDL_CONTROLLERBUTTONDOWN:
 		case SDL_CONTROLLERBUTTONUP:
-			this->handleInput(e);
+			this->handleInputDt(e, dt);
 			break;
 
 		case SDL_CONTROLLERAXISMOTION:
-			this->handleInput(e);
+			this->handleInputDt(e, dt);
 			break;
 		}
 	}
 
 	Engine::getSingletonPtr()->clearRenderer();
-
-	// Update and render all game objects and players.
-	StageManager::getSingletonPtr()->update(dt);
-	m_pObjectManager->update(dt);
-	PlayerManager::getSingletonPtr()->update(dt);
 
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		switch (Server::getSingletonPtr()->update(dt)){
@@ -382,6 +377,7 @@ void GameState::update(double dt)
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		printf("%d unprocessed inputs.\n", Client::getSingletonPtr()->m_pendingInputs.size());
 		switch (Client::getSingletonPtr()->update(dt)){
 		default:
 			break;
@@ -426,6 +422,11 @@ void GameState::update(double dt)
 			break;
 		}
 	}
+
+	// Update and render all game objects and players.
+	StageManager::getSingletonPtr()->update(dt);
+	m_pObjectManager->update(dt);
+	PlayerManager::getSingletonPtr()->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();
 }

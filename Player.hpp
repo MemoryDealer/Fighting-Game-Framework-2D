@@ -92,6 +92,9 @@ public:
 	// Processes local input for player, adjusting its state.
 	void processInput(void);
 
+	// Applies movement to the player based on key presses.
+	void applyInput(double dt);
+
 	// Updates the current Move, handles collision.
 	virtual void update(double dt);
 

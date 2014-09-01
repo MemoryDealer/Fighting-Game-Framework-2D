@@ -53,7 +53,7 @@ public:
 	Uint32 ready(const Uint32 fighter);
 
 	// Sends an input value to the server.
-	Uint32 sendInput(const Uint32 input, const bool value);
+	Uint32 sendInput(const Uint32 input, const bool value, const double dt);
 
 	// Sends needed data to server.
 	int update(double dt);
@@ -72,11 +72,24 @@ public:
 	// and game states.
 	std::string getBuffer(void) const;
 
-	Uint32 m_inputSequence;
+	Uint32 m_inputSeq;
+	
 
 	// Setters
 
-private:
+	// --- //
+
+	typedef struct{
+		Uint32 input;
+		bool value;
+		Uint32 seq;
+		double dt;
+	} ClientInput;
+
+	typedef std::list<ClientInput> ClientInputList;
+	ClientInputList m_pendingInputs;
+
+public:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
 	RakNet::SystemAddress m_serverAddr;

@@ -152,7 +152,8 @@ public:
 	// --- //
 
 	typedef struct{
-		Uint32 inputSeq;
+		Uint32 lastProcessedInput;
+		RakNet::Time timestamp;
 		int x, y;
 		int xVel, yVel;
 		int xAccel, yAccel;
@@ -162,14 +163,14 @@ public:
 
 	static const int MaxClients = 10;
 
-private:
+public:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
 	std::string m_buffer;
 	ClientList m_clients;
 
 	RakNet::SystemAddress m_redAddr, m_blueAddr;
-	Uint32 m_redInputSeq, m_blueInputSeq;
+	Uint32 m_redLastProcessedInput, m_blueLastProcessedInput;
 
 	// The order in which players "ready up." The server process this as 
 	// first come, first server; so first to ready up will play first. After

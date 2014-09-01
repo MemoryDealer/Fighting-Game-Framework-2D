@@ -21,6 +21,7 @@
 #include "Engine.hpp"
 #include "Move.hpp"
 #include "MessageRouter.hpp"
+#include "Client.hpp"
 #include "GameManager.hpp"
 
 // ================================================ //
@@ -61,21 +62,20 @@ void Player::updateFromServer(const Server::PlayerUpdate& update)
 	const int32_t x = update.x;
 	const int32_t y = update.y;
 
-	if (std::abs(m_dst.x - x) > snapDistance){
-		m_dst.x = x;
-	}
-	else if((m_dst.x - x) != 0){
-		const int32_t dist = 1;
-		if (x - m_dst.x > 0){
-			m_dst.x += dist;
-		}
-		else{
-			m_dst.x -= dist;
-		}
-	}
-
+	m_dst.x = x;
 	m_xVel = update.xVel;
 	m_xAccel = update.xAccel;
+
+	for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
+		itr != Client::getSingletonPtr()->m_pendingInputs.end();){
+		if (itr->seq <= update.lastProcessedInput){
+			itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
+		}
+		else{
+			this->applyInput(itr->dt);
+			++itr;
+		}
+	}
 }
 
 // ================================================ //
@@ -121,6 +121,13 @@ void Player::processInput(void)
 
 // ================================================ //
 
+void Player::applyInput(double dt)
+{
+	m_dst.x += static_cast<int>(m_xVel * dt);
+}
+
+// ================================================ //
+
 void Player::update(double dt)
 {
 	this->processInput();
@@ -132,7 +139,7 @@ void Player::update(double dt)
 		this->processInput();
 	}*/
 
-	m_dst.x += static_cast<int>(m_xVel * dt);
+	this->applyInput(dt);
 }
 
 // ================================================ //
