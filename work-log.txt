@@ -368,6 +368,13 @@
 #8/28/14
 -Tested a better network position update.
 
+#8/29-31/14
+-Messed with networking code for latency compensation, referencing http://www.gabrielgambetta.com/fpm2.html
+-Got something close to working, still laggy.
+
+#9/1/14
+-
+
 #TODO
 -Can't resume game state after exiting it.
 -Add ability to select an entry in listbox if enabled.

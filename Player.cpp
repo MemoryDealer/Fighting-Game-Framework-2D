@@ -59,7 +59,9 @@ Player::~Player(void)
 
 void Player::updateFromServer(const Server::PlayerUpdate& update)
 {
-	m_playerUpdates.push(update);
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		m_playerUpdates.push(update);
+	}
 }
 
 // ================================================ //
@@ -114,24 +116,29 @@ void Player::applyInput(double dt)
 
 void Player::update(double dt)
 {
-	while (!m_playerUpdates.empty()){
-		Server::PlayerUpdate update = m_playerUpdates.front();
-		m_dst.x = update.x;
-		m_xVel = update.xVel;
-		m_xAccel = update.xAccel;
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+		while (!m_playerUpdates.empty()){
+			Server::PlayerUpdate update = m_playerUpdates.front();
+			m_dst.x = update.x;
+			m_xVel = update.xVel;
+			m_xAccel = update.xAccel;
 
-		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
-			itr != Client::getSingletonPtr()->m_pendingInputs.end();){
-			if (itr->seq <= update.lastProcessedInput){
-				itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
+			for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
+				itr != Client::getSingletonPtr()->m_pendingInputs.end();){
+				if (itr->seq <= update.lastProcessedInput){
+					itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
+				}
+				else{
+					
+					//this->m_pInput->setButton(itr->input, itr->value);
+					//this->processInput();
+					this->applyInput(itr->dt);
+					++itr;
+				}
 			}
-			else{
-				this->applyInput(itr->dt);
-				++itr;
-			}
+
+			m_playerUpdates.pop();
 		}
-
-		m_playerUpdates.pop();
 	}
 
 	this->processInput();

@@ -40,7 +40,7 @@ m_timeout(10000)
 	RakNet::SocketDescriptor sd;
 	m_peer->Startup(1, &sd, 1);
 
-	m_peer->ApplyNetworkSimulator(0.03f, 100, 0);
+	m_peer->ApplyNetworkSimulator(0.03f, 150, 0);
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");
 }

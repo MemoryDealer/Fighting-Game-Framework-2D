@@ -44,7 +44,7 @@ m_pUpdateTimer(new Timer())
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
-	m_peer->ApplyNetworkSimulator(0.03f, 100, 0);
+	m_peer->ApplyNetworkSimulator(0.03f, 150, 0);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }

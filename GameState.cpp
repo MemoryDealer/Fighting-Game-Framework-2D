@@ -25,11 +25,13 @@
 #include "NetMessage.hpp"
 #include "GamepadManager.hpp"
 #include "GameManager.hpp"
+#include "Timer.hpp"
 
 // ================================================ //
 
 GameState::GameState(void) :
-m_pObjectManager(new ObjectManager())
+m_pObjectManager(new ObjectManager()),
+m_pServerUpdateTimer(new Timer())
 {
 
 }
@@ -46,6 +48,8 @@ GameState::~GameState(void)
 void GameState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering GameState...");
+
+	m_pServerUpdateTimer->restart();
 }
 
 // ================================================ //
@@ -100,16 +104,20 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 				break;
 
 			case Input::BUTTON_LEFT:
-				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, true);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
+				if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(Input::BUTTON_LEFT) == false){
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, true);
+					if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
+					}
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
-				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, true);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
+				if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(Input::BUTTON_RIGHT) == false){
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, true);
+					if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
+					}
 				}
 				break;
 			}
@@ -403,8 +411,12 @@ void GameState::update(double dt)
 				}
 				break;
 			}
+			
+			if (m_pServerUpdateTimer->getTicks() > 0){
+				Server::getSingletonPtr()->updatePlayers();
 
-			Server::getSingletonPtr()->updatePlayers();
+				m_pServerUpdateTimer->restart();
+			}
 		}
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){

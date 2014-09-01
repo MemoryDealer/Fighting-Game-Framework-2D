@@ -21,6 +21,7 @@
 // ================================================ //
 
 class ObjectManager;
+class Timer;
 
 // ================================================ //
 
@@ -59,6 +60,7 @@ public:
 
 private:
 	std::shared_ptr<ObjectManager> m_pObjectManager;
+	std::shared_ptr<Timer> m_pServerUpdateTimer;
 };
 
 // ================================================ //
