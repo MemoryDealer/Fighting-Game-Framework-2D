@@ -80,6 +80,7 @@ public:
 		bool value;
 		Uint32 seq;
 		double dt;
+		int vel;
 	} ClientInput;
 
 	typedef std::list<ClientInput> ClientInputList;

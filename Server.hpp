@@ -81,6 +81,9 @@ public:
 	// Sends a PlayerUpdate only to the client playing the blue player.
 	Uint32 updateBluePlayer(const Uint32 inputSeq);
 
+	// Sends the last processed input sequence number to playing clients.
+	Uint32 sendLastProcessedInput(void);
+
 	// Receives packets and process them.
 	int update(double dt);
 

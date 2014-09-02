@@ -59,15 +59,24 @@ Player::~Player(void)
 
 void Player::updateFromServer(const Server::PlayerUpdate& update)
 {
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		m_playerUpdates.push(update);
-	}
+	m_playerUpdates.push(update);
 }
 
 // ================================================ //
 
 void Player::processInput(void)
 {
+	/*if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+		m_xVel = -m_xMax;
+	}
+	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+		m_pInput->getButton(Input::BUTTON_LEFT) == false){
+		m_xVel = m_xMax;
+	}
+	else{
+		m_xVel = 0;
+	}*/
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
 	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
@@ -116,41 +125,39 @@ void Player::applyInput(double dt)
 
 void Player::update(double dt)
 {
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
-		while (!m_playerUpdates.empty()){
-			Server::PlayerUpdate update = m_playerUpdates.front();
-			m_dst.x = update.x;
-			m_xVel = update.xVel;
-			m_xAccel = update.xAccel;
-
-			for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
-				itr != Client::getSingletonPtr()->m_pendingInputs.end();){
-				if (itr->seq <= update.lastProcessedInput){
-					itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
-				}
-				else{
-					
-					//this->m_pInput->setButton(itr->input, itr->value);
-					//this->processInput();
-					this->applyInput(itr->dt);
-					++itr;
-				}
-			}
-
-			m_playerUpdates.pop();
-		}
-	}
-
 	this->processInput();
-	/*if (m_mode == Player::Mode::LOCAL){
-		this->processInput();
-	}
-	else if (m_mode == Player::Mode::NET &&
-		GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-		this->processInput();
-	}*/
+
 
 	this->applyInput(dt);
+}
+
+// ================================================ //
+
+void Player::serverReconciliation(void)
+{
+	while (!m_playerUpdates.empty()){
+		Server::PlayerUpdate update = m_playerUpdates.front();
+		m_dst.x = update.x;
+		m_xVel = update.xVel;
+		m_xAccel = update.xAccel;
+
+		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
+			itr != Client::getSingletonPtr()->m_pendingInputs.end();){
+			if (itr->seq <= update.lastProcessedInput){
+				itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
+			}
+			else{
+				
+				this->m_pInput->setButton(itr->input, itr->value);
+				this->processInput();
+				//m_xVel = itr->vel;
+				this->applyInput(itr->dt);
+				++itr;
+			}
+		}
+
+		m_playerUpdates.pop();
+	}
 }
 
 // ================================================ //

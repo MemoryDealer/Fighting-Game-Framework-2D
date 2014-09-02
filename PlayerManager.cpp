@@ -256,8 +256,20 @@ void PlayerManager::updateCamera(double dt)
 
 void PlayerManager::update(double dt)
 {
-	m_pRedPlayer->update(dt);
-	m_pBluePlayer->update(dt);
+	m_pRedPlayer->serverReconciliation();
+
+	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+		if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+			m_pRedPlayer->update(dt);
+		}
+		else if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_BLUE){
+			m_pBluePlayer->update(dt);
+		}
+	}
+	else{
+		m_pRedPlayer->update(dt);
+		m_pBluePlayer->update(dt);
+	}
 
 	//printf("RED: %d\nBlue: %d\n", m_pRedPlayer->getPosition().x, m_pBluePlayer->getPosition().x);
 

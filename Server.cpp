@@ -44,7 +44,7 @@ m_pUpdateTimer(new Timer())
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
-	m_peer->ApplyNetworkSimulator(0.03f, 150, 0);
+	m_peer->ApplyNetworkSimulator(0.02f, 100, 0);
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }
@@ -229,6 +229,17 @@ Uint32 Server::updateBluePlayer(const Uint32 inputSeq)
 {
 
 	return 0;
+}
+
+// ================================================ //
+
+Uint32 Server::sendLastProcessedInput(void)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::LAST_PROCESSED_INPUT_SEQUENCE));
+	bit.Write(m_redLastProcessedInput);
+
+	return this->send(bit, m_redAddr);
 }
 
 // ================================================ //

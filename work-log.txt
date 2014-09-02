@@ -373,7 +373,8 @@
 -Got something close to working, still laggy.
 
 #9/1/14
--
+-I have working server reconciliation (e.g., the client input is immediately responsive and is corrected by the server as needed), however it jumps randomly sometimes,
+	and I think it has to do with unprocessed inputs for some reason still being in the queue even though the server has processed them.
 
 #TODO
 -Can't resume game state after exiting it.

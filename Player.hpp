@@ -98,6 +98,8 @@ public:
 	// Updates the current Move, handles collision.
 	virtual void update(double dt);
 
+	void serverReconciliation(void);
+
 	// Renders the Player sprite.
 	virtual void render(void);
 
