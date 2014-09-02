@@ -514,6 +514,13 @@ void GameState::update(double dt)
 		}
 	}
 
+TODO:$
+	/*
+	The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
+	physics code or do away with it for now.
+	Fix how the client teleports back and forth when switch between left and right key.
+	*/
+
 	// Update and render all game objects and players.
 	StageManager::getSingletonPtr()->update(dt);
 	m_pObjectManager->update(dt);

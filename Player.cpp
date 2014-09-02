@@ -66,7 +66,7 @@ void Player::updateFromServer(const Server::PlayerUpdate& update)
 
 void Player::processInput(void)
 {
-	/*if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
 		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
 		m_xVel = -m_xMax;
 	}
@@ -76,42 +76,42 @@ void Player::processInput(void)
 	}
 	else{
 		m_xVel = 0;
-	}*/
+	}
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
-	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
-		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
-		m_xVel -= m_xAccel;
-		if (m_xVel < -m_xMax){
-			m_xVel = -m_xMax;
-		}
+	//if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+	//	m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+	//	m_xVel -= m_xAccel;
+	//	if (m_xVel < -m_xMax){
+	//		m_xVel = -m_xMax;
+	//	}
 
-		// change action...
-	}
-	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
-		m_pInput->getButton(Input::BUTTON_LEFT) == false){
-		m_xVel += m_xAccel;
-		if (m_xVel > m_xMax){
-			m_xVel = m_xMax;
-		}
+	//	// change action...
+	//}
+	//else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+	//	m_pInput->getButton(Input::BUTTON_LEFT) == false){
+	//	m_xVel += m_xAccel;
+	//	if (m_xVel > m_xMax){
+	//		m_xVel = m_xMax;
+	//	}
 
-		// change action...
-	}
-	else{
-		// Declerate when nothing is pressed.
-		if (m_xVel < 0){
-			m_xVel += m_xAccel;
-			if (m_xVel > 0){
-				m_xVel = 0;
-			}
-		}
-		else if (m_xVel > 0){
-			m_xVel -= m_xAccel;
-			if (m_xVel < 0){
-				m_xVel = 0;
-			}
-		}
-	}
+	//	// change action...
+	//}
+	//else{
+	//	// Declerate when nothing is pressed.
+	//	if (m_xVel < 0){
+	//		m_xVel += m_xAccel;
+	//		if (m_xVel > 0){
+	//			m_xVel = 0;
+	//		}
+	//	}
+	//	else if (m_xVel > 0){
+	//		m_xVel -= m_xAccel;
+	//		if (m_xVel < 0){
+	//			m_xVel = 0;
+	//		}
+	//	}
+	//}
 }
 
 // ================================================ //
