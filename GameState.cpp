@@ -435,7 +435,7 @@ void GameState::update(double dt)
 			m_pResetServerInputTimer->restart();
 		}
 
-		//Server::getSingletonPtr()->sendLastProcessedInput();
+		Server::getSingletonPtr()->sendLastProcessedInput();
 	}
 	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
 		if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(Input::BUTTON_LEFT) == true){
