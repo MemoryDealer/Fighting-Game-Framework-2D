@@ -40,7 +40,10 @@ m_timeout(10000)
 	RakNet::SocketDescriptor sd;
 	m_peer->Startup(1, &sd, 1);
 
-	m_peer->ApplyNetworkSimulator(0.02f, 125, 0);
+	if (GameManager::getSingletonPtr()->useNetworkSimulator()){
+		m_peer->ApplyNetworkSimulator(GameManager::getSingletonPtr()->getSimulatedPacketLoss(), 
+			GameManager::getSingletonPtr()->getSimulatedPing() / 2, 0);
+	}
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");
 }

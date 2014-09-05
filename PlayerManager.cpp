@@ -257,7 +257,6 @@ void PlayerManager::updateCamera(double dt)
 void PlayerManager::update(double dt)
 {
 	m_pRedPlayer->serverReconciliation();
-
 	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
 		if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
 			m_pRedPlayer->update(dt);

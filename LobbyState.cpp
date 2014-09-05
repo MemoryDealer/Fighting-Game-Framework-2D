@@ -676,7 +676,7 @@ void LobbyState::update(double dt)
 							Server::getSingletonPtr()->m_packet->systemAddress);
 						
 						m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-							std::string(Server::getSingletonPtr()->getLastPacketStrData()) + " is ready!");
+							std::string(username) + " is ready!");
 					}
 				}
 				break;

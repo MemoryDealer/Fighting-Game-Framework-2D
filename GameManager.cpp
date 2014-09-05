@@ -12,6 +12,7 @@
 // ================================================ //
 
 #include "GameManager.hpp"
+#include "Config.hpp"
 
 // ================================================ //
 
@@ -22,9 +23,16 @@ template<> GameManager* Singleton<GameManager>::msSingleton = nullptr;
 GameManager::GameManager(void) :
 m_mode(IDLE),
 m_state(0),
-m_username("Anonymous")
+m_username("Anonymous"),
+m_useSimulator(false),
+m_simulatedPing(0),
+m_simulatedPacketLoss(0.0f)
 {
+	Config c("ExtMF.cfg");
 
+	m_useSimulator = c.parseIntValue("net", "useSimulator");
+	m_simulatedPing = c.parseIntValue("net", "simulatedPing");
+	m_simulatedPacketLoss = static_cast<float>(c.parseDoubleValue("net", "simulatedPacketLoss"));
 }
 
 // ================================================ //

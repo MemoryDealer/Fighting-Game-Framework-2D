@@ -61,6 +61,15 @@ public:
 	// Returns state.
 	const int getState(void) const;
 
+	// Returns true if the network simulator should be used.
+	const bool useNetworkSimulator(void) const;
+
+	// Returns simulated ping.
+	const Uint32 getSimulatedPing(void) const;
+
+	// Returns simulated packet loss.
+	const float getSimulatedPacketLoss(void) const;
+
 	// Setters
 
 	// Sets the game mode.
@@ -85,6 +94,13 @@ private:
 
 	// The local username of the player.
 	std::string m_username;
+
+	// Simulated network lag.
+	bool m_useSimulator;
+
+	Uint32 m_simulatedPing;
+
+	float m_simulatedPacketLoss;
 };
 
 // ================================================ //
@@ -101,6 +117,18 @@ inline const std::string GameManager::getUsername(void) const{
 
 inline const int GameManager::getState(void) const{
 	return m_state;
+}
+
+inline const bool GameManager::useNetworkSimulator(void) const{
+	return m_useSimulator;
+}
+
+inline const Uint32 GameManager::getSimulatedPing(void) const{
+	return m_simulatedPing;
+}
+
+inline const float GameManager::getSimulatedPacketLoss(void) const{
+	return m_simulatedPacketLoss;
 }
 
 // Setters

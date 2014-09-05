@@ -44,7 +44,12 @@ m_pUpdateTimer(new Timer())
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
 
-	m_peer->ApplyNetworkSimulator(0.02f, 125, 0);
+	// Apply simulated lag, using half the ping since it will be applied to both client
+	// and server.
+	if (GameManager::getSingletonPtr()->useNetworkSimulator()){
+		m_peer->ApplyNetworkSimulator(GameManager::getSingletonPtr()->getSimulatedPacketLoss(),
+			GameManager::getSingletonPtr()->getSimulatedPing() / 2, 0);
+	}
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
 }

@@ -472,24 +472,24 @@ void GameState::update(double dt)
 				break;
 
 			case NetMessage::UPDATE_PLAYERS:
-			{
-				RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
-					Client::getSingletonPtr()->getLastPacket()->length, false);
-				bit.IgnoreBytes(sizeof(RakNet::MessageID));
+				{
+					RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
+						Client::getSingletonPtr()->getLastPacket()->length, false);
+					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-				RakNet::Time time;
-				bit.Read(time);
-				//printf("UPDATE (%d)\n", time);
+					RakNet::Time time;
+					bit.Read(time);
+					//printf("UPDATE (%d)\n", time);
 
-				// Update positions.
-				Server::PlayerUpdate red;
-				bit.Read(red);
-				PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
+					// Update positions.
+					Server::PlayerUpdate red;
+					bit.Read(red);
+					PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
 
-				Server::PlayerUpdate blue;
-				bit.Read(blue);
-				PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
-			}
+					Server::PlayerUpdate blue;
+					bit.Read(blue);
+					PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
+				}
 				break;
 
 			case NetMessage::LAST_PROCESSED_INPUT_SEQUENCE:
@@ -514,7 +514,7 @@ void GameState::update(double dt)
 		}
 	}
 
-TODO:$
+//TODO:$
 	/*
 	The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
 	physics code or do away with it for now.

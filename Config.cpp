@@ -137,6 +137,18 @@ const int Config::parseIntValue(const std::string& section, const std::string& v
 
 // ================================================ //
 
+const double Config::parseDoubleValue(const std::string& section, const std::string& value)
+{
+	std::string str = this->parseValue(section, value);
+	if (!str.empty()){
+		return std::stod(str);
+	}
+
+	return 0.0;
+}
+
+// ================================================ //
+
 SDL_Rect Config::parseRect(const std::string& section, const std::string& value)
 {
 	SDL_Rect rc;

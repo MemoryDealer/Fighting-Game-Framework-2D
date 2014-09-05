@@ -56,6 +56,9 @@ public:
 	// Wraps parseValue(), converts the std::string to an int.
 	virtual const int parseIntValue(const std::string& section, const std::string& value);
 
+	// Wraps parseValue(), converts the std::string to a double.
+	virtual const double parseDoubleValue(const std::string& section, const std::string& value);
+
 	// Wraps parseValue(), converts the std::string to a SDL_Rect.
 	virtual SDL_Rect parseRect(const std::string& section, const std::string& value);
 
