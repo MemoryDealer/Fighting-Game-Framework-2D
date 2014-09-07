@@ -379,6 +379,10 @@
 #9/5/14
 -Added network latency simulation variables to GameManager to more easily change simulation.
 
+#9/7/14
+-Moved ExtMF.cfg into Data folder and added config.ini which holds the relative path to ExtMF.cfg. This is useful for testing netcode, since I only have to edit
+	a single ExtMF.cfg file instead of changing both the Visual Studio working directory version and the Debug/Release directory version.
+
 #TODO
 -Can't resume game state after exiting it.
 -Add ability to select an entry in listbox if enabled.

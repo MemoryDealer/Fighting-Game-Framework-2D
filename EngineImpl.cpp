@@ -44,10 +44,20 @@ Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINO
 
 	Log::getSingletonPtr()->logMessage("SDL_ttf initialized");
 
-	Config cfg("ExtMF.cfg");
+	// Find location of settings file.
+	Config c("config.ini");
+	if (c.isLoaded()){
+		m_settingsFile = c.parseValue("core", "settings");
+	}
+	else{
+		Log::getSingletonPtr()->logMessage("ERROR: No config.ini found, generating default config.ini and Data/ExtMF.cfg");
+		// TODO: Generate a default config files...
+
+		m_settingsFile = "Data/ExtMF.cfg";
+	}
+
+	Config cfg(m_settingsFile);
 	if (!cfg.isLoaded()){
-		// TODO: Generate a default config file...
-		//...
 		throw std::exception("Failed to load engine.cfg");
 	}
 

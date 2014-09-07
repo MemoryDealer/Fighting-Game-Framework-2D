@@ -40,7 +40,7 @@ m_pAppStateManager(nullptr)
 	FontManager::getSingletonPtr()->reloadAll();
 
 	new GUITheme();
-	Config e("ExtMF.cfg");
+	Config e(Engine::getSingletonPtr()->getSettingsFile());
 	if (e.isLoaded()){
 		GUITheme::getSingletonPtr()->load(e.parseValue("GUI", "theme"));
 	}

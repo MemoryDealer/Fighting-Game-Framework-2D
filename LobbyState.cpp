@@ -33,7 +33,7 @@ LobbyState::LobbyState(void) :
 m_pGUI(nullptr),
 m_pBackground(nullptr)
 {
-	Config c("ExtMF.cfg");
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
 	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
 }
 
@@ -207,7 +207,7 @@ void LobbyState::handleInput(SDL_Event& e)
 		case SDLK_r:
 			{
 				// Reload GUI and background.
-				//Config c("ExtMF.cfg");
+				//Config c(Engine::getSingletonPtr()->getSettingsFile());
 				//m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
 				m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
 			}

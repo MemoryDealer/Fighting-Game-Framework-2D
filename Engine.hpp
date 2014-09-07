@@ -71,6 +71,9 @@ public:
 	// Returns the maximum frame rate allowed by the engine.
 	const int getMaxFrameRate(void) const;
 
+	// Returns relative path to ExtMF.cfg file.
+	const std::string getSettingsFile(void) const;
+
 	// Wrapper for SDL_GetTicks().
 	Uint32 getTicks(void) const;
 

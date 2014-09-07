@@ -122,6 +122,13 @@ const int Engine::getMaxFrameRate(void) const
 
 // ================================================ //
 
+const std::string Engine::getSettingsFile(void) const
+{
+	return m_pImpl->getSettingsFile();
+}
+
+// ================================================ //
+
 // Setters
 
 void Engine::setWindowFocused(const bool focused)

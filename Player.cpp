@@ -126,8 +126,6 @@ void Player::applyInput(double dt)
 void Player::update(double dt)
 {
 	this->processInput();
-
-
 	this->applyInput(dt);
 }
 
@@ -135,6 +133,7 @@ void Player::update(double dt)
 
 void Player::serverReconciliation(void)
 {
+	// Apply any pending player updates received from server.
 	while (!m_playerUpdates.empty()){
 		Server::PlayerUpdate update = m_playerUpdates.front();
 		m_dst.x = update.x;
@@ -147,7 +146,6 @@ void Player::serverReconciliation(void)
 				itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
 			}
 			else{
-				
 				this->m_pInput->setButton(itr->input, itr->value);
 				this->processInput();
 				//m_xVel = itr->vel;

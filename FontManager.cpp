@@ -13,6 +13,7 @@
 
 #include "FontManager.hpp"
 #include "Config.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -44,7 +45,7 @@ void FontManager::loadFont(const int font, const std::string& file, const int si
 
 void FontManager::reloadAll(void)
 {
-	Config e("ExtMF.cfg");
+	Config e(Engine::getSingletonPtr()->getSettingsFile());
 
 	// Open the theme file specified in ExtMF.cfg. 
 	Config theme(e.parseValue("GUI", "theme")); 

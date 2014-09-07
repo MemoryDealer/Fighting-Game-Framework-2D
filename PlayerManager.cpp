@@ -120,7 +120,7 @@ bool PlayerManager::reload(void)
 
 bool PlayerManager::reset(void)
 {
-	Config c("ExtMF.cfg");
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
 
 	if (c.isLoaded()){
 		m_pRedPlayer.reset(new Player("", c.parseValue("controls", "red")));

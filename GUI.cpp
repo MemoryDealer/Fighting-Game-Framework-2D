@@ -145,7 +145,7 @@ m_rightMouseDown(false),
 m_selectorPressed(false)
 {
 	// Setup message box.
-	Config e("ExtMF.cfg");
+	Config e(Engine::getSingletonPtr()->getSettingsFile());
 	Config theme(e.parseValue("GUI", "theme"));
 	std::shared_ptr<GUILayer> messageBox(new GUILayerMessageBox());
 

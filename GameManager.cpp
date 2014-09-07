@@ -13,6 +13,7 @@
 
 #include "GameManager.hpp"
 #include "Config.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -28,7 +29,7 @@ m_useSimulator(false),
 m_simulatedPing(0),
 m_simulatedPacketLoss(0.0f)
 {
-	Config c("ExtMF.cfg");
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
 
 	m_useSimulator = c.parseIntValue("net", "useSimulator");
 	m_simulatedPing = c.parseIntValue("net", "simulatedPing");

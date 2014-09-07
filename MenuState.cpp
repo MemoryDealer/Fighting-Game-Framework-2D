@@ -37,7 +37,7 @@ m_pGUI(nullptr),
 m_pBackground(nullptr)
 {
 	// Parse the location of the .gui file for the main menu and load it.
-	Config c("ExtMF.cfg");
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
 	m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
 }
 
@@ -216,7 +216,7 @@ void MenuState::handleInput(SDL_Event& e)
 		case SDLK_r:
 		{
 			// Reload GUI and background.
-			Config c("ExtMF.cfg");
+			Config c(Engine::getSingletonPtr()->getSettingsFile());
 			//m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
 			m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
 		}

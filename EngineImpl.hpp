@@ -51,6 +51,7 @@ public:
 	const int getLogicalWindowHeight(void) const;
 	const bool isWindowFocused(void) const;
 	const int getMaxFrameRate(void) const;
+	const std::string getSettingsFile(void) const;
 
 private:
 	SDL_Window*			m_pWindow;
@@ -62,6 +63,9 @@ private:
 	bool				m_windowFocused;
 	unsigned int		m_maxFrameRate;
 	std::string			m_windowTitle;
+	
+	// Relative path to ExtMF.cfg file.
+	std::string			m_settingsFile;
 };
 
 // ================================================ //
@@ -104,6 +108,10 @@ inline const int EngineImpl::getLogicalWindowHeight(void) const{
 
 inline const int EngineImpl::getMaxFrameRate(void) const{ 
 	return m_maxFrameRate; 
+}
+
+inline const std::string EngineImpl::getSettingsFile(void) const{
+	return m_settingsFile;
 }
 
 // ================================================ //
