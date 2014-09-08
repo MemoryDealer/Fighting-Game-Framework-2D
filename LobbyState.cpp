@@ -98,14 +98,38 @@ bool LobbyState::pause(void)
 
 void LobbyState::resume(void)
 {
-	switch (Game::getSingletonPtr()->getError()){
-	default:
-		break;
+	this->findByName(GAME_STATE)->reset();
 
-	case ID_CONNECTION_LOST:
-		m_quit = true;
-		break;
+	// Clear player list, it will be updated.
+	Widget* playerList = m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS);
+	playerList->clear();
+
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+		// Add players to player list.
+		playerList->addString(Game::getSingletonPtr()->getUsername());
+		for (ClientList::iterator itr = Server::getSingletonPtr()->m_clients.begin();
+			itr != Server::getSingletonPtr()->m_clients.end();
+			++itr){
+			playerList->addString(itr->username);
+		}
+
+		Server::getSingletonPtr()->sendPlayerList(RakNet::UNASSIGNED_SYSTEM_ADDRESS, true);
 	}
+	else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
+		switch (Game::getSingletonPtr()->getError()){
+		default:
+			break;
+
+		case NetMessage::CLIENT_DISCONNECTED:
+			m_quit = true;
+			break;
+
+		case ID_CONNECTION_LOST:
+			m_quit = true;
+			break;
+		}
+	}
+
 	Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
 
 	Log::getSingletonPtr()->logMessage("Resuming LobbyState...");
@@ -402,34 +426,37 @@ void LobbyState::processGUIAction(const int type)
 				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					// Load fighters being used by players.
 					if (Server::getSingletonPtr()->getReadyQueueSize() < 2){
-						m_pGUI->setMessageBoxText("Not enough players are ready!");
-						m_pGUI->showMessageBox(true);
-						break;
-					}
-					ReadyClient red = Server::getSingletonPtr()->getNextRedPlayer();
-					ReadyClient blue = Server::getSingletonPtr()->getNextBluePlayer();
-					if (PlayerManager::getSingletonPtr()->load(red.fighter, blue.fighter)){
-						// Assign each player's mode, checking for local or net play.
-						if (red.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
-							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::LOCAL);
-							Game::getSingletonPtr()->setPlaying(Game::PLAYING_RED);
-						}
-						else{
-							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::NET);
-						}
-						if (blue.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
-							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::LOCAL);
-							Game::getSingletonPtr()->setPlaying(Game::PLAYING_BLUE);
-						}
-						else{
-							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::NET);
-						}
-
-						Server::getSingletonPtr()->startGame();
-						this->pushAppState(this->findByName(GAME_STATE));
+						m_pGUI->showMessageBox(true, "Not enough players are ready!");
 					}
 					else{
-						Log::getSingletonPtr()->logMessage("Failed to load fighters!");
+						ReadyClient red = Server::getSingletonPtr()->getNextRedPlayer();
+						ReadyClient blue = Server::getSingletonPtr()->getNextBluePlayer();
+						if (PlayerManager::getSingletonPtr()->load(red.fighter, blue.fighter)){
+							Game::getSingletonPtr()->setRedPlayerName(red.username);
+							Game::getSingletonPtr()->setBluePlayerName(blue.username);
+
+							// Assign each player's mode, checking for local or net play.
+							if (red.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
+								PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::LOCAL);
+								Game::getSingletonPtr()->setPlaying(Game::PLAYING_RED);
+							}
+							else{
+								PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::NET);
+							}
+							if (blue.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
+								PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::LOCAL);
+								Game::getSingletonPtr()->setPlaying(Game::PLAYING_BLUE);
+							}
+							else{
+								PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::NET);
+							}
+
+							Server::getSingletonPtr()->startGame();
+							this->pushAppState(this->findByName(GAME_STATE));
+						}
+						else{
+							Log::getSingletonPtr()->logMessage("Failed to load fighters!");
+						}
 					}
 				}
 				break;
@@ -595,9 +622,8 @@ void LobbyState::update(double dt)
 					}
 
 					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-						std::string(Server::getSingletonPtr()->getPacketStrData()) + " disconnected!");
-					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
-						std::string(Server::getSingletonPtr()->getPacketStrData()));
+						username + " disconnected!");
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(username);
 				}
 				break;
 
@@ -616,8 +642,7 @@ void LobbyState::update(double dt)
 
 					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 						username + " lost connection!");
-					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
-						username);
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(username);
 				}
 				break;
 
@@ -762,9 +787,9 @@ void LobbyState::update(double dt)
 						Uint32 numPlayers = 0;
 						bit.Read(static_cast<Uint32&>(numPlayers));
 						for (Uint32 i = 0; i < numPlayers; ++i){
-							char player[Game::MAX_USERNAME_LENGTH + 1];
-							bit.Read(player);
-							m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(player);
+							RakNet::RakString username;
+							bit.Read(username);
+							m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(username.C_String());
 						}
 					}
 					break;
@@ -787,7 +812,16 @@ void LobbyState::update(double dt)
 						RakNet::BitStream bit(Client::getSingletonPtr()->m_packet->data,
 							Client::getSingletonPtr()->m_packet->length, false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+						RakNet::RakString redName, blueName;
 						Uint32 red = 0, blue = 0;
+
+						// Set player names.
+						bit.Read(redName);
+						bit.Read(blueName);
+						Game::getSingletonPtr()->setRedPlayerName(redName.C_String());
+						Game::getSingletonPtr()->setBluePlayerName(blueName.C_String());
+
+						// Load fighters for this game.
 						bit.Read(red);
 						bit.Read(blue);
 						PlayerManager::getSingletonPtr()->load(red, blue);

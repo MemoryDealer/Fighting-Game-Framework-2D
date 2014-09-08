@@ -26,13 +26,15 @@ m_mode(IDLE),
 m_playing(NIL),
 m_error(0),
 m_username("Anonymous"),
+m_redPlayerName(""),
+m_bluePlayerName(""),
 m_useSimulator(false),
 m_simulatedPing(0),
 m_simulatedPacketLoss(0.0f)
 {
 	Config c(Engine::getSingletonPtr()->getSettingsFile());
 
-	m_useSimulator = c.parseIntValue("net", "useSimulator");
+	m_useSimulator = static_cast<bool>(c.parseIntValue("net", "useSimulator"));
 	m_simulatedPing = c.parseIntValue("net", "simulatedPing");
 	m_simulatedPacketLoss = static_cast<float>(c.parseDoubleValue("net", "simulatedPacketLoss"));
 }

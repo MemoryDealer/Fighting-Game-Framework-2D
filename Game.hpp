@@ -61,6 +61,12 @@ public:
 	// Returns state.
 	const int getPlaying(void) const;
 
+	// Returns name of red player.
+	const std::string getRedPlayerName(void) const;
+
+	// Returns name of blue player.
+	const std::string getBluePlayerName(void) const;
+
 	// Returns true if the network simulator should be used.
 	const bool useNetSimulator(void) const;
 
@@ -84,6 +90,12 @@ public:
 	// Sets state.
 	void setPlaying(const int playing);
 
+	// Sets name of red player.
+	void setRedPlayerName(const std::string& name);
+
+	// Sets name of blue player.
+	void setBluePlayerName(const std::string& name);
+
 	// Sets error.
 	void setError(const int error);
 
@@ -103,6 +115,9 @@ private:
 
 	// The local username of the player.
 	std::string m_username;
+
+	// The usernames of active players.
+	std::string m_redPlayerName, m_bluePlayerName;
 
 	// Simulated network lag.
 	bool m_useSimulator;
@@ -126,6 +141,14 @@ inline const std::string Game::getUsername(void) const{
 
 inline const int Game::getPlaying(void) const{
 	return m_playing;
+}
+
+inline const std::string Game::getRedPlayerName(void) const{
+	return m_redPlayerName;
+}
+
+inline const std::string Game::getBluePlayerName(void) const{
+	return m_bluePlayerName;
 }
 
 inline const bool Game::useNetSimulator(void) const{
@@ -152,6 +175,14 @@ inline void Game::setMode(const int mode){
 
 inline void Game::setUsername(const std::string& username){
 	m_username = username;
+}
+
+inline void Game::setRedPlayerName(const std::string& name){
+	m_redPlayerName = name;
+}
+
+inline void Game::setBluePlayerName(const std::string& name){
+	m_bluePlayerName = name;
 }
 
 inline void Game::setPlaying(const int playing){

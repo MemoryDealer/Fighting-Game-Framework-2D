@@ -69,9 +69,12 @@ public:
 	// Broadcasts a SERVER_STARTING_GAME packet.
 	Uint32 startGame(void);
 
+	// Broadcasts a MATCH_OVER packet, containg the username of the victor.
+	Uint32 matchOver(const std::string& victor);
+
 	// Sends a list of players to the client. Should be called before the new client
 	// is added to the client list.
-	Uint32 sendPlayerList(const RakNet::SystemAddress& addr);
+	Uint32 sendPlayerList(const RakNet::SystemAddress& addr, const bool broadcast = false);
 	
 	// Broadcasts all relevant player information to clients.
 	Uint32 updatePlayers(void);

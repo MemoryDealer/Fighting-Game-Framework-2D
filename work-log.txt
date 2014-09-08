@@ -388,8 +388,12 @@
 -I have mixed up Game::getState() and Game::getMode(), the two words are very similar so I am making a change to this system.
 -Enabled blue player client-side code.
 
+#9/8/14
+-Game state can now be pushed again after the first time, had to call reset() on the state when resuming lobby state.
+-The player list is updated when resuming lobby state to account for disconnections.
+
 #TODO
--Can't resume game state after exiting it.
+-Add yes/no box when quitting, add GUI to game state.
 -Add ability to select an entry in listbox if enabled.
 -check the port when starting server
 -add offsets in themes for text

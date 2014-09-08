@@ -112,6 +112,10 @@ void MenuState::resume(void)
 		m_pGUI->showMessageBox(true, "Username already in use!");
 		break;
 
+	case NetMessage::CLIENT_DISCONNECTED:
+
+		break;
+
 	case ID_CONNECTION_LOST:
 		m_pGUI->showMessageBox(true, "Lost connection to server.");
 		break;

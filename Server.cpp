@@ -120,9 +120,12 @@ Uint32 Server::startGame(void)
 	// First let's tell every client that the game is starting.
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::SERVER_STARTING_GAME));
+	// Write red and blue player names in order.
+	bit.Write(this->getNextRedPlayer().username.c_str());
+	bit.Write(this->getNextBluePlayer().username.c_str());
 	// Write red and blue fighters in order.
-	bit.Write(static_cast<Uint32>(this->getNextRedPlayer().fighter));
-	bit.Write(static_cast<Uint32>(this->getNextBluePlayer().fighter));
+	bit.Write(this->getNextRedPlayer().fighter);
+	bit.Write(this->getNextBluePlayer().fighter);
 	this->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 
 	// Then tell any clients that are playing that they are actually playing.
@@ -155,7 +158,18 @@ Uint32 Server::startGame(void)
 
 // ================================================ //
 
-Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
+Uint32 Server::matchOver(const std::string& victor)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::MATCH_OVER));
+	bit.Write(victor.c_str());
+
+	return this->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
+}
+
+// ================================================ //
+
+Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr, const bool broadcast)
 {
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYER_LIST));
@@ -173,7 +187,12 @@ Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
 		bit.Write(itr->username.c_str());
 	}
 
-	return this->send(bit, addr, HIGH_PRIORITY, RELIABLE);
+	if (broadcast){
+		return this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
+	}
+	else{
+		return this->send(bit, addr, HIGH_PRIORITY, RELIABLE);
+	}
 }
 
 // ================================================ //

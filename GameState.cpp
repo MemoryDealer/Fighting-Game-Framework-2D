@@ -178,6 +178,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			break;
 
 		case SDLK_ESCAPE:
+			
 			m_quit = true;
 			break;
 		}
@@ -346,19 +347,19 @@ void GameState::update(double dt)
 			break;
 
 		case SDL_CONTROLLERDEVICEADDED:
-		{
-			int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
+			{
+				int id = GamepadManager::getSingletonPtr()->addPad(e.cdevice.which);
 
-			// Assign the new controller to the first open slot.
-			if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
-				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
-					GamepadManager::getSingletonPtr()->getPad(id));
+				// Assign the new controller to the first open slot.
+				if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getPadID() == -1){
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setPad(
+						GamepadManager::getSingletonPtr()->getPad(id));
+				}
+				else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
+						GamepadManager::getSingletonPtr()->getPad(id));
+				}
 			}
-			else if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getPadID() == -1){
-				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setPad(
-					GamepadManager::getSingletonPtr()->getPad(id));
-			}
-		}
 			break;
 
 		case SDL_CONTROLLERDEVICEREMOVED:
@@ -395,6 +396,70 @@ void GameState::update(double dt)
 			default:
 				break;
 
+			case ID_DISCONNECTION_NOTIFICATION:
+				if (Server::getSingletonPtr()->isClientConnected(Server::getSingletonPtr()->m_packet->systemAddress)){
+					std::string username = Server::getSingletonPtr()->m_clients[Server::getSingletonPtr()->getClient(
+						Server::getSingletonPtr()->m_packet->systemAddress)].username;
+					Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
+						std::string(Server::getSingletonPtr()->m_packet->systemAddress.ToString()) + "]");
+					Server::getSingletonPtr()->removeFromReadyQueue(username);
+					Server::getSingletonPtr()->removeClient(Server::getSingletonPtr()->m_packet->systemAddress);
+
+					// Send match over packet with proper victor.
+					if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr){
+						// Tell clients the player disconnected before sending match over packet.
+						RakNet::BitStream bit;
+						bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
+						bit.Write(username.c_str());
+						Server::getSingletonPtr()->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
+
+						// Blue is victor now.
+						Server::getSingletonPtr()->matchOver(Game::getSingletonPtr()->getBluePlayerName());
+					}
+					else if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_blueAddr){
+						RakNet::BitStream bit;
+						bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
+						bit.Write(username.c_str());
+						Server::getSingletonPtr()->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
+						
+						// Red is victor.
+						Server::getSingletonPtr()->matchOver(Game::getSingletonPtr()->getRedPlayerName());
+					}
+				}
+				break;
+
+			case ID_CONNECTION_LOST:
+				{
+					std::string username = Server::getSingletonPtr()->m_clients[Server::getSingletonPtr()->getClient(
+						Server::getSingletonPtr()->m_packet->systemAddress)].username;
+					Log::getSingletonPtr()->logMessage("SERVER: Removing client [" +
+						std::string(Server::getSingletonPtr()->m_packet->systemAddress.ToString()) + "]");
+					Server::getSingletonPtr()->removeFromReadyQueue(username);
+					Server::getSingletonPtr()->removeClient(Server::getSingletonPtr()->m_packet->systemAddress);
+					
+					// Send match over packet with proper victor.
+					if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr){
+						// Tell clients the player lost connection before sending match over packet.
+						RakNet::BitStream bit;
+						bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
+						bit.Write(username.c_str());
+						Server::getSingletonPtr()->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
+
+						// Blue is victor now.
+						Server::getSingletonPtr()->matchOver(Game::getSingletonPtr()->getBluePlayerName());
+					}
+					else if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_blueAddr){
+						RakNet::BitStream bit;
+						bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_DISCONNECTED));
+						bit.Write(username.c_str());
+						Server::getSingletonPtr()->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
+
+						// Red is victor.
+						Server::getSingletonPtr()->matchOver(Game::getSingletonPtr()->getRedPlayerName());
+					}
+				}
+				break;
+
 			case NetMessage::CLIENT_INPUT:
 				if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr ||
 					Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
@@ -412,10 +477,12 @@ void GameState::update(double dt)
 						}
 					}
 					else if(Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
-						PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
-						PlayerManager::getSingletonPtr()->getBluePlayer()->processInput();
-						PlayerManager::getSingletonPtr()->getBluePlayer()->applyInput(netInput.dt);
-						Server::getSingletonPtr()->m_blueLastProcessedInput = netInput.seq;
+						if (Server::getSingletonPtr()->validateInput(netInput) == true){
+							PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
+							PlayerManager::getSingletonPtr()->getBluePlayer()->processInput();
+							PlayerManager::getSingletonPtr()->getBluePlayer()->applyInput(netInput.dt);
+							Server::getSingletonPtr()->m_blueLastProcessedInput = netInput.seq;
+						}
 					}
 				}
 				break;
@@ -444,6 +511,7 @@ void GameState::update(double dt)
 
 		printf("%d unprocessed inputs / %d\n", Client::getSingletonPtr()->m_pendingInputs.size(), 
 			(Client::getSingletonPtr()->m_pendingInputs.size() == 0) ? 0 : Client::getSingletonPtr()->m_pendingInputs.front().seq);
+
 		for (Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive();
 			Client::getSingletonPtr()->m_packet;
 			Client::getSingletonPtr()->m_peer->DeallocatePacket(Client::getSingletonPtr()->m_packet),
@@ -519,6 +587,19 @@ void GameState::update(double dt)
 								++itr;
 							}
 						}
+					}
+					break;
+
+				case NetMessage::MATCH_OVER:
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+							Client::getSingletonPtr()->getPacket()->length, false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+						RakNet::RakString victor;
+						bit.Read(victor);
+						printf("%s wins!\n", victor.C_String());
+						m_quit = true;
 					}
 					break;
 				}
