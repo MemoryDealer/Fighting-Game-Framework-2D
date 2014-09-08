@@ -257,21 +257,38 @@ void PlayerManager::updateCamera(double dt)
 void PlayerManager::update(double dt)
 {
 	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-		//m_pRedPlayer->update(dt);
-		m_pBluePlayer->update(dt);
-		/*if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
+		if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
 			m_pRedPlayer->update(dt);
 		}
 		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
 			m_pBluePlayer->update(dt);
-		}*/
+		}
 	}
 	else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
-		m_pRedPlayer->serverReconciliation();
-		m_pBluePlayer->serverReconciliation();
+		if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
+			m_pRedPlayer->serverReconciliation();
+		}
+		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
+			m_pBluePlayer->serverReconciliation();
+		}
+
 		m_pRedPlayer->update(dt);
 		m_pBluePlayer->update(dt);
 	}
+
+	/*m_pRedPlayer->serverReconciliation();
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+		if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
+			m_pRedPlayer->update(dt);
+		}
+		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
+			m_pBluePlayer->update(dt);
+		}
+	}
+	else{
+		m_pRedPlayer->update(dt);
+		m_pBluePlayer->update(dt);
+	}*/
 
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();
