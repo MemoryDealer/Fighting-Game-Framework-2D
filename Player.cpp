@@ -118,7 +118,7 @@ void Player::processInput(void)
 
 void Player::applyInput(double dt)
 {
-	m_dst.x += static_cast<int>(m_xVel * dt);
+	m_dst.x += static_cast<int32_t>(m_xVel * dt);
 }
 
 // ================================================ //
@@ -148,8 +148,7 @@ void Player::serverReconciliation(void)
 			else{
 				this->m_pInput->setButton(itr->input, itr->value);
 				this->processInput();
-				//m_xVel = itr->vel;
-				this->applyInput(itr->dt);
+				m_dst.x += static_cast<int32_t>(itr->xVel * itr->dt);
 				++itr;
 			}
 		}

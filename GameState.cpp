@@ -420,20 +420,14 @@ void GameState::update(double dt)
 				break;
 			}
 
-			Server::getSingletonPtr()->updatePlayers();
+			//Server::getSingletonPtr()->updatePlayers();
 		}
-		
+		Server::getSingletonPtr()->updatePlayers();
 		/*if (m_pServerUpdateTimer->getTicks() > 100){
 			Server::getSingletonPtr()->updatePlayers();
 
 			m_pServerUpdateTimer->restart();
 		}*/
-		if (m_pResetServerInputTimer->getTicks() > 1000){
-			/*PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, false);
-			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, false);*/
-
-			m_pResetServerInputTimer->restart();
-		}
 
 		Server::getSingletonPtr()->sendLastProcessedInput();
 	}
@@ -451,14 +445,14 @@ void GameState::update(double dt)
 			Client::getSingletonPtr()->m_packet;
 			Client::getSingletonPtr()->m_peer->DeallocatePacket(Client::getSingletonPtr()->m_packet),
 			Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive()){
-			switch (Client::getSingletonPtr()->m_packet->data[0]){
+			switch (Client::getSingletonPtr()->getPacket()->data[0]){
 			default:
 				break;
 
 			case NetMessage::UPDATE_RED_PLAYER:
 				if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
-					RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
-						Client::getSingletonPtr()->getLastPacket()->length, false);
+					RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+						Client::getSingletonPtr()->getPacket()->length, false);
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
 					Server::PlayerUpdate update;
@@ -473,8 +467,8 @@ void GameState::update(double dt)
 
 			case NetMessage::UPDATE_PLAYERS:
 				{
-					RakNet::BitStream bit(Client::getSingletonPtr()->getLastPacket()->data,
-						Client::getSingletonPtr()->getLastPacket()->length, false);
+					RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+						Client::getSingletonPtr()->getPacket()->length, false);
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
 					RakNet::Time time;
@@ -494,7 +488,8 @@ void GameState::update(double dt)
 
 			case NetMessage::LAST_PROCESSED_INPUT_SEQUENCE:
 				{
-					RakNet::BitStream bit(Client::getSingletonPtr()->m_packet->data, Client::getSingletonPtr()->m_packet->length, false);
+					RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data, 
+						Client::getSingletonPtr()->getPacket()->length, false);
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
 					Uint32 lastProcessedInput = 0;

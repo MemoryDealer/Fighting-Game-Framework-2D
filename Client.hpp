@@ -55,18 +55,17 @@ public:
 	// Sends an input value to the server.
 	Uint32 sendInput(const Uint32 input, const bool value, const double dt);
 
-	// Sends needed data to server.
-	int update(double dt);
-
 	// Getters
 
-	// Returns the internal pointer to the RakNet::Packet which is updated
-	// with each step.
-	RakNet::Packet* getLastPacket(void) const;
+	// Returns pointer to internal RakNet RakPeerInterface.
+	RakNet::RakPeerInterface* getPeer(void);
+
+	// Returns pointer to internal RakNet Packet.
+	RakNet::Packet* getPacket(void);
 
 	// Returns a string of the first set of data of the last packet (skipping
 	// the first byte).
-	const char* getLastPacketStrData(void) const;
+	const char* getPacketStrData(void) const;
 
 	Uint32 m_inputSeq;
 	
@@ -80,7 +79,7 @@ public:
 		bool value;
 		Uint32 seq;
 		double dt;
-		int vel;
+		int32_t xVel, yVel;
 	} ClientInput;
 
 	typedef std::list<ClientInput> ClientInputList;
@@ -101,7 +100,11 @@ public:
 
 // Getters
 
-inline RakNet::Packet* Client::getLastPacket(void) const{
+inline RakNet::RakPeerInterface* Client::getPeer(void){
+	return m_peer;
+}
+
+inline RakNet::Packet* Client::getPacket(void){
 	return m_packet;
 }
 

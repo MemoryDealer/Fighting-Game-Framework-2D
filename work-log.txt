@@ -382,6 +382,8 @@
 #9/7/14
 -Moved ExtMF.cfg into Data folder and added config.ini which holds the relative path to ExtMF.cfg. This is useful for testing netcode, since I only have to edit
 	a single ExtMF.cfg file instead of changing both the Visual Studio working directory version and the Debug/Release directory version.
+-If receiving a "error LNK2005" linker error, make sure the associated function is either inline or in the .cpp file.
+-Somehow fixed the teleporting problem when immediately switching from moving right to left and vice versa.
 
 #TODO
 -Can't resume game state after exiting it.

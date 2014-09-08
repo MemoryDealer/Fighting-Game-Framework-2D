@@ -124,7 +124,7 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 	clientInput.value = value;
 	clientInput.seq = seq;
 	clientInput.dt = dt;
-	clientInput.vel = PlayerManager::getSingletonPtr()->getRedPlayer()->m_xVel;
+	clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXVelocity();
 
 	m_pendingInputs.push_back(clientInput);
 
@@ -133,27 +133,7 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 
 // ================================================ //
 
-int Client::update(double dt)
-{
-	// Process incoming packets.
-	for (m_packet = m_peer->Receive();
-		m_packet;
-		m_peer->DeallocatePacket(m_packet), m_packet = m_peer->Receive()){
-		switch (m_packet->data[0]){
-		default:
-			break;
-
-		}
-
-		//return m_packet->data[0];
-	}
-
-	return 0;
-}
-
-// ================================================ //
-
-const char* Client::getLastPacketStrData(void) const
+const char* Client::getPacketStrData(void) const
 {
 	RakNet::BitStream bit(m_packet->data, m_packet->length, false);
 	RakNet::RakString rs;

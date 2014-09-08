@@ -111,6 +111,18 @@ public:
 	// Returns the mode the player is currently in.
 	const Uint32 getMode(void) const;
 
+	// Returns X velocity.
+	const int32_t getXVelocity(void) const;
+
+	// Returns Y velocity.
+	const int32_t getYVelocity(void) const;
+
+	// Returns X acceleration.
+	const int32_t getXAcceleration(void) const;
+
+	// Returns Y acceleration.
+	const int32_t getYAcceleration(void) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -119,7 +131,7 @@ public:
 	// Sets the mode of the player, e.g., LOCAL, NET, or AI.
 	void setMode(const Uint32 mode);
 
-public: // Currently public for debugging purposes.
+private:
 	int32_t m_xAccel, m_yAccel;
 	int32_t m_xVel, m_yVel;
 	int32_t m_xMax, m_yMax;
@@ -152,6 +164,22 @@ inline void Player::setSide(const Uint32 side){
 
 inline void Player::setMode(const Uint32 mode){
 	m_mode = mode;
+}
+
+inline const int32_t Player::getXVelocity(void) const{
+	return m_xVel;
+}
+
+inline const int32_t Player::getYVelocity(void) const{
+	return m_yVel;
+}
+
+inline const int32_t Player::getXAcceleration(void) const{
+	return m_xAccel;
+}
+
+inline const int32_t Player::getYAcceleration(void) const{
+	return m_yAccel;
 }
 
 // ================================================ //

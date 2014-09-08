@@ -84,9 +84,6 @@ public:
 	// Sends the last processed input sequence number to playing clients.
 	Uint32 sendLastProcessedInput(void);
 
-	// Receives packets and process them.
-	int update(double dt);
-
 	// Adds a client to the list of connected clients.
 	void registerClient(const char* username, const RakNet::SystemAddress& addr);
 
@@ -138,13 +135,15 @@ public:
 	// Returns the 2nd next client in the ready queue.
 	ReadyClient getNextBluePlayer(void);
 
-	// Returns the internal pointer to the RakNet::Packet which is updated
-	// with each step.
-	RakNet::Packet* getLastPacket(void) const;
+	// Returns pointer to internal RakNet RakPeerInterface.
+	RakNet::RakPeerInterface* getPeer(void);
+
+	// Returns pointer to internal RakNet Packet.
+	RakNet::Packet* getPacket(void);
 
 	// Returns a string of the first set of data of the last packet (skipping
 	// the first byte).
-	const char* getLastPacketStrData(void) const;
+	const char* getPacketStrData(void) const;
 
 	// Setters
 
@@ -283,7 +282,11 @@ inline ReadyClient Server::getNextBluePlayer(void){
 	return *itr;
 }
 
-inline RakNet::Packet* Server::getLastPacket(void) const{
+inline RakNet::RakPeerInterface* Server::getPeer(void){
+	return m_peer;
+}
+
+inline RakNet::Packet* Server::getPacket(void){
 	return m_packet;
 }
 

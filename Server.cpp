@@ -123,7 +123,7 @@ Uint32 Server::startGame(void)
 	// Write red and blue fighters in order.
 	bit.Write(static_cast<Uint32>(this->getNextRedPlayer().fighter));
 	bit.Write(static_cast<Uint32>(this->getNextBluePlayer().fighter));
-	this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
+	this->broadcast(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 
 	// Then tell any clients that are playing that they are actually playing.
 	// Check red player.
@@ -192,8 +192,8 @@ Uint32 Server::updatePlayers(void)
 	redPlayer.lastProcessedInput = m_redLastProcessedInput;
 	redPlayer.x = red->getPosition().x;
 	redPlayer.y = red->getPosition().y;
-	redPlayer.xVel = red->m_xVel;
-	redPlayer.xAccel = red->m_xAccel;
+	redPlayer.xVel = red->getXVelocity();
+	redPlayer.xAccel = red->getXAcceleration();
 	bit.Write(redPlayer);
 
 	// Write blue player data.
@@ -202,8 +202,8 @@ Uint32 Server::updatePlayers(void)
 	bluePlayer.lastProcessedInput = m_blueLastProcessedInput;
 	bluePlayer.x = blue->getPosition().x;
 	bluePlayer.y = blue->getPosition().y;
-	bluePlayer.xVel = blue->m_xVel;
-	bluePlayer.xAccel = blue->m_xAccel;
+	bluePlayer.xVel = blue->getXVelocity();
+	bluePlayer.xAccel = blue->getXAcceleration();
 	bit.Write(bluePlayer);
 
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
@@ -218,8 +218,8 @@ Uint32 Server::updateRedPlayer(const Uint32 inputSeq)
 	update.lastProcessedInput = inputSeq;
 	update.x = red->getPosition().x;
 	update.y = red->getPosition().y;
-	update.xVel = red->m_xVel;
-	update.xAccel = red->m_xAccel;
+	update.xVel = red->getXVelocity();
+	update.xAccel = red->getXAcceleration();
 
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_RED_PLAYER));
@@ -245,26 +245,6 @@ Uint32 Server::sendLastProcessedInput(void)
 	bit.Write(m_redLastProcessedInput);
 
 	return this->send(bit, m_redAddr);
-}
-
-// ================================================ //
-
-int Server::update(double dt)
-{
-	// Process any incoming packets.
-	for (m_packet = m_peer->Receive(); 
-		m_packet; 
-		m_peer->DeallocatePacket(m_packet), m_packet = m_peer->Receive()){
-		switch (m_packet->data[0]){
-		default:
-
-			break;
-
-		
-		}
-	}
-
-	return 0;
 }
 
 // ================================================ //
@@ -348,7 +328,7 @@ void Server::dbgPrintReadyQueue(void)
 
 // ================================================ //
 
-const char* Server::getLastPacketStrData(void) const
+const char* Server::getPacketStrData(void) const
 {
 	RakNet::BitStream bit(m_packet->data, m_packet->length, false);
 	RakNet::RakString rs;
