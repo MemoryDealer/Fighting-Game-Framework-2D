@@ -284,6 +284,17 @@ bool Server::isUsernameInUse(const std::string& username)
 
 // ================================================ //
 
+const bool Server::validateInput(const Client::NetInput& input) const
+{
+	if (input.dt > 0.035){ // This value is under question.
+		return false;
+	}
+
+	return true;
+}
+
+// ================================================ //
+
 void Server::dbgPrintAllConnectedClients(void)
 {
 	if (m_clients.size() == 0){

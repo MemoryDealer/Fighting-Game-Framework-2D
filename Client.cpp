@@ -113,10 +113,12 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_INPUT));
-	bit.Write(static_cast<Uint32>(seq));
-	bit.Write(static_cast<Uint32>(input));
-	bit.Write(static_cast<bool>(value));
-	bit.Write(static_cast<double>(dt));
+	NetInput netInput;
+	netInput.input = input;
+	netInput.value = value;
+	netInput.seq = seq;
+	netInput.dt = dt;
+	bit.Write(netInput);
 
 	// Save input for later reconciliation.
 	ClientInput clientInput;

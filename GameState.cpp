@@ -387,34 +387,30 @@ void GameState::update(double dt)
 			Server::getSingletonPtr()->m_packet;
 			Server::getSingletonPtr()->m_peer->DeallocatePacket(Server::getSingletonPtr()->m_packet),
 			Server::getSingletonPtr()->m_packet = Server::getSingletonPtr()->m_peer->Receive()){
-			switch (Server::getSingletonPtr()->m_packet->data[0]){
+			switch (Server::getSingletonPtr()->getPacket()->data[0]){
 			default:
 				break;
 
 			case NetMessage::CLIENT_INPUT:
-				if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr || 
-					Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_blueAddr){
-					RakNet::BitStream bit(Server::getSingletonPtr()->m_packet->data, 
-						Server::getSingletonPtr()->m_packet->length, false);
+				if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr ||
+					Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
+					RakNet::BitStream bit(Server::getSingletonPtr()->getPacket()->data, 
+						Server::getSingletonPtr()->getPacket()->length, false);
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
-					Uint32 button = 0, seq = 0;
-					bool value = false;
-					double clientDt = 0;
-					bit.Read(seq);
-					bit.Read(button);
-					bit.Read(value);
-					bit.Read(clientDt);
+					Client::NetInput netInput;
+					bit.Read(netInput);
 					if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr){
-						PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(button, value);
-						PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
-						PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(clientDt);
-						Server::getSingletonPtr()->m_redLastProcessedInput = seq;
-						printf("SERVER: Last processed input: %d\n", seq);
-						//this->updateRedPlayer(m_redLastProcessedInput);
+						if (Server::getSingletonPtr()->validateInput(netInput) == true){
+							PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(netInput.input, netInput.value);
+							PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
+							PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(netInput.dt);
+							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;
+							printf("SERVER: Last processed input: %d\n", netInput.seq);
+						}
 					}
 					else{
-						PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(button, value);
-						Server::getSingletonPtr()->m_blueLastProcessedInput = seq;
+						PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
+						Server::getSingletonPtr()->m_blueLastProcessedInput = netInput.seq;
 					}
 				}
 				break;

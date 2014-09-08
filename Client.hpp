@@ -79,6 +79,13 @@ public:
 		bool value;
 		Uint32 seq;
 		double dt;
+	} NetInput;
+
+	typedef struct{
+		Uint32 input;
+		bool value;
+		Uint32 seq;
+		double dt;
 		int32_t xVel, yVel;
 	} ClientInput;
 

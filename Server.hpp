@@ -17,6 +17,7 @@
 // ================================================ //
 
 #include "stdafx.hpp"
+#include "Client.hpp"
 
 // ================================================ //
 
@@ -102,6 +103,9 @@ public:
 
 	// Removes a client from the ready queue.
 	void removeFromReadyQueue(const std::string& username);
+
+	// Returns true if client input seems valid.
+	const bool validateInput(const Client::NetInput& input) const;
 
 	// Debugging
 
