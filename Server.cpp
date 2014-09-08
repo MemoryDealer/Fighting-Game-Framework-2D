@@ -127,7 +127,7 @@ Uint32 Server::startGame(void)
 
 	// Then tell any clients that are playing that they are actually playing.
 	// Check red player.
-	if (Game::getSingletonPtr()->getState() != Game::PLAYING_RED){
+	if (Game::getSingletonPtr()->getPlaying() != Game::PLAYING_RED){
 		ReadyClient red = this->getNextRedPlayer();
 		ClientConnection redConnection = m_clients[this->getClient(red.username)];
 		m_redAddr = redConnection.addr;
@@ -138,7 +138,7 @@ Uint32 Server::startGame(void)
 	}
 
 	// Check blue player.
-	if (Game::getSingletonPtr()->getState() != Game::PLAYING_BLUE){
+	if (Game::getSingletonPtr()->getPlaying() != Game::PLAYING_BLUE){
 		ReadyClient blue = this->getNextBluePlayer();
 		ClientConnection blueConnection = m_clients[this->getClient(blue.username)];
 		m_blueAddr = blueConnection.addr;

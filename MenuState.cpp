@@ -104,7 +104,7 @@ void MenuState::resume(void)
 		delete Client::getSingletonPtr();
 	}
 
-	switch (Game::getSingletonPtr()->getState()){
+	switch (Game::getSingletonPtr()->getError()){
 	default:
 		break;
 

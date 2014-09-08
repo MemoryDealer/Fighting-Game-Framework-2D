@@ -66,7 +66,7 @@ void LobbyState::enter(void)
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
 		Game::getSingletonPtr()->getUsername());
 
-	Game::getSingletonPtr()->setState(Game::NIL);
+	Game::getSingletonPtr()->setPlaying(Game::NIL);
 }
 
 // ================================================ //
@@ -97,6 +97,8 @@ bool LobbyState::pause(void)
 
 void LobbyState::resume(void)
 {
+	Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
+
 	Log::getSingletonPtr()->logMessage("Resuming LobbyState...");
 }
 
@@ -401,14 +403,14 @@ void LobbyState::processGUIAction(const int type)
 						// Assign each player's mode, checking for local or net play.
 						if (red.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
 							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::LOCAL);
-							Game::getSingletonPtr()->setState(Game::PLAYING_RED);
+							Game::getSingletonPtr()->setPlaying(Game::PLAYING_RED);
 						}
 						else{
 							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::NET);
 						}
 						if (blue.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
 							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::LOCAL);
-							Game::getSingletonPtr()->setState(Game::PLAYING_BLUE);
+							Game::getSingletonPtr()->setPlaying(Game::PLAYING_BLUE);
 						}
 						else{
 							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::NET);
@@ -722,7 +724,7 @@ void LobbyState::update(double dt)
 
 			case NetMessage::USERNAME_IN_USE:
 				Client::getSingletonPtr()->disconnect();
-				Game::getSingletonPtr()->setState(NetMessage::USERNAME_IN_USE);
+				Game::getSingletonPtr()->setError(NetMessage::USERNAME_IN_USE);
 				m_quit = true;
 				break;
 
@@ -768,15 +770,15 @@ void LobbyState::update(double dt)
 				break;
 
 			case NetMessage::PLAYING_RED:
-				Game::getSingletonPtr()->setState(Game::PLAYING_RED);
+				Game::getSingletonPtr()->setPlaying(Game::PLAYING_RED);
 				break;
 
 			case NetMessage::PLAYING_BLUE:
-				Game::getSingletonPtr()->setState(Game::PLAYING_BLUE);
+				Game::getSingletonPtr()->setPlaying(Game::PLAYING_BLUE);
 				break;
 
 			case NetMessage::SERVER_STARTING_GAME:
-				Game::getSingletonPtr()->setState(Game::SPECTATING);
+				Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
 				// Load the fighters being used this match.
 				{
 					RakNet::BitStream bit(Client::getSingletonPtr()->m_packet->data,
