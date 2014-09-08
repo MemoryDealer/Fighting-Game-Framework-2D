@@ -57,6 +57,26 @@ Client::~Client(void)
 
 // ================================================ //
 
+bool Client::update(void)
+{
+	switch (m_packet->data[0]){
+	default:
+		return false;
+
+	case NetMessage::PLAYING_RED:
+		Game::getSingletonPtr()->setPlaying(Game::PLAYING_RED);
+		break;
+
+	case NetMessage::PLAYING_BLUE:
+		Game::getSingletonPtr()->setPlaying(Game::PLAYING_BLUE);
+		break;
+	}
+
+	return true;
+}
+
+// ================================================ //
+
 Uint32 Client::send(const RakNet::BitStream& bit, const PacketPriority priority, const PacketReliability reliability)
 {
 	return m_peer->Send(&bit, priority, reliability, 0, m_serverAddr, false);
@@ -111,6 +131,22 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 {
 	const Uint32 seq = m_inputSeq++;
 
+	// Save input for later reconciliation.
+	ClientInput clientInput;
+	clientInput.input = input;
+	clientInput.value = value;
+	clientInput.seq = seq;
+	clientInput.dt = dt;
+	if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+		clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXVelocity();
+	}
+	else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+		clientInput.xVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getXVelocity();
+	}
+
+	m_pendingInputs.push_back(clientInput);
+
+	// Create packet and send.
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::CLIENT_INPUT));
 	NetInput netInput;
@@ -119,16 +155,6 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 	netInput.seq = seq;
 	netInput.dt = dt;
 	bit.Write(netInput);
-
-	// Save input for later reconciliation.
-	ClientInput clientInput;
-	clientInput.input = input;
-	clientInput.value = value;
-	clientInput.seq = seq;
-	clientInput.dt = dt;
-	clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXVelocity();
-
-	m_pendingInputs.push_back(clientInput);
 
 	return this->send(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 }

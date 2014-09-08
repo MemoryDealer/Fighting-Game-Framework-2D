@@ -34,6 +34,9 @@ public:
 	// Empty destructor.
 	~Client(void);
 
+	// Processes packets that affect more than one game state.
+	bool update(void);
+
 	// Send-to-server functions.
 
 	// Sends a packet to the server using a BitStream.

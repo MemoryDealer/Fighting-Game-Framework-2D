@@ -386,6 +386,7 @@
 -Fixed the teleporting problem when immediately switching from moving right to left and vice versa. Was caused by applying rewinded input using the current
 	x-velocity, so now it's calculated using the rewinded input's x-velocity.
 -I have mixed up Game::getState() and Game::getMode(), the two words are very similar so I am making a change to this system.
+-Enabled blue player client-side code.
 
 #TODO
 -Can't resume game state after exiting it.

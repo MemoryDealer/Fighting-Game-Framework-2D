@@ -109,11 +109,14 @@ void MenuState::resume(void)
 		break;
 
 	case NetMessage::USERNAME_IN_USE:
-		m_pGUI->setMessageBoxText("Username already in use!");
-		m_pGUI->showMessageBox(true);
+		m_pGUI->showMessageBox(true, "Username already in use!");
+		break;
+
+	case ID_CONNECTION_LOST:
+		m_pGUI->showMessageBox(true, "Lost connection to server.");
 		break;
 	}
-
+	Game::getSingletonPtr()->setError(0);
 	Game::getSingletonPtr()->setMode(Game::IDLE);
 
 	Log::getSingletonPtr()->logMessage("Resuming MenuState...");

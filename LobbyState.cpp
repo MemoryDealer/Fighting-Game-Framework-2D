@@ -66,7 +66,8 @@ void LobbyState::enter(void)
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
 		Game::getSingletonPtr()->getUsername());
 
-	Game::getSingletonPtr()->setPlaying(Game::NIL);
+	Game::getSingletonPtr()->setError(0);
+	Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
 }
 
 // ================================================ //
@@ -97,6 +98,14 @@ bool LobbyState::pause(void)
 
 void LobbyState::resume(void)
 {
+	switch (Game::getSingletonPtr()->getError()){
+	default:
+		break;
+
+	case ID_CONNECTION_LOST:
+		m_quit = true;
+		break;
+	}
 	Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
 
 	Log::getSingletonPtr()->logMessage("Resuming LobbyState...");
@@ -688,109 +697,104 @@ void LobbyState::update(double dt)
 			Client::getSingletonPtr()->m_packet;
 			Client::getSingletonPtr()->m_peer->DeallocatePacket(Client::getSingletonPtr()->m_packet),
 			Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive()){
-			switch (Client::getSingletonPtr()->m_packet->data[0]){
-			default:
-				break;
+			if (Client::getSingletonPtr()->update() == false){
+				switch (Client::getSingletonPtr()->getPacket()->data[0]){
+				default:
+					break;
 
-			case ID_CONNECTION_REQUEST_ACCEPTED:
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
-				{
-					// Store the server system address for future use.
-					Client::getSingletonPtr()->m_serverAddr = Client::getSingletonPtr()->m_packet->systemAddress;
+				case ID_CONNECTION_REQUEST_ACCEPTED:
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Connected to server!");
+					{
+						// Store the server system address for future use.
+						Client::getSingletonPtr()->m_serverAddr = Client::getSingletonPtr()->m_packet->systemAddress;
 
-					// Send the server the username.
-					RakNet::BitStream bit;
-					bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
-					Log::getSingletonPtr()->logMessage("Sending username \"" +
-						Game::getSingletonPtr()->getUsername() + "\" to server.");
-					bit.Write(Game::getSingletonPtr()->getUsername().c_str());
-					Client::getSingletonPtr()->send(bit, HIGH_PRIORITY, RELIABLE);
-				}
-				break;
-
-			case ID_CONNECTION_LOST:
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString("Lost connection to server.");
-				break;
-
-			case NetMessage::SET_USERNAME:
-				{
-					std::string username = Client::getSingletonPtr()->getPacketStrData();
-					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-						username + std::string(" connected!"));
-					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
-						username);
-				}
-				break;
-
-			case NetMessage::USERNAME_IN_USE:
-				Client::getSingletonPtr()->disconnect();
-				Game::getSingletonPtr()->setError(NetMessage::USERNAME_IN_USE);
-				m_quit = true;
-				break;
-
-			case NetMessage::CLIENT_DISCONNECTED:
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-					std::string(Client::getSingletonPtr()->getPacketStrData()) + " disconnected!");
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
-					std::string(Client::getSingletonPtr()->getPacketStrData()));
-				break;
-
-			case NetMessage::CLIENT_LOST_CONNECTION:
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-					std::string(Client::getSingletonPtr()->getPacketStrData()) + " lost connection!");
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
-					std::string(Client::getSingletonPtr()->getPacketStrData()));
-				break;
-
-			case NetMessage::PLAYER_LIST:
-				{
-					// Extract each player username and add to list.										
-					RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
-						Client::getSingletonPtr()->getPacket()->length, false);
-					bit.IgnoreBytes(sizeof(RakNet::MessageID));
-					Uint32 numPlayers = 0;
-					bit.Read(static_cast<Uint32&>(numPlayers));
-					for (Uint32 i = 0; i < numPlayers; ++i){
-						char player[Game::MAX_USERNAME_LENGTH + 1];
-						bit.Read(player);
-						m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(player);
+						// Send the server the username.
+						RakNet::BitStream bit;
+						bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
+						Log::getSingletonPtr()->logMessage("Sending username \"" +
+							Game::getSingletonPtr()->getUsername() + "\" to server.");
+						bit.Write(Game::getSingletonPtr()->getUsername().c_str());
+						Client::getSingletonPtr()->send(bit, HIGH_PRIORITY, RELIABLE);
 					}
+					break;
+
+				case ID_CONNECTION_LOST:
+					Game::getSingletonPtr()->setError(ID_CONNECTION_LOST);
+					m_quit = true;
+					break;
+
+				case NetMessage::SET_USERNAME:
+					{
+						std::string username = Client::getSingletonPtr()->getPacketStrData();
+						m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+							username + std::string(" connected!"));
+						m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
+							username);
+					}
+					break;
+
+				case NetMessage::USERNAME_IN_USE:
+					Client::getSingletonPtr()->disconnect();
+					Game::getSingletonPtr()->setError(NetMessage::USERNAME_IN_USE);
+					m_quit = true;
+					break;
+
+				case NetMessage::CLIENT_DISCONNECTED:
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+						std::string(Client::getSingletonPtr()->getPacketStrData()) + " disconnected!");
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
+						std::string(Client::getSingletonPtr()->getPacketStrData()));
+					break;
+
+				case NetMessage::CLIENT_LOST_CONNECTION:
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+						std::string(Client::getSingletonPtr()->getPacketStrData()) + " lost connection!");
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->removeEntry(
+						std::string(Client::getSingletonPtr()->getPacketStrData()));
+					break;
+
+				case NetMessage::PLAYER_LIST:
+					{
+						// Extract each player username and add to list.										
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+							Client::getSingletonPtr()->getPacket()->length, false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+						Uint32 numPlayers = 0;
+						bit.Read(static_cast<Uint32&>(numPlayers));
+						for (Uint32 i = 0; i < numPlayers; ++i){
+							char player[Game::MAX_USERNAME_LENGTH + 1];
+							bit.Read(player);
+							m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(player);
+						}
+					}
+					break;
+
+				case NetMessage::CHAT:
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+						Client::getSingletonPtr()->getPacketStrData());
+					break;
+
+				case NetMessage::READY:
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
+						std::string(Client::getSingletonPtr()->getPacketStrData()) + " is ready!");
+					// Show fighter...
+					break;
+
+				case NetMessage::SERVER_STARTING_GAME:
+					Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
+					// Load the fighters being used this match.
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->m_packet->data,
+							Client::getSingletonPtr()->m_packet->length, false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+						Uint32 red = 0, blue = 0;
+						bit.Read(red);
+						bit.Read(blue);
+						PlayerManager::getSingletonPtr()->load(red, blue);
+					}
+					this->pushAppState(this->findByName(GAME_STATE));
+					break;
 				}
-				break;
-
-			case NetMessage::CHAT:
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-					Client::getSingletonPtr()->getPacketStrData());
-				break;
-
-			case NetMessage::READY:
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
-					std::string(Client::getSingletonPtr()->getPacketStrData()) + " is ready!");
-				// Show fighter...
-				break;
-
-			case NetMessage::PLAYING_RED:
-				Game::getSingletonPtr()->setPlaying(Game::PLAYING_RED);
-				break;
-
-			case NetMessage::PLAYING_BLUE:
-				Game::getSingletonPtr()->setPlaying(Game::PLAYING_BLUE);
-				break;
-
-			case NetMessage::SERVER_STARTING_GAME:
-				Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
-				// Load the fighters being used this match.
-				{
-					RakNet::BitStream bit(Client::getSingletonPtr()->m_packet->data,
-						Client::getSingletonPtr()->m_packet->length, false);
-					bit.IgnoreBytes(sizeof(RakNet::MessageID));
-					Uint32 red = 0, blue = 0;
-					bit.Read(red);
-					bit.Read(blue);
-					PlayerManager::getSingletonPtr()->load(red, blue);
-				}
-				this->pushAppState(this->findByName(GAME_STATE));
-				break;
 			}
 		}
 	}

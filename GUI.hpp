@@ -178,7 +178,7 @@ public:
 	void setMessageBoxText(const std::string& text);
 
 	// Shows the message box layer if true.
-	void showMessageBox(const bool show);
+	void showMessageBox(const bool show, const std::string& text = "");
 
 	// Getters
 
@@ -297,8 +297,13 @@ inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 	m_layers.push_back(layer);
 }
 
-inline void GUI::showMessageBox(const bool show){
+inline void GUI::showMessageBox(const bool show, const std::string& text){
 	if (show == true && m_layerStack.top() != GUI::MESSAGEBOX){
+		// Set text if specified.
+		if (text != ""){
+			this->setMessageBoxText(text);
+		}
+		// Display the message box.
 		m_nextLayer = m_layerStack.top();
 		this->pushLayer(GUI::MESSAGEBOX);
 	}
