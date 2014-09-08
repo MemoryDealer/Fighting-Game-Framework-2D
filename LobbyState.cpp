@@ -17,7 +17,7 @@
 #include "StageManager.hpp"
 #include "PlayerManager.hpp"
 #include "Input.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 #include "Config.hpp"
 #include "App.hpp"
 #include "Server.hpp"
@@ -52,11 +52,11 @@ void LobbyState::enter(void)
 
 	m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
 
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Server initialized.");
 	}
-	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 			"Attempting server connection...");
 		Client::getSingletonPtr()->connect();
@@ -64,9 +64,9 @@ void LobbyState::enter(void)
 
 	// Add username to player list.
 	m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(
-		GameManager::getSingletonPtr()->getUsername());
+		Game::getSingletonPtr()->getUsername());
 
-	GameManager::getSingletonPtr()->setState(GameManager::NIL);
+	Game::getSingletonPtr()->setState(Game::NIL);
 }
 
 // ================================================ //
@@ -74,7 +74,7 @@ void LobbyState::enter(void)
 void LobbyState::exit(void)
 {
 	// Notify server of disconnection if we are a client.
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+	if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		Client::getSingletonPtr()->disconnect();
 	}
 
@@ -143,12 +143,12 @@ void LobbyState::handleInput(SDL_Event& e)
 		case SDLK_RETURN:
 			if (m_pGUI->isEditingText()){
 				// Build message text with user name preceding the message itself.
-				std::string message = GameManager::getSingletonPtr()->getUsername() +
+				std::string message = Game::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					Server::getSingletonPtr()->chat(message);
 				}
-				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->chat(message);
 				}
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(message);
@@ -212,13 +212,13 @@ void LobbyState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_i:
-			if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+			if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 				Server::getSingletonPtr()->dbgPrintAllConnectedClients();
 			}
 			break;
 
 		case SDLK_o:
-			if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+			if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 				Server::getSingletonPtr()->dbgPrintReadyQueue();
 			}
 			break;
@@ -375,12 +375,12 @@ void LobbyState::processGUIAction(const int type)
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_READY:
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					Server::getSingletonPtr()->ready(0);
 					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 						"You are ready!");
 				}
-				else if(GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->ready(0);
 					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
 						"You are ready!");
@@ -388,7 +388,7 @@ void LobbyState::processGUIAction(const int type)
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_START:
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					// Load fighters being used by players.
 					if (Server::getSingletonPtr()->getReadyQueueSize() < 2){
 						m_pGUI->setMessageBoxText("Not enough players are ready!");
@@ -399,16 +399,16 @@ void LobbyState::processGUIAction(const int type)
 					ReadyClient blue = Server::getSingletonPtr()->getNextBluePlayer();
 					if (PlayerManager::getSingletonPtr()->load(red.fighter, blue.fighter)){
 						// Assign each player's mode, checking for local or net play.
-						if (red.username.compare(GameManager::getSingletonPtr()->getUsername()) == 0){
+						if (red.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
 							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::LOCAL);
-							GameManager::getSingletonPtr()->setState(GameManager::PLAYING_RED);
+							Game::getSingletonPtr()->setState(Game::PLAYING_RED);
 						}
 						else{
 							PlayerManager::getSingletonPtr()->getRedPlayer()->setMode(Player::Mode::NET);
 						}
-						if (blue.username.compare(GameManager::getSingletonPtr()->getUsername()) == 0){
+						if (blue.username.compare(Game::getSingletonPtr()->getUsername()) == 0){
 							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::LOCAL);
-							GameManager::getSingletonPtr()->setState(GameManager::PLAYING_BLUE);
+							Game::getSingletonPtr()->setState(Game::PLAYING_BLUE);
 						}
 						else{
 							PlayerManager::getSingletonPtr()->getBluePlayer()->setMode(Player::Mode::NET);
@@ -429,12 +429,12 @@ void LobbyState::processGUIAction(const int type)
 
 			case GUILobbyStateLayer::Root::BUTTON_SEND:
 			{
-				std::string message = GameManager::getSingletonPtr()->getUsername() +
+				std::string message = Game::getSingletonPtr()->getUsername() +
 					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					Server::getSingletonPtr()->chat(message);
 				}
-				else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->chat(message);
 				}
 				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(message);
@@ -501,8 +501,8 @@ void LobbyState::update(double dt)
 			if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST){
 				// If this is a networked game, we should update even if the window is not 
 				// in focus.
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER ||
-					GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::SERVER ||
+					Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					break;
 				}
 				else{
@@ -557,7 +557,7 @@ void LobbyState::update(double dt)
 
 	m_pBackground->update(dt);
 	m_pGUI->update(dt);
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 		for (Server::getSingletonPtr()->m_packet = Server::getSingletonPtr()->getPeer()->Receive();
 			Server::getSingletonPtr()->m_packet;
 			Server::getSingletonPtr()->m_peer->DeallocatePacket(Server::getSingletonPtr()->m_packet),
@@ -681,7 +681,7 @@ void LobbyState::update(double dt)
 			}
 		}
 	}
-	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		for (Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive();
 			Client::getSingletonPtr()->m_packet;
 			Client::getSingletonPtr()->m_peer->DeallocatePacket(Client::getSingletonPtr()->m_packet),
@@ -700,8 +700,8 @@ void LobbyState::update(double dt)
 					RakNet::BitStream bit;
 					bit.Write(static_cast<RakNet::MessageID>(NetMessage::SET_USERNAME));
 					Log::getSingletonPtr()->logMessage("Sending username \"" +
-						GameManager::getSingletonPtr()->getUsername() + "\" to server.");
-					bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
+						Game::getSingletonPtr()->getUsername() + "\" to server.");
+					bit.Write(Game::getSingletonPtr()->getUsername().c_str());
 					Client::getSingletonPtr()->send(bit, HIGH_PRIORITY, RELIABLE);
 				}
 				break;
@@ -722,7 +722,7 @@ void LobbyState::update(double dt)
 
 			case NetMessage::USERNAME_IN_USE:
 				Client::getSingletonPtr()->disconnect();
-				GameManager::getSingletonPtr()->setState(NetMessage::USERNAME_IN_USE);
+				Game::getSingletonPtr()->setState(NetMessage::USERNAME_IN_USE);
 				m_quit = true;
 				break;
 
@@ -749,7 +749,7 @@ void LobbyState::update(double dt)
 					Uint32 numPlayers = 0;
 					bit.Read(static_cast<Uint32&>(numPlayers));
 					for (Uint32 i = 0; i < numPlayers; ++i){
-						char player[GameManager::MAX_USERNAME_LENGTH + 1];
+						char player[Game::MAX_USERNAME_LENGTH + 1];
 						bit.Read(player);
 						m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_PLAYERS)->addString(player);
 					}
@@ -768,15 +768,15 @@ void LobbyState::update(double dt)
 				break;
 
 			case NetMessage::PLAYING_RED:
-				GameManager::getSingletonPtr()->setState(GameManager::PLAYING_RED);
+				Game::getSingletonPtr()->setState(Game::PLAYING_RED);
 				break;
 
 			case NetMessage::PLAYING_BLUE:
-				GameManager::getSingletonPtr()->setState(GameManager::PLAYING_BLUE);
+				Game::getSingletonPtr()->setState(Game::PLAYING_BLUE);
 				break;
 
 			case NetMessage::SERVER_STARTING_GAME:
-				GameManager::getSingletonPtr()->setState(GameManager::SPECTATING);
+				Game::getSingletonPtr()->setState(Game::SPECTATING);
 				// Load the fighters being used this match.
 				{
 					RakNet::BitStream bit(Client::getSingletonPtr()->m_packet->data,

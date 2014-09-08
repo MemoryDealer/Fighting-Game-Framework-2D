@@ -20,7 +20,7 @@
 #include "FontManager.hpp"
 #include "GUI.hpp"
 #include "GamepadManager.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 #include "Config.hpp"
 
 // ================================================ //
@@ -48,7 +48,7 @@ m_pAppStateManager(nullptr)
 	new GamepadManager();
 	GamepadManager::getSingletonPtr()->addAllConnectedPads();
 
-	new GameManager();
+	new Game();
 
 	Log::getSingletonPtr()->logMessage("Creating AppStateManager...");
 	m_pAppStateManager = new AppStateManager();
@@ -71,7 +71,7 @@ m_pAppStateManager(nullptr)
 App::~App(void)
 {
 	delete m_pAppStateManager;
-	delete GameManager::getSingletonPtr();
+	delete Game::getSingletonPtr();
 	delete GamepadManager::getSingletonPtr();
 	delete FontManager::getSingletonPtr();
 	delete GUITheme::getSingletonPtr();

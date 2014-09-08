@@ -16,7 +16,7 @@
 #include "Log.hpp"
 #include "Engine.hpp"
 #include "Timer.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 #include "PlayerManager.hpp"
 
 // ================================================ //
@@ -40,9 +40,9 @@ m_timeout(10000)
 	RakNet::SocketDescriptor sd;
 	m_peer->Startup(1, &sd, 1);
 
-	if (GameManager::getSingletonPtr()->useNetworkSimulator()){
-		m_peer->ApplyNetworkSimulator(GameManager::getSingletonPtr()->getSimulatedPacketLoss(), 
-			GameManager::getSingletonPtr()->getSimulatedPing() / 2, 0);
+	if (Game::getSingletonPtr()->useNetSimulator()){
+		m_peer->ApplyNetworkSimulator(Game::getSingletonPtr()->getNetSimulatedPacketLoss(), 
+			Game::getSingletonPtr()->getNetSimulatedPing() / 2, 0);
 	}
 
 	Log::getSingletonPtr()->logMessage("Client intialized!");

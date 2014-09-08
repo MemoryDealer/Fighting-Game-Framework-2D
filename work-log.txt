@@ -154,7 +154,7 @@
 	Still, the new 2013 project is much more clean and efficient. 
 
 #5/30/14
--Added GameManager singleton class to manage information across all states. 
+-Added Game singleton class to manage information across all states. 
 
 #5/31/14
 -Added Widget class for GUI widgets.
@@ -323,7 +323,7 @@
 	processed, it is copied to this stored pointer in the Server code using Packet::clone(), thus eliminating the new to use heap allocation
 	during the Server update. The same will be done for the client code.
 -Added username textbox in Host/Join GUIlayers. Also a password field for future.
--The username is retrieved when the Client/Server is started and stored in GameManager.
+-The username is retrieved when the Client/Server is started and stored in Game.
 
 #7/30/14
 -Added more broadcasting from the server to clients (for new connected clients and disconnections).
@@ -377,13 +377,14 @@
 	and I think it has to do with unprocessed inputs for some reason still being in the queue even though the server has processed them.
 
 #9/5/14
--Added network latency simulation variables to GameManager to more easily change simulation.
+-Added network latency simulation variables to Game to more easily change simulation.
 
 #9/7/14
 -Moved ExtMF.cfg into Data folder and added config.ini which holds the relative path to ExtMF.cfg. This is useful for testing netcode, since I only have to edit
 	a single ExtMF.cfg file instead of changing both the Visual Studio working directory version and the Debug/Release directory version.
 -If receiving a "error LNK2005" linker error, make sure the associated function is either inline or in the .cpp file.
--Somehow fixed the teleporting problem when immediately switching from moving right to left and vice versa.
+-Fixed the teleporting problem when immediately switching from moving right to left and vice versa. Was caused by applying rewinded input using the current
+	x-velocity, so now it's calculated using the rewinded input's x-velocity.
 
 #TODO
 -Can't resume game state after exiting it.

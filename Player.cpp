@@ -22,7 +22,7 @@
 #include "Move.hpp"
 #include "MessageRouter.hpp"
 #include "Client.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 
 // ================================================ //
 
@@ -37,7 +37,8 @@ m_yMax(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
 m_pInput(new Input(buttonMapFile)),
-m_playerUpdates()
+m_clientInputs(),
+m_serverUpdates()
 {
 	m_dst.w = m_dst.h = 100;
 
@@ -57,9 +58,20 @@ Player::~Player(void)
 
 // ================================================ //
 
+void Player::enqueueClientInput(const Client::NetInput& input)
+{
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+		m_clientInputs.push(input);
+	}
+}
+
+// ================================================ //
+
 void Player::updateFromServer(const Server::PlayerUpdate& update)
 {
-	m_playerUpdates.push(update);
+	if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+		m_serverUpdates.push(update);
+	}
 }
 
 // ================================================ //
@@ -134,12 +146,14 @@ void Player::update(double dt)
 void Player::serverReconciliation(void)
 {
 	// Apply any pending player updates received from server.
-	while (!m_playerUpdates.empty()){
-		Server::PlayerUpdate update = m_playerUpdates.front();
+	while (!m_serverUpdates.empty()){
+		Server::PlayerUpdate update = m_serverUpdates.front();
+		// Rewind to the server's latest update.
 		m_dst.x = update.x;
 		m_xVel = update.xVel;
 		m_xAccel = update.xAccel;
 
+		// Replay any inputs after server's last update.
 		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
 			itr != Client::getSingletonPtr()->m_pendingInputs.end();){
 			if (itr->seq <= update.lastProcessedInput){
@@ -148,12 +162,13 @@ void Player::serverReconciliation(void)
 			else{
 				this->m_pInput->setButton(itr->input, itr->value);
 				this->processInput();
+				// Apply the input.
 				m_dst.x += static_cast<int32_t>(itr->xVel * itr->dt);
 				++itr;
 			}
 		}
 
-		m_playerUpdates.pop();
+		m_serverUpdates.pop();
 	}
 }
 

@@ -16,7 +16,7 @@
 #include "Engine.hpp"
 #include "Config.hpp"
 #include "Timer.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 #include "PlayerManager.hpp"
 #include "Input.hpp"
 #include "Log.hpp"
@@ -46,9 +46,9 @@ m_pUpdateTimer(new Timer())
 
 	// Apply simulated lag, using half the ping since it will be applied to both client
 	// and server.
-	if (GameManager::getSingletonPtr()->useNetworkSimulator()){
-		m_peer->ApplyNetworkSimulator(GameManager::getSingletonPtr()->getSimulatedPacketLoss(),
-			GameManager::getSingletonPtr()->getSimulatedPing() / 2, 0);
+	if (Game::getSingletonPtr()->useNetSimulator()){
+		m_peer->ApplyNetworkSimulator(Game::getSingletonPtr()->getNetSimulatedPacketLoss(),
+			Game::getSingletonPtr()->getNetSimulatedPing() / 2, 0);
 	}
 
 	Log::getSingletonPtr()->logMessage("Server initialized!");
@@ -102,10 +102,10 @@ Uint32 Server::chat(const std::string& msg)
 
 Uint32 Server::ready(const Uint32 fighter)
 {
-	if (this->addToReadyQueue(GameManager::getSingletonPtr()->getUsername(), fighter)){
+	if (this->addToReadyQueue(Game::getSingletonPtr()->getUsername(), fighter)){
 		RakNet::BitStream bit;
 		bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
-		bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
+		bit.Write(Game::getSingletonPtr()->getUsername().c_str());
 
 		return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 	}
@@ -127,7 +127,7 @@ Uint32 Server::startGame(void)
 
 	// Then tell any clients that are playing that they are actually playing.
 	// Check red player.
-	if (GameManager::getSingletonPtr()->getState() != GameManager::PLAYING_RED){
+	if (Game::getSingletonPtr()->getState() != Game::PLAYING_RED){
 		ReadyClient red = this->getNextRedPlayer();
 		ClientConnection redConnection = m_clients[this->getClient(red.username)];
 		m_redAddr = redConnection.addr;
@@ -138,7 +138,7 @@ Uint32 Server::startGame(void)
 	}
 
 	// Check blue player.
-	if (GameManager::getSingletonPtr()->getState() != GameManager::PLAYING_BLUE){
+	if (Game::getSingletonPtr()->getState() != Game::PLAYING_BLUE){
 		ReadyClient blue = this->getNextBluePlayer();
 		ClientConnection blueConnection = m_clients[this->getClient(blue.username)];
 		m_blueAddr = blueConnection.addr;
@@ -164,7 +164,7 @@ Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr)
 	bit.Write(static_cast<Uint32>(m_clients.size() + 1));
 
 	// Write server username.
-	bit.Write(GameManager::getSingletonPtr()->getUsername().c_str());
+	bit.Write(Game::getSingletonPtr()->getUsername().c_str());
 
 	// Write each client username.
 	for (ClientList::iterator itr = m_clients.begin();
@@ -268,7 +268,7 @@ void Server::removeClient(const RakNet::SystemAddress& addr)
 
 bool Server::isUsernameInUse(const std::string& username)
 {
-	if (username.compare(GameManager::getSingletonPtr()->getUsername()) == 0){
+	if (username.compare(Game::getSingletonPtr()->getUsername()) == 0){
 		return true;
 	}
 	for (ClientList::iterator itr = m_clients.begin();

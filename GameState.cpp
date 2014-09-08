@@ -24,7 +24,7 @@
 #include "Client.hpp"
 #include "NetMessage.hpp"
 #include "GamepadManager.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 #include "Timer.hpp"
 
 // ================================================ //
@@ -50,7 +50,7 @@ void GameState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering GameState...");
 
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 		m_pServerUpdateTimer->restart();
 		m_pResetServerInputTimer->restart();
 	}
@@ -102,7 +102,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 	if (e.type == SDL_KEYDOWN){
 		// Process mapped buttons.
 		// Red Player.
-		if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+		if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
 			switch (PlayerManager::getSingletonPtr()->getRedPlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
 			default:
 				break;
@@ -110,7 +110,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			case Input::BUTTON_LEFT:
 				if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(Input::BUTTON_LEFT) == false){
 					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, true);
-					if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
 					}
 				}
@@ -119,7 +119,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			case Input::BUTTON_RIGHT:
 				if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(Input::BUTTON_RIGHT) == false){
 					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, true);
-					if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
 					}
 				}
@@ -128,21 +128,21 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 		}
 
 		// Blue Player.
-		else if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_BLUE){
+		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
 			switch (PlayerManager::getSingletonPtr()->getBluePlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
 			default:
 				break;
 
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LEFT, true);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, true);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
 				}
 				break;
@@ -181,21 +181,21 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 	else if (e.type == SDL_KEYUP){
 		// Process mapped buttons.
 		// Red Player.
-		if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+		if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
 			switch (PlayerManager::getSingletonPtr()->getRedPlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
 			default:
 				break;
 
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LEFT, false);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, false, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_RIGHT, false);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false, dt);
 				}
 				break;
@@ -203,21 +203,21 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 		}
 
 		// Blue Player.
-		else if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_BLUE){
+		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
 			switch (PlayerManager::getSingletonPtr()->getBluePlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
 			default:
 				break;
 
 			case Input::BUTTON_LEFT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LEFT, false);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, false, dt);
 				}
 				break;
 
 			case Input::BUTTON_RIGHT:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, false);
-				if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false, dt);
 				}
 				break;
@@ -382,7 +382,7 @@ void GameState::update(double dt)
 
 	Engine::getSingletonPtr()->clearRenderer();
 
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 		for (Server::getSingletonPtr()->m_packet = Server::getSingletonPtr()->m_peer->Receive();
 			Server::getSingletonPtr()->m_packet;
 			Server::getSingletonPtr()->m_peer->DeallocatePacket(Server::getSingletonPtr()->m_packet),
@@ -427,7 +427,7 @@ void GameState::update(double dt)
 
 		Server::getSingletonPtr()->sendLastProcessedInput();
 	}
-	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(Input::BUTTON_LEFT) == true){
 			Client::getSingletonPtr()->sendInput(Input::BUTTON_LEFT, true, dt);
 		}
@@ -446,7 +446,7 @@ void GameState::update(double dt)
 				break;
 
 			case NetMessage::UPDATE_RED_PLAYER:
-				if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+				if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
 					RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
 						Client::getSingletonPtr()->getPacket()->length, false);
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
@@ -509,7 +509,6 @@ void GameState::update(double dt)
 	/*
 	The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
 	physics code or do away with it for now.
-	Fix how the client teleports back and forth when switch between left and right key.
 	*/
 
 	// Update and render all game objects and players.

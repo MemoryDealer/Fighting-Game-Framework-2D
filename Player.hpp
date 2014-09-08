@@ -18,6 +18,7 @@
 
 #include "Object.hpp"
 #include "Server.hpp"
+#include "Client.hpp"
 
 // ================================================ //
 
@@ -84,6 +85,9 @@ public:
 	// Empty destructor.
 	virtual ~Player(void);
 
+	// Adds net input from client to processing queue.
+	void enqueueClientInput(const Client::NetInput& input);
+
 	// Determines whether or not to snap player to the new position, depending
 	// on the distance, otherwise it graudally slides the player. Used when
 	// receiving a network update on the client.
@@ -98,6 +102,7 @@ public:
 	// Updates the current Move, handles collision.
 	virtual void update(double dt);
 
+	// Rewinds player state to last server update and replays unprocessed inputs.
 	void serverReconciliation(void);
 
 	// Renders the Player sprite.
@@ -141,7 +146,8 @@ private:
 	Uint32 m_mode;
 
 	std::shared_ptr<Input> m_pInput;
-	std::queue<Server::PlayerUpdate> m_playerUpdates;
+	std::queue<Client::NetInput> m_clientInputs;
+	std::queue<Server::PlayerUpdate> m_serverUpdates;
 };
 
 // ================================================ //

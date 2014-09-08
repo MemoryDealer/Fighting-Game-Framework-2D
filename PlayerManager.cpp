@@ -19,7 +19,7 @@
 #include "Input.hpp"
 #include "Engine.hpp"
 #include "GamepadManager.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 
 // ================================================ //
 
@@ -256,21 +256,22 @@ void PlayerManager::updateCamera(double dt)
 
 void PlayerManager::update(double dt)
 {
-	m_pRedPlayer->serverReconciliation();
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
-		if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_RED){
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+		//m_pRedPlayer->update(dt);
+		m_pBluePlayer->update(dt);
+		/*if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
 			m_pRedPlayer->update(dt);
 		}
-		else if (GameManager::getSingletonPtr()->getState() == GameManager::PLAYING_BLUE){
+		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
 			m_pBluePlayer->update(dt);
-		}
+		}*/
 	}
-	else{
+	else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
+		m_pRedPlayer->serverReconciliation();
+		m_pBluePlayer->serverReconciliation();
 		m_pRedPlayer->update(dt);
 		m_pBluePlayer->update(dt);
 	}
-
-	//printf("RED: %d\nBlue: %d\n", m_pRedPlayer->getPosition().x, m_pBluePlayer->getPosition().x);
 
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();

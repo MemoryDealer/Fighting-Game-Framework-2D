@@ -27,7 +27,7 @@
 #include "AppState.hpp"
 #include "App.hpp"
 #include "GamepadManager.hpp"
-#include "GameManager.hpp"
+#include "Game.hpp"
 #include "Label.hpp"
 
 // ================================================ //
@@ -97,14 +97,14 @@ void MenuState::resume(void)
 	this->findByName(LOBBY_STATE)->reset();
 
 	// Returning to the menu state means a network connection may be active, reset it.
-	if (GameManager::getSingletonPtr()->getMode() == GameManager::SERVER){
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 		delete Server::getSingletonPtr();
 	}
-	else if (GameManager::getSingletonPtr()->getMode() == GameManager::CLIENT){
+	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		delete Client::getSingletonPtr();
 	}
 
-	switch (GameManager::getSingletonPtr()->getState()){
+	switch (Game::getSingletonPtr()->getState()){
 	default:
 		break;
 
@@ -114,7 +114,7 @@ void MenuState::resume(void)
 		break;
 	}
 
-	GameManager::getSingletonPtr()->setMode(GameManager::IDLE);
+	Game::getSingletonPtr()->setMode(Game::IDLE);
 
 	Log::getSingletonPtr()->logMessage("Resuming MenuState...");
 }
@@ -468,15 +468,15 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Host::BUTTON_HOST:
-				GameManager::getSingletonPtr()->setMode(GameManager::SERVER);
+				Game::getSingletonPtr()->setMode(Game::SERVER);
 				{
 					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_USERNAME)->getText();
-					if (username.length() > GameManager::MAX_USERNAME_LENGTH){
+					if (username.length() > Game::MAX_USERNAME_LENGTH){
 						break;
 					}
 					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Host::TEXTBOX_PORT)->getText();
 					
-					GameManager::getSingletonPtr()->setUsername(username);
+					Game::getSingletonPtr()->setUsername(username);
 					new Server(std::stoi(port));
 				}
 				this->pushAppState(this->findByName(LOBBY_STATE));
@@ -510,16 +510,16 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Join::BUTTON_JOIN:
-				GameManager::getSingletonPtr()->setMode(GameManager::CLIENT);
+				Game::getSingletonPtr()->setMode(Game::CLIENT);
 				{
 					std::string username = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_USERNAME)->getText();
-					if (username.length() > GameManager::MAX_USERNAME_LENGTH){
+					if (username.length() > Game::MAX_USERNAME_LENGTH){
 						break;
 					}
 					std::string server = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_SERVER)->getText();
 					std::string port = m_pGUI->getWidgetPtr(GUIMenuStateLayer::Join::TEXTBOX_PORT)->getText();
 					
-					GameManager::getSingletonPtr()->setUsername(username);
+					Game::getSingletonPtr()->setUsername(username);
 					new Client(server, std::stoi(port));
 				}
 				this->pushAppState(this->findByName(LOBBY_STATE));
