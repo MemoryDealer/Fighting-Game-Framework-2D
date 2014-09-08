@@ -400,12 +400,12 @@ void GameState::update(double dt)
 					Client::NetInput netInput;
 					bit.Read(netInput);
 					if (Server::getSingletonPtr()->m_packet->systemAddress == Server::getSingletonPtr()->m_redAddr){
-						//if (Server::getSingletonPtr()->validateInput(netInput) == true){
+						if (Server::getSingletonPtr()->validateInput(netInput) == true){
 							PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(netInput.input, netInput.value);
 							PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
 							PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(netInput.dt);
 							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;
-						//}
+						}
 					}
 					else{
 						PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
@@ -465,13 +465,14 @@ void GameState::update(double dt)
 					// Update positions.
 					Server::PlayerUpdate red;
 					bit.Read(red);
-					if (Game::getSingletonPtr()->getMode() == Game::PLAYING_RED){
+					printf("Mode: %d\n", Game::getSingletonPtr()->getMode());
+					if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
 						PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
 					}
 
 					Server::PlayerUpdate blue;
 					bit.Read(blue);
-					if (Game::getSingletonPtr()->getMode() == Game::PLAYING_BLUE){
+					if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
 						PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
 					}
 					else{

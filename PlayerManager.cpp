@@ -276,20 +276,6 @@ void PlayerManager::update(double dt)
 		m_pBluePlayer->update(dt);
 	}
 
-	/*m_pRedPlayer->serverReconciliation();
-	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-		if (Game::getSingletonPtr()->getState() == Game::PLAYING_RED){
-			m_pRedPlayer->update(dt);
-		}
-		else if (Game::getSingletonPtr()->getState() == Game::PLAYING_BLUE){
-			m_pBluePlayer->update(dt);
-		}
-	}
-	else{
-		m_pRedPlayer->update(dt);
-		m_pBluePlayer->update(dt);
-	}*/
-
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();
 
