@@ -24,6 +24,7 @@ m_centered(centered),
 m_width(0),
 m_height(0),
 m_text(),
+m_wrap(0),
 m_font(FontManager::MAIN),
 m_offset(0)
 {
@@ -39,7 +40,7 @@ Label::~Label(void)
 
 // ================================================ //
 
-void Label::create(const std::string& label, const int wrap)
+void Label::build(const std::string& label, const int wrap)
 {
 	const int MAX_LENGTH = 512;
 	std::string finalLabel = label;
@@ -76,6 +77,7 @@ void Label::create(const std::string& label, const int wrap)
 	SDL_FreeSurface(surf);
 
 	m_text = label;
+	m_wrap = wrap;
 }
 
 // ================================================ //

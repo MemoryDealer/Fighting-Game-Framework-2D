@@ -62,6 +62,9 @@ public:
 	// Wraps parseValue(), converts the std::string to a SDL_Rect.
 	virtual SDL_Rect parseRect(const std::string& section, const std::string& value);
 
+	// Wraps parseValue(), converts the std::string to a SDL_Color.
+	virtual SDL_Color parseColor(const std::string& section, const std::string& value);
+
 	// Getters
 
 	// Returns true if the file handle is open.

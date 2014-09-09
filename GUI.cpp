@@ -80,7 +80,8 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 		default:
 			pWidget->setPosition(c.parseRect(layer, value + "pos"));
 			pWidget->getLabel()->setFont(c.parseIntValue(layer, value + "font"));
-			pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
+			pWidget->getLabel()->setColor(c.parseColor(layer, value + "labelcolor"), false);
+			pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));			
 			break;
 
 		case Widget::Type::LISTBOX:

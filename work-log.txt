@@ -395,6 +395,9 @@
 -Created GUIGameState.
 -Added WidgetHealthBar to display each player's health.
 
+#9/9/14
+-Added Config::parseColor(), added color parsing for labels in GUI.
+
 #TODO
 The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
 	physics code or do away with it for now.
@@ -405,7 +408,6 @@ The client and server get out of sync when using physics code, but sync when jus
 -Add more bounds checking in GUI functions, getting lots of vector out of bounds errors.
 -Add an on-screen keyboard for selector mode during text editing. It should render on top of the current layer.
 	Make Textbox scroll left/right for longer strings. Add multiline style.
--use c conversion funtion family for network stuff. hton and ntoh, both short(port) and long(ip). This makes your code independent of byte order
 -Add the ability for the GUI to enable/disable interaction, use when processing data.
 -Explicitly define copy constructor and copy assignment operator for all classes.
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be

@@ -174,3 +174,32 @@ SDL_Rect Config::parseRect(const std::string& section, const std::string& value)
 }
 
 // ================================================ //
+
+SDL_Color Config::parseColor(const std::string& section, const std::string& value)
+{
+	SDL_Color color = { 255, 255, 255, 255 };
+
+	std::string str = this->parseValue(section, value);
+	if (!str.empty()){
+		// str should look like "(255,255,255,255)"
+		char c;
+		int i = 0;
+		std::istringstream parse(str);
+		parse >> c; // eat "(".
+		parse >> i;
+		color.r = static_cast<Uint8>(i);
+		parse >> c; // eat ",".
+		parse >> i;
+		color.g = static_cast<Uint8>(i);
+		parse >> c; // eat ",".
+		parse >> i;
+		color.b = static_cast<Uint8>(i);
+		parse >> c; // eat ",".
+		parse >> i;
+		color.a = static_cast<Uint8>(i);
+	}
+
+	return color;
+}
+
+// ================================================ //

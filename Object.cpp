@@ -94,9 +94,9 @@ void Object::setTextureCoordinates(const int x, const int y, const int w, const 
 
 // ================================================ //
 
-inline void Object::setLabel(const std::string& label, const int offset)
+void Object::setLabel(const std::string& label, const int offset)
 {
-	m_pLabel->create(label); 
+	m_pLabel->build(label); 
 	m_pLabel->setOffset(offset);
 }
 

@@ -47,7 +47,7 @@ void WidgetListbox::addString(const std::string& str)
 
 	std::shared_ptr<Label> label(new Label());
 	label->setFont(m_font);
-	label->create(str, this->getPosition().w);
+	label->build(str, this->getPosition().w);
 
 	m_labels.push_back(label);
 }
@@ -56,7 +56,7 @@ void WidgetListbox::addString(const std::string& str)
 
 void WidgetListbox::setEntry(const int n, const std::string& str)
 {
-	m_labels[n]->create(str, this->getPosition().w);
+	m_labels[n]->build(str, this->getPosition().w);
 }
 
 // ================================================ //
