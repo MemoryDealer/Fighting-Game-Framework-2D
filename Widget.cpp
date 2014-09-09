@@ -58,6 +58,10 @@ void Widget::setAppearance(const int appearance, std::shared_ptr<SDL_Texture> pT
 		case Widget::Type::LISTBOX:
 			this->setTexture(GUITheme::getSingletonPtr()->ListboxTexture);
 			break;
+
+		case Widget::Type::HEALTHBAR:
+
+			break;
 		}
 	}
 	else{

@@ -19,6 +19,7 @@
 #include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
+#include "GUIGameState.hpp"
 #include "MessageRouter.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
@@ -31,10 +32,12 @@
 
 GameState::GameState(void) :
 m_pObjectManager(new ObjectManager()),
+m_pGUI(nullptr),
 m_pServerUpdateTimer(new Timer()),
 m_pResetServerInputTimer(new Timer())
 {
-
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
+	m_pGUI.reset(new GUIGameState(c.parseValue("GUI", "gamestate")));
 }
 
 // ================================================ //
@@ -610,6 +613,7 @@ void GameState::update(double dt)
 	// Update and render all game objects and players.
 	StageManager::getSingletonPtr()->update(dt);
 	m_pObjectManager->update(dt);
+	m_pGUI->update(dt);
 	PlayerManager::getSingletonPtr()->update(dt);
 
 	Engine::getSingletonPtr()->renderPresent();

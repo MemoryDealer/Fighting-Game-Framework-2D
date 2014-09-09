@@ -39,7 +39,8 @@ public:
 		STATIC = 0,
 		BUTTON,
 		TEXTBOX,
-		LISTBOX
+		LISTBOX,
+		HEALTHBAR
 	};
 
 	// Links connect GUI widgets to other GUI widgets. This is used only when the GUI
@@ -84,6 +85,7 @@ public:
 	virtual void setEntry(const int n, const std::string& str){}
 	virtual void removeEntry(const std::string& str){}
 	virtual void clear(void){}
+	virtual void setPercent(const int percent){}
 	
 	// Getters
 

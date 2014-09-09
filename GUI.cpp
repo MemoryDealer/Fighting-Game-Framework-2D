@@ -18,6 +18,7 @@
 #include "WidgetButton.hpp"
 #include "WidgetTextbox.hpp"
 #include "WidgetListbox.hpp"
+#include "WidgetHealthBar.hpp"
 #include "Label.hpp"
 
 // ================================================ //
@@ -62,6 +63,10 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 	case Widget::Type::LISTBOX:
 		widgetName = "listbox.";
 		break;
+
+	case Widget::Type::HEALTHBAR:
+		widgetName = "healthbar.";
+		break;
 	}
 
 	// Parse each setting for this Widget.
@@ -71,16 +76,26 @@ void GUILayer::parse(Config& c, const int widgetType, const StringList& names)
 		std::string value = widgetName + names[i] + ":";
 
 		pWidget->setAppearance(Widget::Appearance::IDLE);
-		pWidget->setPosition(c.parseRect(layer, value + "pos"));
-		if (widgetType == Widget::Type::LISTBOX){
+		switch (widgetType){
+		default:
+			pWidget->setPosition(c.parseRect(layer, value + "pos"));
+			pWidget->getLabel()->setFont(c.parseIntValue(layer, value + "font"));
+			pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
+			break;
+
+		case Widget::Type::LISTBOX:
+			pWidget->setPosition(c.parseRect(layer, value + "pos"));
 			// A listbox does not use the default label, so save font for later when 
 			// generating labels.
 			static_cast<WidgetListbox*>(pWidget.get())->setFont(c.parseIntValue(layer, value + "font"));
+			break;
+
+		case Widget::Type::HEALTHBAR:
+			pWidget->setPosition(c.parseRect(layer, value + "pos"));
+			// Skip parsing label values for healthbars.
+			break;
 		}
-		else{
-			pWidget->getLabel()->setFont(c.parseIntValue(layer, value + "font"));
-			pWidget->setLabel(c.parseValue(layer, value + "label", true), c.parseIntValue(layer, value + "labeloffset"));
-		}
+		
 		pWidget->parseLinks(c.parseValue(layer, value + "links"));
 		pWidget->setStyle(c.parseIntValue(layer, value + "style"));
 		pWidget->setEnabled(!c.parseIntValue(layer, value + "disabled"));
@@ -94,6 +109,7 @@ template void GUILayer::parse<WidgetStatic>(Config& c, const int widgetType, con
 template void GUILayer::parse<WidgetButton>(Config& c, const int widgetType, const StringList& names);
 template void GUILayer::parse<WidgetTextbox>(Config& c, const int widgetType, const StringList& names);
 template void GUILayer::parse<WidgetListbox>(Config& c, const int widgetType, const StringList& names);
+template void GUILayer::parse<WidgetHealthBar>(Config& c, const int widgetType, const StringList& names);
 
 // ================================================ //
 

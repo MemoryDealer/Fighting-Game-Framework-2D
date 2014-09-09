@@ -443,7 +443,11 @@ void LobbyState::processGUIAction(const int type)
 			case GUILobbyStateLayer::Root::BUTTON_START:
 				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					// Load fighters being used by players.
+					// TEMPORARY FOR GAME STATE GUI DEBUGGING
+					this->pushAppState(this->findByName(GAME_STATE));
+					break;
 					if (Server::getSingletonPtr()->getReadyQueueSize() < 2){
+					
 						m_pGUI->showMessageBox(true, "Not enough players are ready!");
 					}
 					else{
