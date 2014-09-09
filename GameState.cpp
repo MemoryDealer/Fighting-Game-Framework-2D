@@ -607,12 +607,6 @@ void GameState::update(double dt)
 		}
 	}
 
-//TODO:$
-	/*
-	The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
-	physics code or do away with it for now.
-	*/
-
 	// Update and render all game objects and players.
 	StageManager::getSingletonPtr()->update(dt);
 	m_pObjectManager->update(dt);

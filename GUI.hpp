@@ -174,11 +174,11 @@ public:
 	// Modifies the label of the Widget under control of the cursor.
 	void handleTextInput(const char* text, const bool backspace = false);
 
-	// Sets the text the message box layer will show.
-	void setMessageBoxText(const std::string& text);
-
-	// Shows the message box layer if true.
+	// Shows the message box layer if true, and sets the text if specified.
 	void showMessageBox(const bool show, const std::string& text = "");
+
+	// Shows the yes/no box if true, and sets the text if specified.
+	void showYesNoBox(const bool show, const std::string& text = "");
 
 	// Getters
 
@@ -213,6 +213,9 @@ public:
 
 	// Returns true if the message box is being rendered.
 	const bool isMessageBoxVisible(void) const;
+
+	// Returns true if the yes/no box is being rendered.
+	const bool isYesNoBoxVisible(void) const;
 	
 	// Setters
 
@@ -246,7 +249,8 @@ public:
 
 	// Enumerate message box layer as index zero.
 	enum{
-		MESSAGEBOX = 0
+		MESSAGEBOX = 0,
+		YESNOBOX
 	};
 
 private:
@@ -293,23 +297,22 @@ public:
 
 // ================================================ //
 
+class GUILayerYesNoBox : public GUILayer
+{
+public:
+	explicit GUILayerYesNoBox(void);
+
+	enum{
+		BUTTON_YES = 0,
+		BUTTON_NO,
+		LISTBOX_TEXT
+	};
+};
+
+// ================================================ //
+
 inline void GUI::addLayer(std::shared_ptr<GUILayer> layer){
 	m_layers.push_back(layer);
-}
-
-inline void GUI::showMessageBox(const bool show, const std::string& text){
-	if (show == true && m_layerStack.top() != GUI::MESSAGEBOX){
-		// Set text if specified.
-		if (text != ""){
-			this->setMessageBoxText(text);
-		}
-		// Display the message box.
-		m_nextLayer = m_layerStack.top();
-		this->pushLayer(GUI::MESSAGEBOX);
-	}
-	else if(show == false && this->getCurrentLayer() == GUI::MESSAGEBOX){
-		this->popLayer();
-	}
 }
 
 // Getters
@@ -352,6 +355,10 @@ inline const bool GUI::isEditingText(void) const{
 
 inline const bool GUI::isMessageBoxVisible(void) const{
 	return (m_layerStack.top() == GUI::MESSAGEBOX);
+}
+
+inline const bool GUI::isYesNoBoxVisible(void) const{
+	return (m_layerStack.top() == GUI::YESNOBOX);
 }
 
 // Setters

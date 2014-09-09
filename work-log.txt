@@ -391,9 +391,11 @@
 #9/8/14
 -Game state can now be pushed again after the first time, had to call reset() on the state when resuming lobby state.
 -The player list is updated when resuming lobby state to account for disconnections.
+-Added Yes/No box to GUI, it is processed using Game's Error code.
 
 #TODO
--Add yes/no box when quitting, add GUI to game state.
+The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
+	physics code or do away with it for now.
 -Add ability to select an entry in listbox if enabled.
 -check the port when starting server
 -add offsets in themes for text

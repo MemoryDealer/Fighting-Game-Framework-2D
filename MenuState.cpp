@@ -367,13 +367,24 @@ void MenuState::processGUIAction(const int type)
 			break;
 
 		case GUI::MESSAGEBOX:
-			switch (m_pGUI->getSelectedWidget()){
-			default:
-				break;
-
-			case GUILayerMessageBox::BUTTON_OK:
+			if (m_pGUI->getSelectedWidget() == GUILayerMessageBox::BUTTON_OK){
 				m_pGUI->showMessageBox(false);
-				break;
+			}
+			break;
+
+		case GUI::YESNOBOX:
+			if (m_pGUI->getSelectedWidget() == GUILayerYesNoBox::BUTTON_YES){
+				switch (Game::getSingletonPtr()->getError()){
+				default:
+					break;
+
+				case Game::QUIT:
+					m_quit = true;
+					break;
+				}
+			}
+			else if (m_pGUI->getSelectedWidget() == GUILayerYesNoBox::BUTTON_NO){
+				m_pGUI->showYesNoBox(false);
 			}
 			break;
 
@@ -395,6 +406,8 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Root::BUTTON_QUIT:
+				/*m_pGUI->showYesNoBox(true, "Are you sure you want to quit the game?");
+				Game::getSingletonPtr()->setError(Game::QUIT);*/
 				m_quit = true;
 				break;
 			}

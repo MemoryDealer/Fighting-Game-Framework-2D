@@ -50,6 +50,11 @@ public:
 		SPECTATING
 	};
 
+	// Some Error codes.
+	enum Error{
+		QUIT = 1,
+	};
+
 	// Getters
 
 	// Returns the game mode.

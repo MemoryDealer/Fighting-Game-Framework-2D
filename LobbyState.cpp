@@ -167,6 +167,8 @@ void LobbyState::handleInput(SDL_Event& e)
 			}
 			else{
 				if (m_pGUI->getCurrentLayer() == GUILobbyState::Layer::ROOT){
+					/*m_pGUI->showYesNoBox(true, "Are you sure you want to quit?");
+					Game::getSingletonPtr()->setError(Game::QUIT);*/
 					m_quit = true;
 				}
 				else{
@@ -259,12 +261,11 @@ void LobbyState::handleInput(SDL_Event& e)
 			break;
 
 		case SDLK_j:
-			m_pGUI->setMessageBoxText("Hello there, this is a test message from Satan.");
-			m_pGUI->showMessageBox(true);
+
 			break;
 
 		case SDLK_k:
-			m_pGUI->showMessageBox(false);
+
 			break;
 		}
 	}
@@ -404,6 +405,23 @@ void LobbyState::processGUIAction(const int type)
 				m_pGUI->showMessageBox(false);
 			break;
 
+		case GUI::YESNOBOX:
+			if (m_pGUI->getSelectedWidget() == GUILayerYesNoBox::BUTTON_YES){
+				switch (Game::getSingletonPtr()->getError()){
+				default:
+					break;
+
+				case Game::QUIT:
+					m_pGUI->showYesNoBox(false);
+					m_quit = true;
+					break;
+				}
+			}
+			else if (m_pGUI->getSelectedWidget() == GUILayerYesNoBox::BUTTON_NO){
+				m_pGUI->showYesNoBox(false);
+			}
+			break;
+
 		case GUILobbyState::Layer::ROOT:
 			switch (m_pGUI->getSelectedWidget()){
 			default:
@@ -466,22 +484,23 @@ void LobbyState::processGUIAction(const int type)
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_SEND:
-			{
-				std::string message = Game::getSingletonPtr()->getUsername() +
-					": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
-				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-					Server::getSingletonPtr()->chat(message);
+				{
+					std::string message = Game::getSingletonPtr()->getUsername() +
+						": " + m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->getText();
+					if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+						Server::getSingletonPtr()->chat(message);
+					}
+					else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->chat(message);
+					}
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(message);
+					m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
 				}
-				else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-					Client::getSingletonPtr()->chat(message);
-				}
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(message);
-				m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::TEXTBOX_SEND)->setLabel("");
-			}
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_EXIT:
-				m_quit = true;
+				m_pGUI->showYesNoBox(true, "Are you sure you want to quit?");
+				Game::getSingletonPtr()->setError(Game::QUIT);
 				break;
 			}
 			break;

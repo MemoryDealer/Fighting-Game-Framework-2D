@@ -12,6 +12,11 @@ size=16
 ok=(375,341,100,50)
 text=(232,95,390,240)
 
+[yesnobox]
+yes=(325,341,100,50)
+no=(430,341,100,50)
+text=(232,95,390,240)
+
 [button]
 tex=Data/GUI/Textures/button1.png
 tex.selected=Data/GUI/Textures/button1selected.png

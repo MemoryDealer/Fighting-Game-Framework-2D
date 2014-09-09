@@ -149,8 +149,8 @@ m_selectorPressed(false)
 	Config theme(e.parseValue("GUI", "theme"));
 	std::shared_ptr<GUILayer> messageBox(new GUILayerMessageBox());
 
-	SDL_Rect rc = theme.parseRect("messagebox", "ok");
 	std::shared_ptr<WidgetButton> ok(new WidgetButton(GUILayerMessageBox::BUTTON_OK));
+	SDL_Rect rc = theme.parseRect("messagebox", "ok");
 	ok->setPosition(rc);
 	ok->setAppearance(Widget::Appearance::IDLE);
 	ok->setLabel("Ok", 25);
@@ -165,6 +165,32 @@ m_selectorPressed(false)
 	messageBox->addWidget(text);
 
 	this->addLayer(messageBox);
+
+	// Setup yes/no box.
+	std::shared_ptr<GUILayer> yesnoBox(new GUILayerYesNoBox());
+	std::shared_ptr<WidgetButton> yes(new WidgetButton(GUILayerYesNoBox::BUTTON_YES));
+	rc = theme.parseRect("yesnobox", "yes");
+	yes->setPosition(rc);
+	yes->setAppearance(Widget::Appearance::IDLE);
+	yes->setLabel("Yes", 25);
+	yesnoBox->addWidget(yes);
+
+	std::shared_ptr<WidgetButton> no(new WidgetButton(GUILayerYesNoBox::BUTTON_NO));
+	rc = theme.parseRect("yesnobox", "no");
+	no->setPosition(rc);
+	no->setAppearance(Widget::Appearance::IDLE);
+	no->setLabel("No", 25);
+	yesnoBox->addWidget(no);
+
+	text.reset(new WidgetListbox(GUILayerYesNoBox::LISTBOX_TEXT));
+	text->setAppearance(Widget::Appearance::IDLE);
+	rc = theme.parseRect("yesnobox", "text");
+	text->setPosition(rc);
+	text->setEnabled(false);
+	text->addString("Message");
+	yesnoBox->addWidget(text);
+
+	this->addLayer(yesnoBox);
 }
 
 // ================================================ //
@@ -228,8 +254,37 @@ void GUI::handleTextInput(const char* text, const bool backspace)
 
 // ================================================ //
 
-void GUI::setMessageBoxText(const std::string& text){
-	m_layers[GUI::MESSAGEBOX]->getWidgetPtr(GUILayerMessageBox::LISTBOX_TEXT)->setEntry(0, text);
+void GUI::showMessageBox(const bool show, const std::string& text){
+	if (show == true && m_layerStack.top() != GUI::MESSAGEBOX){
+		// Set text if specified.
+		if (text != ""){
+			m_layers[GUI::MESSAGEBOX]->getWidgetPtr(
+				GUILayerMessageBox::LISTBOX_TEXT)->setEntry(0, text);
+		}
+		// Display the message box.
+		m_nextLayer = m_layerStack.top();
+		this->pushLayer(GUI::MESSAGEBOX);
+	}
+	else if (show == false && this->getCurrentLayer() == GUI::MESSAGEBOX){
+		this->popLayer();
+	}
+}
+
+// ================================================ //
+
+void GUI::showYesNoBox(const bool show, const std::string& text){
+	if (show == true && m_layerStack.top() != GUI::YESNOBOX){
+		if (text != ""){
+			m_layers[GUI::YESNOBOX]->getWidgetPtr(
+				GUILayerYesNoBox::LISTBOX_TEXT)->setEntry(0, text);
+		}
+
+		m_nextLayer = m_layerStack.top();
+		this->pushLayer(GUI::YESNOBOX);
+	}
+	else if (show == false && this->getCurrentLayer() == GUI::YESNOBOX){
+		this->popLayer();
+	}
 }
 
 // ================================================ //
@@ -326,7 +381,7 @@ void GUI::update(double dt)
 
 	// If the message box is being rendered, render the next layer on the stack
 	// along with a blended black rectangle.
-	if (m_layerStack.top() == GUI::MESSAGEBOX){
+	if (m_layerStack.top() == GUI::MESSAGEBOX || m_layerStack.top() == GUI::YESNOBOX){
 		m_layers[m_nextLayer]->render();
 		SDL_Rect rc;
 		rc.x = rc.y = 0;
@@ -348,6 +403,14 @@ GUILayerMessageBox::GUILayerMessageBox(void)
 {
 	this->setID(GUI::MESSAGEBOX);
 	this->setLayerName("messagebox");
+}
+
+// ================================================ //
+
+GUILayerYesNoBox::GUILayerYesNoBox(void)
+{
+	this->setID(GUI::YESNOBOX);
+	this->setLayerName("yesnobox");
 }
 
 // ================================================ //

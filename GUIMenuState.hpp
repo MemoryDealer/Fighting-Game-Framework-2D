@@ -34,7 +34,7 @@ public:
 
 	// Layer names enumerated for clarity.
 	enum Layer{
-		ROOT = 1,
+		ROOT = 2,
 		CAMPAIGN,
 		ARCADE,
 			ONLINE,
