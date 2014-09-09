@@ -29,6 +29,9 @@ public:
 	// Empty destructor.
 	virtual ~WidgetHealthBar(void);
 
+	// Sets the position and calculates offset.
+	virtual void setPosition(const SDL_Rect& pos);
+
 	// Updates with delta time.
 	virtual void update(double dt);
 
@@ -39,7 +42,22 @@ public:
 
 private:
 	int m_percent;
+	int m_outlineWidth;
+	SDL_Rect m_outline;
+	SDL_Rect m_renderSrc, m_renderDst;
 };
+
+// ================================================ //
+
+inline void WidgetHealthBar::setPosition(const SDL_Rect& pos){
+	Object::setPosition(pos);
+	m_outline = m_dst;
+	m_outline.x -= m_outlineWidth;
+	m_outline.y -= m_outlineWidth;
+	m_outline.w += (m_outlineWidth * 2);
+	m_outline.h += (m_outlineWidth * 2);
+	m_renderDst = m_dst;
+}
 
 // ================================================ //
 

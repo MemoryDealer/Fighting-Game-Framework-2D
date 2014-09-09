@@ -32,6 +32,7 @@ cursor=Data/GUI/Textures/textbox1cursor.png
 tex=Data/GUI/Textures/listbox1.png
 border=Data/GUI/Textures/listboxborder1.jpg
 
-[healthbox]
+[healthbar]
 tex=Data/GUI/Textures/HealthBar.png
+outlineWidth=1
 

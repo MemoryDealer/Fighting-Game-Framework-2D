@@ -19,14 +19,20 @@
 
 WidgetHealthBar::WidgetHealthBar(const int id) :
 Widget(id),
-m_percent(100)
+m_percent(100),
+m_outline(),
+m_renderSrc(),
+m_renderDst()
 {
 	this->setType(Widget::Type::HEALTHBAR);
 
 	Config e(Engine::getSingletonPtr()->getSettingsFile());
 	Config theme(e.parseValue("GUI", "theme"));
 
-	this->setTextureFile(theme.parseValue("healthbox", "tex"));
+	this->setTextureFile(theme.parseValue("healthbar", "tex"));
+	m_renderSrc = m_src;
+
+	m_outlineWidth = theme.parseIntValue("healthbar", "outlineWidth");
 }
 
 // ================================================ //
@@ -47,14 +53,24 @@ void WidgetHealthBar::update(double dt)
 
 void WidgetHealthBar::render(void)
 {
-	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+	// Render border around texture.
+	SDL_SetRenderDrawColor(Engine::getSingletonPtr()->getRenderer(), 255, 255, 255, 255);
+	SDL_RenderDrawRect(Engine::getSingletonPtr()->getRenderer(), &m_outline);
+
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_renderSrc, &m_renderDst, 0, nullptr, m_flip);
 }
 
 // ================================================ //
 
 void WidgetHealthBar::setPercent(const int percent)
 {
+	double width = static_cast<double>(m_src.w);
+	double newWidth = width * static_cast<double>(percent / 100.0);
+	m_renderSrc.w = static_cast<int>(newWidth);
 
+	width = static_cast<double>(m_dst.w);
+	newWidth = width * static_cast<double>(percent / 100.0);
+	m_renderDst.w = static_cast<int>(newWidth);
 }
 
 // ================================================ //

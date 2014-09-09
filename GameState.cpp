@@ -20,6 +20,7 @@
 #include "Input.hpp"
 #include "Config.hpp"
 #include "GUIGameState.hpp"
+#include "Widget.hpp"
 #include "MessageRouter.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
@@ -178,6 +179,14 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 		case SDLK_p:
 			//PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
 			//PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
+			break;
+
+		case SDLK_j:
+			m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::HEALTHBAR_RED)->setPercent(50);
+			break;
+
+		case SDLK_k:
+			m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::HEALTHBAR_RED)->setPercent(75);
 			break;
 
 		case SDLK_ESCAPE:

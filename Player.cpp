@@ -41,6 +41,7 @@ m_clientInputs(),
 m_serverUpdates()
 {
 	m_dst.w = m_dst.h = 100;
+	m_dst.y = 380;
 
 	// temp.
 	m_xAccel = 50;

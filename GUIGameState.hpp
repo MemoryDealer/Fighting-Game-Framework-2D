@@ -76,7 +76,7 @@ namespace GUIGameStateLayer{
 
 	// ================================================ //
 
-	// Displayed before a match beings, showing each fighter with
+	// Displayed before a match begins, showing each fighter with
 	// their detailed portrait.
 	class Pregame : public GUILayer
 	{
