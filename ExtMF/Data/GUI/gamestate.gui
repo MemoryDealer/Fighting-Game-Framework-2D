@@ -1,0 +1,39 @@
+[layer.root]
+#ID 0
+static.red.fighter:pos=(30,70,200,50)
+static.red.fighter:label="red.fighter"
+static.red.fighter:labelcolor=(255,25,25,255)
+
+#ID 1
+static.blue.fighter:pos=(470,70,200,50)
+static.blue.fighter:label="blue.fighter"
+static.blue.fighter:labelcolor=(25,25,255,255)
+
+#ID 2
+static.red.name:pos=(10,430,200,50)
+static.red.name:label="red.name"
+
+#ID 3
+static.blue.name:pos=(644,430,200,50)
+static.blue.name:label="blue.name"
+
+#ID 4
+static.red.wins:pos=(330,70,100,50)
+static.red.wins:label="0"
+
+#ID 5
+static.blue.wins:pos=(770,70,100,50)
+static.blue.wins:label="0"
+
+#ID 6
+static.countdown:pos=(377,100,50,50)
+static.countdown:label="3"
+
+#ID 7
+healthbar.red:pos=(30,20,350,30)
+
+#ID 8
+healthbar.blue:pos=(470,20,350,30)
+
+
+
