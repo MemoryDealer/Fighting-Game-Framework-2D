@@ -59,6 +59,15 @@ void GameState::enter(void)
 		m_pResetServerInputTimer->restart();
 	}
 
+	PlayerManager::getSingletonPtr()->getRedPlayer()->setHealthBarPtr(m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::HEALTHBAR_RED));
+	PlayerManager::getSingletonPtr()->getBluePlayer()->setHealthBarPtr(m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::HEALTHBAR_BLUE));
+
+	// Show correct fighter names.
+	m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::STATIC_RED_FIGHTER)->setLabel(
+		PlayerManager::getSingletonPtr()->getRedFighterName());
+	m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::STATIC_BLUE_FIGHTER)->setLabel(
+		PlayerManager::getSingletonPtr()->getBlueFighterName());
+
 	Game::getSingletonPtr()->setError(0);
 }
 

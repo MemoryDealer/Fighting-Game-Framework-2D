@@ -398,6 +398,10 @@
 #9/9/14
 -Added Config::parseColor(), added color parsing for labels in GUI.
 
+#9/11/14
+-PlayerManager stores index of fighter that was loaded instead of the filename. It is used to retrieve the fighter name for displaying in the 
+	game state GUI.
+
 #TODO
 The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
 	physics code or do away with it for now.

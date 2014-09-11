@@ -23,6 +23,7 @@
 #include "MessageRouter.hpp"
 #include "Client.hpp"
 #include "Game.hpp"
+#include "WidgetHealthBar.hpp"
 
 // ================================================ //
 
@@ -36,6 +37,8 @@ m_xMax(0),
 m_yMax(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
+m_hp(100),
+m_pHealthBar(nullptr),
 m_pInput(new Input(buttonMapFile)),
 m_clientInputs(),
 m_serverUpdates()

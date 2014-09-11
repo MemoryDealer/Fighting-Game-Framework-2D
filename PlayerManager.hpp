@@ -43,9 +43,6 @@ public:
 	// Empty destructor.
 	~PlayerManager(void);
 
-	// Allocates both Player objects and sets up default data.
-	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
-
 	// Finds fighter files and calls other load() function with filenames.
 	bool load(const Uint32 redFighter, const Uint32 blueFighter);
 
@@ -70,6 +67,12 @@ public:
 	// Returns pointer to Blue Player Input.
 	Input* getBluePlayerInput(void) const;
 
+	// Returns name of the fighter red player is using.
+	const std::string getRedFighterName(void) const;
+
+	// Returns name of the fighter blue player is using.
+	const std::string getBlueFighterName(void) const;
+
 	// --- //
 
 	// Updates Camera offsets based on the positions of each Player.
@@ -81,8 +84,10 @@ public:
 	std::shared_ptr<Player> m_pRedPlayer;
 	std::shared_ptr<Player> m_pBluePlayer;
 private:
+	// Allocates both Player objects and sets up default data.
+	bool load(const std::string& redFighterFile, const std::string& blueFighterFile);
 	
-	std::string m_redFighterFile, m_blueFighterFile;
+	Uint32 m_redFighter, m_blueFighter;
 
 	// The right edge of the screen minus player width (pixels).
 	int m_redMax, m_blueMax; 
@@ -108,6 +113,14 @@ inline Input* PlayerManager::getRedPlayerInput(void) const{
 
 inline Input* PlayerManager::getBluePlayerInput(void) const{
 	return m_pBluePlayer->getInput();
+}
+
+inline const std::string PlayerManager::getRedFighterName(void) const{
+	return m_fighters[m_redFighter].name;
+}
+
+inline const std::string PlayerManager::getBlueFighterName(void) const{
+	return m_fighters[m_blueFighter].name;
 }
 
 // ================================================ //

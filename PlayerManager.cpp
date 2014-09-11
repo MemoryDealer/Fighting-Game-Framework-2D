@@ -30,8 +30,8 @@ template<> PlayerManager* Singleton<PlayerManager>::msSingleton = nullptr;
 PlayerManager::PlayerManager(void) :	
 m_pRedPlayer(nullptr),
 m_pBluePlayer(nullptr),
-m_redFighterFile(),
-m_blueFighterFile(),
+m_redFighter(0),
+m_blueFighter(0),
 m_redMax(0),
 m_blueMax(0),
 m_fighters()
@@ -67,9 +67,6 @@ PlayerManager::~PlayerManager(void)
 
 bool PlayerManager::load(const std::string& redFighterFile, const std::string& blueFighterFile)
 {
-	m_redFighterFile.assign(redFighterFile);
-	m_blueFighterFile.assign(blueFighterFile);
-
 	// Free any previously allocated Players and allocate new ones.
 	m_pRedPlayer.reset(new Player(redFighterFile, "Data/ButtonMaps/default-xbox360-redplayer.bmap"));
 	m_pBluePlayer.reset(new Player(blueFighterFile, "Data/ButtonMaps/default-xbox360-blueplayer.bmap"));
@@ -105,15 +102,20 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 
 bool PlayerManager::load(const Uint32 redFighter, const Uint32 blueFighter)
 {
-	return this->load("Data/Fighters/" + m_fighters[redFighter].file, 
+	bool ret = this->load("Data/Fighters/" + m_fighters[redFighter].file, 
 		"Data/Fighters/" + m_fighters[blueFighter].file);
+
+	m_redFighter = redFighter;
+	m_blueFighter = blueFighter;
+
+	return ret;
 }
 
 // ================================================ //
 
 bool PlayerManager::reload(void)
 {
-	return this->load(m_redFighterFile, m_blueFighterFile);
+	return this->load(m_redFighter, m_blueFighter);
 }
 
 // ================================================ //

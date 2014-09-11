@@ -27,6 +27,7 @@ class Input;
 struct Move;
 class FighterMetadata;
 class Timer;
+class Widget;
 
 typedef std::vector<std::shared_ptr<Move>> MoveList;
 typedef std::vector<std::shared_ptr<Hitbox>> HitboxList;
@@ -128,6 +129,9 @@ public:
 	// Returns Y acceleration.
 	const int32_t getYAcceleration(void) const;
 
+	// Returns pointer to player's health bar.
+	Widget* getHealthBarPtr(void) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -136,14 +140,18 @@ public:
 	// Sets the mode of the player, e.g., LOCAL, NET, or AI.
 	void setMode(const Uint32 mode);
 
+	// Points the internal Widget pointer to the player's health bar.
+	void setHealthBarPtr(Widget* pHealthBar);
+
 private:
 	int32_t m_xAccel, m_yAccel;
 	int32_t m_xVel, m_yVel;
 	int32_t m_xMax, m_yMax;
 
 	Uint32 m_side;
-
 	Uint32 m_mode;
+	Uint32 m_hp;
+	Widget* m_pHealthBar;
 
 	std::shared_ptr<Input> m_pInput;
 	std::queue<Client::NetInput> m_clientInputs;
@@ -162,16 +170,6 @@ inline const Uint32 Player::getMode(void) const{
 	return m_mode;
 }
 
-// Getters
-
-inline void Player::setSide(const Uint32 side){
-	m_side = side;
-}
-
-inline void Player::setMode(const Uint32 mode){
-	m_mode = mode;
-}
-
 inline const int32_t Player::getXVelocity(void) const{
 	return m_xVel;
 }
@@ -186,6 +184,24 @@ inline const int32_t Player::getXAcceleration(void) const{
 
 inline const int32_t Player::getYAcceleration(void) const{
 	return m_yAccel;
+}
+
+inline Widget* Player::getHealthBarPtr(void) const{
+	return m_pHealthBar;
+}
+
+// Setters
+
+inline void Player::setSide(const Uint32 side){
+	m_side = side;
+}
+
+inline void Player::setMode(const Uint32 mode){
+	m_mode = mode;
+}
+
+inline void Player::setHealthBarPtr(Widget* pHealthBar){
+	m_pHealthBar = pHealthBar;
 }
 
 // ================================================ //

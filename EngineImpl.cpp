@@ -47,7 +47,7 @@ Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINO
 	// Find location of settings file.
 	Config c("config.ini");
 	if (c.isLoaded()){
-		m_settingsFile = c.parseValue("core", "settings");
+		m_settingsFile = c.parseValue("core", "settings", true);
 	}
 	else{
 		Log::getSingletonPtr()->logMessage("ERROR: No config.ini found, generating default config.ini and Data/ExtMF.cfg");
