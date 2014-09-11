@@ -172,6 +172,10 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 
 		case SDLK_r:
 			// Reload fighter settings.
+			{
+				Config c(Engine::getSingletonPtr()->getSettingsFile());
+				m_pGUI.reset(new GUIGameState(c.parseValue("GUI", "gamestate")));
+			}
 			StageManager::getSingletonPtr()->reload();
 			PlayerManager::getSingletonPtr()->reload();
 			break;
