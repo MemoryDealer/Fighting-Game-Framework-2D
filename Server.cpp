@@ -175,7 +175,7 @@ Uint32 Server::sendPlayerList(const RakNet::SystemAddress& addr, const bool broa
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::PLAYER_LIST));
 
 	// Write number of connected clients, plus the server.
-	bit.Write(static_cast<Uint32>(m_clients.size() + 1));
+	bit.Write(m_clients.size() + 1);
 
 	// Write server username.
 	bit.Write(Game::getSingletonPtr()->getUsername().c_str());

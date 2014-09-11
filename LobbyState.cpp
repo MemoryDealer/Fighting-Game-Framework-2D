@@ -808,7 +808,7 @@ void LobbyState::update(double dt)
 							Client::getSingletonPtr()->getPacket()->length, false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 						Uint32 numPlayers = 0;
-						bit.Read(static_cast<Uint32>(numPlayers));
+						bit.Read(numPlayers);
 						for (Uint32 i = 0; i < numPlayers; ++i){
 							RakNet::RakString username;
 							bit.Read(username);

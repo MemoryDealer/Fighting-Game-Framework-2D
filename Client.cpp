@@ -120,7 +120,7 @@ Uint32 Client::ready(const Uint32 fighter)
 {
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::READY));
-	bit.Write(static_cast<Uint32>(fighter));
+	bit.Write(fighter);
 
 	return this->send(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 }
