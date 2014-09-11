@@ -10,29 +10,21 @@ static.blue.fighter:label="Blue Player"
 static.blue.fighter:labelcolor=(25,25,255,255)
 
 #ID 2
-static.red.name:pos=(10,430,200,50)
-static.red.name:label="red.name"
-
-#ID 3
-static.blue.name:pos=(644,430,200,50)
-static.blue.name:label="blue.name"
-
-#ID 4
 static.red.wins:pos=(359,45,25,30)
 static.red.wins:label="0"
 
-#ID 5
+#ID 3
 static.blue.wins:pos=(470,45,25,30)
 static.blue.wins:label="0"
 
-#ID 6
+#ID 4
 static.countdown:pos=(388,150,80,80)
 static.countdown:label="3"
 
-#ID 7
+#ID 5
 healthbar.red:pos=(30,20,350,25)
 
-#ID 8
+#ID 6
 healthbar.blue:pos=(473,20,350,25)
 
 

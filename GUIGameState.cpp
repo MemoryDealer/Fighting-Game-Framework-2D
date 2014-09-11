@@ -32,8 +32,7 @@ GUI()
 
 	// Add each layer to the GUI.
 	std::shared_ptr<GUILayer> layer(new GUIGameStateLayer::Root());
-	names = StringList{ "red.fighter", "blue.fighter", "red.name", "blue.name",
-		"red.wins", "blue.wins", "countdown" };
+	names = StringList{ "red.fighter", "blue.fighter", "red.wins", "blue.wins", "countdown" };
 	layer->parse<WidgetStatic>(c, Widget::Type::STATIC, names);
 	names = StringList{ "red", "blue" };
 	layer->parse<WidgetHealthBar>(c, Widget::Type::HEALTHBAR, names);

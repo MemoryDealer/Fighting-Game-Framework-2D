@@ -231,7 +231,6 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 				break;
 			}
 		}
-
 		// Blue Player.
 		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
 			switch (PlayerManager::getSingletonPtr()->getBluePlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
