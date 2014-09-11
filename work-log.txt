@@ -401,6 +401,7 @@
 #9/11/14
 -PlayerManager stores index of fighter that was loaded instead of the filename. It is used to retrieve the fighter name for displaying in the 
 	game state GUI.
+-Simulating packet loss may not be necessary, as that is the user's problem.
 
 #TODO
 The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
