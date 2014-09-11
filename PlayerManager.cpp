@@ -265,6 +265,8 @@ void PlayerManager::update(double dt)
 		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
 			m_pBluePlayer->update(dt);
 		}
+		/*m_pRedPlayer->update(dt);
+		m_pBluePlayer->update(dt);*/
 	}
 	else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){

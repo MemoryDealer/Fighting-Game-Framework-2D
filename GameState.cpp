@@ -498,6 +498,7 @@ void GameState::update(double dt)
 							PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
 							PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(netInput.dt);
 							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;
+							//PlayerManager::getSingletonPtr()->getRedPlayer()->enqueueClientInput(netInput);
 						}
 					}
 					else if(Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
