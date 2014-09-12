@@ -279,7 +279,7 @@ void PlayerManager::update(double dt)
 		m_pRedPlayer->update(dt);
 		m_pBluePlayer->update(dt);
 	}
-
+	
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();
 

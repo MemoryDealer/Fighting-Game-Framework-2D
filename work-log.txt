@@ -403,6 +403,11 @@
 	game state GUI.
 -Simulating packet loss may not be necessary, as that is the user's problem.
 
+#9/12/14
+-The deceleration code in Player was causing a jump in the client when switching directions, as well is shaking in the client when standing still.
+	I've changed it to just set the player's x velocity to zero immediately when neither left or right is pressed, it behaves better.
+-It looks pretty smooth with an x-acceleration of 50, but also works well with 150, which is basically instantaneous. 
+
 #TODO
 The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
 	physics code or do away with it for now.

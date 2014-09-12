@@ -485,24 +485,27 @@ void GameState::update(double dt)
 				break;
 
 			case NetMessage::CLIENT_INPUT:
+				// Verify this message is from a playing client (not spectating).
 				if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr ||
 					Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
+					// Read in the NetInput struct from client.
 					RakNet::BitStream bit(Server::getSingletonPtr()->getPacket()->data, 
 						Server::getSingletonPtr()->getPacket()->length, false);
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 					Client::NetInput netInput;
 					bit.Read(netInput);
-					if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr){
-						if (Server::getSingletonPtr()->validateInput(netInput) == true){
+					
+					// Apply the NetInput struct to the proper player.
+					if (Server::getSingletonPtr()->validateInput(netInput)){
+						if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr){
 							PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(netInput.input, netInput.value);
 							PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
 							PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(netInput.dt);
 							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;
 							//PlayerManager::getSingletonPtr()->getRedPlayer()->enqueueClientInput(netInput);
+
 						}
-					}
-					else if(Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
-						if (Server::getSingletonPtr()->validateInput(netInput) == true){
+						else if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
 							PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
 							PlayerManager::getSingletonPtr()->getBluePlayer()->processInput();
 							PlayerManager::getSingletonPtr()->getBluePlayer()->applyInput(netInput.dt);
@@ -513,8 +516,10 @@ void GameState::update(double dt)
 				break;
 			}
 		}
+
+		// Broadcast player updates to all client.
 		Server::getSingletonPtr()->updatePlayers();
-		Server::getSingletonPtr()->sendLastProcessedInput();
+		//Server::getSingletonPtr()->sendLastProcessedInput();
 	}
 	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
@@ -534,8 +539,8 @@ void GameState::update(double dt)
 			}
 		}
 
-		printf("%d unprocessed inputs / %d\n", Client::getSingletonPtr()->m_pendingInputs.size(), 
-			(Client::getSingletonPtr()->m_pendingInputs.size() == 0) ? 0 : Client::getSingletonPtr()->m_pendingInputs.front().seq);
+		//printf("%d unprocessed inputs / %d\n", Client::getSingletonPtr()->m_pendingInputs.size(), 
+			//(Client::getSingletonPtr()->m_pendingInputs.size() == 0) ? 0 : Client::getSingletonPtr()->m_pendingInputs.front().seq);
 
 		for (Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive();
 			Client::getSingletonPtr()->m_packet;
@@ -572,12 +577,13 @@ void GameState::update(double dt)
 						bit.Read(time);
 						//printf("UPDATE (%d)\n", time);
 
-						// Update positions.
 						Server::PlayerUpdate red;
 						bit.Read(red);
+						// If this client is playing, enqueue this input for processing.
 						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
 							PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
 						}
+						// Otherwise, update player directly.
 						else{
 							Player* redPlayer = PlayerManager::getSingletonPtr()->getRedPlayer();
 							redPlayer->setPosition(red.x, red.y);

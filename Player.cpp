@@ -82,7 +82,7 @@ void Player::updateFromServer(const Server::PlayerUpdate& update)
 
 void Player::processInput(void)
 {
-	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+	/*if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
 		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
 		m_xVel = -m_xMax;
 	}
@@ -92,42 +92,32 @@ void Player::processInput(void)
 	}
 	else{
 		m_xVel = 0;
-	}
+	}*/
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
-	//if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
-	//	m_pInput->getButton(Input::BUTTON_RIGHT) == false){
-	//	m_xVel -= m_xAccel;
-	//	if (m_xVel < -m_xMax){
-	//		m_xVel = -m_xMax;
-	//	}
+	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+		m_xVel -= m_xAccel;
+		if (m_xVel < -m_xMax){
+			m_xVel = -m_xMax;
+		}
 
-	//	// change action...
-	//}
-	//else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
-	//	m_pInput->getButton(Input::BUTTON_LEFT) == false){
-	//	m_xVel += m_xAccel;
-	//	if (m_xVel > m_xMax){
-	//		m_xVel = m_xMax;
-	//	}
+		// change action...
+	}
+	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+		m_pInput->getButton(Input::BUTTON_LEFT) == false){
+		m_xVel += m_xAccel;
+		if (m_xVel > m_xMax){
+			m_xVel = m_xMax;
+		}
 
-	//	// change action...
-	//}
-	//else{
-	//	// Declerate when nothing is pressed.
-	//	if (m_xVel < 0){
-	//		m_xVel += m_xAccel;
-	//		if (m_xVel > 0){
-	//			m_xVel = 0;
-	//		}
-	//	}
-	//	else if (m_xVel > 0){
-	//		m_xVel -= m_xAccel;
-	//		if (m_xVel < 0){
-	//			m_xVel = 0;
-	//		}
-	//	}
-	//}
+		// change action...
+	}
+	else{
+		m_xVel = 0;
+
+		// change action...
+	}
 }
 
 // ================================================ //
@@ -154,6 +144,20 @@ void Player::serverReconciliation(void)
 		Server::PlayerUpdate update = m_serverUpdates.front();
 		// Rewind to the server's latest update.
 		m_dst.x = update.x;
+		/*const int x = 1;
+		if (update.xVel > m_xVel){
+			m_xVel += x;
+		}
+		else if (update.xVel < m_xVel){
+			m_xVel -= x;
+		}
+		if (update.xAccel > m_xAccel){
+			m_xAccel += x;
+		}
+		else if (update.xAccel < m_xAccel){
+			m_xAccel -= x;
+		}*/
+
 		m_xVel = update.xVel;
 		m_xAccel = update.xAccel;
 
@@ -161,9 +165,11 @@ void Player::serverReconciliation(void)
 		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
 			itr != Client::getSingletonPtr()->m_pendingInputs.end();){
 			if (itr->seq <= update.lastProcessedInput){
+				// This input is old, remove it from the queue.
 				itr = Client::getSingletonPtr()->m_pendingInputs.erase(itr);
 			}
 			else{
+				// Input is still unprocessed by the server, re-apply it.
 				this->m_pInput->setButton(itr->input, itr->value);
 				this->processInput();
 				// Apply the input.
