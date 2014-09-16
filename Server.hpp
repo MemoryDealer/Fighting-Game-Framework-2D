@@ -162,6 +162,7 @@ public:
 		int x, y;
 		int xVel, yVel;
 		int xAccel, yAccel;
+		Uint32 state;
 	} PlayerUpdate;
 
 	// --- //

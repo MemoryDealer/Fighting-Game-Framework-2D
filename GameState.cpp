@@ -573,10 +573,6 @@ void GameState::update(double dt)
 							Client::getSingletonPtr()->getPacket()->length, false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						RakNet::Time time;
-						bit.Read(time);
-						//printf("UPDATE (%d)\n", time);
-
 						Server::PlayerUpdate red;
 						bit.Read(red);
 						// If this client is playing, enqueue this input for processing.
@@ -587,6 +583,7 @@ void GameState::update(double dt)
 						else{
 							Player* redPlayer = PlayerManager::getSingletonPtr()->getRedPlayer();
 							redPlayer->setPosition(red.x, red.y);
+							redPlayer->setCurrentState(red.state);
 						}
 
 						Server::PlayerUpdate blue;
@@ -597,6 +594,7 @@ void GameState::update(double dt)
 						else{
 							Player* bluePlayer = PlayerManager::getSingletonPtr()->getBluePlayer();
 							bluePlayer->setPosition(blue.x, blue.y);
+							bluePlayer->setCurrentState(blue.state);
 						}
 					}
 					break;

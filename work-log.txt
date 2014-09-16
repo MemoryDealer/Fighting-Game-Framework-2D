@@ -408,6 +408,12 @@
 	I've changed it to just set the player's x velocity to zero immediately when neither left or right is pressed, it behaves better.
 -It looks pretty smooth with an x-acceleration of 50, but also works well with 150, which is basically instantaneous. 
 
+#9/15/14
+-Added back sprite rendering to Player class. This time it is simplified and I will build it more cleanly from the ground up. Added the state variable to
+	Server::PlayerUpdate, so when a client receives the update it will automatically update the non-player to the recent state.
+	The Player that is being played on the client has its state updated in Player::serverReconciliation() from the most recent update. Not sure if this will be  
+	necessary but I am doing it for now.
+
 #TODO
 The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
 	physics code or do away with it for now.

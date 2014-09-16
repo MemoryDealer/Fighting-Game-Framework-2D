@@ -265,19 +265,18 @@ void PlayerManager::update(double dt)
 		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
 			m_pBluePlayer->update(dt);
 		}
-		/*m_pRedPlayer->update(dt);
-		m_pBluePlayer->update(dt);*/
+		
+		// ... predict client?
 	}
 	else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
 			m_pRedPlayer->serverReconciliation();
+			m_pRedPlayer->update(dt);
 		}
 		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
 			m_pBluePlayer->serverReconciliation();
+			m_pBluePlayer->update(dt);
 		}
-
-		m_pRedPlayer->update(dt);
-		m_pBluePlayer->update(dt);
 	}
 	
 	m_pRedPlayer->render();

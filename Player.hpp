@@ -19,6 +19,7 @@
 #include "Object.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "FSM.hpp"
 
 // ================================================ //
 
@@ -94,6 +95,9 @@ public:
 	// receiving a network update on the client.
 	void updateFromServer(const Server::PlayerUpdate& update);
 
+	// Rewinds player state to last server update and replays unprocessed inputs.
+	void serverReconciliation(void);
+
 	// Processes local input for player, adjusting its state.
 	void processInput(void);
 
@@ -103,11 +107,14 @@ public:
 	// Updates the current Move, handles collision.
 	virtual void update(double dt);
 
-	// Rewinds player state to last server update and replays unprocessed inputs.
-	void serverReconciliation(void);
-
 	// Renders the Player sprite.
 	virtual void render(void);
+
+	// Process animation updates for the current move.
+	void updateMove(void);
+
+	// Loads textures, moves, etc.
+	void loadFighterData(const std::string& file);
 
 	// Getters
 
@@ -132,6 +139,12 @@ public:
 	// Returns pointer to player's health bar.
 	Widget* getHealthBarPtr(void) const;
 
+	// Returns the side the player is on (e.g., LEFT or RIGHT).
+	const int getSide(void) const;
+
+	// Returns current state ID.
+	const Uint32 getCurrentState(void) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -143,17 +156,34 @@ public:
 	// Points the internal Widget pointer to the player's health bar.
 	void setHealthBarPtr(Widget* pHealthBar);
 
+	// Sets the side the player is on. Also sets the rendering flip variable 
+	// accordingly.
+	void setSide(const int side);
+
+	// Sets current state.
+	void setCurrentState(const Uint32 state);
+
 private:
+	// Physics.
+
 	int32_t m_xAccel, m_yAccel;
 	int32_t m_xVel, m_yVel;
 	int32_t m_xMax, m_yMax;
+
+	// Game.
 
 	Uint32 m_side;
 	Uint32 m_mode;
 	Uint32 m_hp;
 	Widget* m_pHealthBar;
-
 	std::shared_ptr<Input> m_pInput;
+	MoveList m_moves;
+	HitboxList m_hitboxes;
+	std::shared_ptr<Move> m_pCurrentMove;
+	std::shared_ptr<Timer> m_pMoveTimer;
+
+	// Net stuff.
+
 	std::queue<Client::NetInput> m_clientInputs;
 	std::queue<Server::PlayerUpdate> m_serverUpdates;
 };
@@ -190,6 +220,14 @@ inline Widget* Player::getHealthBarPtr(void) const{
 	return m_pHealthBar;
 }
 
+inline const int Player::getSide(void) const{
+	return m_side;
+}
+
+inline const Uint32 Player::getCurrentState(void) const{
+	return m_pFSM->getCurrentStateID();
+}
+
 // Setters
 
 inline void Player::setSide(const Uint32 side){
@@ -202,6 +240,15 @@ inline void Player::setMode(const Uint32 mode){
 
 inline void Player::setHealthBarPtr(Widget* pHealthBar){
 	m_pHealthBar = pHealthBar;
+}
+
+inline void Player::setSide(const int side){
+	m_side = side;
+	m_flip = (side == Player::Side::LEFT) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+}
+
+inline void Player::setCurrentState(const Uint32 state){
+	m_pFSM->setCurrentState(state);
 }
 
 // ================================================ //

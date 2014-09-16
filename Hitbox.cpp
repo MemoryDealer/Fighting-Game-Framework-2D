@@ -27,7 +27,7 @@ m_outline()
 
 	switch (m_type){
 	default:
-	case HitboxType::NORMAL:
+	case Hitbox::Type::NORMAL:
 		m_color.r = m_outline.r = 0;
 		m_color.g = m_outline.g = 0;
 		m_color.b = 200;
@@ -36,7 +36,7 @@ m_outline()
 		m_outline.b = 255;
 		break;
 
-	case HitboxType::DAMAGE:
+	case Hitbox::Type::DAMAGE:
 		m_color.r = m_outline.r = 200;
 		m_color.g = m_outline.g = 0;
 		m_color.b = m_outline.b = 0;
@@ -45,11 +45,11 @@ m_outline()
 		m_outline.r = 255;
 		break;
 
-	case HitboxType::THROW:
+	case Hitbox::Type::THROW:
 
 		break;
 
-	case HitboxType::COUNTER:
+	case Hitbox::Type::COUNTER:
 		m_color.r = m_outline.r = 0;
 		m_color.g = 255;
 		m_color.b = 200;

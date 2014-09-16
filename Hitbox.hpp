@@ -20,18 +20,6 @@
 
 // ================================================ //
 
-// Four types of hitboxes.
-namespace HitboxType{
-	enum{
-		NORMAL = 0,
-		DAMAGE,
-		THROW,
-		COUNTER
-	};
-}
-
-// ================================================ //
-
 // A hitbox for use by a Player object. Can be tested for collision
 // with other hitboxes, and debug rendered.
 class Hitbox
@@ -42,6 +30,14 @@ public:
 
 	// Empty destructor.
 	virtual ~Hitbox(void);
+
+	// Hitbox types.
+	enum Type{
+		NORMAL = 0,
+		DAMAGE,
+		THROW,
+		COUNTER
+	};
 
 	// Hitbox indices for use by Player class.
 	enum{

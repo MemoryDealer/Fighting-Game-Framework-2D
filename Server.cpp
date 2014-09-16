@@ -202,9 +202,6 @@ Uint32 Server::updatePlayers(void)
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_PLAYERS));
 
-	// Write timestamp.
-	bit.Write(RakNet::GetTime());
-
 	// Write red player data.
 	PlayerUpdate redPlayer;
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
@@ -213,6 +210,7 @@ Uint32 Server::updatePlayers(void)
 	redPlayer.y = red->getPosition().y;
 	redPlayer.xVel = red->getXVelocity();
 	redPlayer.xAccel = red->getXAcceleration();
+	redPlayer.state = red->getCurrentState();
 	bit.Write(redPlayer);
 
 	// Write blue player data.
@@ -223,6 +221,7 @@ Uint32 Server::updatePlayers(void)
 	bluePlayer.y = blue->getPosition().y;
 	bluePlayer.xVel = blue->getXVelocity();
 	bluePlayer.xAccel = blue->getXAcceleration();
+	bluePlayer.state = blue->getCurrentState();
 	bit.Write(bluePlayer);
 
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
