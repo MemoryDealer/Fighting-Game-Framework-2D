@@ -44,6 +44,7 @@ m_moves(),
 m_hitboxes(),
 m_pCurrentMove(nullptr),
 m_pMoveTimer(new Timer()),
+m_drawHitboxes(false),
 m_clientInputs(),
 m_serverUpdates()
 {
@@ -54,15 +55,6 @@ m_serverUpdates()
 	}
 
 	this->loadFighterData(fighterFile);
-
-	//m_dst.w = m_dst.h = 100;
-	//m_dst.y = 380;
-
-	//// temp.
-	//m_xAccel = 50;
-	//m_yAccel = 5;
-	//m_xMax = 300;
-	//m_yMax = 10;
 }
 
 // ================================================ //
@@ -179,6 +171,12 @@ void Player::render(void)
 	this->updateMove();
 
 	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+
+	if (m_drawHitboxes){
+		for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
+			m_hitboxes[i]->render();
+		}
+	}
 }
 
 // ================================================ //
@@ -217,6 +215,25 @@ void Player::updateMove(void)
 		}
 
 		m_pMoveTimer->restart();
+	}
+
+	// Now update the hitboxes for the move.
+	// Assign each Hitbox to originate from the character's center.
+	// So a hitbox of (50, 0, 50, 50) will be 50x50 and 50 units to the right
+	// of the character's center.
+	for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
+		SDL_Rect offset = { 0, 0, 0, 0 };
+		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
+
+		int xCenter = m_dst.x + (m_dst.w / 2);
+		int yCenter = m_dst.y + (m_dst.h / 2);
+
+		if (m_side == Player::Side::RIGHT){
+			offset.x = -offset.x;
+		}
+
+		m_hitboxes[i]->setRect((xCenter - (offset.w / 2) + offset.x), (yCenter - (offset.h / 2) + offset.y),
+							   offset.w, offset.h);
 	}
 }
 
@@ -286,3 +303,14 @@ void Player::loadFighterData(const std::string& file)
 
 // ================================================ //
 
+void Player::takeDamage(const Uint32 damage)
+{
+	m_hp -= damage;
+	if (m_hp < 0){
+		m_hp = 0;
+	}
+
+	m_pHealthBar->setPercent(m_hp);
+}
+
+// ================================================ //

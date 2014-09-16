@@ -116,6 +116,9 @@ public:
 	// Loads textures, moves, etc.
 	void loadFighterData(const std::string& file);
 
+	// Takes hp from player, updates health bar.
+	void takeDamage(const Uint32 damage);
+
 	// Getters
 
 	// Returns the Input object.
@@ -145,6 +148,12 @@ public:
 	// Returns current state ID.
 	const Uint32 getCurrentState(void) const;
 
+	// Returns HP (hit points).
+	const Uint32 getHP(void) const;
+
+	// Returns hitbox pointer at index n.
+	Hitbox* getHitbox(const int n) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -162,6 +171,12 @@ public:
 
 	// Sets current state.
 	void setCurrentState(const Uint32 state);
+
+	// Sets the player object to draw hitboxes if true.
+	void setDrawHitboxes(const bool draw);
+
+	// Toggles the state of whether or not the player will draw hitboxes.
+	void toggleDrawHitboxes(void);
 
 private:
 	// Physics.
@@ -181,6 +196,7 @@ private:
 	HitboxList m_hitboxes;
 	std::shared_ptr<Move> m_pCurrentMove;
 	std::shared_ptr<Timer> m_pMoveTimer;
+	bool m_drawHitboxes;
 
 	// Net stuff.
 
@@ -228,6 +244,14 @@ inline const Uint32 Player::getCurrentState(void) const{
 	return m_pFSM->getCurrentStateID();
 }
 
+inline const Uint32 Player::getHP(void) const{
+	return m_hp;
+}
+
+inline Hitbox* Player::getHitbox(const int n) const{
+	return m_hitboxes[n].get();
+}
+
 // Setters
 
 inline void Player::setSide(const Uint32 side){
@@ -249,6 +273,14 @@ inline void Player::setSide(const int side){
 
 inline void Player::setCurrentState(const Uint32 state){
 	m_pFSM->setCurrentState(state);
+}
+
+inline void Player::setDrawHitboxes(const bool draw){
+	m_drawHitboxes = draw;
+}
+
+inline void Player::toggleDrawHitboxes(void){
+	m_drawHitboxes = !m_drawHitboxes;
 }
 
 // ================================================ //

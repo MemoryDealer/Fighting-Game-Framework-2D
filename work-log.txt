@@ -413,10 +413,11 @@
 	Server::PlayerUpdate, so when a client receives the update it will automatically update the non-player to the recent state.
 	The Player that is being played on the client has its state updated in Player::serverReconciliation() from the most recent update. Not sure if this will be  
 	necessary but I am doing it for now.
+-Added Player::takeDamage() which subtracts from the hp and modifies the health bar. The server processes damage box collisions and broadcasts any damage to the clients.
 
 #TODO
-The client and server get out of sync when using physics code, but sync when just applying the max velocity instantly, so either fix 
-	physics code or do away with it for now.
+-Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was
+	colliding with the server player. It may be a good idea to go through every instance of vector code and add bounds checking.
 -Add ability to select an entry in listbox if enabled.
 -check the port when starting server
 -add offsets in themes for text

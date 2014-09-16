@@ -282,17 +282,25 @@ void PlayerManager::update(double dt)
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();
 
-	// Test damage box collisions.
-	//for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
-	//	for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
-	//		if (m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j))){
-	//			printf("Damage: Red => Blue\n");
-	//		} 
-	//		if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
-	//			printf("Damage: Blue => Red\n");
-	//		}
-	//	}
-	//}
+	// Perform server-side calculations.
+	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+		// Test damage box collisions.
+		for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
+			for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
+				if (m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j))){
+					m_pBluePlayer->takeDamage(1);
+
+					// Send damage notification to client.
+					Server::getSingletonPtr()->broadcastDamage(Game::Playing::PLAYING_BLUE, 1);
+				}
+				if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
+					m_pRedPlayer->takeDamage(1);
+
+					Server::getSingletonPtr()->broadcastDamage(Game::Playing::PLAYING_RED, 1);
+				}
+			}
+		}
+	}
 
 	//// Reset collisions before testing.
 	//m_pRedPlayer->setColliding(false);

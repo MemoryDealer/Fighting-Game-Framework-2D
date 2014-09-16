@@ -190,8 +190,8 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			break;
 
 		case SDLK_p:
-			//PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
-			//PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
+			PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
+			PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
 			break;
 
 		case SDLK_j:
@@ -602,7 +602,8 @@ void GameState::update(double dt)
 				case NetMessage::LAST_PROCESSED_INPUT_SEQUENCE:
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
-							Client::getSingletonPtr()->getPacket()->length, false);
+											  Client::getSingletonPtr()->getPacket()->length, 
+											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
 						Uint32 lastProcessedInput = 0;
@@ -619,10 +620,37 @@ void GameState::update(double dt)
 					}
 					break;
 
+				case NetMessage::RED_TAKE_DAMAGE:
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+											  Client::getSingletonPtr()->getPacket()->length,
+											  false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+						Uint32 damage = 0;
+						bit.Read(damage);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->takeDamage(damage);
+					}
+					break;
+
+				case NetMessage::BLUE_TAKE_DAMAGE:
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+											  Client::getSingletonPtr()->getPacket()->length,
+											  false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+						Uint32 damage = 0;
+						bit.Read(damage);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->takeDamage(damage);
+					}
+					break;
+
 				case NetMessage::MATCH_OVER:
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
-							Client::getSingletonPtr()->getPacket()->length, false);
+											  Client::getSingletonPtr()->getPacket()->length, 
+											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
 						RakNet::RakString victor;
