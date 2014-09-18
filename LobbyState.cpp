@@ -34,7 +34,8 @@ m_pGUI(nullptr),
 m_pBackground(nullptr)
 {
 	Config c(Engine::getSingletonPtr()->getSettingsFile());
-	m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
+	m_pGUI.reset(new GUILobbyState(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/" + c.parseValue("GUI", "lobbystate")));
 }
 
 // ================================================ //
@@ -50,7 +51,8 @@ void LobbyState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering LobbyState...");
 
-	m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
+	m_pBackground.reset(new Stage(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/Stages/lobby.stage"));
 
 	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 		m_pGUI->getWidgetPtr(GUILobbyStateLayer::Root::LISTBOX_CHAT)->addString(
@@ -244,7 +246,7 @@ void LobbyState::handleInput(SDL_Event& e)
 				// Reload GUI and background.
 				//Config c(Engine::getSingletonPtr()->getSettingsFile());
 				//m_pGUI.reset(new GUILobbyState(c.parseValue("GUI", "lobbystate")));
-				m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
+				//m_pBackground.reset(new Stage("Data/Stages/lobby.stage"));
 			}
 			break;
 

@@ -24,7 +24,7 @@ template<> Engine* Singleton<Engine>::msSingleton = nullptr;
 const int Engine::VERSION_MAJOR =	0;
 //								    .
 const int Engine::VERSION_MINOR1 =	0;
-const int Engine::VERSION_MINOR2 =	1;
+const int Engine::VERSION_MINOR2 =	2;
 
 // ================================================ //
 
@@ -125,6 +125,13 @@ const int Engine::getMaxFrameRate(void) const
 const std::string Engine::getSettingsFile(void) const
 {
 	return m_pImpl->getSettingsFile();
+}
+
+// ================================================ //
+
+const std::string Engine::getDataDirectory(void) const
+{
+	return m_pImpl->getDataDirectory();
 }
 
 // ================================================ //

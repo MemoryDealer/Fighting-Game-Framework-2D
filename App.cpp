@@ -42,7 +42,8 @@ m_pAppStateManager(nullptr)
 	new GUITheme();
 	Config e(Engine::getSingletonPtr()->getSettingsFile());
 	if (e.isLoaded()){
-		GUITheme::getSingletonPtr()->load(e.parseValue("GUI", "theme"));
+		GUITheme::getSingletonPtr()->load(Engine::getSingletonPtr()->getDataDirectory() + 
+			"/" + e.parseValue("GUI", "theme"));
 	}
 
 	new GamepadManager();

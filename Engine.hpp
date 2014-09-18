@@ -74,6 +74,9 @@ public:
 	// Returns relative path to ExtMF.cfg file.
 	const std::string getSettingsFile(void) const;
 
+	// Returns relative path to "Data" directory.
+	const std::string getDataDirectory(void) const;
+
 	// Wrapper for SDL_GetTicks().
 	Uint32 getTicks(void) const;
 

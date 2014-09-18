@@ -163,7 +163,7 @@ m_selectorPressed(false)
 {
 	// Setup message box.
 	Config e(Engine::getSingletonPtr()->getSettingsFile());
-	Config theme(e.parseValue("GUI", "theme"));
+	Config theme(Engine::getSingletonPtr()->getDataDirectory() + "/" + e.parseValue("GUI", "theme"));
 	std::shared_ptr<GUILayer> messageBox(new GUILayerMessageBox());
 
 	std::shared_ptr<WidgetButton> ok(new WidgetButton(GUILayerMessageBox::BUTTON_OK));
@@ -440,7 +440,10 @@ template<> GUITheme* Singleton<GUITheme>::msSingleton = nullptr;
 GUITheme::GUITheme(void) :
 ButtonTexture(),
 TextboxTexture(),
-TextboxCursor(nullptr)
+TextboxCursor(nullptr),
+ListboxTexture(nullptr),
+ListboxBorder(nullptr),
+HealthbarTexture(nullptr)
 {
 	std::fill_n(ButtonTexture, 3, nullptr);
 	std::fill_n(TextboxTexture, 3, nullptr);
@@ -459,18 +462,29 @@ void GUITheme::load(const std::string& file)
 {
 	Config theme(file);
 	if (theme.isLoaded()){
-		ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex")), SDL_DestroyTexture);
-		ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.selected")), SDL_DestroyTexture);
-		ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
+		ButtonTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("button", "tex")), SDL_DestroyTexture);
+		ButtonTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("button", "tex.selected")), SDL_DestroyTexture);
+		ButtonTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("button", "tex.pressed")), SDL_DestroyTexture);
 
-		TextboxTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex")), SDL_DestroyTexture);
-		TextboxTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.selected")), SDL_DestroyTexture);
-		TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
-		TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
+		TextboxTexture[Widget::Appearance::IDLE].reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("textbox", "tex")), SDL_DestroyTexture);
+		TextboxTexture[Widget::Appearance::SELECTED].reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("textbox", "tex.selected")), SDL_DestroyTexture);
+		TextboxTexture[Widget::Appearance::PRESSED].reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("textbox", "tex.pressed")), SDL_DestroyTexture);
+		TextboxCursor.reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("textbox", "cursor")), SDL_DestroyTexture);
 
-		ListboxTexture.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("listbox", "tex")), SDL_DestroyTexture);
-		ListboxBorder.reset(Engine::getSingletonPtr()->loadTexture(theme.parseValue("listbox", "border")), SDL_DestroyTexture);
+		ListboxTexture.reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("listbox", "tex")), SDL_DestroyTexture);
+		ListboxBorder.reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("listbox", "border")), SDL_DestroyTexture);
 
+		HealthbarTexture.reset(Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("healthbar", "tex")), SDL_DestroyTexture);
 		Log::getSingletonPtr()->logMessage("Theme loaded successfully from \"" + file + "\"");
 	}
 	else{

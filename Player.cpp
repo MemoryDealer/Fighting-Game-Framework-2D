@@ -37,7 +37,8 @@ m_xMax(0),
 m_yMax(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
-m_hp(100),
+m_maxHP(1200),
+m_currentHP(m_maxHP),
 m_pHealthBar(nullptr),
 m_pInput(new Input(buttonMapFile)),
 m_moves(),
@@ -248,7 +249,8 @@ void Player::loadFighterData(const std::string& file)
 	}
 
 	// Assign the sprite sheet.
-	this->setTextureFile(m.parseValue("core", "spriteSheet"));
+	this->setTextureFile(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/" + m.parseValue("core", "spriteSheet"));
 
 	// Set default rendering size.
 	m_dst.w = m.parseIntValue("size", "w");
@@ -259,6 +261,9 @@ void Player::loadFighterData(const std::string& file)
 	m_yAccel = m.parseIntValue("movement", "yAccel");
 	m_xMax = m.parseIntValue("movement", "xMax");
 	m_yMax = m.parseIntValue("movement", "yMax");
+
+	// Parse any gameplay values.
+	m_maxHP = m_currentHP = m.parseIntValue("stats", "HP");
 
 	// Set player 26 units from bottom adjusting for player height.
 	m_dst.y = Engine::getSingletonPtr()->getLogicalWindowHeight() - m_dst.h - 26;
@@ -305,12 +310,17 @@ void Player::loadFighterData(const std::string& file)
 
 void Player::takeDamage(const Uint32 damage)
 {
-	m_hp -= damage;
-	if (m_hp < 0){
-		m_hp = 0;
+	m_currentHP -= damage;
+	if (m_currentHP < 0){
+		m_currentHP = 0;
 	}
 
-	m_pHealthBar->setPercent(m_hp);
+	// Calculate percentage from current HP.
+	double d = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
+	d *= 100.0;
+	int percent = static_cast<int>(d);
+
+	m_pHealthBar->setPercent(percent);
 }
 
 // ================================================ //

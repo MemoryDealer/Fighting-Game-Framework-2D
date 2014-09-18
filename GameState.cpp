@@ -38,7 +38,8 @@ m_pServerUpdateTimer(new Timer()),
 m_pResetServerInputTimer(new Timer())
 {
 	Config c(Engine::getSingletonPtr()->getSettingsFile());
-	m_pGUI.reset(new GUIGameState(c.parseValue("GUI", "gamestate")));
+	m_pGUI.reset(new GUIGameState(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/" + c.parseValue("GUI", "gamestate")));
 }
 
 // ================================================ //

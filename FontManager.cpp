@@ -48,13 +48,16 @@ void FontManager::reloadAll(void)
 	Config e(Engine::getSingletonPtr()->getSettingsFile());
 
 	// Open the theme file specified in ExtMF.cfg. 
-	Config theme(e.parseValue("GUI", "theme")); 
+	Config theme(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/" + e.parseValue("GUI", "theme")); 
 
 	if (theme.isLoaded()){
 		// Load each font. 
-		m_fonts[FontManager::MAIN].reset(new Font(theme.parseValue("font.main", "file"), 
+		m_fonts[FontManager::MAIN].reset(new Font(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("font.main", "file"), 
 			theme.parseIntValue("font.main", "size")));
-		m_fonts[FontManager::CHAT].reset(new Font(theme.parseValue("font.chat", "file"),
+		m_fonts[FontManager::CHAT].reset(new Font(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + theme.parseValue("font.chat", "file"),
 			theme.parseIntValue("font.chat", "size")));
 	}
 }

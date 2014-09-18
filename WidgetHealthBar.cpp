@@ -12,6 +12,7 @@
 // ================================================ //
 
 #include "WidgetHealthBar.hpp"
+#include "GUI.hpp"
 #include "Engine.hpp"
 #include "Config.hpp"
 
@@ -25,11 +26,10 @@ m_renderSrc(),
 m_renderDst()
 {
 	this->setType(Widget::Type::HEALTHBAR);
-
+	this->setTexture(GUITheme::getSingletonPtr()->HealthbarTexture);
 	Config e(Engine::getSingletonPtr()->getSettingsFile());
-	Config theme(e.parseValue("GUI", "theme"));
+	Config theme(Engine::getSingletonPtr()->getDataDirectory() + "/" + e.parseValue("GUI", "theme"));
 
-	this->setTextureFile(theme.parseValue("healthbar", "tex"));
 	m_renderSrc = m_src;
 
 	m_outlineWidth = theme.parseIntValue("healthbar", "outlineWidth");
@@ -64,6 +64,12 @@ void WidgetHealthBar::render(void)
 
 void WidgetHealthBar::setPercent(const int percent)
 {
+	if (percent > 100 || percent < 0){
+		Log::getSingletonPtr()->logMessage("Invalid percentage in WidgetHealthBar::setPercent() => " +
+			Engine::toString(percent));
+		return;
+	}
+
 	double width = static_cast<double>(m_src.w);
 	double newWidth = width * static_cast<double>(percent / 100.0);
 	m_renderSrc.w = static_cast<int>(newWidth);

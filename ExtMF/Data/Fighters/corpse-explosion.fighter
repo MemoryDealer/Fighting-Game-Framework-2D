@@ -1,6 +1,6 @@
 [core]
 useSpriteSheet=true
-spriteSheet=Data/SpriteSheets/corpse.png
+spriteSheet=SpriteSheets/corpse.png
 
 # The default clipping rectangle for the frame in the sprite sheet
 [cell]
@@ -18,6 +18,9 @@ xAccel=50
 yAccel=5
 xMax=300
 yMax=10
+
+[stats]
+HP=1000
 
 [moves]
 +(IDLE)

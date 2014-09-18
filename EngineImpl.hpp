@@ -52,6 +52,7 @@ public:
 	const bool isWindowFocused(void) const;
 	const int getMaxFrameRate(void) const;
 	const std::string getSettingsFile(void) const;
+	const std::string getDataDirectory(void) const;
 
 private:
 	SDL_Window*			m_pWindow;
@@ -66,6 +67,8 @@ private:
 	
 	// Relative path to ExtMF.cfg file.
 	std::string			m_settingsFile;
+	// Relative path to the "Data" directory.
+	std::string			m_dataDirectory;
 };
 
 // ================================================ //
@@ -112,6 +115,10 @@ inline const int EngineImpl::getMaxFrameRate(void) const{
 
 inline const std::string EngineImpl::getSettingsFile(void) const{
 	return m_settingsFile;
+}
+
+inline const std::string EngineImpl::getDataDirectory(void) const{
+	return m_dataDirectory;
 }
 
 // ================================================ //

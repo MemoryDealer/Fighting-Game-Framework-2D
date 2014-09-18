@@ -38,7 +38,8 @@ m_pBackground(nullptr)
 {
 	// Parse the location of the .gui file for the main menu and load it.
 	Config c(Engine::getSingletonPtr()->getSettingsFile());
-	m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
+	m_pGUI.reset(new GUIMenuState(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/" + c.parseValue("GUI", "menustate")));
 }
 
 // ================================================ //
@@ -54,14 +55,14 @@ void MenuState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
 
-	m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
+	m_pBackground.reset(new Stage(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/menu.stage"));
 
 	// Pre-load Players to allow gamepad input in MenuState (to load button maps).
 	new PlayerManager();
 	PlayerManager::getSingletonPtr()->reset();
 
 	new StageManager();
-	StageManager::getSingletonPtr()->load("Data/Stages/test.stage");
+	StageManager::getSingletonPtr()->load(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/test.stage");
 
 	new Camera();
 }
@@ -223,9 +224,9 @@ void MenuState::handleInput(SDL_Event& e)
 		case SDLK_r:
 		{
 			// Reload GUI and background.
-			Config c(Engine::getSingletonPtr()->getSettingsFile());
+			//Config c(Engine::getSingletonPtr()->getSettingsFile());
 			//m_pGUI.reset(new GUIMenuState(c.parseValue("GUI", "menustate")));
-			m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
+			//m_pBackground.reset(new Stage("Data/Stages/menu.stage"));
 		}
 			break;
 

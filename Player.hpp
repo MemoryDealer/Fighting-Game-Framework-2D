@@ -149,7 +149,7 @@ public:
 	const Uint32 getCurrentState(void) const;
 
 	// Returns HP (hit points).
-	const Uint32 getHP(void) const;
+	const Uint32 getCurrentHP(void) const;
 
 	// Returns hitbox pointer at index n.
 	Hitbox* getHitbox(const int n) const;
@@ -189,7 +189,8 @@ private:
 
 	Uint32 m_side;
 	Uint32 m_mode;
-	Uint32 m_hp;
+	Uint32 m_maxHP;
+	Uint32 m_currentHP;
 	Widget* m_pHealthBar;
 	std::shared_ptr<Input> m_pInput;
 	MoveList m_moves;
@@ -244,8 +245,8 @@ inline const Uint32 Player::getCurrentState(void) const{
 	return m_pFSM->getCurrentStateID();
 }
 
-inline const Uint32 Player::getHP(void) const{
-	return m_hp;
+inline const Uint32 Player::getCurrentHP(void) const{
+	return m_currentHP;
 }
 
 inline Hitbox* Player::getHitbox(const int n) const{

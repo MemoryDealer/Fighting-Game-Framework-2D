@@ -27,7 +27,9 @@ m_logicalWidth(854),
 m_logicalHeight(480),
 m_maxFrameRate(60),
 m_windowTitle("Extreme Metal Fighter - Pre-alpha Build " + Engine::toString(Engine::VERSION_MAJOR) + "." +
-Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINOR2))
+Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINOR2)),
+m_settingsFile("Data/ExtMF.cfg"),
+m_dataDirectory("Data")
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		throw std::exception("SDL_Init() failed.");
@@ -47,18 +49,19 @@ Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINO
 	// Find location of settings file.
 	Config c("config.ini");
 	if (c.isLoaded()){
-		m_settingsFile = c.parseValue("core", "settings", true);
+		m_dataDirectory = c.parseValue("core", "data", true);
+		m_settingsFile = m_dataDirectory + "/ExtMF.cfg";
 	}
 	else{
 		Log::getSingletonPtr()->logMessage("ERROR: No config.ini found, generating default config.ini and Data/ExtMF.cfg");
 		// TODO: Generate a default config files...
 
-		m_settingsFile = "Data/ExtMF.cfg";
+		// ...
 	}
 
 	Config cfg(m_settingsFile);
 	if (!cfg.isLoaded()){
-		throw std::exception("Failed to load engine.cfg");
+		throw std::exception(std::string("Failed to load \"" + m_settingsFile + "\"").c_str());
 	}
 
 	// Create the rendering window.

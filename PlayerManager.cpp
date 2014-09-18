@@ -38,7 +38,7 @@ m_fighters()
 {
 	Log::getSingletonPtr()->logMessage("Initializing PlayerManager...");
 
-	Config c("Data/Fighters/fighters.cfg");
+	Config c(Engine::getSingletonPtr()->getDataDirectory() + "/Fighters/fighters.cfg");
 	const int numFighters = c.parseIntValue("core", "numFighters");
 
 	for(int i=1; i<=numFighters; ++i){
@@ -67,9 +67,13 @@ PlayerManager::~PlayerManager(void)
 
 bool PlayerManager::load(const std::string& redFighterFile, const std::string& blueFighterFile)
 {
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
+
 	// Free any previously allocated Players and allocate new ones.
-	m_pRedPlayer.reset(new Player(redFighterFile, "Data/ButtonMaps/default-xbox360-redplayer.bmap"));
-	m_pBluePlayer.reset(new Player(blueFighterFile, "Data/ButtonMaps/default-xbox360-blueplayer.bmap"));
+	m_pRedPlayer.reset(new Player(redFighterFile, 
+		Engine::getSingletonPtr()->getDataDirectory() + "/" + c.parseValue("controls", "red")));
+	m_pBluePlayer.reset(new Player(blueFighterFile, 
+		Engine::getSingletonPtr()->getDataDirectory() + "/" + c.parseValue("controls", "blue")));
 
 	// Set default player gamepads.
 	if (GamepadManager::getSingletonPtr()->getPad(1) == nullptr){
@@ -102,8 +106,18 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 
 bool PlayerManager::load(const Uint32 redFighter, const Uint32 blueFighter)
 {
-	bool ret = this->load("Data/Fighters/" + m_fighters[redFighter].file, 
-		"Data/Fighters/" + m_fighters[blueFighter].file);
+	Log::getSingletonPtr()->logMessage("Loading fighter files from \"" +
+		Engine::getSingletonPtr()->getDataDirectory() + "/Fighters\"");
+	bool ret = this->load(Engine::getSingletonPtr()->getDataDirectory() + 
+		"/Fighters/" + m_fighters[redFighter].file, 
+		Engine::getSingletonPtr()->getDataDirectory() + 
+		"/Fighters/" + m_fighters[blueFighter].file);
+	if (ret){
+		Log::getSingletonPtr()->logMessage("Fighters loaded!");
+	}
+	else{
+		Log::getSingletonPtr()->logMessage("ERROR: Failed to load fighters");
+	}
 
 	m_redFighter = redFighter;
 	m_blueFighter = blueFighter;
@@ -125,8 +139,10 @@ bool PlayerManager::reset(void)
 	Config c(Engine::getSingletonPtr()->getSettingsFile());
 
 	if (c.isLoaded()){
-		m_pRedPlayer.reset(new Player("", c.parseValue("controls", "red")));
-		m_pBluePlayer.reset(new Player("", c.parseValue("controls", "blue")));
+		m_pRedPlayer.reset(new Player("", Engine::getSingletonPtr()->getDataDirectory() + 
+			"/" + c.parseValue("controls", "red")));
+		m_pBluePlayer.reset(new Player("", Engine::getSingletonPtr()->getDataDirectory() + 
+			"/" + c.parseValue("controls", "blue")));
 
 		// Set default player gamepads.
 		if (GamepadManager::getSingletonPtr()->getPad(1) == nullptr){

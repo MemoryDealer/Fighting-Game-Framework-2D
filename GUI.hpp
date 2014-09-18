@@ -404,6 +404,7 @@ struct GUITheme : public Singleton<GUITheme>
 	std::shared_ptr<SDL_Texture> TextboxTexture[3];
 	std::shared_ptr<SDL_Texture> TextboxCursor;
 	std::shared_ptr<SDL_Texture> ListboxTexture, ListboxBorder;
+	std::shared_ptr<SDL_Texture> HealthbarTexture;
 };
 
 // ================================================ //

@@ -37,7 +37,8 @@ m_layers()
 		StageLayer layer;
 		std::string layerName = (std::string("layer") + Engine::toString(i));
 
-		layer.pTexture = Engine::getSingletonPtr()->loadTexture(c.parseValue(layerName, "texture"));
+		layer.pTexture = Engine::getSingletonPtr()->loadTexture(
+			Engine::getSingletonPtr()->getDataDirectory() + "/" + c.parseValue(layerName, "texture"));
 
 		layer.src.w = c.parseIntValue(layerName, "w");
 		layer.src.h = c.parseIntValue(layerName, "h");

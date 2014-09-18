@@ -415,6 +415,13 @@
 	necessary but I am doing it for now.
 -Added Player::takeDamage() which subtracts from the hp and modifies the health bar. The server processes damage box collisions and broadcasts any damage to the clients.
 
+#9/18/14
+-Redesigned the config file relative paths, all paths should now use the relative path from the "Data" directory. So a .gui file should be 
+	specified in ExTMF.cfg as "GUI/file.gui". When file locations are parsed it should be done by first retrieving the location of the 
+	Data directory (specified in config.ini in the same directory as executable and stored in Engine object) by calling 
+	Engine::getDataDirectory() and adding the rest of the path, including the "/" in between directories if it is not specified in the 
+	config file relative path.
+
 #TODO
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was
 	colliding with the server player. It may be a good idea to go through every instance of vector code and add bounds checking.
