@@ -313,14 +313,14 @@ void Player::takeDamage(const Uint32 damage)
 	m_currentHP -= damage;
 	if (m_currentHP < 0){
 		m_currentHP = 0;
+		return;
 	}
 
 	// Calculate percentage from current HP.
-	double d = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
-	d *= 100.0;
-	int percent = static_cast<int>(d);
+	double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
+	percent *= 100.0;
 
-	m_pHealthBar->setPercent(percent);
+	m_pHealthBar->setPercent(static_cast<int>(percent));
 }
 
 // ================================================ //
