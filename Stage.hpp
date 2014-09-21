@@ -31,17 +31,27 @@ public:
 	// Frees any textures allocated by the Stage.
 	virtual ~Stage(void);
 
-	// Getters
+	// Shifts the stage view left or right by amount x.
+	void shiftX(const int x);
 
-	// Returns the x value of the specified Layer's source SDL_Rect.
-	const int getSourceX(const int layer) const;
+	// Directly sets the shift offset of the stage view.
+	void setShiftX(const int x);
 
 	// Renders each layer, applying proper offsets using the Camera values.
 	// Process Stage effects.
 	virtual void update(double dt);
 
+	// Getters
+
+	// Returns the x value of the specified Layer's source SDL_Rect.
+	const int getSourceX(const int layer) const;
+
+	// Returns farmost right edge at which the stage can be shifted.
+	const Uint32 getRightEdge(void) const;
+
 private:
 	StageLayerList m_layers;
+	Uint32 m_rightEdge;
 };
 
 // ================================================ //
@@ -50,6 +60,10 @@ private:
 
 inline const int Stage::getSourceX(const int layer) const{
 	return m_layers[layer].src.x;
+}
+
+inline const Uint32 Stage::getRightEdge(void) const{
+	return m_rightEdge;
 }
 
 // ================================================ //

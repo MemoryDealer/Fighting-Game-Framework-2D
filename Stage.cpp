@@ -20,7 +20,8 @@
 
 Stage::Stage(const std::string& stageFile) :
 Object(),
-m_layers()
+m_layers(),
+m_rightEdge(0)
 {
 	Config c(stageFile);
 	if (!c.isLoaded()){
@@ -59,6 +60,8 @@ m_layers()
 		m_layers.push_back(layer);
 	}
 
+	m_rightEdge = m_layers[0].w - m_layers[0].src.w;
+
 	Log::getSingletonPtr()->logMessage("Stage loaded with " + Engine::toString(numLayers) + " layer(s)!");
 }
 
@@ -72,6 +75,24 @@ Stage::~Stage(void)
 		Engine::getSingletonPtr()->destroyTexture(itr->pTexture);
 	}
 }
+
+// ================================================ //
+
+void Stage::shiftX(const int x)
+{
+	m_layers[0].src.x += x;
+	if (m_layers[0].src.x < 0){
+		m_layers[0].src.x = 0;
+	}
+}
+
+// ================================================ //
+
+void Stage::setShiftX(const int x)
+{
+	m_layers[0].src.x = x;
+}
+
 
 // ================================================ //
 

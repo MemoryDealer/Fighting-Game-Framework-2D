@@ -95,10 +95,6 @@ bool PlayerManager::load(const std::string& redFighterFile, const std::string& b
 	m_pBluePlayer->setPosition(Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w - startingOffset, 
 		m_pBluePlayer->getPosition().y);
 
-	// Calculate the far right edge at which player movement should stop or move the camera.
-	m_redMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pRedPlayer->getPosition().w;
-	m_blueMax = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_pBluePlayer->getPosition().w;
-
 	return (m_pRedPlayer.get() != nullptr) && (m_pBluePlayer.get() != nullptr);
 }
 
@@ -274,32 +270,21 @@ void PlayerManager::updateCamera(double dt)
 
 void PlayerManager::update(double dt)
 {
-	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
-			m_pRedPlayer->update(dt);
-		}
-		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
-			m_pBluePlayer->update(dt);
-		}
-		
-		// ... predict client?
-	}
-	else if(Game::getSingletonPtr()->getMode() == Game::CLIENT){
-		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
-			m_pRedPlayer->serverReconciliation();
-			m_pRedPlayer->update(dt);
-		}
-		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
-			m_pBluePlayer->serverReconciliation();
-			m_pBluePlayer->update(dt);
-		}
-	}
-	
-	m_pRedPlayer->render();
-	m_pBluePlayer->render();
+	// Perform game mode specific operations.
+	switch (Game::getSingletonPtr()->getMode()){
+	default:
+		break;
 
 	// Perform server-side calculations.
-	if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+	case Game::SERVER:
+		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+			m_pRedPlayer->update(dt);
+		}
+		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+			m_pBluePlayer->update(dt);
+		}
+
+		// ... predict client?
 		// Test damage box collisions.
 		for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
 			for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
@@ -316,7 +301,98 @@ void PlayerManager::update(double dt)
 				}
 			}
 		}
+		break;
+
+	case Game::CLIENT:
+		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+			m_pRedPlayer->serverReconciliation();
+			m_pRedPlayer->update(dt);
+		}
+		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+			m_pBluePlayer->serverReconciliation();
+			m_pBluePlayer->update(dt);
+		}
+		break;
 	}
+
+	// Update stage shift and player sides.
+	const double shiftMultiplier = 0.50;
+	int shift = 0;
+	SDL_Rect redPos, bluePos;
+	redPos = m_pRedPlayer->getPosition();
+	bluePos = m_pBluePlayer->getPosition();
+
+	// Red player.
+	if (m_pRedPlayer->getSide() == Player::Side::LEFT){
+		if (redPos.x < 0){
+			m_pRedPlayer->setPosition(0, redPos.y);
+			if (bluePos.x < m_pBluePlayer->getMaxXPos()){
+				shift = static_cast<int>(m_pRedPlayer->getXVelocity() * dt * shiftMultiplier);
+
+				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
+				if (StageManager::getSingletonPtr()->getSourceX() > 0){
+					// Adjust blue player to compensate for stage shift.
+					m_pBluePlayer->setPosition(bluePos.x - shift * 2, bluePos.y);
+				}
+			}
+		}
+	}
+	else{
+		if (redPos.x > m_pRedPlayer->getMaxXPos()){
+			m_pRedPlayer->setPosition(m_pRedPlayer->getMaxXPos(), redPos.y);
+			if (bluePos.x > 0){
+				shift = -static_cast<int>(m_pRedPlayer->getXVelocity() * dt * shiftMultiplier);
+
+				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
+				if (StageManager::getSingletonPtr()->getSourceX() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
+					m_pBluePlayer->setPosition(bluePos.x + shift * 2, bluePos.y);
+				}
+			}
+		}
+	}
+	// Blue Player.
+	if (m_pBluePlayer->getSide() == Player::Side::LEFT){
+		if (bluePos.x < 0){
+			m_pBluePlayer->setPosition(0, bluePos.y);
+			if (redPos.x < m_pRedPlayer->getMaxXPos()){
+				shift = -static_cast<int>(m_pBluePlayer->getXVelocity() * dt * shiftMultiplier);
+
+				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
+				if (StageManager::getSingletonPtr()->getSourceX() > 0){
+					m_pRedPlayer->setPosition(redPos.x + shift * 2, redPos.y);
+				}
+			}
+		}
+	}
+	else{
+		if (bluePos.x > m_pBluePlayer->getMaxXPos()){
+			m_pBluePlayer->setPosition(m_pBluePlayer->getMaxXPos(), bluePos.y);
+			if (redPos.x > 0){
+				shift = static_cast<int>(m_pBluePlayer->getXVelocity() * dt * shiftMultiplier);
+
+				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
+				if (StageManager::getSingletonPtr()->getSourceX() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
+					m_pRedPlayer->setPosition(redPos.x - shift * 2, redPos.y);
+				}
+			}
+		}
+	}
+	// If the stage was shifted, apply client/server operations.
+	if (shift != 0){
+		if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+			Server::getSingletonPtr()->stageShift(StageManager::getSingletonPtr()->getSourceX());
+		}
+		else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+			// TODO: Implement server reconciliation for stage shifts.
+			// ... push stage shift event
+		}
+	}
+
+	// TODO: Check for K.O.
+	
+	// Render the players.
+	m_pRedPlayer->render();
+	m_pBluePlayer->render();
 
 	//// Reset collisions before testing.
 	//m_pRedPlayer->setColliding(false);
@@ -331,8 +407,6 @@ void PlayerManager::update(double dt)
 	//		}
 	//	}
 	//}
-
-	// TODO: Check for K.O.
 }
 
 // ================================================ //

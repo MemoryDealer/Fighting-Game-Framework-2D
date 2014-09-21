@@ -39,6 +39,9 @@ public:
 
 	// Getters
 
+	// Returns pointer to currently loaded stage.
+	Stage* getStage(void) const;
+
 	// Returns the x value of the specified Layer's source SDL_Rect.
 	const int getSourceX(const int layer = 0) const;
 
@@ -53,6 +56,10 @@ private:
 // ================================================ //
 
 // Getters
+
+inline Stage* StageManager::getStage(void) const{
+	return (m_pStage == nullptr) ? nullptr : m_pStage.get();
+}
 
 inline const int StageManager::getSourceX(const int layer) const{
 	return m_pStage->getSourceX(layer);

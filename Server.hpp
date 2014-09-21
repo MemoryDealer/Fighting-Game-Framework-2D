@@ -78,6 +78,9 @@ public:
 	
 	// Broadcasts all relevant player information to clients.
 	Uint32 updatePlayers(void);
+	
+	// Broadcasts a STAGE_SHIFT message, clients will adjust stage view.
+	Uint32 stageShift(const int shift);
 
 	// Sends a PlayerUpdate only to the client playing the red player.
 	Uint32 updateRedPlayer(const Uint32 inputSeq);

@@ -46,6 +46,7 @@ m_hitboxes(),
 m_pCurrentMove(nullptr),
 m_pMoveTimer(new Timer()),
 m_drawHitboxes(false),
+m_maxXPos(0),
 m_clientInputs(),
 m_serverUpdates()
 {
@@ -114,6 +115,10 @@ void Player::serverReconciliation(void)
 		}
 
 		m_serverUpdates.pop();
+	}
+
+	if (m_dst.x < 0){
+		m_dst.x = 0;
 	}
 }
 
@@ -267,6 +272,9 @@ void Player::loadFighterData(const std::string& file)
 
 	// Set player 26 units from bottom adjusting for player height.
 	m_dst.y = Engine::getSingletonPtr()->getLogicalWindowHeight() - m_dst.h - 26;
+
+	// Calculate the far right edge at which player movement should stop or move the camera.
+	m_maxXPos = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_dst.w;
 
 	// Load moveset.
 	for (int i = 0; i < MoveID::END_MOVES; ++i){

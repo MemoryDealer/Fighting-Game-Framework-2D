@@ -154,6 +154,9 @@ public:
 	// Returns hitbox pointer at index n.
 	Hitbox* getHitbox(const int n) const;
 
+	// Returns maximum position X at which the player can be.
+	const int getMaxXPos(void) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -198,6 +201,7 @@ private:
 	std::shared_ptr<Move> m_pCurrentMove;
 	std::shared_ptr<Timer> m_pMoveTimer;
 	bool m_drawHitboxes;
+	int m_maxXPos;
 
 	// Net stuff.
 
@@ -251,6 +255,10 @@ inline const Uint32 Player::getCurrentHP(void) const{
 
 inline Hitbox* Player::getHitbox(const int n) const{
 	return m_hitboxes[n].get();
+}
+
+inline const int Player::getMaxXPos(void) const{
+	return m_maxXPos;
 }
 
 // Setters

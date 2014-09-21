@@ -18,6 +18,7 @@
 #include "Timer.hpp"
 #include "Game.hpp"
 #include "PlayerManager.hpp"
+#include "StageManager.hpp"
 #include "Input.hpp"
 #include "Log.hpp"
 
@@ -224,7 +225,22 @@ Uint32 Server::updatePlayers(void)
 	bluePlayer.state = blue->getCurrentState();
 	bit.Write(bluePlayer);
 
+	// Write stage shift.
+	//bit.Write(StageManager::getSingletonPtr()->getSourceX());
+
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
+}
+
+// ================================================ //
+
+Uint32 Server::stageShift(const int shift)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::STAGE_SHIFT));
+
+	bit.Write(shift);
+
+	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 }
 
 // ================================================ //

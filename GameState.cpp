@@ -203,6 +203,18 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::HEALTHBAR_RED)->setPercent(75);
 			break;
 
+		case SDLK_t:
+			if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+				RakNet::BitStream bit;
+				bit.Write(static_cast<RakNet::MessageID>(NetMessage::SYSTEM_MESSAGE));
+				RakNet::Time time = RakNet::GetTime();
+				printf("Local time: %d\n", time);
+				bit.Write(time);
+
+				Client::getSingletonPtr()->send(bit, HIGH_PRIORITY, RELIABLE);
+			}
+			break;
+
 		case SDLK_ESCAPE:
 			
 			m_quit = true;
@@ -485,6 +497,19 @@ void GameState::update(double dt)
 				}
 				break;
 
+			case NetMessage::SYSTEM_MESSAGE:
+				{
+					RakNet::BitStream bit(Server::getSingletonPtr()->getPacket()->data,
+									  Server::getSingletonPtr()->getPacket()->length,
+									  false);
+					bit.IgnoreBytes(sizeof(RakNet::MessageID));
+					RakNet::Time time;
+					bit.Read(time);
+
+					printf("Client time: %d\n", time);
+				}
+				break;
+
 			case NetMessage::CLIENT_INPUT:
 				// Verify this message is from a playing client (not spectating).
 				if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr ||
@@ -597,6 +622,24 @@ void GameState::update(double dt)
 							bluePlayer->setPosition(blue.x, blue.y);
 							bluePlayer->setCurrentState(blue.state);
 						}
+
+						/*int stageShift = StageManager::getSingletonPtr()->getSourceX();
+						bit.Read(stageShift);
+						StageManager::getSingletonPtr()->getStage()->setShiftX(stageShift);*/
+					}
+					break;
+
+				case NetMessage::STAGE_SHIFT:
+					;
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+											  Client::getSingletonPtr()->getPacket()->length,
+											  false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+						int shift;
+						bit.Read(shift);
+						StageManager::getSingletonPtr()->getStage()->setShiftX(shift);
 					}
 					break;
 
