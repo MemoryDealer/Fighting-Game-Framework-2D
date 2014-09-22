@@ -273,6 +273,10 @@ void PlayerManager::update(double dt)
 			Server::getSingletonPtr()->stageShift(StageManager::getSingletonPtr()->getStage()->getShift());
 		}
 		else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+			Client::StageShift pendingShift;
+			pendingShift.shift = shift;
+			pendingShift.seq = Client::getSingletonPtr()->m_stageShiftSeq;
+			Client::getSingletonPtr()->m_pendingStageShifts.push_back(pendingShift);
 			Client::getSingletonPtr()->m_stageShiftSeq++;
 		}
 	}

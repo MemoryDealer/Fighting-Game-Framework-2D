@@ -116,6 +116,7 @@ void Stage::serverReconciliation(void)
 		ShiftUpdate update = m_shiftUpdates.front();
 
 		m_layers[0].src.x = update.shift;
+		printf("Rewinding to: %d\n", update.lastProcessedShift);
 
 		for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
 			 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();){
@@ -124,11 +125,16 @@ void Stage::serverReconciliation(void)
 			}
 			else{
 				m_layers[0].src.x += itr->shift;
+				printf("\tRe-applying shift: %d\n", itr->seq);
 				++itr;
 			}
 		}
 
 		m_shiftUpdates.pop();
+	}
+
+	if (m_layers[0].src.x < 0){
+		m_layers[0].src.x = 0;
 	}
 }
 

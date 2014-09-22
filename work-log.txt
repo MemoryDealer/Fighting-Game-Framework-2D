@@ -426,6 +426,11 @@
 -Added basic stage shifting (the background scrolls left/right as players move to edge) support for netplay. With lag simulation, the client is choppy, so I will
 	have to add client-side prediction with server reconciliation for stage shifting as well.
 
+#9/22/14
+-Implemented stage shift client-side prediction and server reconciliation, e.g., when the client moves in such a way that the stage view shifts left/right, the
+	client will predict how it should move and upon receiving updates from the server, it will rewind to the shift position the server sends (which is from the past),
+	and re-apply unprocessed stage shift events so that the movement is seamless, assuming no packet loss.
+
 #TODO
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was
