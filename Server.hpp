@@ -185,7 +185,7 @@ public:
 	Uint32 m_lastProcessedStageShift;
 
 	// The order in which players "ready up." The server process this as 
-	// first come, first server; so first to ready up will play first. After
+	// first come, first serve; so first to ready up will play first. After
 	// the game starts, they are removed from the queue and the next two play.
 	// The std::string should specify the username.
 	ReadyQueue m_readyQueue;

@@ -234,11 +234,11 @@ void PlayerManager::update(double dt)
 		if (redPos.x > m_pRedPlayer->getMaxXPos()){
 			m_pRedPlayer->setPosition(m_pRedPlayer->getMaxXPos(), redPos.y);
 			if (bluePos.x > 0){
-				shift = -static_cast<int>(m_pRedPlayer->getXVelocity() * dt * shiftMultiplier);
+				shift = static_cast<int>(m_pRedPlayer->getXVelocity() * dt * shiftMultiplier);
 
 				StageManager::getSingletonPtr()->getStage()->shift(shift);
 				if (StageManager::getSingletonPtr()->getStage()->getShift() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
-					playerShift = shift * 2;
+					playerShift = -(shift * 2);
 					m_pBluePlayer->setPosition(bluePos.x + playerShift, bluePos.y);
 				}
 			}
@@ -249,11 +249,11 @@ void PlayerManager::update(double dt)
 		if (bluePos.x < 0){
 			m_pBluePlayer->setPosition(0, bluePos.y);
 			if (redPos.x < m_pRedPlayer->getMaxXPos()){
-				shift = -static_cast<int>(m_pBluePlayer->getXVelocity() * dt * shiftMultiplier);
+				shift = static_cast<int>(m_pBluePlayer->getXVelocity() * dt * shiftMultiplier);
 
 				StageManager::getSingletonPtr()->getStage()->shift(shift);
 				if (StageManager::getSingletonPtr()->getStage()->getShift() > 0){
-					playerShift = shift * 2;
+					playerShift = -(shift * 2);
 					m_pRedPlayer->setPosition(redPos.x + playerShift, redPos.y);
 				}
 			}
@@ -284,6 +284,20 @@ void PlayerManager::update(double dt)
 			pendingShift.playerShift = playerShift;
 			pendingShift.seq = Client::getSingletonPtr()->m_stageShiftSeq++;
 			Client::getSingletonPtr()->m_pendingStageShifts.push_back(pendingShift);
+		}
+	}
+
+	// Switch player sides if necessary.
+	if (redPos.x > (bluePos.x + (bluePos.w / 2))){
+		if (m_pRedPlayer->getSide() != Player::Side::RIGHT){
+			m_pRedPlayer->setSide(Player::Side::RIGHT);
+			m_pBluePlayer->setSide(Player::Side::LEFT);
+		}
+	}
+	else{
+		if (m_pBluePlayer->getSide() != Player::Side::RIGHT){
+			m_pBluePlayer->setSide(Player::Side::RIGHT);
+			m_pRedPlayer->setSide(Player::Side::LEFT);
 		}
 	}
 
