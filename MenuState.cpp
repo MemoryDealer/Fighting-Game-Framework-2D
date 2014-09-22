@@ -15,9 +15,9 @@
 #include "Engine.hpp"
 #include "PlayerManager.hpp"
 #include "StageManager.hpp"
+#include "Stage.hpp"
 #include "GUIMenuState.hpp"
 #include "WidgetTextbox.hpp"
-#include "Camera.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
 #include "MessageRouter.hpp"
@@ -63,8 +63,6 @@ void MenuState::enter(void)
 
 	new StageManager();
 	StageManager::getSingletonPtr()->load(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/test.stage");
-
-	new Camera();
 }
 
 // ================================================ //
@@ -75,7 +73,6 @@ void MenuState::exit(void)
 	
 	delete PlayerManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
-	delete Camera::getSingletonPtr();
 }
 
 // ================================================ //

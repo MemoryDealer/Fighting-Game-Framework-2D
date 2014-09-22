@@ -14,14 +14,16 @@
 #include "Stage.hpp"
 #include "Engine.hpp"
 #include "Config.hpp"
-#include "Camera.hpp"
+#include "Client.hpp"
+#include "Game.hpp"
 
 // ================================================ //
 
 Stage::Stage(const std::string& stageFile) :
 Object(),
 m_layers(),
-m_rightEdge(0)
+m_rightEdge(0),
+m_shiftUpdates()
 {
 	Config c(stageFile);
 	if (!c.isLoaded()){
@@ -78,17 +80,20 @@ Stage::~Stage(void)
 
 // ================================================ //
 
-void Stage::shiftX(const int x)
+void Stage::shift(const int x)
 {
 	m_layers[0].src.x += x;
 	if (m_layers[0].src.x < 0){
 		m_layers[0].src.x = 0;
 	}
+	else if (m_layers[0].src.x > m_rightEdge){
+		m_layers[0].src.x = m_rightEdge;
+	}
 }
 
 // ================================================ //
 
-void Stage::setShiftX(const int x)
+void Stage::setShift(const int x)
 {
 	m_layers[0].src.x = x;
 }
@@ -96,22 +101,48 @@ void Stage::setShiftX(const int x)
 
 // ================================================ //
 
+void Stage::updateShiftFromServer(const Stage::ShiftUpdate& update)
+{
+	if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+		m_shiftUpdates.push(update);
+	}
+}
+
+// ================================================ //
+
+void Stage::serverReconciliation(void)
+{
+	while (!m_shiftUpdates.empty()){
+		ShiftUpdate update = m_shiftUpdates.front();
+
+		m_layers[0].src.x = update.shift;
+
+		for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
+			 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();){
+			if (itr->seq <= update.lastProcessedShift){
+				itr = Client::getSingletonPtr()->m_pendingStageShifts.erase(itr);
+			}
+			else{
+				m_layers[0].src.x += itr->shift;
+				++itr;
+			}
+		}
+
+		m_shiftUpdates.pop();
+	}
+}
+
+// ================================================ //
+
 void Stage::update(double dt)
 {
+	if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+		this->serverReconciliation();
+	}
+
 	for (unsigned int i = 0; i<m_layers.size(); ++i){
 		// Update background source based on camera movement.
 		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
-		m_layers[i].src.x += Camera::getSingletonPtr()->getMoveX();
-
-		// Don't allow stage view to go out of bounds.
-		if (m_layers[i].src.x <= 0){
-			m_layers[i].src.x = 0;
-			Camera::getSingletonPtr()->lock();
-		}
-		else if (m_layers[i].src.x >= rightEdge){
-			m_layers[i].src.x = rightEdge;
-			Camera::getSingletonPtr()->lock();
-		}
 
 		// Render the layer.
 		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),

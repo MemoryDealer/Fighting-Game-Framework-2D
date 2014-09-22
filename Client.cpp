@@ -18,6 +18,8 @@
 #include "Timer.hpp"
 #include "Game.hpp"
 #include "PlayerManager.hpp"
+#include "StageManager.hpp"
+#include "Stage.hpp"
 
 // ================================================ //
 
@@ -33,6 +35,8 @@ m_port(port),
 m_connected(false),
 m_inputSeq(0),
 m_pendingInputs(),
+m_pendingStageShifts(),
+m_stageShiftSeq(0),
 m_timeout(10000)
 {
 	Log::getSingletonPtr()->logMessage("Initializing Client...");
@@ -155,6 +159,9 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 	netInput.seq = seq;
 	netInput.dt = dt;
 	bit.Write(netInput);
+
+	// Write stage shift sequence.
+	bit.Write(m_stageShiftSeq);
 
 	return this->send(bit, IMMEDIATE_PRIORITY, RELIABLE_ORDERED);
 }

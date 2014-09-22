@@ -75,9 +75,6 @@ public:
 
 	// --- //
 
-	// Updates Camera offsets based on the positions of each Player.
-	void updateCamera(double dt);
-
 	// Updates Red and Blue Players, and tests for collisions.
 	void update(double dt);
 

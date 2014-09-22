@@ -12,6 +12,7 @@
 // ================================================ //
 
 #include "StageManager.hpp"
+#include "Stage.hpp"
 #include "PlayerManager.hpp"
 
 // ================================================ //

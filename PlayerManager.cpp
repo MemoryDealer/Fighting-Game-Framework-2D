@@ -13,7 +13,7 @@
 
 #include "PlayerManager.hpp"
 #include "StageManager.hpp"
-#include "Camera.hpp"
+#include "Stage.hpp"
 #include "Hitbox.hpp"
 #include "Config.hpp"
 #include "Input.hpp"
@@ -158,116 +158,6 @@ bool PlayerManager::reset(void)
 
 // ================================================ //
 
-void PlayerManager::updateCamera(double dt)
-{
-	//Camera::getSingletonPtr()->clear();
-
-	//SDL_Rect red, blue;
-	//red = m_pRedPlayer->getPosition();
-	//blue = m_pBluePlayer->getPosition();
-	//const int redState = m_pRedPlayer->getCurrentState();
-	//const int blueState = m_pBluePlayer->getCurrentState();
-	//const double camMultiplier = 0.50;
-
-	//// Check Red Player.
-	//if (m_pRedPlayer->getSide() == PlayerSide::LEFT){
-	//	// Test for left stage edge and camera movement.
-	//	if (red.x < 0){
-	//		if (redState == PlayerState::WALKING_BACK || m_pRedPlayer->isColliding()){
-	//			// Reset player back into the bounds of the viewport.
-	//			m_pRedPlayer->setPosition(0, red.y);
-
-	//			// Check if blue player is not at the right edge.
-	//			if (blue.x < m_blueMax){
-	//				// Move the camera.
-	//				Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * camMultiplier));
-
-	//				if (!Camera::getSingletonPtr()->isLocked()){
-	//					// Make the blue player "stand still" with camera movement (this feels like a shitty hack).
-	//					m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->getMoveX() * 2, blue.y);
-	//				}
-	//			}
-	//		}
-	//	}
-
-	//	// Switch player sides if necessary.
-	//	if (red.x > (blue.x + (blue.w / 2))){
-	//		m_pRedPlayer->setSide(PlayerSide::RIGHT);
-	//		m_pBluePlayer->setSide(PlayerSide::LEFT);
-	//	}
-	//}
-	//else{
-	//	// Test for right stage edge and camera movement.
-	//	if (red.x > m_redMax){
-	//		if (redState == PlayerState::WALKING_BACK ||
-	//			m_pRedPlayer->isColliding()){
-	//			// Reset player position.
-	//			m_pRedPlayer->setPosition(m_redMax, red.y);
-
-	//			// See if blue player is at left edge.
-	//			if (blue.x > 0){
-	//				// Move camera.
-	//				Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pRedPlayer->getVelocityX() * dt * camMultiplier));
-
-	//				if (!Camera::getSingletonPtr()->isLocked()){
-	//					m_pBluePlayer->setPosition(blue.x - Camera::getSingletonPtr()->getMoveX() * 2, blue.y);
-	//				}
-	//			}
-	//		}
-	//	}
-
-	//	// Switch player sides.
-	//	if (blue.x > (red.x + (red.w / 2))){
-	//		m_pRedPlayer->setSide(PlayerSide::LEFT);
-	//		m_pBluePlayer->setSide(PlayerSide::RIGHT);
-	//	}
-	//}
-
-	//// Check Blue Player.
-	//if (m_pBluePlayer->getSide() == PlayerSide::LEFT){
-	//	if (blue.x < 0){
-	//		if (blueState == PlayerState::WALKING_BACK ||
-	//			m_pBluePlayer->isColliding()){
-	//			// Reset player position.
-	//			m_pBluePlayer->setPosition(0, blue.y);
-
-	//			if (red.x < m_redMax){
-	//				// Move camera.
-	//				Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * camMultiplier));
-
-	//				if (!Camera::getSingletonPtr()->isLocked()){
-	//					m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->getMoveX() * 2, red.y);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-	//else{
-	//	if (blue.x > m_blueMax){
-	//		if (blueState == PlayerState::WALKING_BACK ||
-	//			m_pBluePlayer->isColliding()){
-	//			// Reset player position.
-	//			m_pBluePlayer->setPosition(m_blueMax, blue.y);
-
-	//			// See if red player is at left edge.
-	//			if (red.x > 0){
-	//				// Move camera.
-	//				Camera::getSingletonPtr()->setMoveX(static_cast<int>(m_pBluePlayer->getVelocityX() * dt * camMultiplier));
-
-	//				if (!Camera::getSingletonPtr()->isLocked()){
-	//					m_pRedPlayer->setPosition(red.x - Camera::getSingletonPtr()->getMoveX() * 2, red.y);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-	//// Clear any locks on the camera after it's needed above.
-	//Camera::getSingletonPtr()->unlock();
-}
-
-// ================================================ //
-
 void PlayerManager::update(double dt)
 {
 	// Perform game mode specific operations.
@@ -329,8 +219,8 @@ void PlayerManager::update(double dt)
 			if (bluePos.x < m_pBluePlayer->getMaxXPos()){
 				shift = static_cast<int>(m_pRedPlayer->getXVelocity() * dt * shiftMultiplier);
 
-				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
-				if (StageManager::getSingletonPtr()->getSourceX() > 0){
+				StageManager::getSingletonPtr()->getStage()->shift(shift);
+				if (StageManager::getSingletonPtr()->getStage()->getShift() > 0){
 					// Adjust blue player to compensate for stage shift.
 					m_pBluePlayer->setPosition(bluePos.x - shift * 2, bluePos.y);
 				}
@@ -343,8 +233,8 @@ void PlayerManager::update(double dt)
 			if (bluePos.x > 0){
 				shift = -static_cast<int>(m_pRedPlayer->getXVelocity() * dt * shiftMultiplier);
 
-				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
-				if (StageManager::getSingletonPtr()->getSourceX() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
+				StageManager::getSingletonPtr()->getStage()->shift(shift);
+				if (StageManager::getSingletonPtr()->getStage()->getShift() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
 					m_pBluePlayer->setPosition(bluePos.x + shift * 2, bluePos.y);
 				}
 			}
@@ -357,8 +247,8 @@ void PlayerManager::update(double dt)
 			if (redPos.x < m_pRedPlayer->getMaxXPos()){
 				shift = -static_cast<int>(m_pBluePlayer->getXVelocity() * dt * shiftMultiplier);
 
-				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
-				if (StageManager::getSingletonPtr()->getSourceX() > 0){
+				StageManager::getSingletonPtr()->getStage()->shift(shift);
+				if (StageManager::getSingletonPtr()->getStage()->getShift() > 0){
 					m_pRedPlayer->setPosition(redPos.x + shift * 2, redPos.y);
 				}
 			}
@@ -370,8 +260,8 @@ void PlayerManager::update(double dt)
 			if (redPos.x > 0){
 				shift = static_cast<int>(m_pBluePlayer->getXVelocity() * dt * shiftMultiplier);
 
-				StageManager::getSingletonPtr()->getStage()->shiftX(shift);
-				if (StageManager::getSingletonPtr()->getSourceX() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
+				StageManager::getSingletonPtr()->getStage()->shift(shift);
+				if (StageManager::getSingletonPtr()->getStage()->getShift() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
 					m_pRedPlayer->setPosition(redPos.x - shift * 2, redPos.y);
 				}
 			}
@@ -380,11 +270,10 @@ void PlayerManager::update(double dt)
 	// If the stage was shifted, apply client/server operations.
 	if (shift != 0){
 		if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-			Server::getSingletonPtr()->stageShift(StageManager::getSingletonPtr()->getSourceX());
+			Server::getSingletonPtr()->stageShift(StageManager::getSingletonPtr()->getStage()->getShift());
 		}
 		else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-			// TODO: Implement server reconciliation for stage shifts.
-			// ... push stage shift event
+			Client::getSingletonPtr()->m_stageShiftSeq++;
 		}
 	}
 

@@ -24,6 +24,8 @@
 #include "Client.hpp"
 #include "Game.hpp"
 #include "WidgetHealthBar.hpp"
+#include "StageManager.hpp"
+#include "Stage.hpp"
 
 // ================================================ //
 

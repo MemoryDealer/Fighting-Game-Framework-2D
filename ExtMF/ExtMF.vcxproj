@@ -98,7 +98,6 @@
     <ClInclude Include="..\GUILobbyState.hpp" />
     <ClInclude Include="..\NetMessage.hpp" />
     <ClInclude Include="..\WidgetButton.hpp" />
-    <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Config.hpp" />
     <ClInclude Include="..\Engine.hpp" />
     <ClInclude Include="..\EngineImpl.hpp" />
@@ -145,7 +144,6 @@
     <ClCompile Include="..\GUIGameState.cpp" />
     <ClCompile Include="..\GUILobbyState.cpp" />
     <ClCompile Include="..\WidgetButton.cpp" />
-    <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Config.cpp" />
     <ClCompile Include="..\Engine.cpp" />
     <ClCompile Include="..\EngineImpl.cpp" />

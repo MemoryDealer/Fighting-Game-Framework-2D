@@ -16,7 +16,7 @@
 #include "ObjectManager.hpp"
 #include "PlayerManager.hpp"
 #include "StageManager.hpp"
-#include "Camera.hpp"
+#include "Stage.hpp"
 #include "Input.hpp"
 #include "Config.hpp"
 #include "GUIGameState.hpp"
@@ -520,6 +520,9 @@ void GameState::update(double dt)
 					bit.IgnoreBytes(sizeof(RakNet::MessageID));
 					Client::NetInput netInput;
 					bit.Read(netInput);
+					Uint32 stageShiftSeq = Server::getSingletonPtr()->m_lastProcessedStageShift;
+					bit.Read(stageShiftSeq);
+					Server::getSingletonPtr()->m_lastProcessedStageShift = stageShiftSeq;
 					
 					// Apply the NetInput struct to the proper player.
 					if (Server::getSingletonPtr()->validateInput(netInput)){
@@ -528,8 +531,6 @@ void GameState::update(double dt)
 							PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
 							PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(netInput.dt);
 							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;
-							//PlayerManager::getSingletonPtr()->getRedPlayer()->enqueueClientInput(netInput);
-
 						}
 						else if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
 							PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
@@ -601,6 +602,9 @@ void GameState::update(double dt)
 
 						Server::PlayerUpdate red;
 						bit.Read(red);
+						Server::PlayerUpdate blue;
+						bit.Read(blue);
+
 						// If this client is playing, enqueue this input for processing.
 						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
 							PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
@@ -611,9 +615,7 @@ void GameState::update(double dt)
 							redPlayer->setPosition(red.x, red.y);
 							redPlayer->setCurrentState(red.state);
 						}
-
-						Server::PlayerUpdate blue;
-						bit.Read(blue);
+						
 						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
 							PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
 						}
@@ -622,24 +624,19 @@ void GameState::update(double dt)
 							bluePlayer->setPosition(blue.x, blue.y);
 							bluePlayer->setCurrentState(blue.state);
 						}
-
-						/*int stageShift = StageManager::getSingletonPtr()->getSourceX();
-						bit.Read(stageShift);
-						StageManager::getSingletonPtr()->getStage()->setShiftX(stageShift);*/
 					}
 					break;
 
 				case NetMessage::STAGE_SHIFT:
-					;
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
 											  Client::getSingletonPtr()->getPacket()->length,
 											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						int shift;
-						bit.Read(shift);
-						StageManager::getSingletonPtr()->getStage()->setShiftX(shift);
+						Stage::ShiftUpdate update;
+						bit.Read(update);
+						StageManager::getSingletonPtr()->getStage()->updateShiftFromServer(update);
 					}
 					break;
 

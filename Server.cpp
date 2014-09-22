@@ -19,6 +19,7 @@
 #include "Game.hpp"
 #include "PlayerManager.hpp"
 #include "StageManager.hpp"
+#include "Stage.hpp"
 #include "Input.hpp"
 #include "Log.hpp"
 
@@ -36,6 +37,7 @@ m_redAddr(),
 m_blueAddr(),
 m_redLastProcessedInput(0),
 m_blueLastProcessedInput(0),
+m_lastProcessedStageShift(0),
 m_readyQueue(),
 m_pUpdateTimer(new Timer())
 {
@@ -226,7 +228,7 @@ Uint32 Server::updatePlayers(void)
 	bit.Write(bluePlayer);
 
 	// Write stage shift.
-	//bit.Write(StageManager::getSingletonPtr()->getSourceX());
+	bit.Write(StageManager::getSingletonPtr()->getStage()->getShift());
 
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
 }
@@ -238,9 +240,12 @@ Uint32 Server::stageShift(const int shift)
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::STAGE_SHIFT));
 
-	bit.Write(shift);
+	Stage::ShiftUpdate update;
+	update.shift = shift;
+	update.lastProcessedShift = m_lastProcessedStageShift;
+	bit.Write(update);
 
-	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
+	return this->broadcast(bit, HIGH_PRIORITY, UNRELIABLE);
 }
 
 // ================================================ //

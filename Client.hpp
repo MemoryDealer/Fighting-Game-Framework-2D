@@ -92,8 +92,14 @@ public:
 		int32_t xVel, yVel;
 	} ClientInput;
 
-	typedef std::list<ClientInput> ClientInputList;
+	typedef struct{
+		int shift;
+		Uint32 seq;
+	} StageShift;
+
+	typedef std::list<Client::ClientInput> ClientInputList;
 	ClientInputList m_pendingInputs;
+	std::list<Client::StageShift> m_pendingStageShifts;
 
 public:
 	RakNet::RakPeerInterface* m_peer;
@@ -102,6 +108,7 @@ public:
 	std::string m_server;
 	unsigned short m_port;
 	bool m_connected;
+	Uint32 m_stageShiftSeq;
 	
 	int m_timeout;
 };

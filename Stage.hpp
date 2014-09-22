@@ -25,6 +25,14 @@
 class Stage : public Object
 {
 public:
+
+	// --- //
+
+	typedef struct{
+		int shift;
+		Uint32 lastProcessedShift;
+	} ShiftUpdate;
+
 	// Loads the .stage file and parses each layer.
 	explicit Stage(const std::string& stageFile);
 
@@ -32,10 +40,17 @@ public:
 	virtual ~Stage(void);
 
 	// Shifts the stage view left or right by amount x.
-	void shiftX(const int x);
+	void shift(const int x);
 
 	// Directly sets the shift offset of the stage view.
-	void setShiftX(const int x);
+	void setShift(const int x);
+
+	// Enqueues a shift update received from the server for server 
+	// reconciliation processing.
+	void updateShiftFromServer(const Stage::ShiftUpdate& update);
+
+	// Rewinds stage shift to last server update and replays unprocessed shifts.
+	void serverReconciliation(void);
 
 	// Renders each layer, applying proper offsets using the Camera values.
 	// Process Stage effects.
@@ -44,25 +59,26 @@ public:
 	// Getters
 
 	// Returns the x value of the specified Layer's source SDL_Rect.
-	const int getSourceX(const int layer) const;
+	const int getShift(const int layer = 0) const;
 
 	// Returns farmost right edge at which the stage can be shifted.
-	const Uint32 getRightEdge(void) const;
+	const int getRightEdge(void) const;
 
 private:
 	StageLayerList m_layers;
-	Uint32 m_rightEdge;
+	int m_rightEdge;
+	std::queue<ShiftUpdate> m_shiftUpdates;
 };
 
 // ================================================ //
 
 // Getters
 
-inline const int Stage::getSourceX(const int layer) const{
+inline const int Stage::getShift(const int layer) const{
 	return m_layers[layer].src.x;
 }
 
-inline const Uint32 Stage::getRightEdge(void) const{
+inline const int Stage::getRightEdge(void) const{
 	return m_rightEdge;
 }
 

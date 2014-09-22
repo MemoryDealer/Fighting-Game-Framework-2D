@@ -182,6 +182,7 @@ public:
 
 	RakNet::SystemAddress m_redAddr, m_blueAddr;
 	Uint32 m_redLastProcessedInput, m_blueLastProcessedInput;
+	Uint32 m_lastProcessedStageShift;
 
 	// The order in which players "ready up." The server process this as 
 	// first come, first server; so first to ready up will play first. After

@@ -15,6 +15,7 @@
 #include "Engine.hpp"
 #include "GUILobbyState.hpp"
 #include "StageManager.hpp"
+#include "Stage.hpp"
 #include "PlayerManager.hpp"
 #include "Input.hpp"
 #include "Game.hpp"
