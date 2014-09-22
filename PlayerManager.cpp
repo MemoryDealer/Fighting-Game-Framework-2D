@@ -208,6 +208,8 @@ void PlayerManager::update(double dt)
 	// Update stage shift and player sides.
 	const double shiftMultiplier = 0.50;
 	int shift = 0;
+	// How much the other player shifts for adjustment.
+	int playerShift = 0;
 	SDL_Rect redPos, bluePos;
 	redPos = m_pRedPlayer->getPosition();
 	bluePos = m_pBluePlayer->getPosition();
@@ -222,7 +224,8 @@ void PlayerManager::update(double dt)
 				StageManager::getSingletonPtr()->getStage()->shift(shift);
 				if (StageManager::getSingletonPtr()->getStage()->getShift() > 0){
 					// Adjust blue player to compensate for stage shift.
-					m_pBluePlayer->setPosition(bluePos.x - shift * 2, bluePos.y);
+					playerShift = -(shift * 2);
+					m_pBluePlayer->setPosition(bluePos.x + playerShift, bluePos.y);
 				}
 			}
 		}
@@ -235,7 +238,8 @@ void PlayerManager::update(double dt)
 
 				StageManager::getSingletonPtr()->getStage()->shift(shift);
 				if (StageManager::getSingletonPtr()->getStage()->getShift() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
-					m_pBluePlayer->setPosition(bluePos.x + shift * 2, bluePos.y);
+					playerShift = shift * 2;
+					m_pBluePlayer->setPosition(bluePos.x + playerShift, bluePos.y);
 				}
 			}
 		}
@@ -249,7 +253,8 @@ void PlayerManager::update(double dt)
 
 				StageManager::getSingletonPtr()->getStage()->shift(shift);
 				if (StageManager::getSingletonPtr()->getStage()->getShift() > 0){
-					m_pRedPlayer->setPosition(redPos.x + shift * 2, redPos.y);
+					playerShift = shift * 2;
+					m_pRedPlayer->setPosition(redPos.x + playerShift, redPos.y);
 				}
 			}
 		}
@@ -262,7 +267,8 @@ void PlayerManager::update(double dt)
 
 				StageManager::getSingletonPtr()->getStage()->shift(shift);
 				if (StageManager::getSingletonPtr()->getStage()->getShift() < StageManager::getSingletonPtr()->getStage()->getRightEdge()){
-					m_pRedPlayer->setPosition(redPos.x - shift * 2, redPos.y);
+					playerShift = -(shift * 2);
+					m_pRedPlayer->setPosition(redPos.x + playerShift, redPos.y);
 				}
 			}
 		}
@@ -275,9 +281,9 @@ void PlayerManager::update(double dt)
 		else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 			Client::StageShift pendingShift;
 			pendingShift.shift = shift;
-			pendingShift.seq = Client::getSingletonPtr()->m_stageShiftSeq;
+			pendingShift.playerShift = playerShift;
+			pendingShift.seq = Client::getSingletonPtr()->m_stageShiftSeq++;
 			Client::getSingletonPtr()->m_pendingStageShifts.push_back(pendingShift);
-			Client::getSingletonPtr()->m_stageShiftSeq++;
 		}
 	}
 

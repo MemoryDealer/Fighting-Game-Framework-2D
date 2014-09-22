@@ -94,12 +94,13 @@ public:
 
 	typedef struct{
 		int shift;
+		int playerShift;
 		Uint32 seq;
 	} StageShift;
 
 	typedef std::list<Client::ClientInput> ClientInputList;
 	ClientInputList m_pendingInputs;
-	std::list<Client::StageShift> m_pendingStageShifts;
+	std::list<StageShift> m_pendingStageShifts;
 
 public:
 	RakNet::RakPeerInterface* m_peer;

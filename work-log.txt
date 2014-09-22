@@ -430,6 +430,7 @@
 -Implemented stage shift client-side prediction and server reconciliation, e.g., when the client moves in such a way that the stage view shifts left/right, the
 	client will predict how it should move and upon receiving updates from the server, it will rewind to the shift position the server sends (which is from the past),
 	and re-apply unprocessed stage shift events so that the movement is seamless, assuming no packet loss.
+-Also added playerShift so that the actual adjustment of the opposing player when the stage is shifting is also predicted, leaving no delay.
 
 #TODO
 -Need to move all update() functions above getter/setter functions in header files for consistency.

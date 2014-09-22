@@ -16,6 +16,7 @@
 #include "Config.hpp"
 #include "Client.hpp"
 #include "Game.hpp"
+#include "PlayerManager.hpp"
 
 // ================================================ //
 
@@ -116,7 +117,6 @@ void Stage::serverReconciliation(void)
 		ShiftUpdate update = m_shiftUpdates.front();
 
 		m_layers[0].src.x = update.shift;
-		printf("Rewinding to: %d\n", update.lastProcessedShift);
 
 		for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
 			 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();){
@@ -125,7 +125,6 @@ void Stage::serverReconciliation(void)
 			}
 			else{
 				m_layers[0].src.x += itr->shift;
-				printf("\tRe-applying shift: %d\n", itr->seq);
 				++itr;
 			}
 		}

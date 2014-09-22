@@ -614,6 +614,15 @@ void GameState::update(double dt)
 							Player* redPlayer = PlayerManager::getSingletonPtr()->getRedPlayer();
 							redPlayer->setPosition(red.x, red.y);
 							redPlayer->setCurrentState(red.state);
+
+							// Re-apply player shifts.
+							for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
+								 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();
+								 ++itr){
+								SDL_Rect pos = redPlayer->getPosition();
+								pos.x += itr->playerShift;
+								redPlayer->setPosition(pos);
+							}
 						}
 						
 						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
@@ -623,6 +632,15 @@ void GameState::update(double dt)
 							Player* bluePlayer = PlayerManager::getSingletonPtr()->getBluePlayer();
 							bluePlayer->setPosition(blue.x, blue.y);
 							bluePlayer->setCurrentState(blue.state);
+
+							// Re-apply player shifts.
+							for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
+								 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();
+								 ++itr){
+								SDL_Rect pos = bluePlayer->getPosition();
+								pos.x += itr->playerShift;
+								bluePlayer->setPosition(pos);
+							}
 						}
 					}
 					break;
