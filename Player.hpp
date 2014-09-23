@@ -181,6 +181,9 @@ public:
 	// Toggles the state of whether or not the player will draw hitboxes.
 	void toggleDrawHitboxes(void);
 
+	// Sets the player to colliding if true.
+	void setColliding(const bool colliding);
+
 private:
 	// Physics.
 
@@ -202,6 +205,7 @@ private:
 	std::shared_ptr<Timer> m_pMoveTimer;
 	bool m_drawHitboxes;
 	int m_maxXPos;
+	bool m_colliding;
 
 	// Net stuff.
 
@@ -290,6 +294,10 @@ inline void Player::setDrawHitboxes(const bool draw){
 
 inline void Player::toggleDrawHitboxes(void){
 	m_drawHitboxes = !m_drawHitboxes;
+}
+
+inline void Player::setColliding(const bool colliding){
+	m_colliding = colliding;
 }
 
 // ================================================ //

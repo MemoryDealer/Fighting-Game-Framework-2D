@@ -431,13 +431,14 @@
 	client will predict how it should move and upon receiving updates from the server, it will rewind to the shift position the server sends (which is from the past),
 	and re-apply unprocessed stage shift events so that the movement is seamless, assuming no packet loss.
 -Also added playerShift so that the actual adjustment of the opposing player when the stage is shifting is also predicted, leaving no delay.
+-Added basic collision. With lag, the client can pass through the other player, due to the replayed pending inputs I believe. Perhaps I can add a check for collision
+	before replaying.
 
 #TODO
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was
 	colliding with the server player. It may be a good idea to go through every instance of vector code and add bounds checking.
 -Add ability to select an entry in listbox if enabled.
--check the port when starting server
 -add offsets in themes for text
 -Create a component to add to each state that handles duplicate procedures
 -Add more bounds checking in GUI functions, getting lots of vector out of bounds errors.
@@ -447,8 +448,6 @@
 -Explicitly define copy constructor and copy assignment operator for all classes.
 -Create a "cache" of textures (and maybe other SDL data) which are pointers to loaded textures. Can hold the name of the file, which can be
 	checked before a texture is loaded again. If it's in the cache, a pointer is just retrieved from it.
-*Make GUI widgets and all game states (main menu, lobby). Do this before building netcode, so it will be organized from the start. 
-	The lobby can be treated as always being a server, unless connecting to another server.
 -Check for ExtMF.cfg in the working directory on startup. If it's not there, generate a default one and notify the user.
 -Consider removing copied code (such as event handling for controller devices added/removed) to its own file to call from both game state and menu state.
 -Use SDL_UpdateTexture() to change colors of textures on the fly

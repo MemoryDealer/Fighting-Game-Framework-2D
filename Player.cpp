@@ -49,6 +49,7 @@ m_pCurrentMove(nullptr),
 m_pMoveTimer(new Timer()),
 m_drawHitboxes(false),
 m_maxXPos(0),
+m_colliding(false),
 m_clientInputs(),
 m_serverUpdates()
 {
@@ -161,7 +162,12 @@ void Player::processInput(void)
 
 void Player::applyInput(double dt)
 {
-	m_dst.x += static_cast<int32_t>(m_xVel * dt);
+	if (m_colliding){
+		m_dst.x -= static_cast<int32_t>(m_xVel * dt);
+	}
+	else{
+		m_dst.x += static_cast<int32_t>(m_xVel * dt);
+	}
 }
 
 // ================================================ //

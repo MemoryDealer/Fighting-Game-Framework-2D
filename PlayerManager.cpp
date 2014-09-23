@@ -287,6 +287,43 @@ void PlayerManager::update(double dt)
 		}
 	}
 
+	// Test normal hitbox collision (hitboxes 0 through 3).
+	for(int i=0; i<4; ++i){
+		for(int j=0; j<4; ++j){
+			if ((m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j)))){
+				if (m_pRedPlayer->getCurrentState() == Player::State::WALKING_FORWARD){
+					// Move the player backwards due to collision.
+					redPos.x += -static_cast<int>(m_pRedPlayer->getXVelocity() * dt);
+					m_pRedPlayer->setPosition(redPos);
+
+					// Push the other player in the direction the player was going.
+					bluePos.x += static_cast<int>(m_pRedPlayer->getXVelocity() * dt);
+					// TODO: Do a stage shift here?
+					if (bluePos.x < 0){
+						bluePos.x = 0;
+					}
+					else if (bluePos.x > m_pBluePlayer->getMaxXPos()){
+						bluePos.x = m_pBluePlayer->getMaxXPos();
+					}
+					m_pBluePlayer->setPosition(bluePos);
+				}
+				if (m_pBluePlayer->getCurrentState() == Player::State::WALKING_FORWARD){
+					bluePos.x += -static_cast<int>(m_pBluePlayer->getXVelocity() * dt);
+					m_pBluePlayer->setPosition(bluePos);
+
+					redPos.x += static_cast<int>(m_pBluePlayer->getXVelocity() * dt);
+					if (redPos.x < 0){
+						redPos.x = 0;
+					}
+					else if (redPos.x > m_pRedPlayer->getMaxXPos()){
+						redPos.x = m_pRedPlayer->getMaxXPos();
+					}
+					m_pRedPlayer->setPosition(redPos);
+				}
+			}
+		}
+	}
+
 	// Switch player sides if necessary.
 	if (redPos.x > (bluePos.x + (bluePos.w / 2))){
 		if (m_pRedPlayer->getSide() != Player::Side::RIGHT){
@@ -301,25 +338,9 @@ void PlayerManager::update(double dt)
 		}
 	}
 
-	// TODO: Check for K.O.
-	
 	// Render the players.
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();
-
-	//// Reset collisions before testing.
-	//m_pRedPlayer->setColliding(false);
-	//m_pBluePlayer->setColliding(false);
-
-	//// Test normal hitbox collision (hitboxes 0 through 3).
-	//for(int i=0; i<4; ++i){
-	//	for(int j=0; j<4; ++j){
-	//		if ((m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j)))){
-	//			m_pRedPlayer->setColliding(true);
-	//			m_pBluePlayer->setColliding(true);
-	//		}
-	//	}
-	//}
 }
 
 // ================================================ //
