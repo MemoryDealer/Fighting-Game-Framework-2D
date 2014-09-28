@@ -439,6 +439,10 @@
 -Removed setting the state directly when updating the client with server update. It may not be necessary to do so. May need to add some kind of client side
 	move predictor.
 
+#9/28/14
+-Improved jumping code. However, there are issues with client side prediction on ping > 50ms or so. The client is choppy and moves around too much.
+-Started using the state machine for player state transitions.
+
 #TODO
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was

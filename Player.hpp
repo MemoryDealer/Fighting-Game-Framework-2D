@@ -136,6 +136,9 @@ public:
 	// Returns Y acceleration.
 	const int32_t getYAcceleration(void) const;
 
+	// Returns X jump velocity.
+	const int32_t getXJumpVelocity(void) const;
+
 	// Returns pointer to player's health bar.
 	Widget* getHealthBarPtr(void) const;
 
@@ -187,13 +190,14 @@ private:
 	int32_t m_xAccel, m_yAccel;
 	int32_t m_xVel, m_yVel;
 	int32_t m_xMax, m_yMax;
-	int m_jump;
+	int m_jumpCeiling;
+	int m_xJumpVel;
 	bool m_up;
 
 	// Game.
 
 	// Position player will appear 26 units from bottom of screen.
-	Uint32 m_floor;
+	int m_floor;
 	Uint32 m_side;
 	Uint32 m_mode;
 	Uint32 m_maxHP;
@@ -240,6 +244,10 @@ inline const int32_t Player::getXAcceleration(void) const{
 
 inline const int32_t Player::getYAcceleration(void) const{
 	return m_yAccel;
+}
+
+inline const int32_t Player::getXJumpVelocity(void) const{
+	return m_xJumpVel;
 }
 
 inline Widget* Player::getHealthBarPtr(void) const{

@@ -3,15 +3,15 @@ useSpriteSheet=true
 spriteSheet=SpriteSheets/corpse.png
 
 [size]
-w=220
-h=254
+w=216
+h=244
 
 [physics]
 xAccel=50
-yAccel=50
+yAccel=100
 xMax=300
-yMax=500
-jump=100
+yMax=700
+jumpCeiling=50
 
 [stats]
 HP=1000

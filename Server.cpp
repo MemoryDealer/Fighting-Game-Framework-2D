@@ -212,7 +212,9 @@ Uint32 Server::updatePlayers(void)
 	redPlayer.x = red->getPosition().x;
 	redPlayer.y = red->getPosition().y;
 	redPlayer.xVel = red->getXVelocity();
+	redPlayer.yVel = red->getYVelocity();
 	redPlayer.xAccel = red->getXAcceleration();
+	redPlayer.yAccel = red->getYAcceleration();
 	redPlayer.state = red->getCurrentState();
 	bit.Write(redPlayer);
 
@@ -223,7 +225,9 @@ Uint32 Server::updatePlayers(void)
 	bluePlayer.x = blue->getPosition().x;
 	bluePlayer.y = blue->getPosition().y;
 	bluePlayer.xVel = blue->getXVelocity();
+	bluePlayer.yVel = blue->getYVelocity();
 	bluePlayer.xAccel = blue->getXAcceleration();
+	bluePlayer.yAccel = blue->getYAcceleration();
 	bluePlayer.state = blue->getCurrentState();
 	bit.Write(bluePlayer);
 

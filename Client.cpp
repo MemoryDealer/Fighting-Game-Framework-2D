@@ -142,10 +142,24 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 	clientInput.seq = seq;
 	clientInput.dt = dt;
 	if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
-		clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXVelocity();
+		if (PlayerManager::getSingletonPtr()->getRedPlayer()->getCurrentState() == Player::State::JUMPING){
+			clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXJumpVelocity();
+		}
+		else{
+			clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXVelocity();
+		}
+
+		clientInput.yVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getYVelocity();
 	}
 	else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
-		clientInput.xVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getXVelocity();
+		if (PlayerManager::getSingletonPtr()->getBluePlayer()->getCurrentState() == Player::State::JUMPING){
+			clientInput.xVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getXJumpVelocity();
+		}
+		else{
+			clientInput.xVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getXVelocity();
+		}
+
+		clientInput.yVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getYVelocity();
 	}
 
 	m_pendingInputs.push_back(clientInput);
