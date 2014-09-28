@@ -138,6 +138,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
 					}
 					break;
+
+				case Input::BUTTON_UP:
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_UP, true);
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, true, dt);
+					}
+					break;
 				}
 			}
 		}
@@ -163,6 +170,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, true, dt);
 					}
 					break;
+
+				case Input::BUTTON_UP:
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_UP, true);
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, true, dt);
+					}
+					break;
 				}
 			}
 		}
@@ -171,13 +185,6 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 		switch (e.key.keysym.sym){
 		default:
 
-			break;
-
-		case SDLK_UP:
-			MessageRouter::getSingletonPtr()->routeMessage(
-				MessageType::TYPE_ACTIVATE, PlayerManager::getSingletonPtr()->getRedPlayer()->getID(),
-				PlayerManager::getSingletonPtr()->getBluePlayer()->getID(),
-				1000);
 			break;
 
 		case SDLK_r:
@@ -242,6 +249,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false, dt);
 				}
 				break;
+
+			case Input::BUTTON_UP:
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_UP, false);
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, false, dt);
+				}
+				break;
 			}
 		}
 		// Blue Player.
@@ -261,6 +275,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_RIGHT, false);
 				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_RIGHT, false, dt);
+				}
+				break;
+
+			case Input::BUTTON_UP:
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_UP, false);
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, false, dt);
 				}
 				break;
 			}
@@ -528,14 +549,12 @@ void GameState::update(double dt)
 					if (Server::getSingletonPtr()->validateInput(netInput)){
 						if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr){
 							PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(netInput.input, netInput.value);
-							PlayerManager::getSingletonPtr()->getRedPlayer()->processInput();
-							PlayerManager::getSingletonPtr()->getRedPlayer()->applyInput(netInput.dt);
+							// Note: I previously processed input and applied it ONLY here, and didn't call Player::update()
+							// in PlayerManager::update(). I don't remember the exact reason, but now I do the opposite.
 							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;
 						}
 						else if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
 							PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
-							PlayerManager::getSingletonPtr()->getBluePlayer()->processInput();
-							PlayerManager::getSingletonPtr()->getBluePlayer()->applyInput(netInput.dt);
 							Server::getSingletonPtr()->m_blueLastProcessedInput = netInput.seq;
 						}
 					}

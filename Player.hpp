@@ -57,13 +57,10 @@ public:
 		IDLE = 0,
 		WALKING_FORWARD,
 		WALKING_BACK,
+		JUMPING,
 		BLOCKING,
 		ATTACKING,
-		SPECIAL_OPENER,
-		SPECIAL_NONOPENER,
-		AUTO_DOUBLE,
-		LINKER,
-		ENDER
+		STUNNED
 	};
 
 	enum Action{
@@ -190,9 +187,13 @@ private:
 	int32_t m_xAccel, m_yAccel;
 	int32_t m_xVel, m_yVel;
 	int32_t m_xMax, m_yMax;
+	int m_jump;
+	bool m_up;
 
 	// Game.
 
+	// Position player will appear 26 units from bottom of screen.
+	Uint32 m_floor;
 	Uint32 m_side;
 	Uint32 m_mode;
 	Uint32 m_maxHP;

@@ -37,6 +37,8 @@ m_xVel(0),
 m_yVel(0),
 m_xMax(0),
 m_yMax(0),
+m_jump(0),
+m_up(true),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
 m_maxHP(1200),
@@ -98,7 +100,7 @@ void Player::serverReconciliation(void)
 		m_dst.x = update.x;
 		m_xVel = update.xVel;
 		m_xAccel = update.xAccel;
-		m_pFSM->setCurrentState(update.state);
+		//m_pFSM->setCurrentState(update.state);
 
 		// Replay any inputs not yet processed by server.
 		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
@@ -131,30 +133,37 @@ void Player::processInput(void)
 {
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
-	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
-		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
-		m_xVel -= m_xAccel;
-		if (m_xVel < -m_xMax){
-			m_xVel = -m_xMax;
+	if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
+		if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+			m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+			m_xVel -= m_xAccel;
+			if (m_xVel < -m_xMax){
+				m_xVel = -m_xMax;
+			}
+
+			m_pFSM->setCurrentState((m_side == Player::Side::LEFT) ? Player::State::WALKING_BACK :
+									Player::State::WALKING_FORWARD);
 		}
+		else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+				 m_pInput->getButton(Input::BUTTON_LEFT) == false){
+			m_xVel += m_xAccel;
+			if (m_xVel > m_xMax){
+				m_xVel = m_xMax;
+			}
 
-		m_pFSM->setCurrentState((m_side == Player::Side::LEFT) ? Player::State::WALKING_BACK :
-								Player::State::WALKING_FORWARD);
-	}
-	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
-		m_pInput->getButton(Input::BUTTON_LEFT) == false){
-		m_xVel += m_xAccel;
-		if (m_xVel > m_xMax){
-			m_xVel = m_xMax;
+			m_pFSM->setCurrentState((m_side == Player::Side::LEFT) ? Player::State::WALKING_FORWARD :
+									Player::State::WALKING_BACK);
 		}
+		else{
+			m_xVel = 0;
 
-		m_pFSM->setCurrentState((m_side == Player::Side::LEFT) ? Player::State::WALKING_FORWARD :
-								Player::State::WALKING_BACK);
+			m_pFSM->setCurrentState(Player::State::IDLE);
+		}
 	}
-	else{
-		m_xVel = 0;
 
-		m_pFSM->setCurrentState(Player::State::IDLE);
+	// Check jumping.
+	if (m_pInput->getButton(Input::BUTTON_UP)){
+		m_pFSM->setCurrentState(Player::State::JUMPING);
 	}
 }
 
@@ -168,6 +177,8 @@ void Player::applyInput(double dt)
 	else{
 		m_dst.x += static_cast<int32_t>(m_xVel * dt);
 	}
+
+	m_dst.y -= static_cast<int32_t>(m_yVel * dt);
 }
 
 // ================================================ //
@@ -175,6 +186,32 @@ void Player::applyInput(double dt)
 void Player::update(double dt)
 {
 	this->processInput();
+
+	if (m_pFSM->getCurrentStateID() == Player::State::JUMPING){
+		if (m_up){
+			m_yVel += m_yAccel;
+			if (m_yVel > m_yMax){
+				m_yVel = m_yMax;
+			}
+			if (m_dst.y < m_jump){
+				m_dst.y = m_jump;
+				m_up = false;
+			}
+		}
+		else{
+			m_yVel -= m_yAccel;
+			if (m_yVel < -m_yMax){
+				m_yVel = -m_yMax;
+			}
+			if (m_dst.y > m_floor){
+				m_dst.y = m_floor;
+				m_up = true;
+				m_pFSM->setCurrentState(Player::State::IDLE);
+				m_yVel = 0;
+			}
+		}
+	}
+
 	this->applyInput(dt);
 }
 
@@ -216,6 +253,10 @@ void Player::updateMove(void)
 	case Player::State::WALKING_BACK:
 		m_pCurrentMove = m_moves[MoveID::WALKING_BACK];
 		break;
+
+	case Player::State::JUMPING:
+		m_pCurrentMove = m_moves[MoveID::JUMPING];
+		break;
 	}
 
 	// Update the animation frame.
@@ -225,6 +266,9 @@ void Player::updateMove(void)
 		if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
 			if (m_pCurrentMove->repeat){
 				m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
+			}
+			else{
+				m_pCurrentMove->currentFrame -= 1;
 			}
 		}
 
@@ -270,16 +314,17 @@ void Player::loadFighterData(const std::string& file)
 	m_dst.h = m.parseIntValue("size", "h");
 
 	// Parse physics.
-	m_xAccel = m.parseIntValue("movement", "xAccel");
-	m_yAccel = m.parseIntValue("movement", "yAccel");
-	m_xMax = m.parseIntValue("movement", "xMax");
-	m_yMax = m.parseIntValue("movement", "yMax");
+	m_xAccel = m.parseIntValue("physics", "xAccel");
+	m_yAccel = m.parseIntValue("physics", "yAccel");
+	m_xMax = m.parseIntValue("physics", "xMax");
+	m_yMax = m.parseIntValue("physics", "yMax");
+	m_jump = m.parseIntValue("physics", "jump");
 
 	// Parse any gameplay values.
 	m_maxHP = m_currentHP = m.parseIntValue("stats", "HP");
 
 	// Set player 26 units from bottom adjusting for player height.
-	m_dst.y = Engine::getSingletonPtr()->getLogicalWindowHeight() - m_dst.h - 26;
+	m_floor = m_dst.y = Engine::getSingletonPtr()->getLogicalWindowHeight() - m_dst.h - 26;
 
 	// Calculate the far right edge at which player movement should stop or move the camera.
 	m_maxXPos = Engine::getSingletonPtr()->getLogicalWindowWidth() - m_dst.w;
@@ -316,6 +361,8 @@ void Player::loadFighterData(const std::string& file)
 	state = new FState(Player::State::WALKING_FORWARD);
 	m_pFSM->addState(state);
 	state = new FState(Player::State::WALKING_BACK);
+	m_pFSM->addState(state);
+	state = new FState(Player::State::JUMPING);
 	m_pFSM->addState(state);
 
 	// Set default state.

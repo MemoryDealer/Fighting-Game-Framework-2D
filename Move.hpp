@@ -26,6 +26,7 @@ namespace MoveID{
 		IDLE = 0,
 		WALKING_FORWARD,
 		WALKING_BACK,
+		JUMPING,
 
 		END_MOVES
 	};

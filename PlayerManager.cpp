@@ -167,12 +167,8 @@ void PlayerManager::update(double dt)
 
 	// Perform server-side calculations.
 	case Game::SERVER:
-		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
-			m_pRedPlayer->update(dt);
-		}
-		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
-			m_pBluePlayer->update(dt);
-		}
+		m_pRedPlayer->update(dt);
+		m_pBluePlayer->update(dt);
 
 		// ... predict client?
 		// Test damage box collisions.
