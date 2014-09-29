@@ -20,6 +20,7 @@
 #include "Engine.hpp"
 #include "GamepadManager.hpp"
 #include "Game.hpp"
+#include "Move.hpp"
 
 // ================================================ //
 
@@ -175,15 +176,19 @@ void PlayerManager::update(double dt)
 		for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
 			for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
 				if (m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j))){
-					m_pBluePlayer->takeDamage(1);
+					Move* move = m_pRedPlayer->getCurrentMove();
+					Uint32 stun = move->hitstun;
+					m_pBluePlayer->takeHit(move->damage, stun);
 
 					// Send damage notification to client.
-					Server::getSingletonPtr()->broadcastDamage(Game::Playing::PLAYING_BLUE, 1);
+					Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE, move->damage, stun);
 				}
 				if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
-					m_pRedPlayer->takeDamage(1);
+					Move* move = m_pRedPlayer->getCurrentMove();
+					Uint32 stun = move->hitstun;
+					m_pRedPlayer->takeHit(move->damage, stun);
 
-					Server::getSingletonPtr()->broadcastDamage(Game::Playing::PLAYING_RED, 1);
+					Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_RED, move->damage, stun);
 				}
 			}
 		}

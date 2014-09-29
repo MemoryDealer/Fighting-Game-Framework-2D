@@ -447,6 +447,7 @@
 -Added crouching code. It seems to work fine, although the uncrouching animation may be a little choppy, however it could be caused by the shitty sprite clipping coordinates
 	I have in place right.
 -Added light punch move. The sprite clipping is off so the rendering size is not accurate, however it works. It transitions into IDLE.
+-Added basic hitstun state, it is set in Player::takeHit(). PlayerManager's update loop gets the attacking player's move damage and hitstun and calls Player::takeHit().
 
 #TODO
 -Need to move all update() functions above getter/setter functions in header files for consistency.

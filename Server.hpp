@@ -89,7 +89,7 @@ public:
 	Uint32 updateBluePlayer(const Uint32 inputSeq);
 
 	// Broadcasts damage of specified player, e.g., Game::PLAYING_BLUE or Game::PLAYING_RED.
-	Uint32 broadcastDamage(const int player, const Uint32 damage);
+	Uint32 broadcastHit(const int player, const Uint32 damage, const Uint32 stun);
 
 	// Sends the last processed input sequence number to playing clients.
 	Uint32 sendLastProcessedInput(void);

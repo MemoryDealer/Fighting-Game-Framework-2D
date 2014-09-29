@@ -46,6 +46,7 @@ m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
 m_maxHP(1200),
 m_currentHP(m_maxHP),
+m_currentStun(0),
 m_pHealthBar(nullptr),
 m_pInput(new Input(buttonMapFile)),
 m_moves(),
@@ -295,7 +296,8 @@ void Player::updateMove(void)
 	// Force current animation to stop if the state has changed.
 	if (m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
 		m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
-		m_pMoveTimer->setStartTicks(0);
+		//m_pMoveTimer->setStartTicks(0); // Why did I do this?!
+		m_pMoveTimer->restart();
 	}
 
 	switch (m_pFSM->getCurrentStateID()){
@@ -335,29 +337,45 @@ void Player::updateMove(void)
 	case Player::State::STUNNED_JUMP:
 		m_pCurrentMove = m_moves[MoveID::STUNNED_JUMP];
 		break;
+
+	case Player::State::STUNNED_HIT:
+		m_pCurrentMove = m_moves[MoveID::STUNNED_HIT];
+		break;
 	}
 
 	// Update the animation frame.
-	if (m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
-		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
-		m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
-		m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
+	m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
+	switch (m_pCurrentMove->id){
+	default:
+		if (m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
+			m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
+			m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
 
-		if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
-			if (m_pCurrentMove->repeat == true){
-				m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
+			if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+				if (m_pCurrentMove->repeat == true){
+					m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
+				}
+				else if (m_pCurrentMove->transition >= 0){
+					m_pCurrentMove->currentFrame -= 1;
+					m_pFSM->setCurrentState(m_pCurrentMove->transition);
+				}
+				else{
+					m_pCurrentMove->currentFrame -= 1;
+				}
 			}
-			else if (m_pCurrentMove->transition >= 0){				
-				m_pCurrentMove->currentFrame -= 1;
-				m_pFSM->setCurrentState(m_pCurrentMove->transition);
-			}
-			else{
-				m_pCurrentMove->currentFrame -= 1;
-			}
+
+			m_pMoveTimer->restart();
 		}
+		break;
 
-		m_pMoveTimer->restart();
+	case MoveID::STUNNED_HIT:
+		if (m_pMoveTimer->getTicks() > m_currentStun){
+			m_pFSM->setCurrentState(m_pCurrentMove->transition);
+			m_pMoveTimer->restart();
+		}
+		break;
 	}
+	
 
 	// Now update the hitboxes for the move.
 	// Assign each Hitbox to originate from the character's center.
@@ -417,7 +435,11 @@ void Player::loadFighterData(const std::string& file)
 	for (int i = 0; i < MoveID::END_MOVES; ++i){
 		Log::getSingletonPtr()->logMessage("Parsing move \"" + std::string(MoveID::Name[i]) + "\" for " + m_name);
 
-		m_moves.push_back(m.parseMove(MoveID::Name[i]));
+		std::shared_ptr<Move> pMove;
+		pMove = m.parseMove(MoveID::Name[i]);
+		pMove->id = i;
+
+		m_moves.push_back(pMove);
 		if (m_moves.back() == nullptr){
 			throw std::exception(std::string("Unable to load move \"" + std::string(MoveID::Name[i]) + "\" for fighter" +
 				m_name).c_str());
@@ -497,19 +519,26 @@ void Player::loadFighterData(const std::string& file)
 
 // ================================================ //
 
-void Player::takeDamage(const Uint32 damage)
+void Player::takeHit(const Uint32 damage, const Uint32 stun)
 {
-	m_currentHP -= damage;
-	if (m_currentHP < 0){
-		m_currentHP = 0;
-		return;
+	if (stun > 0){
+		m_currentStun = stun;
+		m_pFSM->setCurrentState(Player::State::STUNNED_HIT);
 	}
 
-	// Calculate percentage from current HP.
-	double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
-	percent *= 100.0;
+	if (damage != 0){
+		m_currentHP -= damage;
+		if (m_currentHP < 0){
+			m_currentHP = 0;
+			return;
+		}
 
-	m_pHealthBar->setPercent(static_cast<int>(percent));
+		// Calculate percentage from current HP.
+		double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
+		percent *= 100.0;
+
+		m_pHealthBar->setPercent(static_cast<int>(percent));
+	}
 }
 
 // ================================================ //

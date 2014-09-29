@@ -736,29 +736,31 @@ void GameState::update(double dt)
 					}
 					break;
 
-				case NetMessage::RED_TAKE_DAMAGE:
+				case NetMessage::RED_TAKE_HIT:
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
 											  Client::getSingletonPtr()->getPacket()->length,
 											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						Uint32 damage = 0;
+						Uint32 damage = 0, stun = 0;
 						bit.Read(damage);
-						PlayerManager::getSingletonPtr()->getRedPlayer()->takeDamage(damage);
+						bit.Read(stun);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->takeHit(damage, stun);
 					}
 					break;
 
-				case NetMessage::BLUE_TAKE_DAMAGE:
+				case NetMessage::BLUE_TAKE_HIT:
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
 											  Client::getSingletonPtr()->getPacket()->length,
 											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						Uint32 damage = 0;
+						Uint32 damage = 0, stun = 0;
 						bit.Read(damage);
-						PlayerManager::getSingletonPtr()->getBluePlayer()->takeDamage(damage);
+						bit.Read(stun);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->takeHit(damage, stun);
 					}
 					break;
 

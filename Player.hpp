@@ -106,8 +106,8 @@ public:
 	// Loads textures, moves, etc.
 	void loadFighterData(const std::string& file);
 
-	// Takes hp from player, updates health bar.
-	void takeDamage(const Uint32 damage);
+	// Takes hp from player, updates health bar. Applies stun, changes state.
+	void takeHit(const Uint32 damage, const Uint32 stun);
 
 	// Getters
 
@@ -143,6 +143,9 @@ public:
 
 	// Returns maximum position X at which the player can be.
 	const int getMaxXPos(void) const;
+
+	// Returns pointer to current move.
+	Move* getCurrentMove(void) const;
 
 	// Setters
 
@@ -192,6 +195,7 @@ private:
 	Uint32 m_mode;
 	Uint32 m_maxHP;
 	Uint32 m_currentHP;
+	Uint32 m_currentStun;
 	Widget* m_pHealthBar;
 	std::shared_ptr<Input> m_pInput;
 	MoveList m_moves;
@@ -255,6 +259,10 @@ inline Hitbox* Player::getHitbox(const int n) const{
 
 inline const int Player::getMaxXPos(void) const{
 	return m_maxXPos;
+}
+
+inline Move* Player::getCurrentMove(void) const{
+	return m_pCurrentMove.get();
 }
 
 // Setters

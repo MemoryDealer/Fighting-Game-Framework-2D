@@ -276,12 +276,13 @@ Uint32 Server::updateBluePlayer(const Uint32 inputSeq)
 
 // ================================================ //
 
-Uint32 Server::broadcastDamage(const int player, const Uint32 damage)
+Uint32 Server::broadcastHit(const int player, const Uint32 damage, const Uint32 stun)
 {
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>((player == Game::Playing::PLAYING_RED) ?
-		NetMessage::RED_TAKE_DAMAGE : NetMessage::BLUE_TAKE_DAMAGE));
+		NetMessage::RED_TAKE_HIT : NetMessage::BLUE_TAKE_HIT));
 	bit.Write(damage);
+	bit.Write(stun);
 
 	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
 }
