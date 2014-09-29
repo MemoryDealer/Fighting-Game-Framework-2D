@@ -73,6 +73,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 
 							// Get the main data for the move.
 							pMove->numFrames = this->parseMoveIntValue("core", "numFrames");
+							pMove->frames.reserve(pMove->numFrames);
 							pMove->frameGap = this->parseMoveIntValue("core", "frameGap");
 
 							// Get the frame data.

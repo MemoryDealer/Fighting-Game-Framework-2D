@@ -116,7 +116,8 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 	}
 
 	if (e.type == SDL_KEYDOWN){
-		printf("KEYDOWN: %d\n", e.key.keysym.sym);
+		///printf("KEYDOWN: %d\n", e.key.keysym.sym);
+
 		// Process mapped buttons.
 		// Red Player.
 		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED ||
@@ -157,7 +158,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					break;
 
 				case Input::BUTTON_LP:
-					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, true);
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, true);					
 					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, true, dt);
 					}
@@ -223,7 +224,8 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			// Reload fighter settings.
 			{
 				Config c(Engine::getSingletonPtr()->getSettingsFile());
-				m_pGUI.reset(new GUIGameState(c.parseValue("GUI", "gamestate")));
+				m_pGUI.reset(new GUIGameState(Engine::getSingletonPtr()->getDataDirectory() +
+					"/" + c.parseValue("GUI", "gamestate")));
 			}
 			StageManager::getSingletonPtr()->reload();
 			PlayerManager::getSingletonPtr()->reload();
@@ -296,6 +298,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 
 			case Input::BUTTON_LP:
 				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, false);
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setReactivated(Input::BUTTON_LP, true);
 				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, false, dt);
 				}

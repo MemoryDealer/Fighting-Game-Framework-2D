@@ -23,6 +23,7 @@ m_movementMode(Input::MovementMode::JOYSTICK)
 {
 	// Set all button states to false
 	std::fill_n(m_buttons, static_cast<int>(Input::NUM_BUTTONS), false);
+	std::fill_n(m_reactivated, static_cast<int>(Input::NUM_BUTTONS), true);
 	std::fill_n(m_keyboardMap, static_cast<int>(Input::NUM_BUTTONS), 0);
 	std::fill_n(m_gamepadMap, static_cast<int>(Input::NUM_BUTTONS), 0);
 

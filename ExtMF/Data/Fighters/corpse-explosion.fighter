@@ -38,17 +38,6 @@ HP=1000
 		timeout=500
 	}
 	
-	[cancels]{
-		
-	}
-	
-	[locomotion]{
-		untilAdjacent=1
-		freezeFrame=2
-		xVel=1
-		yVel=0
-	}
-	
 	[frame1]{
 		#src
 		x=1
@@ -100,15 +89,6 @@ HP=1000
 		repeat=1
 		repeatFrame=0
 		reverse=0
-	}
-	
-	[cancels]{
-		
-	}
-	
-	[locomotion]{
-		xVel=0
-		yVel=0
 	}
 	
 	[frame1]{
@@ -170,15 +150,6 @@ HP=1000
 		repeat=1
 		repeatFrame=0
 		reverse=0
-	}
-	
-	[cancels]{
-		
-	}
-	
-	[locomotion]{
-		xVel=0
-		yVel=0
 	}
 	
 	[frame1]{

@@ -742,6 +742,8 @@ void LobbyState::update(double dt)
 				break;
 			}
 		}
+		break;
+
 	case Game::CLIENT:
 		for (Client::getSingletonPtr()->m_packet = Client::getSingletonPtr()->m_peer->Receive();
 				Client::getSingletonPtr()->m_packet;
@@ -856,6 +858,7 @@ void LobbyState::update(double dt)
 				}
 			}
 		}
+		break;
 	}
 
 	Engine::getSingletonPtr()->renderPresent();

@@ -68,6 +68,9 @@ public:
 	// Returns true if the specified button is pressed.
 	const bool getButton(const int button) const;
 
+	// Returns true if a button is reactivated.
+	const bool getReactivated(const int button) const;
+
 	// Returns the value of the mapped button. Returns the keyboard value if 
 	// gamepad is false, and the gamepad value if gamepad is true.
 	const ButtonValue getMappedButton(const int button, const bool gamepad = false) const;
@@ -94,6 +97,9 @@ public:
 	// Sets the state of a button.
 	void setButton(const int button, const bool state);
 
+	// Sets the reactivation status of a button.
+	void setReactivated(const int button, const bool state);
+
 	// Sets the gamepad to be used by this Input.
 	void setPad(SDL_GameController* pad);
 
@@ -104,7 +110,12 @@ public:
 	void setMovementMode(const int movementMode);
 	
 private:
+	// State of each button (true = pushed, false = released).
 	bool m_buttons[NUM_BUTTONS];
+
+	// True if the button has been released since the last press.
+	bool m_reactivated[NUM_BUTTONS];
+
 	ButtonValue m_keyboardMap[NUM_BUTTONS];
 	ButtonValue m_gamepadMap[NUM_BUTTONS];
 	SDL_GameController* m_pad;
@@ -118,6 +129,10 @@ private:
 
 inline const bool Input::getButton(const int button) const{
 	return m_buttons[button];
+}
+
+inline const bool Input::getReactivated(const int button) const{
+	return m_reactivated[button];
 }
 
 inline SDL_GameController* Input::getPad(void) const{
@@ -140,6 +155,10 @@ inline const int Input::getMovementMode(void) const{
 
 inline void Input::setButton(const int button, const bool state){
 	m_buttons[button] = state;
+}
+
+inline void Input::setReactivated(const int button, const bool state){
+	m_reactivated[button] = state;
 }
 
 inline void Input::setPad(SDL_GameController* pad){

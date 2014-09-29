@@ -337,7 +337,7 @@ void PlayerManager::update(double dt)
 			m_pBluePlayer->setSide(Player::Side::LEFT);
 		}
 	}
-	else{
+	else if(bluePos.x > (redPos.x + (redPos.w / 2))){
 		if (m_pBluePlayer->getSide() != Player::Side::RIGHT){
 			m_pBluePlayer->setSide(Player::Side::RIGHT);
 			m_pRedPlayer->setSide(Player::Side::LEFT);

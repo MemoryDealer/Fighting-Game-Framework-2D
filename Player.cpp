@@ -172,8 +172,10 @@ void Player::processInput(double dt)
 
 	if (m_pInput->getButton(Input::BUTTON_LP) == true){
 		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
-			m_pFSM->stateTransition(Player::State::ATTACK_LP);
-			m_pInput->setButton(Input::BUTTON_LP, false);
+			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
+				m_pFSM->stateTransition(Player::State::ATTACK_LP);
+				m_pInput->setReactivated(Input::BUTTON_LP, false);
+			}
 		}
 	}
 
@@ -296,9 +298,12 @@ void Player::updateMove(void)
 {
 	// Force current animation to stop if the state has changed.
 	if (m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
-		m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
-		//m_pMoveTimer->setStartTicks(0); // Why did I do this?!
+		// Reset new move's current frame to starting frame.
+		m_pCurrentMove->currentFrame = 0;
+
+		// Reset timer to begin processing new moves frames.
 		m_pMoveTimer->restart();
+		//m_pMoveTimer->setStartTicks(0); // Why did I do this?!
 	}
 
 	switch (m_pFSM->getCurrentStateID()){
@@ -345,34 +350,57 @@ void Player::updateMove(void)
 		break;
 	}
 
-	// Update the animation frame.
+	if (m_side == Player::Side::LEFT){
+		printf("Current frame: %d\n", m_pCurrentMove->currentFrame);
+	}
+
+	// Update the clipping of the sprite sheet using current frame.
 	m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
+	// Modify rendering width and height of player to current frame settings.
+	m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
+	m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
+	if (m_side == Player::Side::RIGHT){
+		m_dst.x -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
+		m_dst.h -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
+	}
+
+	// Process move-specific instructions.
 	switch (m_pCurrentMove->id){
 	default:
+		// If this frame has exceeded its time limit (milliseconds).
 		if (m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
-			m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
-			m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
-
-			if (m_pCurrentMove->currentFrame < m_pCurrentMove->numFrames - 1){
+			// Increment to the next frame in this move.
+			if (m_pCurrentMove->currentFrame < m_pCurrentMove->numFrames){
 				++m_pCurrentMove->currentFrame;
 			}
 
-			if (m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames - 1){
+			// If we have reached the end of the move, process move instructions.
+			if (m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
 				if (m_pCurrentMove->repeat == true){
+					// Roll back to the repeat frame.
 					m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
 				}
 				else if (m_pCurrentMove->transition >= 0){
-					
+					// Since this is a transition, change the move now to avoid frame locks
+					// (when the player holds down the input and the move stays in the last frame).
 					m_pFSM->setCurrentState(m_pCurrentMove->transition);
+					m_pCurrentMove->currentFrame = 0;
+					m_pCurrentMove = m_moves[m_pFSM->getCurrentStateID()];
+				}
+				else{
+					// This move doesn't repeat or transition, so roll back to last frame.
+					m_pCurrentMove->currentFrame -= 1;
 				}
 			}
 
+			// Restart timer for next frame.
 			m_pMoveTimer->restart();
 		}
 		break;
 
 	case MoveID::STUNNED_HIT:
 		printf("Timer: %d\n", m_pMoveTimer->getTicks());
+		// If the player has been stunned for assigned amount of time, switch out.
 		if (m_pMoveTimer->getTicks() > m_currentStun){
 			m_pFSM->setCurrentState(m_pCurrentMove->transition);
 			m_pMoveTimer->restart();
@@ -387,7 +415,9 @@ void Player::updateMove(void)
 	// of the character's center.
 	for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
 		SDL_Rect offset = { 0, 0, 0, 0 };
-		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
+		//if (m_pCurrentMove->currentFrame != m_pCurrentMove->numFrames){
+			offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
+		//}
 
 		int xCenter = m_dst.x + (m_dst.w / 2);
 		int yCenter = m_dst.y + (m_dst.h / 2);
@@ -534,7 +564,9 @@ void Player::takeHit(const Uint32 damage, const Uint32 stun)
 		m_currentHP -= damage;
 		if (m_currentHP < 0){
 			m_currentHP = 0;
-			return;
+		}
+		else if (m_currentHP > m_maxHP){
+			m_currentHP = m_maxHP;
 		}
 
 		// Calculate percentage from current HP.

@@ -193,8 +193,8 @@ private:
 	int m_floor;
 	Uint32 m_side;
 	Uint32 m_mode;
-	Uint32 m_maxHP;
-	Uint32 m_currentHP;
+	int m_maxHP;
+	int m_currentHP;
 	Uint32 m_currentStun;
 	Widget* m_pHealthBar;
 	std::shared_ptr<Input> m_pInput;
