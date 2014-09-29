@@ -31,6 +31,11 @@ namespace MoveID{
 		CROUCHED,
 		UNCROUCHING,
 
+		ATTACK_LP,
+
+		STUNNED_JUMP,
+		STUNNED_HIT,
+
 		END_MOVES
 	};
 
@@ -47,6 +52,13 @@ struct Frame{
 	int y;
 	int w;
 	int h;
+
+	// Render width/height.
+	int rw;
+	int rh;
+
+	// Frame gap.
+	int gap;
 
 	// Converts this frames coordinates to a SDL_Rect.
 	SDL_Rect toSDLRect(void){
@@ -82,9 +94,11 @@ struct Move
 	int frameGap;	
 	int startupFrames, hitFrames, recoveryFrames;
 	int damage;
+	int hitstun, blockstun;
 	int knockback;
 	bool repeat, reverse;
 	int repeatFrame;
+	// The MoveID the player will transition to upon this move completing its frames.
 	int transition;
 	// List of moves this move cancels into.
 	std::vector<int> cancels; 

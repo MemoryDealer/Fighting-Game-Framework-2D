@@ -40,6 +40,8 @@ m_yMax(0),
 m_jumpCeiling(0),
 m_xJumpVel(0),
 m_up(true),
+m_rW(0), 
+m_rH(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
 m_maxHP(1200),
@@ -167,6 +169,12 @@ void Player::processInput(double dt)
 		m_pFSM->stateTransition(Player::State::IDLE);
 	}
 
+	if (m_pInput->getButton(Input::BUTTON_LP) == true){
+		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
+			m_pFSM->stateTransition(Player::State::ATTACK_LP);
+		}
+	}
+
 	// Enter jumping if up is pressed and is possible.
 	if (m_pInput->getButton(Input::BUTTON_UP)){
 		// Prevent x velocity modification in the air.
@@ -197,8 +205,12 @@ void Player::processInput(double dt)
 		}
 	}
 
-	// Process jumping mechanics.
-	if (m_pFSM->getCurrentStateID() == Player::State::JUMPING){	
+	switch (m_pFSM->getCurrentStateID()){
+	default:
+		break;
+
+		// Process jumping mechanics.
+	case Player::State::JUMPING:
 		if (m_up){
 			m_yVel += m_yAccel;
 			if (m_yVel > m_yMax){
@@ -217,15 +229,22 @@ void Player::processInput(double dt)
 			if (m_dst.y >= m_floor){
 				m_dst.y = m_floor;
 				m_up = true;
-				m_pFSM->setCurrentState(Player::State::IDLE);
+				m_pFSM->setCurrentState(Player::State::STUNNED_JUMP);
 				m_xVel = m_yVel = 0;
 			}
 		}
+		break;
+
+	case Player::State::CROUCHING:
+	case Player::State::CROUCHED:
+	case Player::State::ATTACK_LP:
+	case Player::State::STUNNED_JUMP:
+	case Player::State::STUNNED_HIT:
+	case Player::State::STUNNED_BLOCK:
+		m_xVel = m_yVel = 0;
+		break;
 	}
-	else if(m_pFSM->getCurrentStateID() == Player::State::CROUCHING ||
-			m_pFSM->getCurrentStateID() == Player::State::CROUCHED){
-		m_xVel = 0;
-	}
+	
 }
 
 // ================================================ //
@@ -308,11 +327,21 @@ void Player::updateMove(void)
 	case Player::State::UNCROUCHING:
 		m_pCurrentMove = m_moves[MoveID::UNCROUCHING];
 		break;
+
+	case Player::State::ATTACK_LP:
+		m_pCurrentMove = m_moves[MoveID::ATTACK_LP];
+		break;
+
+	case Player::State::STUNNED_JUMP:
+		m_pCurrentMove = m_moves[MoveID::STUNNED_JUMP];
+		break;
 	}
 
 	// Update the animation frame.
 	if (m_pMoveTimer->getTicks() > m_pCurrentMove->frameGap){
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
+		m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
+		m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
 
 		if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
 			if (m_pCurrentMove->repeat == true){
@@ -365,8 +394,8 @@ void Player::loadFighterData(const std::string& file)
 		"/" + m.parseValue("core", "spriteSheet"));
 
 	// Set default rendering size.
-	m_dst.w = m.parseIntValue("size", "w");
-	m_dst.h = m.parseIntValue("size", "h");
+	m_rW = m_dst.w = m.parseIntValue("size", "w");
+	m_rH = m_dst.h = m.parseIntValue("size", "h");
 
 	// Parse physics.
 	m_xAccel = m.parseIntValue("physics", "xAccel");
@@ -416,6 +445,7 @@ void Player::loadFighterData(const std::string& file)
 	state->addTransition(Player::State::WALKING_BACK, Player::State::WALKING_BACK);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
 	state->addTransition(Player::State::CROUCHING, Player::State::CROUCHING);
+	state->addTransition(Player::State::ATTACK_LP, Player::State::ATTACK_LP);
 	m_pFSM->addState(state);
 
 	state = new FState(Player::State::WALKING_FORWARD);
@@ -423,6 +453,7 @@ void Player::loadFighterData(const std::string& file)
 	state->addTransition(Player::State::WALKING_BACK, Player::State::WALKING_BACK);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
 	state->addTransition(Player::State::CROUCHING, Player::State::CROUCHING);
+	state->addTransition(Player::State::ATTACK_LP, Player::State::ATTACK_LP);
 	m_pFSM->addState(state);
 
 	state = new FState(Player::State::WALKING_BACK);
@@ -430,6 +461,7 @@ void Player::loadFighterData(const std::string& file)
 	state->addTransition(Player::State::WALKING_FORWARD, Player::State::WALKING_FORWARD);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
 	state->addTransition(Player::State::CROUCHING, Player::State::CROUCHING);
+	state->addTransition(Player::State::ATTACK_LP, Player::State::ATTACK_LP);
 	m_pFSM->addState(state);
 
 	state = new FState(Player::State::JUMPING);
@@ -448,6 +480,15 @@ void Player::loadFighterData(const std::string& file)
 
 	state = new FState(Player::State::UNCROUCHING);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
+	m_pFSM->addState(state);
+
+	state = new FState(Player::State::ATTACK_LP);
+	m_pFSM->addState(state);
+
+	state = new FState(Player::State::STUNNED_JUMP);
+	m_pFSM->addState(state);
+
+	state = new FState(Player::State::STUNNED_HIT);
 	m_pFSM->addState(state);
 
 	// Set default state.

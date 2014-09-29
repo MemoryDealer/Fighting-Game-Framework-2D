@@ -87,6 +87,9 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 
 							// Get other core data.
 							pMove->damage = this->parseMoveIntValue("core", "damage");
+							pMove->hitstun = this->parseMoveIntValue("core", "hitstun");
+							pMove->blockstun = this->parseMoveIntValue("core", "blockstun");
+
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
 							if (pMove->repeat)
@@ -107,6 +110,16 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							frame1.y = this->parseMoveIntValue("frame1", "y");
 							frame1.w = this->parseMoveIntValue("frame1", "w");
 							frame1.h = this->parseMoveIntValue("frame1", "h");
+							if ((frame1.rw = this->parseMoveIntValue("frame1", "rw")) == -1){
+								frame1.rw = 0;
+							}
+							if ((frame1.rh = this->parseMoveIntValue("frame1", "rh")) == -1){
+								frame1.rh = 0;
+							}
+							if ((frame1.gap = this->parseIntValue("frame1", "gap")) == -1){
+								// Inherit global frame gap.
+								frame1.gap = pMove->frameGap;
+							}
 							pMove->frames.push_back(frame1);
 							this->parseHitboxes(pMove, "frame1");
 
@@ -118,6 +131,15 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 								frame.y = this->parseMoveIntValue(frameSection.c_str(), "y");
 								frame.w = this->parseMoveIntValue(frameSection.c_str(), "w");
 								frame.h = this->parseMoveIntValue(frameSection.c_str(), "h");
+								if ((frame.rw = this->parseMoveIntValue(frameSection.c_str(), "rw")) == -1){
+									frame.rw = 0;
+								}
+								if ((frame.rh = this->parseMoveIntValue(frameSection.c_str(), "rh")) == -1){
+									frame.rh = 0;
+								}
+								if ((frame.gap = this->parseMoveIntValue(frameSection.c_str(), "gap")) == -1){
+									frame.gap = pMove->frameGap;
+								}
 
 								// See if any values should be inherited (-1 means inherit from previous frame).
 								if (frame.x == -1)

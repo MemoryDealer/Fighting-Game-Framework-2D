@@ -217,7 +217,10 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			break;
 
 		case SDLK_j:
-			m_pGUI->getWidgetPtr(GUIGameStateLayer::Root::HEALTHBAR_RED)->setPercent(50);
+			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, true);
+			if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+				Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, true, dt);
+			}
 			break;
 
 		case SDLK_k:
@@ -312,6 +315,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, false, dt);
 				}
 				break;
+			}
+		}
+
+		if (e.key.keysym.sym == SDLK_j){
+			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, false);
+			if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+				Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, false, dt);
 			}
 		}
 	}

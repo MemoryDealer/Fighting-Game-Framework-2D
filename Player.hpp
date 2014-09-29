@@ -63,23 +63,11 @@ public:
 		CROUCHED,
 		UNCROUCHING,
 
-		BLOCKING,
-		ATTACKING,
-		STUNNED
-	};
+		ATTACK_LP,
 
-	enum Action{
-		NONE = 0,
-		WALK_BACK, WALK_FORWARD,
-		CROUCH,
-		JUMP,
-		LIGHT_PUNCH, MEDIUM_PUNCH, HEAVY_PUNCH,
-		LIGHT_KICK, MEDIUM_KICK, HEAVY_KICK,
-		SPECIAL1,
-		SPECIAL2,
-		SPECIAL3,
-		SPECIAL4,
-		SPECIAL5
+		STUNNED_JUMP,
+		STUNNED_HIT,
+		STUNNED_BLOCK
 	};
 
 	// Allocates the Input object, which loads the button map from the specified file.
@@ -193,9 +181,12 @@ private:
 	int m_xJumpVel;
 	bool m_up;
 
+	// Render width and height (default dst rect).
+	int m_rW, m_rH;
+
 	// Game.
 
-	// Position player will appear 26 units from bottom of screen.
+	// The y position at which player will appear 26 units from bottom of screen.
 	int m_floor;
 	Uint32 m_side;
 	Uint32 m_mode;
