@@ -58,6 +58,11 @@ public:
 		WALKING_FORWARD,
 		WALKING_BACK,
 		JUMPING,
+
+		CROUCHING,
+		CROUCHED,
+		UNCROUCHING,
+
 		BLOCKING,
 		ATTACKING,
 		STUNNED
@@ -96,7 +101,7 @@ public:
 	void serverReconciliation(void);
 
 	// Processes local input for player, adjusting its state.
-	void processInput(void);
+	void processInput(double dt = 0);
 
 	// Applies movement to the player based on key presses.
 	void applyInput(double dt);
@@ -129,12 +134,6 @@ public:
 
 	// Returns Y velocity.
 	const int32_t getYVelocity(void) const;
-
-	// Returns X acceleration.
-	const int32_t getXAcceleration(void) const;
-
-	// Returns Y acceleration.
-	const int32_t getYAcceleration(void) const;
 
 	// Returns X jump velocity.
 	const int32_t getXJumpVelocity(void) const;
@@ -231,19 +230,12 @@ inline const Uint32 Player::getMode(void) const{
 }
 
 inline const int32_t Player::getXVelocity(void) const{
-	return m_xVel;
+	return (m_pFSM->getCurrentStateID() == Player::State::JUMPING) 
+		? m_xJumpVel : m_xVel;
 }
 
 inline const int32_t Player::getYVelocity(void) const{
 	return m_yVel;
-}
-
-inline const int32_t Player::getXAcceleration(void) const{
-	return m_xAccel;
-}
-
-inline const int32_t Player::getYAcceleration(void) const{
-	return m_yAccel;
 }
 
 inline const int32_t Player::getXJumpVelocity(void) const{

@@ -92,6 +92,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							if (pMove->repeat)
 								pMove->repeatFrame = this->parseMoveIntValue("core", "repeatFrame");
 							pMove->reverse = this->parseMoveBoolValue("core", "reverse");
+							pMove->transition = this->parseMoveIntValue("core", "transition");
 
 							// Parse any cancels.
 							// ...

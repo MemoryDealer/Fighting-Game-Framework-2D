@@ -17,7 +17,8 @@
 
 namespace MoveID{
 	const char* Name[] = {
-		"IDLE", "WALKING_FORWARD", "WALKING_BACK", "JUMPING"
+		"IDLE", "WALKING_FORWARD", "WALKING_BACK", "JUMPING", 
+		"CROUCHING", "CROUCHED", "UNCROUCHING"
 	};
 }
 
@@ -34,6 +35,7 @@ knockback(0),
 repeat(false),
 reverse(false),
 repeatFrame(0),
+transition(0),
 cancels(),
 xVel(0),
 yVel(0),

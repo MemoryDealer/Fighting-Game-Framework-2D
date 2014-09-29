@@ -27,6 +27,9 @@ namespace MoveID{
 		WALKING_FORWARD,
 		WALKING_BACK,
 		JUMPING,
+		CROUCHING,
+		CROUCHED,
+		UNCROUCHING,
 
 		END_MOVES
 	};
@@ -82,6 +85,7 @@ struct Move
 	int knockback;
 	bool repeat, reverse;
 	int repeatFrame;
+	int transition;
 	// List of moves this move cancels into.
 	std::vector<int> cancels; 
 	int xVel, yVel;

@@ -213,8 +213,6 @@ Uint32 Server::updatePlayers(void)
 	redPlayer.y = red->getPosition().y;
 	redPlayer.xVel = red->getXVelocity();
 	redPlayer.yVel = red->getYVelocity();
-	redPlayer.xAccel = red->getXAcceleration();
-	redPlayer.yAccel = red->getYAcceleration();
 	redPlayer.state = red->getCurrentState();
 	bit.Write(redPlayer);
 
@@ -226,8 +224,6 @@ Uint32 Server::updatePlayers(void)
 	bluePlayer.y = blue->getPosition().y;
 	bluePlayer.xVel = blue->getXVelocity();
 	bluePlayer.yVel = blue->getYVelocity();
-	bluePlayer.xAccel = blue->getXAcceleration();
-	bluePlayer.yAccel = blue->getYAcceleration();
 	bluePlayer.state = blue->getCurrentState();
 	bit.Write(bluePlayer);
 
@@ -262,7 +258,6 @@ Uint32 Server::updateRedPlayer(const Uint32 inputSeq)
 	update.x = red->getPosition().x;
 	update.y = red->getPosition().y;
 	update.xVel = red->getXVelocity();
-	update.xAccel = red->getXAcceleration();
 
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_RED_PLAYER));

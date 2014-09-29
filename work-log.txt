@@ -440,8 +440,12 @@
 	move predictor.
 
 #9/28/14
--Improved jumping code. However, there are issues with client side prediction on ping > 50ms or so. The client is choppy and moves around too much.
+-Improved jumping code. However, there are issues with client side prediction on ping > 50ms or so. The client is choppy and moves around too much. Also, there
+	is input lag when jumping; the animation starts but it takes n ms for the client to actually start jumping. I believe this is happening because the jump movement
+	is not being saved in the pending inputs and thus not being replayed. One solution may be to have a second list of movements to replay for things like jumping.
 -Started using the state machine for player state transitions.
+-Added crouching code. It seems to work fine, although the uncrouching animation may be a little choppy, however it could be caused by the shitty sprite clipping coordinates
+	I have in place right.
 
 #TODO
 -Need to move all update() functions above getter/setter functions in header files for consistency.

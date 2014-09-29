@@ -145,6 +145,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, true, dt);
 					}
 					break;
+
+				case Input::BUTTON_DOWN:
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_DOWN, true);
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, true, dt);
+					}
+					break;
 				}
 			}
 		}
@@ -175,6 +182,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_UP, true);
 					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, true, dt);
+					}
+					break;
+
+				case Input::BUTTON_DOWN:
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_DOWN, true);
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, true, dt);
 					}
 					break;
 				}
@@ -256,6 +270,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, false, dt);
 				}
 				break;
+
+			case Input::BUTTON_DOWN:
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_DOWN, false);
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, false, dt);
+				}
+				break;
 			}
 		}
 		// Blue Player.
@@ -282,6 +303,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_UP, false);
 				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_UP, false, dt);
+				}
+				break;
+
+			case Input::BUTTON_DOWN:
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_DOWN, false);
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, false, dt);
 				}
 				break;
 			}

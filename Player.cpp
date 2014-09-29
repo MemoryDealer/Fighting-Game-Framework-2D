@@ -101,9 +101,10 @@ void Player::serverReconciliation(void)
 		m_dst.x = update.x;
 		m_dst.y = update.y;
 		m_xVel = update.xVel;
+		if (update.state == Player::State::JUMPING){
+			m_xJumpVel = update.xVel;
+		}
 		m_yVel = update.yVel;
-		m_xAccel = update.xAccel;
-		m_yAccel = update.yAccel;
 
 		// Replay any inputs not yet processed by server.
 		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
@@ -115,7 +116,7 @@ void Player::serverReconciliation(void)
 			else{
 				// Input is still unprocessed by the server, re-apply it.
 				m_pInput->setButton(itr->input, itr->value);
-				this->processInput();
+				this->processInput(itr->dt);
 				// Apply the input.
 				m_dst.x += static_cast<int32_t>(itr->xVel * itr->dt);
 				m_dst.y -= static_cast<int32_t>(itr->yVel * itr->dt);
@@ -136,7 +137,7 @@ void Player::serverReconciliation(void)
 
 // ================================================ //
 
-void Player::processInput(void)
+void Player::processInput(double dt)
 {
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
@@ -166,7 +167,7 @@ void Player::processInput(void)
 		m_pFSM->stateTransition(Player::State::IDLE);
 	}
 
-	// Enter jumping in up is pressed and is possible.
+	// Enter jumping if up is pressed and is possible.
 	if (m_pInput->getButton(Input::BUTTON_UP)){
 		// Prevent x velocity modification in the air.
 		if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
@@ -183,6 +184,18 @@ void Player::processInput(void)
 			}
 		}
 	}
+	else if (m_pInput->getButton(Input::BUTTON_DOWN)){
+		if (m_pFSM->getCurrentStateID() != Player::State::CROUCHED){
+			if (m_pFSM->stateTransition(Player::State::CROUCHING) == Player::State::CROUCHING){
+
+			}
+		}
+	}
+	else if (m_pInput->getButton(Input::BUTTON_DOWN) == false){
+		if (m_pFSM->getCurrentStateID() == Player::State::CROUCHED){
+			m_pFSM->stateTransition(Player::State::UNCROUCHING);
+		}
+	}
 
 	// Process jumping mechanics.
 	if (m_pFSM->getCurrentStateID() == Player::State::JUMPING){	
@@ -191,7 +204,7 @@ void Player::processInput(void)
 			if (m_yVel > m_yMax){
 				m_yVel = m_yMax;
 			}
-			if (m_dst.y < m_jumpCeiling){
+			if (m_dst.y <= m_jumpCeiling){
 				m_dst.y = m_jumpCeiling;
 				m_up = false;
 			}
@@ -208,6 +221,10 @@ void Player::processInput(void)
 				m_xVel = m_yVel = 0;
 			}
 		}
+	}
+	else if(m_pFSM->getCurrentStateID() == Player::State::CROUCHING ||
+			m_pFSM->getCurrentStateID() == Player::State::CROUCHED){
+		m_xVel = 0;
 	}
 }
 
@@ -233,7 +250,7 @@ void Player::applyInput(double dt)
 
 void Player::update(double dt)
 {
-	this->processInput();
+	this->processInput(dt);
 	this->applyInput(dt);
 }
 
@@ -279,6 +296,18 @@ void Player::updateMove(void)
 	case Player::State::JUMPING:
 		m_pCurrentMove = m_moves[MoveID::JUMPING];
 		break;
+
+	case Player::State::CROUCHING:
+		m_pCurrentMove = m_moves[MoveID::CROUCHING];
+		break;
+
+	case Player::State::CROUCHED:
+		m_pCurrentMove = m_moves[MoveID::CROUCHED];
+		break;
+
+	case Player::State::UNCROUCHING:
+		m_pCurrentMove = m_moves[MoveID::UNCROUCHING];
+		break;
 	}
 
 	// Update the animation frame.
@@ -286,8 +315,12 @@ void Player::updateMove(void)
 		m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
 
 		if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
-			if (m_pCurrentMove->repeat){
+			if (m_pCurrentMove->repeat == true){
 				m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
+			}
+			else if (m_pCurrentMove->transition >= 0){				
+				m_pCurrentMove->currentFrame -= 1;
+				m_pFSM->setCurrentState(m_pCurrentMove->transition);
 			}
 			else{
 				m_pCurrentMove->currentFrame -= 1;
@@ -382,18 +415,39 @@ void Player::loadFighterData(const std::string& file)
 	state->addTransition(Player::State::WALKING_FORWARD, Player::State::WALKING_FORWARD);
 	state->addTransition(Player::State::WALKING_BACK, Player::State::WALKING_BACK);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
+	state->addTransition(Player::State::CROUCHING, Player::State::CROUCHING);
 	m_pFSM->addState(state);
+
 	state = new FState(Player::State::WALKING_FORWARD);
 	state->addTransition(Player::State::IDLE, Player::State::IDLE);
 	state->addTransition(Player::State::WALKING_BACK, Player::State::WALKING_BACK);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
+	state->addTransition(Player::State::CROUCHING, Player::State::CROUCHING);
 	m_pFSM->addState(state);
+
 	state = new FState(Player::State::WALKING_BACK);
 	state->addTransition(Player::State::IDLE, Player::State::IDLE);
 	state->addTransition(Player::State::WALKING_FORWARD, Player::State::WALKING_FORWARD);
 	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
+	state->addTransition(Player::State::CROUCHING, Player::State::CROUCHING);
 	m_pFSM->addState(state);
+
 	state = new FState(Player::State::JUMPING);
+	m_pFSM->addState(state);
+
+	state = new FState(Player::State::CROUCHING);
+	state->addTransition(Player::State::IDLE, Player::State::IDLE);
+	state->addTransition(Player::State::CROUCHED, Player::State::CROUCHED);
+	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
+	m_pFSM->addState(state);
+
+	state = new FState(Player::State::CROUCHED);
+	state->addTransition(Player::State::UNCROUCHING, Player::State::UNCROUCHING);
+	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
+	m_pFSM->addState(state);
+
+	state = new FState(Player::State::UNCROUCHING);
+	state->addTransition(Player::State::JUMPING, Player::State::JUMPING);
 	m_pFSM->addState(state);
 
 	// Set default state.

@@ -293,5 +293,128 @@ HP=1000
 	}
 -(JUMPING)
 
++(CROUCHING)
+	[core]{
+		numFrames=2
+		frameGap=150
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=0
+		repeatFrame=0
+		reverse=0
+		transition=5
+	}
+		
+	[frame1]{
+		x=1
+		y=309
+		w=62
+		h=92
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame2]{
+		x=63
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+-(CROUCHING)
+
++(CROUCHED)
+	[core]{
+		numFrames=4
+		frameGap=175
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=1
+		repeatFrame=0
+		reverse=0
+	}
+	
+	[frame1]{
+		x=124
+		y=309
+		w=56
+		h=92
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame2]{
+		x=179
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame3]{
+		x=233
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame4]{
+		x=288
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+-(CROUCHED)
+
++(UNCROUCHING)
+	[core]{
+		numFrames=2
+		frameGap=150
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=0
+		repeatFrame=0
+		reverse=0
+		transition=0
+	}
+	
+	[frame1]{
+		x=63
+		y=309
+		w=62
+		h=92
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+	
+	[frame2]{
+		x=1
+		
+		hbox1=(-10,69,111,50)
+		hbox2=(-10,19,100,55)
+		hbox3=(0,-38,155,60)
+		hbox4=(10,-85,56,35)
+	}
+-(UNCROUCHING)
+
+
 
 
