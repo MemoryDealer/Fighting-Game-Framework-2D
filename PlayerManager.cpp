@@ -168,6 +168,7 @@ void PlayerManager::update(double dt)
 
 	// Perform server-side calculations.
 	case Game::SERVER:
+	case Game::LOCAL:
 		m_pRedPlayer->update(dt);
 		m_pBluePlayer->update(dt);
 
@@ -180,15 +181,19 @@ void PlayerManager::update(double dt)
 					Uint32 stun = move->hitstun;
 					m_pBluePlayer->takeHit(move->damage, stun);
 
-					// Send damage notification to client.
-					Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE, move->damage, stun);
+					if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+						// Send damage notification to client.
+						Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE, move->damage, stun);
+					}
 				}
 				if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
 					Move* move = m_pBluePlayer->getCurrentMove();
 					Uint32 stun = move->hitstun;
 					m_pRedPlayer->takeHit(move->damage, stun);
 
-					Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_RED, move->damage, stun);
+					if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+						Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_RED, move->damage, stun);
+					}
 				}
 			}
 		}

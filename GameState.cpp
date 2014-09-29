@@ -116,10 +116,12 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 	}
 
 	if (e.type == SDL_KEYDOWN){
-		///printf("KEYDOWN: %d\n", e.key.keysym.sym);
+		printf("KEYDOWN: %d\n", e.key.keysym.sym);
 		// Process mapped buttons.
 		// Red Player.
-		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED ||
+			(Game::getSingletonPtr()->getMode() == Game::LOCAL && 
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getMode() == Player::Mode::LOCAL)){
 			int key = PlayerManager::getSingletonPtr()->getRedPlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym);
 			if (PlayerManager::getSingletonPtr()->getRedPlayerInput()->getButton(key) == false){
 				switch (key){
@@ -163,9 +165,10 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 				}
 			}
 		}
-
 		// Blue Player.
-		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE ||
+				 (Game::getSingletonPtr()->getMode() == Game::LOCAL && 
+				 PlayerManager::getSingletonPtr()->getBluePlayer()->getMode() == Player::Mode::LOCAL)){
 			int key = PlayerManager::getSingletonPtr()->getBluePlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym);
 			if (PlayerManager::getSingletonPtr()->getBluePlayerInput()->getButton(key) == false){
 				switch (key){
@@ -256,7 +259,9 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 	else if (e.type == SDL_KEYUP){
 		// Process mapped buttons.
 		// Red Player.
-		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED ||
+			(Game::getSingletonPtr()->getMode() == Game::LOCAL &&
+			PlayerManager::getSingletonPtr()->getRedPlayer()->getMode() == Player::Mode::LOCAL)){
 			switch (PlayerManager::getSingletonPtr()->getRedPlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
 			default:
 				break;
@@ -298,7 +303,9 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			}
 		}
 		// Blue Player.
-		else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE ||
+				 (Game::getSingletonPtr()->getMode() == Game::LOCAL &&
+				 PlayerManager::getSingletonPtr()->getBluePlayer()->getMode() == Player::Mode::LOCAL)){
 			switch (PlayerManager::getSingletonPtr()->getBluePlayerInput()->SDLButtonToMappedButton(e.key.keysym.sym)){
 			default:
 				break;

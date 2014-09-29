@@ -436,7 +436,8 @@ void MenuState::processGUIAction(const int type)
 				break;
 
 			case GUIMenuStateLayer::Arcade::BUTTON_LOCAL:
-
+				Game::getSingletonPtr()->setMode(Game::LOCAL);
+				this->pushAppState(this->findByName(LOBBY_STATE));
 				break;
 
 			case GUIMenuStateLayer::Arcade::BUTTON_ONLINE:

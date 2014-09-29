@@ -38,6 +38,7 @@ public:
 	enum Mode{
 		IDLE = 0,
 		CAMPAIGN,
+		LOCAL,
 		SERVER,
 		CLIENT
 	};
