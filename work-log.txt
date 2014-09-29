@@ -450,6 +450,11 @@
 -Added basic hitstun state, it is set in Player::takeHit(). PlayerManager's update loop gets the attacking player's move damage and hitstun and calls Player::takeHit().
 
 #TODO
+-Either add rw and rh values to every frame or automatically calculate them when loading moves.
+-Jumping is not frame rate indepedent! (height of jump)
+-Fix bug where the last from of LP stays if LP button is held down.
+-Enable local play for easier debugging.
+
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was
 	colliding with the server player. It may be a good idea to go through every instance of vector code and add bounds checking.

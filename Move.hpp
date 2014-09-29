@@ -96,6 +96,8 @@ struct Move
 	int damage;
 	int hitstun, blockstun;
 	int knockback;
+	// How the attacking player is moved back upon landing a hit.
+	int recoil;
 	bool repeat, reverse;
 	int repeatFrame;
 	// The MoveID the player will transition to upon this move completing its frames.

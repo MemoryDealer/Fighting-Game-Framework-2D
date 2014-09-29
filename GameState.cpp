@@ -116,6 +116,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 	}
 
 	if (e.type == SDL_KEYDOWN){
+		///printf("KEYDOWN: %d\n", e.key.keysym.sym);
 		// Process mapped buttons.
 		// Red Player.
 		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
@@ -150,6 +151,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_DOWN, true);
 					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, true, dt);
+					}
+					break;
+
+				case Input::BUTTON_LP:
+					PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, true);
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, true, dt);
 					}
 					break;
 				}
@@ -191,6 +199,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, true, dt);
 					}
 					break;
+
+				case Input::BUTTON_LP:
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LP, true);
+					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+						Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, true, dt);
+					}
+					break;
 				}
 			}
 		}
@@ -214,13 +229,6 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 		case SDLK_p:
 			PlayerManager::getSingletonPtr()->getRedPlayer()->toggleDrawHitboxes();
 			PlayerManager::getSingletonPtr()->getBluePlayer()->toggleDrawHitboxes();
-			break;
-
-		case SDLK_j:
-			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, true);
-			if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-				Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, true, dt);
-			}
 			break;
 
 		case SDLK_k:
@@ -280,6 +288,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, false, dt);
 				}
 				break;
+
+			case Input::BUTTON_LP:
+				PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, false);
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, false, dt);
+				}
+				break;
 			}
 		}
 		// Blue Player.
@@ -315,13 +330,13 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_DOWN, false, dt);
 				}
 				break;
-			}
-		}
 
-		if (e.key.keysym.sym == SDLK_j){
-			PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(Input::BUTTON_LP, false);
-			if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-				Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, false, dt);
+			case Input::BUTTON_LP:
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LP, false);
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, false, dt);
+				}
+				break;
 			}
 		}
 	}

@@ -173,6 +173,7 @@ void Player::processInput(double dt)
 	if (m_pInput->getButton(Input::BUTTON_LP) == true){
 		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
 			m_pFSM->stateTransition(Player::State::ATTACK_LP);
+			m_pInput->setButton(Input::BUTTON_LP, false);
 		}
 	}
 
@@ -303,6 +304,7 @@ void Player::updateMove(void)
 	switch (m_pFSM->getCurrentStateID()){
 	default:
 	case Player::State::IDLE:
+		m_dst.w = m_rW; m_dst.h = m_rH;
 		m_pCurrentMove = m_moves[MoveID::IDLE];
 		break;
 
@@ -351,16 +353,17 @@ void Player::updateMove(void)
 			m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
 			m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
 
-			if (++m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames){
+			if (m_pCurrentMove->currentFrame < m_pCurrentMove->numFrames - 1){
+				++m_pCurrentMove->currentFrame;
+			}
+
+			if (m_pCurrentMove->currentFrame >= m_pCurrentMove->numFrames - 1){
 				if (m_pCurrentMove->repeat == true){
 					m_pCurrentMove->currentFrame = m_pCurrentMove->repeatFrame;
 				}
 				else if (m_pCurrentMove->transition >= 0){
-					m_pCurrentMove->currentFrame -= 1;
+					
 					m_pFSM->setCurrentState(m_pCurrentMove->transition);
-				}
-				else{
-					m_pCurrentMove->currentFrame -= 1;
 				}
 			}
 
@@ -369,6 +372,7 @@ void Player::updateMove(void)
 		break;
 
 	case MoveID::STUNNED_HIT:
+		printf("Timer: %d\n", m_pMoveTimer->getTicks());
 		if (m_pMoveTimer->getTicks() > m_currentStun){
 			m_pFSM->setCurrentState(m_pCurrentMove->transition);
 			m_pMoveTimer->restart();

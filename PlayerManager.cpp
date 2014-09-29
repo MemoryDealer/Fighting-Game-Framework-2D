@@ -184,7 +184,7 @@ void PlayerManager::update(double dt)
 					Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE, move->damage, stun);
 				}
 				if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
-					Move* move = m_pRedPlayer->getCurrentMove();
+					Move* move = m_pBluePlayer->getCurrentMove();
 					Uint32 stun = move->hitstun;
 					m_pRedPlayer->takeHit(move->damage, stun);
 

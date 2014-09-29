@@ -50,6 +50,7 @@ void Input::loadButtonMap(const std::string& file)
 		m_keyboardMap[BUTTON_DOWN] = c.parseIntValue("keyboard", "down");
 		m_keyboardMap[BUTTON_LEFT] = c.parseIntValue("keyboard", "left");
 		m_keyboardMap[BUTTON_RIGHT] = c.parseIntValue("keyboard", "right");
+		m_keyboardMap[BUTTON_LP] = c.parseIntValue("keyboard", "LP");
 
 		// Load gamepad buttons.
 		m_gamepadMap[BUTTON_UP] = c.parseIntValue("gamepad", "up");

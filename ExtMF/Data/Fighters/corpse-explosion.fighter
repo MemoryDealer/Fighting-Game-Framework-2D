@@ -414,6 +414,7 @@ HP=1000
 		hitstun=250
 		blockstun=25
 		knockback=0
+		recoil=30
 		repeat=0
 		repeatFrame=0
 		reverse=0

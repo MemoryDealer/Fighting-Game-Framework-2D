@@ -5,13 +5,15 @@ up=1073741906
 down=1073741905
 left=1073741904
 right=1073741903
+LP=106
 
 [gamepad]
-deadzone=18000
+deadzone=12000
 up=11
 down=12
 left=13
 right=14
 start=6
 select=0
+back=1
 

@@ -91,6 +91,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							pMove->blockstun = this->parseMoveIntValue("core", "blockstun");
 
 							pMove->knockback = this->parseMoveIntValue("core", "knockback");
+							pMove->recoil = this->parseMoveIntValue("core", "recoil");
 							pMove->repeat = this->parseMoveBoolValue("core", "repeat");
 							if (pMove->repeat)
 								pMove->repeatFrame = this->parseMoveIntValue("core", "repeatFrame");
