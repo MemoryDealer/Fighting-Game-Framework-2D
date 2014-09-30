@@ -220,6 +220,8 @@ void PlayerManager::update(double dt)
 	redPos = m_pRedPlayer->getPosition();
 	bluePos = m_pBluePlayer->getPosition();
 
+	printf("red: %d/%d\tblue: %d/%d\n", redPos.x, m_pRedPlayer->getSide(), bluePos.x, m_pBluePlayer->getSide());
+
 	// Red player.
 	if (m_pRedPlayer->getSide() == Player::Side::LEFT){
 		if (redPos.x < 0){

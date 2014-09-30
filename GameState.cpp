@@ -634,11 +634,13 @@ void GameState::update(double dt)
 		}
 
 		// Broadcast player updates to all client.
-		//if (m_pServerUpdateTimer->getTicks() > 1000){
-			Server::getSingletonPtr()->updatePlayers();
-		//	m_pServerUpdateTimer->restart();
-		//}
-		//Server::getSingletonPtr()->sendLastProcessedInput();
+		Server::getSingletonPtr()->updatePlayers();
+
+		// Ensure client is synced every so often.
+		if (m_pServerUpdateTimer->getTicks() > 3000){
+			Server::getSingletonPtr()->sendLastProcessedInput();
+			m_pServerUpdateTimer->restart();
+		}
 	}
 	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
@@ -708,13 +710,13 @@ void GameState::update(double dt)
 							redPlayer->setCurrentState(red.state);
 
 							// Re-apply player shifts.
-							for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
+							/*for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
 								 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();
 								 ++itr){
 								SDL_Rect pos = redPlayer->getPosition();
 								pos.x += itr->playerShift;
 								redPlayer->setPosition(pos);
-							}
+							}*/
 						}
 						
 						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
@@ -726,14 +728,18 @@ void GameState::update(double dt)
 							bluePlayer->setCurrentState(blue.state);
 
 							// Re-apply player shifts.
-							for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
+							/*for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
 								 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();
 								 ++itr){
 								SDL_Rect pos = bluePlayer->getPosition();
 								pos.x += itr->playerShift;
 								bluePlayer->setPosition(pos);
-							}
+							}*/
 						}
+
+						/*Stage::ShiftUpdate update;
+						bit.Read(update);
+						StageManager::getSingletonPtr()->getStage()->updateShiftFromServer(update);*/
 					}
 					break;
 
@@ -746,7 +752,7 @@ void GameState::update(double dt)
 
 						Stage::ShiftUpdate update;
 						bit.Read(update);
-						StageManager::getSingletonPtr()->getStage()->updateShiftFromServer(update);
+						StageManager::getSingletonPtr()->getStage()->setShift(update.shift);
 					}
 					break;
 

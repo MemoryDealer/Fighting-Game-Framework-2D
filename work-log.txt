@@ -459,10 +459,16 @@
 	storing the entire Input state of each pending input and restoring it temporarily for processing.
 -Also stage shift prediction stopped working at some point and I don't know when, so fuck me.
 
+#9/30/14
+-Temporarily disabled stage shift prediction.
+-The rendering adjustment for the m_dst rect on the right side during LP stopped working on the client at some point, don't know what caused it.
+	It was being caused by updating the client's position directly during serverReconciliation(). Now I filter out the updates based the update state,
+	and don't allow direct updates during ATTACK_LP. 
+
 #TODO
 -Either add rw and rh values to every frame or automatically calculate them when loading moves.
--Player::processPendingInput().
 -Make some kind of client side prediction for jumping. Fix stage shifting prediction.
+-Update red and blue players separately, filtering out updates based on state, as ATTACK_LP doesn't seem to be needed.
 
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was

@@ -58,7 +58,7 @@ struct Frame{
 	int rh;
 
 	// Frame gap.
-	int gap;
+	Uint32 gap;
 
 	// Converts this frames coordinates to a SDL_Rect.
 	SDL_Rect toSDLRect(void){
@@ -91,7 +91,7 @@ struct Move
 	std::string name;
 	int numFrames;
 	// How long to wait between frames(ms).
-	int frameGap;	
+	Uint32 frameGap;	
 	int startupFrames, hitFrames, recoveryFrames;
 	int damage;
 	int hitstun, blockstun;

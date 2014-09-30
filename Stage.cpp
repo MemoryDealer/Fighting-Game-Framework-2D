@@ -124,6 +124,7 @@ void Stage::serverReconciliation(void)
 				itr = Client::getSingletonPtr()->m_pendingStageShifts.erase(itr);
 			}
 			else{
+				printf("reapplying stage shift %d/%d\n", itr->shift, itr->seq);
 				m_layers[0].src.x += itr->shift;
 				++itr;
 			}
@@ -141,9 +142,9 @@ void Stage::serverReconciliation(void)
 
 void Stage::update(double dt)
 {
-	if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+	/*if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 		this->serverReconciliation();
-	}
+	}*/
 
 	for (unsigned int i = 0; i<m_layers.size(); ++i){
 		// Update background source based on camera movement.

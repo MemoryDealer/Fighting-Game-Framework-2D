@@ -101,16 +101,33 @@ void Player::updateFromServer(const Server::PlayerUpdate& update)
 void Player::serverReconciliation(void)
 {
 	StateID state = m_pFSM->getCurrentStateID();
-
+	
 	// Apply any pending player updates received from server.
 	while (!m_serverUpdates.empty()){
 		Server::PlayerUpdate update = m_serverUpdates.front();
 		// Rewind to the server's latest update.
-		m_dst.x = update.x;
-		m_dst.y = update.y;
-		m_xVel = update.xVel;
-		if (update.state == Player::State::JUMPING){
-			m_xJumpVel = update.xVel;
+		switch (update.state){
+		default:
+			// Don't interrupt jumping animation.
+			if (state != Player::State::JUMPING){
+				m_dst.x = update.x;
+				m_dst.y = update.y;
+				m_xVel = update.xVel;
+			}
+			else{
+				//m_serverUpdates.pop();
+				return;				
+			}
+			break;
+
+		case Player::State::JUMPING:
+			//m_xJumpVel = update.xVel;
+			break;
+
+			// Prevent right-side animation from sliding right.
+		case Player::State::ATTACK_LP:
+			m_serverUpdates.pop();
+			return;
 		}
 
 		// Replay any inputs not yet processed by server.
@@ -123,34 +140,15 @@ void Player::serverReconciliation(void)
 			else{
 				// Input is still unprocessed by the server, re-apply it.
 				m_pInput->setButton(itr->input, itr->value);
-				//this->processInput(itr->dt);
-				// Move this into function processPendingInput().
-				// I may need to store the entire state of all input buttons in each pending
-				// input and temporarily restore it for pending input replaying.
-				if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
-					m_pInput->getButton(Input::BUTTON_RIGHT) == false){
-					m_xVel -= m_xAccel;
-					if (m_xVel < -m_xMax){
-						m_xVel = -m_xMax;
-					}
-				}
-				else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
-						 m_pInput->getButton(Input::BUTTON_LEFT) == false){
-					m_xVel += m_xAccel;
-					if (m_xVel > m_xMax){
-						m_xVel = m_xMax;
-					}
-				}
+				this->processReplayedInput(itr->dt);
+
 				// Apply the input.
 				m_dst.x += static_cast<int32_t>(itr->xVel * itr->dt);
 				++itr;
 
-				if (state != m_pFSM->getCurrentStateID()){
-					/*printf("****************state changed from %d to %d\n********On input %d/%d\n", state, m_pFSM->getCurrentStateID(),
-						   itr->input, (int)itr->value);
-
-					state = m_pFSM->getCurrentStateID();*/
-					//m_pFSM->setCurrentState(state);
+				// Ensure player state remains the same during replay.
+				if (m_pFSM->getCurrentStateID() != state){
+					m_pFSM->setCurrentState(state);
 				}
 			}
 		}
@@ -158,14 +156,57 @@ void Player::serverReconciliation(void)
 		m_serverUpdates.pop();
 	}
 
+	// Keep player within stage bounds.
 	if (m_dst.x < 0){
 		m_dst.x = 0;
 	}
 	if (m_dst.y > m_floor){
 		m_dst.y = m_floor;
 	}
+}
 
-	//m_pFSM->setCurrentState(state);
+// ================================================ //
+
+void Player::processReplayedInput(double dt)
+{
+	// Specifically don't allow player state to change during pending input replay.
+
+	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+		m_xVel -= m_xAccel;
+		if (m_xVel < -m_xMax){
+			m_xVel = -m_xMax;
+		}
+	}
+	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+			 m_pInput->getButton(Input::BUTTON_LEFT) == false){
+		m_xVel += m_xAccel;
+		if (m_xVel > m_xMax){
+			m_xVel = m_xMax;
+		}
+	}
+	else{
+		m_xVel = 0;
+	}
+
+	switch (m_pFSM->getCurrentStateID()){
+	default:
+		break;
+
+		// Process jumping mechanics.
+	case Player::State::JUMPING:
+
+		break;
+
+	case Player::State::CROUCHING:
+	case Player::State::CROUCHED:
+	case Player::State::ATTACK_LP:
+	case Player::State::STUNNED_JUMP:
+	case Player::State::STUNNED_HIT:
+	case Player::State::STUNNED_BLOCK:
+		m_xVel = 0;
+		break;
+	}
 }
 
 // ================================================ //
@@ -374,7 +415,7 @@ void Player::updateMove(void)
 	m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
 	if (m_side == Player::Side::RIGHT){
 		m_dst.x -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
-		m_dst.h -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
+		m_dst.y -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
 	}
 
 	// Process move-specific instructions.
@@ -412,7 +453,6 @@ void Player::updateMove(void)
 		break;
 
 	case MoveID::STUNNED_HIT:
-		printf("Timer: %d\n", m_pMoveTimer->getTicks());
 		// If the player has been stunned for assigned amount of time, switch out.
 		if (m_pMoveTimer->getTicks() > m_currentStun){
 			m_pFSM->setCurrentState(m_pCurrentMove->transition);

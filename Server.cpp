@@ -226,7 +226,11 @@ Uint32 Server::updatePlayers(void)
 	bit.Write(bluePlayer);
 
 	// Write stage shift.
-	bit.Write(StageManager::getSingletonPtr()->getStage()->getShift());
+	//bit.Write(StageManager::getSingletonPtr()->getStage()->getShift());
+	/*Stage::ShiftUpdate update;
+	update.shift = StageManager::getSingletonPtr()->getStage()->getShift();
+	update.lastProcessedShift = m_lastProcessedStageShift;
+	bit.Write(update);*/
 
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
 }
@@ -243,7 +247,7 @@ Uint32 Server::stageShift(const int shift)
 	update.lastProcessedShift = m_lastProcessedStageShift;
 	bit.Write(update);
 
-	return this->broadcast(bit, HIGH_PRIORITY, UNRELIABLE);
+	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
 }
 
 // ================================================ //

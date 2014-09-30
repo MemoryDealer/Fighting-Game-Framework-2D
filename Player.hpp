@@ -88,6 +88,9 @@ public:
 	// Rewinds player state to last server update and replays unprocessed inputs.
 	void serverReconciliation(void);
 
+	// Processes pending input that is being replayed as part of server reconciliation.
+	void processReplayedInput(double dt = 0);
+
 	// Processes local input for player, adjusting its state.
 	void processInput(double dt = 0);
 
