@@ -454,10 +454,15 @@
 -Fixed frame locking glitch where if LP input was held down the move would stop at the last frame (I directly transition to the next move when it's done).
 -Added "reactivated" state of buttons, this is used to prevent a player from holding down a button and repeating a move. This may also be useful for cancels.
 -Jumping is now frame rate independent, I use a sine calculation from 0 to PI for perform the jump.
+-I seem to have eliminated the problem of the client being able to do a LP right after landing a jump or during a jump by not calling Player::processInput()
+	during serverReconciliation() replaying of pending inputs. I will need to either create a function specifically to replay pending inputs, or I could try
+	storing the entire Input state of each pending input and restoring it temporarily for processing.
+-Also stage shift prediction stopped working at some point and I don't know when, so fuck me.
 
 #TODO
 -Either add rw and rh values to every frame or automatically calculate them when loading moves.
--Bug: If client jumps then does light punch right after landing, the server doesn't usually process the LP.
+-Player::processPendingInput().
+-Make some kind of client side prediction for jumping. Fix stage shifting prediction.
 
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was

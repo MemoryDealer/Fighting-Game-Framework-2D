@@ -622,6 +622,9 @@ void GameState::update(double dt)
 						}
 						else if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_blueAddr){
 							PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(netInput.input, netInput.value);
+							if (netInput.value == false){
+								PlayerManager::getSingletonPtr()->getBluePlayerInput()->setReactivated(netInput.input, true);
+							}
 							Server::getSingletonPtr()->m_blueLastProcessedInput = netInput.seq;
 						}
 					}
@@ -631,7 +634,10 @@ void GameState::update(double dt)
 		}
 
 		// Broadcast player updates to all client.
-		Server::getSingletonPtr()->updatePlayers();
+		//if (m_pServerUpdateTimer->getTicks() > 1000){
+			Server::getSingletonPtr()->updatePlayers();
+		//	m_pServerUpdateTimer->restart();
+		//}
 		//Server::getSingletonPtr()->sendLastProcessedInput();
 	}
 	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){

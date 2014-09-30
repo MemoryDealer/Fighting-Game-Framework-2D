@@ -100,6 +100,8 @@ void Player::updateFromServer(const Server::PlayerUpdate& update)
 
 void Player::serverReconciliation(void)
 {
+	StateID state = m_pFSM->getCurrentStateID();
+
 	// Apply any pending player updates received from server.
 	while (!m_serverUpdates.empty()){
 		Server::PlayerUpdate update = m_serverUpdates.front();
@@ -121,10 +123,35 @@ void Player::serverReconciliation(void)
 			else{
 				// Input is still unprocessed by the server, re-apply it.
 				m_pInput->setButton(itr->input, itr->value);
-				this->processInput(itr->dt);
+				//this->processInput(itr->dt);
+				// Move this into function processPendingInput().
+				// I may need to store the entire state of all input buttons in each pending
+				// input and temporarily restore it for pending input replaying.
+				if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+					m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+					m_xVel -= m_xAccel;
+					if (m_xVel < -m_xMax){
+						m_xVel = -m_xMax;
+					}
+				}
+				else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+						 m_pInput->getButton(Input::BUTTON_LEFT) == false){
+					m_xVel += m_xAccel;
+					if (m_xVel > m_xMax){
+						m_xVel = m_xMax;
+					}
+				}
 				// Apply the input.
 				m_dst.x += static_cast<int32_t>(itr->xVel * itr->dt);
 				++itr;
+
+				if (state != m_pFSM->getCurrentStateID()){
+					/*printf("****************state changed from %d to %d\n********On input %d/%d\n", state, m_pFSM->getCurrentStateID(),
+						   itr->input, (int)itr->value);
+
+					state = m_pFSM->getCurrentStateID();*/
+					//m_pFSM->setCurrentState(state);
+				}
 			}
 		}
 
@@ -137,6 +164,8 @@ void Player::serverReconciliation(void)
 	if (m_dst.y > m_floor){
 		m_dst.y = m_floor;
 	}
+
+	//m_pFSM->setCurrentState(state);
 }
 
 // ================================================ //
@@ -232,8 +261,7 @@ void Player::processInput(double dt)
 	case Player::State::STUNNED_BLOCK:
 		m_xVel = 0;
 		break;
-	}
-	
+	}	
 }
 
 // ================================================ //
@@ -336,7 +364,7 @@ void Player::updateMove(void)
 	}
 
 	if (m_side == Player::Side::LEFT){
-		printf("Current frame: %d\n", m_pCurrentMove->currentFrame);
+		printf("Current move/frame: %d/%d\n", m_pCurrentMove->id, m_pCurrentMove->currentFrame);
 	}
 
 	// Update the clipping of the sprite sheet using current frame.
@@ -400,9 +428,7 @@ void Player::updateMove(void)
 	// of the character's center.
 	for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
 		SDL_Rect offset = { 0, 0, 0, 0 };
-		//if (m_pCurrentMove->currentFrame != m_pCurrentMove->numFrames){
-			offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
-		//}
+		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
 
 		int xCenter = m_dst.x + (m_dst.w / 2);
 		int yCenter = m_dst.y + (m_dst.h / 2);
