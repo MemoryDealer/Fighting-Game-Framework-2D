@@ -8,10 +8,9 @@ h=244
 
 [physics]
 xAccel=50
-yAccel=100
 xMax=300
-yMax=800
-jumpCeiling=-20
+jumpStrength=200
+jumpSpeed=5
 
 [stats]
 HP=1000

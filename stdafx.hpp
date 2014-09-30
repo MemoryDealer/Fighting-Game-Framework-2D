@@ -36,6 +36,7 @@
 #include <complex>
 #include <algorithm>
 #include <locale>
+#include <cmath>
 
 // SDL
 #include <SDL.h>

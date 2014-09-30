@@ -89,7 +89,7 @@ public:
 		bool value;
 		Uint32 seq;
 		double dt;
-		int32_t xVel, yVel;
+		int32_t xVel;
 	} ClientInput;
 
 	typedef struct{

@@ -166,7 +166,7 @@ public:
 		Uint32 lastProcessedInput;
 		RakNet::Time timestamp;
 		int x, y;
-		int xVel, yVel;
+		int xVel;
 		Uint32 state;
 	} PlayerUpdate;
 

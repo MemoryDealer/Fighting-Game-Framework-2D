@@ -29,23 +29,22 @@
 
 // ================================================ //
 
-const Uint32 PI = 3.14159265359;
+const double PI = 3.14159265359;
 
 // ================================================ //
 
 Player::Player(const std::string& fighterFile, const std::string& buttonMapFile, const int mode) :
 Object(),
 m_xAccel(0),
-m_yAccel(0),
 m_xVel(0),
-m_yVel(0),
 m_xMax(0),
-m_yMax(0),
-m_jumpCeiling(0),
+m_jumpStrength(0),
+m_jumpSpeed(0),
 m_xJumpVel(0),
-m_up(true),
+m_jump(0.0),
 m_rW(0), 
 m_rH(0),
+m_floor(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
 m_maxHP(1200),
@@ -111,7 +110,6 @@ void Player::serverReconciliation(void)
 		if (update.state == Player::State::JUMPING){
 			m_xJumpVel = update.xVel;
 		}
-		m_yVel = update.yVel;
 
 		// Replay any inputs not yet processed by server.
 		for (Client::ClientInputList::iterator itr = Client::getSingletonPtr()->m_pendingInputs.begin();
@@ -126,7 +124,6 @@ void Player::serverReconciliation(void)
 				this->processInput(itr->dt);
 				// Apply the input.
 				m_dst.x += static_cast<int32_t>(itr->xVel * itr->dt);
-				m_dst.y -= static_cast<int32_t>(itr->yVel * itr->dt);
 				++itr;
 			}
 		}
@@ -206,9 +203,11 @@ void Player::processInput(double dt)
 
 	// Process attack buttons.
 	if (m_pInput->getButton(Input::BUTTON_LP) == true){
-		if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
-			m_pFSM->stateTransition(Player::State::ATTACK_LP);
-			m_pInput->setReactivated(Input::BUTTON_LP, false);
+		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
+			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
+				m_pFSM->stateTransition(Player::State::ATTACK_LP);
+				m_pInput->setReactivated(Input::BUTTON_LP, false);
+			}
 		}
 	}
 
@@ -218,23 +217,10 @@ void Player::processInput(double dt)
 
 		// Process jumping mechanics.
 	case Player::State::JUMPING:
-		if (m_up){
-			m_yVel += m_yAccel;
-			if (m_yVel > m_yMax){
-				m_yVel = m_yMax;
-			}			
-		}
-		else{
-			m_yVel -= m_yAccel;
-			if (m_yVel < -m_yMax){
-				m_yVel = -m_yMax;
-			}
-			if (m_dst.y >= m_floor){
-				m_dst.y = m_floor;
-				m_up = true;
-				m_pFSM->setCurrentState(Player::State::STUNNED_JUMP);
-				m_xVel = m_yVel = 0;
-			}
+		m_jump += m_jumpSpeed * dt;
+		if (m_jump >= PI){
+			this->setCurrentState(Player::State::STUNNED_JUMP);
+			m_jump = 0;
 		}
 		break;
 
@@ -244,7 +230,7 @@ void Player::processInput(double dt)
 	case Player::State::STUNNED_JUMP:
 	case Player::State::STUNNED_HIT:
 	case Player::State::STUNNED_BLOCK:
-		m_xVel = m_yVel = 0;
+		m_xVel = 0;
 		break;
 	}
 	
@@ -265,12 +251,7 @@ void Player::applyInput(double dt)
 			: m_xVel * dt);
 	}
 
-	m_dst.y -= static_cast<int32_t>(m_yVel * dt);
-	if (m_dst.y <= m_jumpCeiling){
-		m_dst.y = m_jumpCeiling;
-		m_up = false;
-		m_yVel = 0;
-	}
+	m_dst.y = m_floor - static_cast<int>(sin(m_jump) * m_jumpStrength);
 }
 
 // ================================================ //
@@ -455,10 +436,9 @@ void Player::loadFighterData(const std::string& file)
 
 	// Parse physics.
 	m_xAccel = m.parseIntValue("physics", "xAccel");
-	m_yAccel = m.parseIntValue("physics", "yAccel");
 	m_xMax = m.parseIntValue("physics", "xMax");
-	m_yMax = m.parseIntValue("physics", "yMax");
-	m_jumpCeiling = m.parseIntValue("physics", "jumpCeiling");
+	m_jumpStrength = m.parseIntValue("physics", "jumpStrength");
+	m_jumpSpeed = m.parseIntValue("physics", "jumpSpeed");
 
 	// Parse any gameplay values.
 	m_maxHP = m_currentHP = m.parseIntValue("stats", "HP");

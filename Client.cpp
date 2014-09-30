@@ -143,11 +143,9 @@ Uint32 Client::sendInput(const Uint32 input, const bool value, const double dt)
 	clientInput.dt = dt;
 	if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
 		clientInput.xVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getXVelocity();
-		clientInput.yVel = PlayerManager::getSingletonPtr()->getRedPlayer()->getYVelocity();
 	}
 	else if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
 		clientInput.xVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getXVelocity();
-		clientInput.yVel = PlayerManager::getSingletonPtr()->getBluePlayer()->getYVelocity();
 	}
 
 	m_pendingInputs.push_back(clientInput);

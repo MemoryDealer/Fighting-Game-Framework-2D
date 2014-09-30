@@ -120,9 +120,6 @@ public:
 	// Returns X velocity.
 	const int32_t getXVelocity(void) const;
 
-	// Returns Y velocity.
-	const int32_t getYVelocity(void) const;
-
 	// Returns X jump velocity.
 	const int32_t getXJumpVelocity(void) const;
 
@@ -177,12 +174,13 @@ public:
 private:
 	// Physics.
 
-	int32_t m_xAccel, m_yAccel;
-	int32_t m_xVel, m_yVel;
-	int32_t m_xMax, m_yMax;
-	int m_jumpCeiling;
+	int32_t m_xAccel;
+	int32_t m_xVel;
+	int32_t m_xMax;
+	Uint32 m_jumpStrength;
+	Uint32 m_jumpSpeed;
 	int m_xJumpVel;
-	bool m_up;
+	double m_jump;
 
 	// Render width and height (default dst rect).
 	int m_rW, m_rH;
@@ -227,10 +225,6 @@ inline const Uint32 Player::getMode(void) const{
 inline const int32_t Player::getXVelocity(void) const{
 	return (m_pFSM->getCurrentStateID() == Player::State::JUMPING) 
 		? m_xJumpVel : m_xVel;
-}
-
-inline const int32_t Player::getYVelocity(void) const{
-	return m_yVel;
 }
 
 inline const int32_t Player::getXJumpVelocity(void) const{

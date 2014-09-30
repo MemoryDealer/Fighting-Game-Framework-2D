@@ -613,6 +613,9 @@ void GameState::update(double dt)
 					if (Server::getSingletonPtr()->validateInput(netInput)){
 						if (Server::getSingletonPtr()->getPacket()->systemAddress == Server::getSingletonPtr()->m_redAddr){
 							PlayerManager::getSingletonPtr()->getRedPlayerInput()->setButton(netInput.input, netInput.value);
+							if (netInput.value == false){
+								PlayerManager::getSingletonPtr()->getRedPlayerInput()->setReactivated(netInput.input, true);
+							}
 							// Note: I previously processed input and applied it ONLY here, and didn't call Player::update()
 							// in PlayerManager::update(). I don't remember the exact reason, but now I do the opposite.
 							Server::getSingletonPtr()->m_redLastProcessedInput = netInput.seq;

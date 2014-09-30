@@ -34,7 +34,7 @@ Timer::~Timer(void)
 
 // ================================================ //
 
-int Timer::restart(void)
+Uint32 Timer::restart(void)
 {
 	m_started = true;
 	m_paused = false;
@@ -77,7 +77,7 @@ void Timer::unpause(void)
 
 // ================================================ //
 
-int Timer::getTicks(void)
+Uint32 Timer::getTicks(void)
 {
 	if (m_started == true){
 		return (m_paused == true) ? m_pausedTicks :
