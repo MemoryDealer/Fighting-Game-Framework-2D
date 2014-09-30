@@ -29,6 +29,10 @@
 
 // ================================================ //
 
+const Uint32 PI = 3.14159265359;
+
+// ================================================ //
+
 Player::Player(const std::string& fighterFile, const std::string& buttonMapFile, const int mode) :
 Object(),
 m_xAccel(0),
@@ -170,25 +174,16 @@ void Player::processInput(double dt)
 		m_pFSM->stateTransition(Player::State::IDLE);
 	}
 
-	if (m_pInput->getButton(Input::BUTTON_LP) == true){
-		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
-			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
-				m_pFSM->stateTransition(Player::State::ATTACK_LP);
-				m_pInput->setReactivated(Input::BUTTON_LP, false);
-			}
-		}
-	}
-
 	// Enter jumping if up is pressed and is possible.
 	if (m_pInput->getButton(Input::BUTTON_UP)){
 		// Prevent x velocity modification in the air.
 		if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
 			if (m_pFSM->stateTransition(Player::State::JUMPING) == Player::State::JUMPING){
 				if (m_pInput->getButton(Input::BUTTON_RIGHT)){
-					m_xJumpVel = static_cast<int>(m_xMax * 1.5);
+					m_xJumpVel = static_cast<int>(m_xMax * 1.75);
 				}
 				else if (m_pInput->getButton(Input::BUTTON_LEFT)){
-					m_xJumpVel = -static_cast<int>(m_xMax * 1.5);
+					m_xJumpVel = -static_cast<int>(m_xMax * 1.75);
 				}
 				else{
 					m_xJumpVel = 0;
@@ -209,6 +204,14 @@ void Player::processInput(double dt)
 		}
 	}
 
+	// Process attack buttons.
+	if (m_pInput->getButton(Input::BUTTON_LP) == true){
+		if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
+			m_pFSM->stateTransition(Player::State::ATTACK_LP);
+			m_pInput->setReactivated(Input::BUTTON_LP, false);
+		}
+	}
+
 	switch (m_pFSM->getCurrentStateID()){
 	default:
 		break;
@@ -219,11 +222,7 @@ void Player::processInput(double dt)
 			m_yVel += m_yAccel;
 			if (m_yVel > m_yMax){
 				m_yVel = m_yMax;
-			}
-			if (m_dst.y <= m_jumpCeiling){
-				m_dst.y = m_jumpCeiling;
-				m_up = false;
-			}
+			}			
 		}
 		else{
 			m_yVel -= m_yAccel;
@@ -267,6 +266,11 @@ void Player::applyInput(double dt)
 	}
 
 	m_dst.y -= static_cast<int32_t>(m_yVel * dt);
+	if (m_dst.y <= m_jumpCeiling){
+		m_dst.y = m_jumpCeiling;
+		m_up = false;
+		m_yVel = 0;
+	}
 }
 
 // ================================================ //

@@ -205,7 +205,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 					break;
 
 				case Input::BUTTON_LP:
-					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LP, true);
+					PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LP, true);					
 					if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 						Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, true, dt);
 					}
@@ -343,6 +343,7 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 
 			case Input::BUTTON_LP:
 				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setButton(Input::BUTTON_LP, false);
+				PlayerManager::getSingletonPtr()->getBluePlayerInput()->setReactivated(Input::BUTTON_LP, true);
 				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
 					Client::getSingletonPtr()->sendInput(Input::BUTTON_LP, false, dt);
 				}

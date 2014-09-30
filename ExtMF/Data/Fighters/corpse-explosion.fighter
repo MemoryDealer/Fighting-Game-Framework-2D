@@ -10,8 +10,8 @@ h=244
 xAccel=50
 yAccel=100
 xMax=300
-yMax=700
-jumpCeiling=50
+yMax=800
+jumpCeiling=-20
 
 [stats]
 HP=1000
