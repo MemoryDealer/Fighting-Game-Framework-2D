@@ -98,6 +98,7 @@ void AppStateManager::start(AppState* pState)
 
 			newTime = SDL_GetTicks();
 			dt = static_cast<double>(newTime - currentTime) / 1000.0;
+			dt *= Engine::getSingletonPtr()->getClockSpeed();
 			currentTime = newTime;
 
 			SDL_SetRenderDrawColor(Engine::getSingletonPtr()->getRenderer(), 0, 0, 0, 255);

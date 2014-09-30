@@ -29,7 +29,8 @@ m_maxFrameRate(60),
 m_windowTitle("Extreme Metal Fighter - Pre-alpha Build " + Engine::toString(Engine::VERSION_MAJOR) + "." +
 Engine::toString(Engine::VERSION_MINOR1) + Engine::toString(Engine::VERSION_MINOR2)),
 m_settingsFile("Data/ExtMF.cfg"),
-m_dataDirectory("Data")
+m_dataDirectory("Data"),
+m_clockSpeed(1.0)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 		throw std::exception("SDL_Init() failed.");

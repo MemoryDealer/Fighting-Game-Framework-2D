@@ -83,10 +83,12 @@ public:
 	Uint32 stageShift(const int shift);
 
 	// Sends a PlayerUpdate only to the client playing the red player.
-	Uint32 updateRedPlayer(const Uint32 inputSeq);
+	// If sendToBlue is true, the update is send directly to blue's address.
+	Uint32 updateRedPlayer(const bool sendToBlue = false);
 
 	// Sends a PlayerUpdate only to the client playing the blue player.
-	Uint32 updateBluePlayer(const Uint32 inputSeq);
+	// If sendToRed is true, the update is send directly to red's address.
+	Uint32 updateBluePlayer(const bool sendToRed = false);
 
 	// Broadcasts damage of specified player, e.g., Game::PLAYING_BLUE or Game::PLAYING_RED.
 	Uint32 broadcastHit(const int player, const Uint32 damage, const Uint32 stun);
@@ -154,6 +156,9 @@ public:
 	// Returns pointer to internal RakNet Packet.
 	RakNet::Packet* getPacket(void);
 
+	// Returns the tick rate (update frequency) in milliseconds.
+	const Uint32 getTickRate(void) const;
+
 	// Returns a string of the first set of data of the last packet (skipping
 	// the first byte).
 	const char* getPacketStrData(void) const;
@@ -178,6 +183,7 @@ public:
 	RakNet::RakPeerInterface* m_peer;
 	RakNet::Packet* m_packet;
 	ClientList m_clients;
+	Uint32 m_tickRate;
 
 	RakNet::SystemAddress m_redAddr, m_blueAddr;
 	Uint32 m_redLastProcessedInput, m_blueLastProcessedInput;
@@ -302,6 +308,10 @@ inline RakNet::RakPeerInterface* Server::getPeer(void){
 
 inline RakNet::Packet* Server::getPacket(void){
 	return m_packet;
+}
+
+inline const Uint32 Server::getTickRate(void) const{
+	return m_tickRate;
 }
 
 // Setters

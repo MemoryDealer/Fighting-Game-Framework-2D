@@ -77,6 +77,9 @@ public:
 	// Returns relative path to "Data" directory.
 	const std::string getDataDirectory(void) const;
 
+	// Returns the game clock speed.
+	const double getClockSpeed(void) const;
+
 	// Wrapper for SDL_GetTicks().
 	Uint32 getTicks(void) const;
 
@@ -91,6 +94,9 @@ public:
 
 	// Instantly changes the resolution of the window.
 	void setResolution(const int width, const int height);
+
+	// Sets the game clock speed.
+	void setClockSpeed(const double speed);
 
 	// --- //
 

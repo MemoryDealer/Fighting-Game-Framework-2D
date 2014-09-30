@@ -43,6 +43,7 @@ public:
 	void setWindowFocused(const bool focused);
 	void setMaxFrameRate(const unsigned int max);
 	void setResolution(const int width, const int height);
+	void setClockSpeed(const double speed);
 
 	SDL_Renderer* getRenderer(void) const;
 	const int getWindowWidth(void) const;
@@ -53,6 +54,7 @@ public:
 	const int getMaxFrameRate(void) const;
 	const std::string getSettingsFile(void) const;
 	const std::string getDataDirectory(void) const;
+	const double getClockSpeed(void) const;
 
 private:
 	SDL_Window*			m_pWindow;
@@ -69,6 +71,9 @@ private:
 	std::string			m_settingsFile;
 	// Relative path to the "Data" directory.
 	std::string			m_dataDirectory;
+
+	// Speed at which game clock runs; 1.0 = 100%, 0.5 = 50%, etc.
+	double m_clockSpeed;
 };
 
 // ================================================ //
@@ -81,6 +86,10 @@ inline void EngineImpl::setWindowFocused(const bool focused){
 
 inline void EngineImpl::setMaxFrameRate(const unsigned int max){ 
 	m_maxFrameRate = max; 
+}
+
+inline void EngineImpl::setClockSpeed(const double speed){
+	m_clockSpeed = speed;
 }
 
 // Getters
@@ -119,6 +128,10 @@ inline const std::string EngineImpl::getSettingsFile(void) const{
 
 inline const std::string EngineImpl::getDataDirectory(void) const{
 	return m_dataDirectory;
+}
+
+inline const double EngineImpl::getClockSpeed(void) const{
+	return m_clockSpeed;
 }
 
 // ================================================ //

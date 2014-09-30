@@ -252,6 +252,10 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			}
 			break;
 
+		case SDLK_TAB:
+			Engine::getSingletonPtr()->setClockSpeed(0.2);
+			break;
+
 		case SDLK_ESCAPE:
 			
 			m_quit = true;
@@ -349,6 +353,15 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 				}
 				break;
 			}
+		}
+
+		switch (e.key.keysym.sym){
+		default:
+			break;
+			
+		case SDLK_TAB:
+			Engine::getSingletonPtr()->setClockSpeed(1.0);
+			break;
 		}
 	}
 
@@ -634,12 +647,43 @@ void GameState::update(double dt)
 		}
 
 		// Broadcast player updates to all client.
-		Server::getSingletonPtr()->updatePlayers();
+		if (m_pServerUpdateTimer->getTicks() > Server::getSingletonPtr()->getTickRate()){			
+			switch (PlayerManager::getSingletonPtr()->getRedPlayer()->getCurrentState()){
+			default:
+				Server::getSingletonPtr()->updateRedPlayer(
+					Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED);
+				break;
+
+			case Player::State::ATTACK_LP:
+			case Player::State::JUMPING:
+				// Only update if the server is playing.
+				if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+					Server::getSingletonPtr()->updateRedPlayer(true);
+				}
+				break;
+			}
+			switch(PlayerManager::getSingletonPtr()->getBluePlayer()->getCurrentState()){
+			default:
+				Server::getSingletonPtr()->updateBluePlayer(
+					Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE);
+				break;
+
+			case Player::State::ATTACK_LP:
+			case Player::State::JUMPING:
+				if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+					Server::getSingletonPtr()->updateBluePlayer(true);
+				}
+				break;
+			}
+
+			//Server::getSingletonPtr()->updatePlayers();
+			m_pServerUpdateTimer->restart();
+		}
 
 		// Ensure client is synced every so often.
-		if (m_pServerUpdateTimer->getTicks() > 3000){
+		if (m_pResetServerInputTimer->getTicks() > 3000){
 			Server::getSingletonPtr()->sendLastProcessedInput();
-			m_pServerUpdateTimer->restart();
+			m_pResetServerInputTimer->restart();
 		}
 	}
 	else if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
@@ -673,25 +717,48 @@ void GameState::update(double dt)
 					break;
 
 				case NetMessage::UPDATE_RED_PLAYER:
-					if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
-							Client::getSingletonPtr()->getPacket()->length, false);
+											  Client::getSingletonPtr()->getPacket()->length, false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						Server::PlayerUpdate update;
-						bit.Read(update);
-						PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(update);
+						Server::PlayerUpdate red;
+						bit.Read(red);
+						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+							PlayerManager::getSingletonPtr()->getRedPlayer()->updateFromServer(red);
+						}
+						// Otherwise, update player directly.
+						else{
+							Player* redPlayer = PlayerManager::getSingletonPtr()->getRedPlayer();
+							redPlayer->setPosition(red.x, red.y);
+							redPlayer->setCurrentState(red.state);
+						}
 					}
 					break;
 
 				case NetMessage::UPDATE_BLUE_PLAYER:
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+											  Client::getSingletonPtr()->getPacket()->length, false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
+						Server::PlayerUpdate blue;
+						bit.Read(blue);
+						if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_BLUE){
+							PlayerManager::getSingletonPtr()->getBluePlayer()->updateFromServer(blue);
+						}
+						else{
+							Player* bluePlayer = PlayerManager::getSingletonPtr()->getBluePlayer();
+							bluePlayer->setPosition(blue.x, blue.y);
+							bluePlayer->setCurrentState(blue.state);
+						}
+					}
 					break;
 
 				case NetMessage::UPDATE_PLAYERS:
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
-							Client::getSingletonPtr()->getPacket()->length, false);
+											  Client::getSingletonPtr()->getPacket()->length, false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
 						Server::PlayerUpdate red;

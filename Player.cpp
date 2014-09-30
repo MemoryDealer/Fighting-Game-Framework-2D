@@ -213,32 +213,41 @@ void Player::processReplayedInput(double dt)
 
 void Player::processInput(double dt)
 {
+	// Process left/right movement.
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
-	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
-		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
-		m_xVel -= m_xAccel;
-		if (m_xVel < -m_xMax){
-			m_xVel = -m_xMax;
+	switch (m_pFSM->getCurrentStateID()){
+	default:
+		if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+			m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+			m_xVel -= m_xAccel;
+			if (m_xVel < -m_xMax){
+				m_xVel = -m_xMax;
+			}
+
+			m_pFSM->stateTransition((m_side == Player::Side::LEFT) ? Player::State::WALKING_BACK :
+									Player::State::WALKING_FORWARD);
 		}
+		else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+				 m_pInput->getButton(Input::BUTTON_LEFT) == false){
+			m_xVel += m_xAccel;
+			if (m_xVel > m_xMax){
+				m_xVel = m_xMax;
+			}
 
-		m_pFSM->stateTransition((m_side == Player::Side::LEFT) ? Player::State::WALKING_BACK :
-								Player::State::WALKING_FORWARD);
-	}
-	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
-				m_pInput->getButton(Input::BUTTON_LEFT) == false){
-		m_xVel += m_xAccel;
-		if (m_xVel > m_xMax){
-			m_xVel = m_xMax;
+			m_pFSM->stateTransition((m_side == Player::Side::LEFT) ? Player::State::WALKING_FORWARD :
+									Player::State::WALKING_BACK);
 		}
+		else{
+			m_xVel = 0;
 
-		m_pFSM->stateTransition((m_side == Player::Side::LEFT) ? Player::State::WALKING_FORWARD :
-								Player::State::WALKING_BACK);
-	}
-	else{
-		m_xVel = 0;
+			m_pFSM->stateTransition(Player::State::IDLE);
+		}
+		break;
 
-		m_pFSM->stateTransition(Player::State::IDLE);
+	case Player::State::JUMPING:
+	case Player::State::ATTACK_LP:
+		break;
 	}
 
 	// Enter jumping if up is pressed and is possible.

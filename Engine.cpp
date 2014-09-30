@@ -136,6 +136,13 @@ const std::string Engine::getDataDirectory(void) const
 
 // ================================================ //
 
+const double Engine::getClockSpeed(void) const
+{
+	return m_pImpl->getClockSpeed();
+}
+
+// ================================================ //
+
 // Setters
 
 void Engine::setWindowFocused(const bool focused)
@@ -155,6 +162,13 @@ void Engine::setMaxFrameRate(const unsigned int max)
 void Engine::setResolution(const int width, const int height)
 {
 	return m_pImpl->setResolution(width, height);
+}
+
+// ================================================ //
+
+void Engine::setClockSpeed(const double speed)
+{
+	return m_pImpl->setClockSpeed(speed);
 }
 
 // ================================================ //

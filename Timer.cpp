@@ -13,6 +13,7 @@
 
 #include "stdafx.hpp"
 #include "Timer.hpp"
+#include "Engine.hpp"
 
 // ================================================ //
 
@@ -81,7 +82,7 @@ Uint32 Timer::getTicks(void)
 {
 	if (m_started == true){
 		return (m_paused == true) ? m_pausedTicks :
-			SDL_GetTicks() - m_startTicks;
+			static_cast<Uint32>((SDL_GetTicks() - m_startTicks) * Engine::getSingletonPtr()->getClockSpeed());
 	}
 
 	return 0;

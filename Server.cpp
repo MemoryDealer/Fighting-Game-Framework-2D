@@ -33,6 +33,7 @@ Server::Server(const int port) :
 m_peer(RakNet::RakPeerInterface::GetInstance()),
 m_packet(nullptr),
 m_clients(),
+m_tickRate(8),
 m_redAddr(),
 m_blueAddr(),
 m_redLastProcessedInput(0),
@@ -46,6 +47,18 @@ m_pUpdateTimer(new Timer())
 	RakNet::SocketDescriptor sd(port, 0);
 	m_peer->Startup(Server::MaxClients, &sd, 1);
 	m_peer->SetMaximumIncomingConnections(Server::MaxClients);
+
+	// Load the tick rate.
+	Config c(Engine::getSingletonPtr()->getSettingsFile());
+	if (c.isLoaded()){
+		Uint32 tick = c.parseIntValue("net", "serverTickRate");
+		if (tick == 0){
+			tick = 120;
+		}
+
+		m_tickRate = static_cast<int>(1000.0 / tick);
+		Log::getSingletonPtr()->logMessage("Server using tick rate of " + Engine::toString(m_tickRate));
+	}
 
 	// Apply simulated lag, using half the ping since it will be applied to both client
 	// and server.
@@ -252,28 +265,40 @@ Uint32 Server::stageShift(const int shift)
 
 // ================================================ //
 
-Uint32 Server::updateRedPlayer(const Uint32 inputSeq)
+Uint32 Server::updateRedPlayer(const bool sendToBlue)
 {
+	PlayerUpdate redPlayer;
 	Player* red = PlayerManager::getSingletonPtr()->getRedPlayer();
-	PlayerUpdate update;
-	update.lastProcessedInput = inputSeq;
-	update.x = red->getPosition().x;
-	update.y = red->getPosition().y;
-	update.xVel = red->getXVelocity();
+	redPlayer.lastProcessedInput = m_redLastProcessedInput;
+	redPlayer.x = red->getPosition().x;
+	redPlayer.y = red->getPosition().y;
+	redPlayer.xVel = red->getXVelocity();
+	redPlayer.state = red->getCurrentState();
 
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_RED_PLAYER));
-	bit.Write(update);
+	bit.Write(redPlayer);
 
-	return this->send(bit, m_redAddr, IMMEDIATE_PRIORITY);
+	return this->send(bit, (sendToBlue == true) ? m_blueAddr : m_redAddr, IMMEDIATE_PRIORITY);
 }
 
 // ================================================ //
 
-Uint32 Server::updateBluePlayer(const Uint32 inputSeq)
+Uint32 Server::updateBluePlayer(const bool sendToRed)
 {
+	PlayerUpdate bluePlayer;
+	Player* blue = PlayerManager::getSingletonPtr()->getBluePlayer();
+	bluePlayer.lastProcessedInput = m_blueLastProcessedInput;
+	bluePlayer.x = blue->getPosition().x;
+	bluePlayer.y = blue->getPosition().y;
+	bluePlayer.xVel = blue->getXVelocity();
+	bluePlayer.state = blue->getCurrentState();
 
-	return 0;
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::UPDATE_BLUE_PLAYER));
+	bit.Write(bluePlayer);
+
+	return this->send(bit, (sendToRed == true) ? m_redAddr : m_blueAddr, IMMEDIATE_PRIORITY);
 }
 
 // ================================================ //
