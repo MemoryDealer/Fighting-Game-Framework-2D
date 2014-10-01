@@ -464,11 +464,21 @@
 -The rendering adjustment for the m_dst rect on the right side during LP stopped working on the client at some point, don't know what caused it.
 	It was being caused by updating the client's position directly during serverReconciliation(). Now I filter out the updates based the update state,
 	and don't allow direct updates during ATTACK_LP. 
+-Added network tick rate variable to server class, it is parsed from ExtMF.cfg and calculated to milliseconds (Server sends out updates every n milliseconds).
+-Added game clock modification ability using Engine::setClockSpeed(). Holding down tab slows down the game to 20% speed currently, also incorporated the game 
+	clock into the timer class. The attacking LP animation extends out too far when the clock is slow and jumping is not as far.
+-I determined that the snaps occurring after landing a left/right jump on the client were being caused by reapplying old server updates, since all of
+	server reconciliation is temporarily paused while in the air to maintain the illusion of perfect synchronization (it will however process for special
+	server updates such as hits during jumping). 
+	So to solve this I store the client input sequence number at the moment of transitioning into the jump state, and when processing server updates, each
+	update's lastProcessedInput value is check if it is <= the client input sequence number at the time of jumping. If so, it is discarded as old. Protection
+	is also done for important updates such as hits, since the update's state is checked before doing this operation.
+
 
 #TODO
 -Either add rw and rh values to every frame or automatically calculate them when loading moves.
 -Make some kind of client side prediction for jumping. Fix stage shifting prediction.
--Update red and blue players separately, filtering out updates based on state, as ATTACK_LP doesn't seem to be needed.
+-Make an actual collision system.
 
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was

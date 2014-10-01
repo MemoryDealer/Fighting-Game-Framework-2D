@@ -67,7 +67,7 @@ m_serverUpdates()
 		Log::getSingletonPtr()->logMessage("WARNING: No fighter file specified");
 		return;
 	}
-
+	jumpCtr = 0;
 	this->loadFighterData(fighterFile);
 }
 
@@ -101,6 +101,8 @@ void Player::updateFromServer(const Server::PlayerUpdate& update)
 void Player::serverReconciliation(void)
 {
 	StateID state = m_pFSM->getCurrentStateID();
+
+	printf("\n\n---------ENTERING SERVER RECONCILIATION\nx=%d\n\n", m_dst.x);
 	
 	// Apply any pending player updates received from server.
 	while (!m_serverUpdates.empty()){
@@ -108,16 +110,25 @@ void Player::serverReconciliation(void)
 		// Rewind to the server's latest update.
 		switch (update.state){
 		default:
+			if (update.lastProcessedInput <= jumpCtr){
+				m_serverUpdates.pop();
+				continue;
+			}
 			// Don't interrupt jumping animation.
 			if (state != Player::State::JUMPING){
+				printf("Updating player directly: %d/%d\tSTATE=%d\n", update.x, update.y, update.state);
 				m_dst.x = update.x;
-				m_dst.y = update.y;
+				//m_dst.y = update.y;
 				m_xVel = update.xVel;
 			}
-			else{
-				//m_serverUpdates.pop();
-				return;				
-			}
+			//else{
+			//	//m_serverUpdates.pop();
+			//	/*if (jumpCtr --> 0){
+			//		m_serverUpdates.pop();
+			//	}*/
+			//	
+			//	return;				
+			//}
 			break;
 
 		case Player::State::JUMPING:
@@ -153,8 +164,12 @@ void Player::serverReconciliation(void)
 			}
 		}
 
+		printf("After rewind: %d\n", m_dst.x);
+
 		m_serverUpdates.pop();
 	}
+
+	printf("\n\n---------LEAVING SERVER RECONCILIATION\nx=%d\n\n", m_dst.x);
 
 	// Keep player within stage bounds.
 	if (m_dst.x < 0){
@@ -170,32 +185,29 @@ void Player::serverReconciliation(void)
 void Player::processReplayedInput(double dt)
 {
 	// Specifically don't allow player state to change during pending input replay.
-
-	if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
-		m_pInput->getButton(Input::BUTTON_RIGHT) == false){
-		m_xVel -= m_xAccel;
-		if (m_xVel < -m_xMax){
-			m_xVel = -m_xMax;
-		}
-	}
-	else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
-			 m_pInput->getButton(Input::BUTTON_LEFT) == false){
-		m_xVel += m_xAccel;
-		if (m_xVel > m_xMax){
-			m_xVel = m_xMax;
-		}
-	}
-	else{
-		m_xVel = 0;
-	}
-
 	switch (m_pFSM->getCurrentStateID()){
 	default:
+		if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
+			m_pInput->getButton(Input::BUTTON_RIGHT) == false){
+			m_xVel -= m_xAccel;
+			if (m_xVel < -m_xMax){
+				m_xVel = -m_xMax;
+			}
+		}
+		else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
+				 m_pInput->getButton(Input::BUTTON_LEFT) == false){
+			m_xVel += m_xAccel;
+			if (m_xVel > m_xMax){
+				m_xVel = m_xMax;
+			}
+		}
+		else{
+			m_xVel = 0;
+		}
 		break;
 
 		// Process jumping mechanics.
 	case Player::State::JUMPING:
-
 		break;
 
 	case Player::State::CROUCHING:
@@ -255,6 +267,9 @@ void Player::processInput(double dt)
 		// Prevent x velocity modification in the air.
 		if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
 			if (m_pFSM->stateTransition(Player::State::JUMPING) == Player::State::JUMPING){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					jumpCtr = Client::getSingletonPtr()->m_inputSeq;
+				}
 				if (m_pInput->getButton(Input::BUTTON_RIGHT)){
 					m_xJumpVel = static_cast<int>(m_xMax * 1.75);
 				}

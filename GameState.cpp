@@ -656,6 +656,7 @@ void GameState::update(double dt)
 
 			case Player::State::ATTACK_LP:
 			case Player::State::JUMPING:
+			case Player::State::STUNNED_JUMP:
 				// Only update if the server is playing.
 				if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
 					Server::getSingletonPtr()->updateRedPlayer(true);

@@ -185,6 +185,8 @@ private:
 	int m_xJumpVel;
 	double m_jump;
 
+	int jumpCtr;
+
 	// Render width and height (default dst rect).
 	int m_rW, m_rH;
 
