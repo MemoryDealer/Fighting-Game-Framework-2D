@@ -474,11 +474,15 @@
 	update's lastProcessedInput value is check if it is <= the client input sequence number at the time of jumping. If so, it is discarded as old. Protection
 	is also done for important updates such as hits, since the update's state is checked before doing this operation.
 
+#10/1/14
+-Applied the game clock speed to animation updates of the m_dst rect in Player from specific frames. This fixes the slow motion rendering to be the same as normal
+	speed. This will make debugging easier.
 
 #TODO
 -Either add rw and rh values to every frame or automatically calculate them when loading moves.
--Make some kind of client side prediction for jumping. Fix stage shifting prediction.
+-Fix stage shifting prediction.
 -Make an actual collision system.
+-Organize player processing and update functions better, there is redundancy.
 
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was

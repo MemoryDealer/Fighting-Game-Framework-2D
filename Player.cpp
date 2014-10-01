@@ -435,11 +435,11 @@ void Player::updateMove(void)
 	// Update the clipping of the sprite sheet using current frame.
 	m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
 	// Modify rendering width and height of player to current frame settings.
-	m_dst.w += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
-	m_dst.h += m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
+	m_dst.w += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
+	m_dst.h += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh * Engine::getSingletonPtr()->getClockSpeed());
 	if (m_side == Player::Side::RIGHT){
-		m_dst.x -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw;
-		m_dst.y -= m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh;
+		m_dst.x -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
+		m_dst.y -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh * Engine::getSingletonPtr()->getClockSpeed());
 	}
 
 	// Process move-specific instructions.
