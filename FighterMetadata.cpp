@@ -111,17 +111,23 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							frame1.x = this->parseMoveIntValue("frame1", "x");
 							frame1.y = this->parseMoveIntValue("frame1", "y");
 							frame1.w = this->parseMoveIntValue("frame1", "w");
-							frame1.h = this->parseMoveIntValue("frame1", "h");
-							if ((frame1.rw = this->parseMoveIntValue("frame1", "rw")) == -1){
-								frame1.rw = 0;
-							}
-							if ((frame1.rh = this->parseMoveIntValue("frame1", "rh")) == -1){
-								frame1.rh = 0;
-							}
+							frame1.h = this->parseMoveIntValue("frame1", "h");							
 							if ((frame1.gap = this->parseIntValue("frame1", "gap")) == -1){
 								// Inherit global frame gap.
 								frame1.gap = pMove->frameGap;
 							}
+
+							// Calculate first rw and rh values based on default size.
+							frame1.rw = this->parseIntValue("size", "w") - frame1.w;
+							frame1.rh = this->parseIntValue("size", "h") - frame1.h;
+							// Only allow expanding of the rendering size.
+							if (frame1.rw < 0){
+								frame1.rw = 0;
+							}
+							if (frame1.rh < 0){
+								frame1.rh = 0;
+							}
+
 							pMove->frames.push_back(frame1);
 							this->parseHitboxes(pMove, "frame1");
 
@@ -132,13 +138,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 								frame.x = this->parseMoveIntValue(frameSection.c_str(), "x");
 								frame.y = this->parseMoveIntValue(frameSection.c_str(), "y");
 								frame.w = this->parseMoveIntValue(frameSection.c_str(), "w");
-								frame.h = this->parseMoveIntValue(frameSection.c_str(), "h");
-								if ((frame.rw = this->parseMoveIntValue(frameSection.c_str(), "rw")) == -1){
-									frame.rw = 0;
-								}
-								if ((frame.rh = this->parseMoveIntValue(frameSection.c_str(), "rh")) == -1){
-									frame.rh = 0;
-								}
+								frame.h = this->parseMoveIntValue(frameSection.c_str(), "h");								
 								if ((frame.gap = this->parseMoveIntValue(frameSection.c_str(), "gap")) == -1){
 									frame.gap = pMove->frameGap;
 								}
@@ -152,6 +152,17 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 									frame.w = pMove->frames.back().w;
 								if (frame.h == -1)
 									frame.h = pMove->frames.back().h;
+
+								// Calculate rw and rh values.
+								frame.rw = (frame.w - pMove->frames.back().w);
+								frame.rh = (frame.h - pMove->frames.back().h);
+								// Only allow expanding of the rendering size.
+								if (frame.rw < 0){
+									frame.rw = 0;
+								}								
+								if (frame.rh < 0){
+									frame.rh = 0;
+								}
 
 								pMove->frames.push_back(frame);
 								this->parseHitboxes(pMove, frameSection.c_str());

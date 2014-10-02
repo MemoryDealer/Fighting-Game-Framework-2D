@@ -379,6 +379,9 @@ void Player::updateMove(void)
 		// Reset new move's current frame to starting frame.
 		m_pCurrentMove->currentFrame = 0;
 
+		// Reset rendering width and height.
+		m_dst.w = m_rW; m_dst.h = m_rH;
+
 		// Reset timer to begin processing new moves frames.
 		m_pMoveTimer->restart();
 		//m_pMoveTimer->setStartTicks(0); // Why did I do this?!
@@ -387,7 +390,6 @@ void Player::updateMove(void)
 	switch (m_pFSM->getCurrentStateID()){
 	default:
 	case Player::State::IDLE:
-		m_dst.w = m_rW; m_dst.h = m_rH;
 		m_pCurrentMove = m_moves[MoveID::IDLE];
 		break;
 

@@ -39,7 +39,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\SDL2\include;D:\RakNet-master\Source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\SDL2\include;C:\RakNet-master\Source;$(IncludePath)</IncludePath>
     <LibraryPath>%SDL%\lib\x86;%RAKNET%\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
