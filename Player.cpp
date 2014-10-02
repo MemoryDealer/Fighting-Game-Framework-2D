@@ -118,7 +118,7 @@ void Player::serverReconciliation(void)
 			if (state != Player::State::JUMPING){
 				printf("Updating player directly: %d/%d\tSTATE=%d\n", update.x, update.y, update.state);
 				m_dst.x = update.x;
-				//m_dst.y = update.y;
+				m_dst.y = update.y;
 				m_xVel = update.xVel;
 			}
 			//else{
@@ -137,7 +137,7 @@ void Player::serverReconciliation(void)
 
 			// Prevent right-side animation from sliding right.
 		case Player::State::ATTACK_LP:
-			m_serverUpdates.pop();
+
 			return;
 		}
 
