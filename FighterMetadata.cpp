@@ -118,8 +118,8 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							}
 
 							// Calculate first rw and rh values based on default size.
-							frame1.rw = this->parseIntValue("size", "w") - frame1.w;
-							frame1.rh = this->parseIntValue("size", "h") - frame1.h;
+							frame1.rw = this->parseMoveIntValue("frame1", "rw");
+							frame1.rh = this->parseMoveIntValue("frame1", "rh");
 							// Only allow expanding of the rendering size.
 							if (frame1.rw < 0){
 								frame1.rw = 0;
@@ -155,14 +155,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 
 								// Calculate rw and rh values.
 								frame.rw = (frame.w - pMove->frames.back().w);
-								frame.rh = (frame.h - pMove->frames.back().h);
-								// Only allow expanding of the rendering size.
-								if (frame.rw < 0){
-									frame.rw = 0;
-								}								
-								if (frame.rh < 0){
-									frame.rh = 0;
-								}
+								frame.rh = (frame.h - pMove->frames.back().h);								
 
 								pMove->frames.push_back(frame);
 								this->parseHitboxes(pMove, frameSection.c_str());

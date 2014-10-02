@@ -377,7 +377,7 @@ void Player::updateMove(void)
 	// Force current animation to stop if the state has changed.
 	if (m_pCurrentMove != m_moves[m_pFSM->getCurrentStateID()]){
 		// Reset new move's current frame to starting frame.
-		m_pCurrentMove->currentFrame = 0;
+		m_pCurrentMove->currentFrame = 0;		
 
 		// Reset rendering width and height.
 		m_dst.w = m_rW; m_dst.h = m_rH;
@@ -431,18 +431,24 @@ void Player::updateMove(void)
 	}
 
 	if (m_side == Player::Side::LEFT){
-		printf("Current move/frame: %d/%d\n", m_pCurrentMove->id, m_pCurrentMove->currentFrame);
+		printf("Current move/frame: %d/%d..%d\n", m_pCurrentMove->id, m_pCurrentMove->currentFrame,
+			m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw);
 	}
 
 	// Update the clipping of the sprite sheet using current frame.
 	m_src = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].toSDLRect();
 	// Modify rendering width and height of player to current frame settings.
-	m_dst.w += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
-	m_dst.h += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh * Engine::getSingletonPtr()->getClockSpeed());
-	if (m_side == Player::Side::RIGHT){
-		m_dst.x -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
-		m_dst.y -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh * Engine::getSingletonPtr()->getClockSpeed());
+	if (m_pCurrentMove->frames[m_pCurrentMove->currentFrame].w >= m_pCurrentMove->frames[0].w){
+		m_dst.w += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
+		// Adjust position when the rendering is flipped.
+		if (m_side == Player::Side::RIGHT){
+			m_dst.x -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
+		}
 	}
+	if (m_pCurrentMove->frames[m_pCurrentMove->currentFrame].h >= m_pCurrentMove->frames[0].h){
+		m_dst.h += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh * Engine::getSingletonPtr()->getClockSpeed());
+	}
+	
 
 	// Process move-specific instructions.
 	switch (m_pCurrentMove->id){

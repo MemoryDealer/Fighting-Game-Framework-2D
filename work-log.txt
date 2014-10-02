@@ -478,6 +478,10 @@
 -Applied the game clock speed to animation updates of the m_dst rect in Player from specific frames. This fixes the slow motion rendering to be the same as normal
 	speed. This will make debugging easier.
 
+#10/2/14
+-The rw and rh values for each frame of a move are generated automatically now based on the previous frame's width and height. For the first
+	frame, if no rw or rh are specified, they are set to zero.
+
 #TODO
 -Either add rw and rh values to every frame or automatically calculate them when loading moves.
 -Fix stage shifting prediction.
