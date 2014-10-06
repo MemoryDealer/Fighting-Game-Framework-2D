@@ -483,7 +483,6 @@
 	frame, if no rw or rh are specified, they are set to zero.
 
 #TODO
--Either add rw and rh values to every frame or automatically calculate them when loading moves.
 -Fix stage shifting prediction.
 -Make an actual collision system.
 -Organize player processing and update functions better, there is redundancy.

@@ -120,7 +120,7 @@ std::shared_ptr<Move> FighterMetadata::parseMove(const std::string& name)
 							// Calculate first rw and rh values based on default size.
 							frame1.rw = this->parseMoveIntValue("frame1", "rw");
 							frame1.rh = this->parseMoveIntValue("frame1", "rh");
-							// Only allow expanding of the rendering size.
+							// Only allow expanding of the rendering size on the first frame.
 							if (frame1.rw < 0){
 								frame1.rw = 0;
 							}
