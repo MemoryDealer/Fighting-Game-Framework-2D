@@ -300,6 +300,7 @@ void Player::processInput(double dt)
 		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
 			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
 				m_pFSM->stateTransition(Player::State::ATTACK_LP);
+				hitboxesActive = true;
 				m_pInput->setReactivated(Input::BUTTON_LP, false);
 			}
 		}
@@ -428,6 +429,10 @@ void Player::updateMove(void)
 	case Player::State::STUNNED_HIT:
 		m_pCurrentMove = m_moves[MoveID::STUNNED_HIT];
 		break;
+
+	case Player::State::STUNNED_BLOCK:
+		m_pCurrentMove = m_moves[MoveID::STUNNED_BLOCK];
+		break;
 	}
 
 	if (m_side == Player::Side::LEFT){
@@ -485,6 +490,7 @@ void Player::updateMove(void)
 		break;
 
 	case MoveID::STUNNED_HIT:
+	case MoveID::STUNNED_BLOCK:
 		// If the player has been stunned for assigned amount of time, switch out.
 		if (m_pMoveTimer->getTicks() > m_currentStun){
 			m_pFSM->setCurrentState(m_pCurrentMove->transition);
@@ -629,33 +635,45 @@ void Player::loadFighterData(const std::string& file)
 	state = new FState(Player::State::STUNNED_HIT);
 	m_pFSM->addState(state);
 
+	state = new FState(Player::State::STUNNED_BLOCK);
+	m_pFSM->addState(state);
+
 	// Set default state.
 	m_pFSM->setCurrentState(Player::State::IDLE);
 }
 
 // ================================================ //
 
-void Player::takeHit(const Uint32 damage, const Uint32 stun)
+bool Player::takeHit(const Move* pMove)
 {
-	if (stun > 0){
-		m_currentStun = stun;
-		m_pFSM->setCurrentState(Player::State::STUNNED_HIT);
+	// Set player to blocking if walking back.
+	if (m_pFSM->getCurrentStateID() == Player::State::WALKING_BACK){
+		m_currentStun = pMove->blockstun;
+		m_pFSM->setCurrentState(Player::State::STUNNED_BLOCK);
+		return false;
 	}
+	// Otherwise, process hit.
+	else{
+		m_currentStun = pMove->hitstun;
+		m_pFSM->setCurrentState(Player::State::STUNNED_HIT);
 
-	if (damage != 0){
-		m_currentHP -= damage;
-		if (m_currentHP < 0){
-			m_currentHP = 0;
+		if (pMove->damage != 0){
+			m_currentHP -= pMove->damage;
+			if (m_currentHP < 0){
+				m_currentHP = 0;
+			}
+			else if (m_currentHP > m_maxHP){
+				m_currentHP = m_maxHP;
+			}
+
+			// Calculate percentage from current HP.
+			double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
+			percent *= 100.0;
+
+			m_pHealthBar->setPercent(static_cast<int>(percent));
 		}
-		else if (m_currentHP > m_maxHP){
-			m_currentHP = m_maxHP;
-		}
 
-		// Calculate percentage from current HP.
-		double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
-		percent *= 100.0;
-
-		m_pHealthBar->setPercent(static_cast<int>(percent));
+		return true;
 	}
 }
 

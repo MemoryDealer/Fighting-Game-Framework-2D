@@ -177,22 +177,49 @@ void PlayerManager::update(double dt)
 		for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
 			for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
 				if (m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j))){
-					Move* move = m_pRedPlayer->getCurrentMove();
-					Uint32 stun = move->hitstun;
-					m_pBluePlayer->takeHit(move->damage, stun);
+					if (m_pRedPlayer->hitboxesActive){
+						m_pRedPlayer->hitboxesActive = false;
+						Move* pMove = m_pRedPlayer->getCurrentMove();
+						bool hit = m_pBluePlayer->takeHit(pMove);
 
-					if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-						// Send damage notification to client.
-						Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE, move->damage, stun);
+						// TEMPORARY - prevents attacking player's hitboxes from hitting player after blockstun.
+						if (hit == false){
+							//m_pRedPlayer->setCurrentState(Player::State::IDLE);
+						}
+
+						if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+							// Send damage notification to client.
+							/*if (m_pBluePlayer->getCurrentState() == Player::State::STUNNED_HIT){
+								Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE,
+								pMove->damage, pMove->hitstun);																	m_pRedPlayer->getC);
+								}
+								else if(m_pBluePlayer->getCurrentState() == Player::State::STUNNED_BLOCK){
+								Server::getSingletonPtr()->broadcastHitBlock(Game::Playing::PLAYING_BLUE,
+								pMove->blockstun);
+								}*/
+						}
 					}
 				}
 				if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
-					Move* move = m_pBluePlayer->getCurrentMove();
-					Uint32 stun = move->hitstun;
-					m_pRedPlayer->takeHit(move->damage, stun);
+					if (m_pBluePlayer->hitboxesActive){
+						m_pBluePlayer->hitboxesActive = false;
+						Move* pMove = m_pBluePlayer->getCurrentMove();
+						bool hit = m_pRedPlayer->takeHit(pMove);
 
-					if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-						Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_RED, move->damage, stun);
+						if (hit == false){
+							//m_pBluePlayer->setCurrentState(Player::State::IDLE);
+						}
+
+						if (Game::getSingletonPtr()->getMode() == Game::SERVER){
+							if (m_pRedPlayer->getCurrentState() == Player::State::STUNNED_HIT){
+								Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_RED,
+																		pMove->damage, pMove->hitstun);
+							}
+							else if (m_pRedPlayer->getCurrentState() == Player::State::STUNNED_BLOCK){
+								Server::getSingletonPtr()->broadcastHitBlock(Game::Playing::PLAYING_RED,
+																			 pMove->blockstun);
+							}
+						}
 					}
 				}
 			}

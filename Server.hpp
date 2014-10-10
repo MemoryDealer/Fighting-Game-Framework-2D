@@ -93,6 +93,9 @@ public:
 	// Broadcasts damage of specified player, e.g., Game::PLAYING_BLUE or Game::PLAYING_RED.
 	Uint32 broadcastHit(const int player, const Uint32 damage, const Uint32 stun);
 
+	// Broadcasts block state of player and blockstun.
+	Uint32 broadcastHitBlock(const int player, const Uint32 stun);
+
 	// Sends the last processed input sequence number to playing clients.
 	Uint32 sendLastProcessedInput(void);
 

@@ -35,6 +35,7 @@ namespace MoveID{
 
 		STUNNED_JUMP,
 		STUNNED_HIT,
+		STUNNED_BLOCK,
 
 		END_MOVES
 	};

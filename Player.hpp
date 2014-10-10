@@ -109,8 +109,9 @@ public:
 	// Loads textures, moves, etc.
 	void loadFighterData(const std::string& file);
 
-	// Takes hp from player, updates health bar. Applies stun, changes state.
-	void takeHit(const Uint32 damage, const Uint32 stun);
+	// Applies a hit from a move performed by the other player.
+	// Returns true if the player was hit.
+	bool takeHit(const Move* pMove);
 
 	// Getters
 
@@ -165,6 +166,9 @@ public:
 	// Sets current state.
 	void setCurrentState(const Uint32 state);
 
+	// Sets the Player's HP directly.
+	void setCurrentHP(const Uint32 hp);
+
 	// Sets the player object to draw hitboxes if true.
 	void setDrawHitboxes(const bool draw);
 
@@ -173,6 +177,11 @@ public:
 
 	// Sets the player to colliding if true.
 	void setColliding(const bool colliding);
+
+	// Sets the current stun of the Player.
+	void setStun(const Uint32 stun);
+
+	bool hitboxesActive = false;
 
 private:
 	// Physics.
@@ -287,6 +296,10 @@ inline void Player::setCurrentState(const Uint32 state){
 	m_pFSM->setCurrentState(state);
 }
 
+inline void Player::setCurrentHP(const Uint32 hp){
+	m_currentHP = hp;
+}
+
 inline void Player::setDrawHitboxes(const bool draw){
 	m_drawHitboxes = draw;
 }
@@ -297,6 +310,10 @@ inline void Player::toggleDrawHitboxes(void){
 
 inline void Player::setColliding(const bool colliding){
 	m_colliding = colliding;
+}
+
+inline void Player::setStun(const Uint32 stun){
+	m_currentStun = stun;
 }
 
 // ================================================ //

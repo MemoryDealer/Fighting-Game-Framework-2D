@@ -308,7 +308,21 @@ Uint32 Server::broadcastHit(const int player, const Uint32 damage, const Uint32 
 	RakNet::BitStream bit;
 	bit.Write(static_cast<RakNet::MessageID>((player == Game::Playing::PLAYING_RED) ?
 		NetMessage::RED_TAKE_HIT : NetMessage::BLUE_TAKE_HIT));
-	bit.Write(damage);
+	// Write HP for client to set directly.
+	bit.Write((player == Game::PLAYING_RED) ? PlayerManager::getSingletonPtr()->getRedPlayer()->getCurrentHP() :
+		PlayerManager::getSingletonPtr()->getBluePlayer()->getCurrentHP());
+	bit.Write(stun);
+
+	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);
+}
+
+// ================================================ //
+
+Uint32 Server::broadcastHitBlock(const int player, const Uint32 stun)
+{
+	RakNet::BitStream bit;
+	bit.Write(static_cast<RakNet::MessageID>((player == Game::Playing::PLAYING_RED) ?
+		NetMessage::RED_TAKE_HIT_BLOCK : NetMessage::BLUE_TAKE_HIT_BLOCK));
 	bit.Write(stun);
 
 	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE_ORDERED);

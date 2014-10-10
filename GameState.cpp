@@ -852,10 +852,12 @@ void GameState::update(double dt)
 											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						Uint32 damage = 0, stun = 0;
-						bit.Read(damage);
+						Uint32 hp = 0, stun = 0;
+						bit.Read(hp);
 						bit.Read(stun);
-						PlayerManager::getSingletonPtr()->getRedPlayer()->takeHit(damage, stun);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->setStun(stun);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->setCurrentState(Player::State::STUNNED_HIT);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->setCurrentHP(hp);
 					}
 					break;
 
@@ -866,10 +868,40 @@ void GameState::update(double dt)
 											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						Uint32 damage = 0, stun = 0;
-						bit.Read(damage);
+						Uint32 hp = 0, stun = 0;
+						bit.Read(hp);
 						bit.Read(stun);
-						PlayerManager::getSingletonPtr()->getBluePlayer()->takeHit(damage, stun);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->setStun(stun);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->setCurrentState(Player::State::STUNNED_HIT);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->setCurrentHP(hp);
+					}
+					break;
+
+				case NetMessage::RED_TAKE_HIT_BLOCK:			
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+											  Client::getSingletonPtr()->getPacket()->length,
+											  false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+						Uint32 stun = 0;
+						bit.Read(stun);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->setStun(stun);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->setCurrentState(Player::State::STUNNED_BLOCK);
+					}
+					break;
+
+				case NetMessage::BLUE_TAKE_HIT_BLOCK:					
+					{
+						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
+											  Client::getSingletonPtr()->getPacket()->length,
+											  false);
+						bit.IgnoreBytes(sizeof(RakNet::MessageID));
+
+						Uint32 stun = 0;
+						bit.Read(stun);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->setStun(stun);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->setCurrentState(Player::State::STUNNED_BLOCK);
 					}
 					break;
 

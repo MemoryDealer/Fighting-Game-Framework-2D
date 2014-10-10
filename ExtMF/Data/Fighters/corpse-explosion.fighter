@@ -381,8 +381,8 @@ HP=1000
 		frameGap=75
 		frameData=3/2/3
 		damage=10
-		hitstun=250
-		blockstun=25
+		hitstun=450
+		blockstun=250
 		knockback=0
 		recoil=30
 		repeat=0
@@ -532,6 +532,27 @@ HP=1000
 		
 	}
 -(STUNNED_HIT)
+
++(STUNNED_BLOCK)
+	[core]{
+		numFrames=1
+		frameGap=0
+		frameData=0/0/0
+		damage=0
+		knockback=0
+		repeat=0
+		repeatFrame=0
+		reverse=0
+		transition=0
+	}
+	
+	[frame1]{
+		x=326
+		y=1
+		w=63
+		h=107
+	}
+-(STUNNED_BLOCK)
 
 
 

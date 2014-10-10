@@ -482,6 +482,11 @@
 -The rw and rh values for each frame of a move are generated automatically now based on the previous frame's width and height. For the first
 	frame, if no rw or rh are specified, they are set to zero.
 
+#10/10/14
+-Added STUNNED_BLOCK move which works just like STUNNED_HIT but shows the blocking animation.
+-Updated Player::takeHit() to process blockstun and hitstun depending on the player state.
+-Added Server::broadcastHitBlock() which tells clients a player is blocking a hit.
+
 #TODO
 -Fix stage shifting prediction.
 -Make an actual collision system.
