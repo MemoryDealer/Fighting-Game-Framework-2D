@@ -252,6 +252,24 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			}
 			break;
 
+		case SDLK_0:
+			if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+				PlayerManager::getSingletonPtr()->getRedPlayer()->setDebugState(0);
+			}
+			else{
+				PlayerManager::getSingletonPtr()->getBluePlayer()->setDebugState(0);
+			}
+			break;
+
+		case SDLK_1:
+			if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+				PlayerManager::getSingletonPtr()->getRedPlayer()->setDebugState(Player::State::WALKING_BACK);
+			}
+			else{
+				PlayerManager::getSingletonPtr()->getBluePlayer()->setDebugState(Player::State::WALKING_BACK);
+			}
+			break;
+
 		case SDLK_TAB:
 			Engine::getSingletonPtr()->setClockSpeed(0.2);
 			break;
@@ -732,7 +750,7 @@ void GameState::update(double dt)
 						else{
 							Player* redPlayer = PlayerManager::getSingletonPtr()->getRedPlayer();
 							redPlayer->setPosition(red.x, red.y);
-							redPlayer->setCurrentState(red.state);
+							redPlayer->setCurrentState(red.state);			
 						}
 					}
 					break;
@@ -751,7 +769,7 @@ void GameState::update(double dt)
 						else{
 							Player* bluePlayer = PlayerManager::getSingletonPtr()->getBluePlayer();
 							bluePlayer->setPosition(blue.x, blue.y);
-							bluePlayer->setCurrentState(blue.state);
+							bluePlayer->setCurrentState(blue.state);							
 						}
 					}
 					break;
@@ -776,6 +794,7 @@ void GameState::update(double dt)
 							Player* redPlayer = PlayerManager::getSingletonPtr()->getRedPlayer();
 							redPlayer->setPosition(red.x, red.y);
 							redPlayer->setCurrentState(red.state);
+							
 
 							// Re-apply player shifts.
 							/*for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
@@ -821,6 +840,7 @@ void GameState::update(double dt)
 						Stage::ShiftUpdate update;
 						bit.Read(update);
 						StageManager::getSingletonPtr()->getStage()->setShift(update.shift);
+						//StageManager::getSingletonPtr()->getStage()->updateShiftFromServer(update);
 					}
 					break;
 
@@ -857,7 +877,7 @@ void GameState::update(double dt)
 						bit.Read(stun);
 						PlayerManager::getSingletonPtr()->getRedPlayer()->setStun(stun);
 						PlayerManager::getSingletonPtr()->getRedPlayer()->setCurrentState(Player::State::STUNNED_HIT);
-						PlayerManager::getSingletonPtr()->getRedPlayer()->setCurrentHP(hp);
+						PlayerManager::getSingletonPtr()->getRedPlayer()->updateHP(hp);
 					}
 					break;
 
@@ -873,7 +893,7 @@ void GameState::update(double dt)
 						bit.Read(stun);
 						PlayerManager::getSingletonPtr()->getBluePlayer()->setStun(stun);
 						PlayerManager::getSingletonPtr()->getBluePlayer()->setCurrentState(Player::State::STUNNED_HIT);
-						PlayerManager::getSingletonPtr()->getBluePlayer()->setCurrentHP(hp);
+						PlayerManager::getSingletonPtr()->getBluePlayer()->updateHP(hp);
 					}
 					break;
 

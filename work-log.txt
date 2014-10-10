@@ -486,10 +486,12 @@
 -Added STUNNED_BLOCK move which works just like STUNNED_HIT but shows the blocking animation.
 -Updated Player::takeHit() to process blockstun and hitstun depending on the player state.
 -Added Server::broadcastHitBlock() which tells clients a player is blocking a hit.
+-Made a better collision system. It's choppy when the player jumps on top of the other, however. I'm sure there is a way to fix this with
+	some interpolation or something.
 
 #TODO
--Fix stage shifting prediction.
--Make an actual collision system.
+-Fix stage shifting prediction!
+-When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.
 -Organize player processing and update functions better, there is redundancy.
 
 -Need to move all update() functions above getter/setter functions in header files for consistency.

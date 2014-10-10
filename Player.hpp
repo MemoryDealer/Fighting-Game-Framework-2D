@@ -113,6 +113,9 @@ public:
 	// Returns true if the player was hit.
 	bool takeHit(const Move* pMove);
 
+	// Sets the current HP and adjusts health bar.
+	void updateHP(const Uint32 hp);
+
 	// Getters
 
 	// Returns the Input object.
@@ -148,6 +151,9 @@ public:
 	// Returns pointer to current move.
 	Move* getCurrentMove(void) const;
 
+	// Returns true if hitboxes are active.
+	const bool hitboxesActive(void) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -181,7 +187,11 @@ public:
 	// Sets the current stun of the Player.
 	void setStun(const Uint32 stun);
 
-	bool hitboxesActive = false;
+	// Sets active status of hitboxes.
+	void setHitboxesActive(const bool active);
+
+	// Sets the debug state which overrides player state for net debugging.
+	void setDebugState(const int state);
 
 private:
 	// Physics.
@@ -193,8 +203,8 @@ private:
 	Uint32 m_jumpSpeed;
 	int m_xJumpVel;
 	double m_jump;
-
-	int jumpCtr;
+	// Stores the input sequence number at which the client player jumps.
+	int m_jumpCtr;
 
 	// Render width and height (default dst rect).
 	int m_rW, m_rH;
@@ -217,8 +227,12 @@ private:
 	bool m_drawHitboxes;
 	int m_maxXPos;
 	bool m_colliding;
+	// True if the hitboxes of the current move are active and can do damage.
+	// This should be set to false once hitboxes of current move have connected.
+	bool m_hitboxesActive;
 
 	// Net stuff.
+	int m_debugState;
 
 	std::queue<Client::NetInput> m_clientInputs;
 	std::queue<Server::PlayerUpdate> m_serverUpdates;
@@ -273,6 +287,10 @@ inline Move* Player::getCurrentMove(void) const{
 	return m_pCurrentMove.get();
 }
 
+inline const bool Player::hitboxesActive(void) const{
+	return m_hitboxesActive;
+}
+
 // Setters
 
 inline void Player::setSide(const Uint32 side){
@@ -314,6 +332,14 @@ inline void Player::setColliding(const bool colliding){
 
 inline void Player::setStun(const Uint32 stun){
 	m_currentStun = stun;
+}
+
+inline void Player::setHitboxesActive(const bool active){
+	m_hitboxesActive = active;
+}
+
+inline void Player::setDebugState(const int state){
+	m_debugState = state;
 }
 
 // ================================================ //

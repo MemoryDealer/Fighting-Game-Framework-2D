@@ -172,50 +172,40 @@ void PlayerManager::update(double dt)
 		m_pRedPlayer->update(dt);
 		m_pBluePlayer->update(dt);
 
-		// ... predict client?
-		// Test damage box collisions.
+		// Test hitbox collisions (this is predicted on the client).
 		for (int i = Hitbox::DBOX1; i <= Hitbox::DBOX2; ++i){
 			for (int j = Hitbox::HBOX_LOWER; j <= Hitbox::HBOX_HEAD; ++j){
 				if (m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j))){
-					if (m_pRedPlayer->hitboxesActive){
-						m_pRedPlayer->hitboxesActive = false;
+					if (m_pRedPlayer->hitboxesActive()){
+						m_pRedPlayer->setHitboxesActive(false);
 						Move* pMove = m_pRedPlayer->getCurrentMove();
 						bool hit = m_pBluePlayer->takeHit(pMove);
 
-						// TEMPORARY - prevents attacking player's hitboxes from hitting player after blockstun.
-						if (hit == false){
-							//m_pRedPlayer->setCurrentState(Player::State::IDLE);
-						}
-
 						if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 							// Send damage notification to client.
-							/*if (m_pBluePlayer->getCurrentState() == Player::State::STUNNED_HIT){
+							if (hit){
 								Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_BLUE,
-								pMove->damage, pMove->hitstun);																	m_pRedPlayer->getC);
-								}
-								else if(m_pBluePlayer->getCurrentState() == Player::State::STUNNED_BLOCK){
+																		pMove->damage, pMove->hitstun);
+							}
+							else{
 								Server::getSingletonPtr()->broadcastHitBlock(Game::Playing::PLAYING_BLUE,
-								pMove->blockstun);
-								}*/
+																			 pMove->blockstun);
+							}
 						}
 					}
 				}
 				if (m_pBluePlayer->getHitbox(i)->intersects(m_pRedPlayer->getHitbox(j))){
-					if (m_pBluePlayer->hitboxesActive){
-						m_pBluePlayer->hitboxesActive = false;
+					if (m_pBluePlayer->hitboxesActive()){
+						m_pBluePlayer->setHitboxesActive(false);
 						Move* pMove = m_pBluePlayer->getCurrentMove();
 						bool hit = m_pRedPlayer->takeHit(pMove);
 
-						if (hit == false){
-							//m_pBluePlayer->setCurrentState(Player::State::IDLE);
-						}
-
 						if (Game::getSingletonPtr()->getMode() == Game::SERVER){
-							if (m_pRedPlayer->getCurrentState() == Player::State::STUNNED_HIT){
+							if (hit){
 								Server::getSingletonPtr()->broadcastHit(Game::Playing::PLAYING_RED,
 																		pMove->damage, pMove->hitstun);
 							}
-							else if (m_pRedPlayer->getCurrentState() == Player::State::STUNNED_BLOCK){
+							else{
 								Server::getSingletonPtr()->broadcastHitBlock(Game::Playing::PLAYING_RED,
 																			 pMove->blockstun);
 							}
@@ -322,51 +312,50 @@ void PlayerManager::update(double dt)
 		}
 	}
 
+	printf("Stage shift: %d\n", StageManager::getSingletonPtr()->getStage()->getShift());
+
 	// Test normal hitbox collision (hitboxes 0 through 3).
 	for(int i=0; i<4; ++i){
 		for(int j=0; j<4; ++j){
 			if ((m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j)))){
-				if (m_pRedPlayer->getCurrentState() == Player::State::WALKING_FORWARD){
-					// Move the player backwards due to collision.
-					redPos.x += -static_cast<int>(m_pRedPlayer->getXVelocity() * dt);
-					m_pRedPlayer->setPosition(redPos);
+				const int diff = (m_pRedPlayer->getSide() == Player::Side::LEFT) ?
+					std::abs(m_pBluePlayer->getHitbox(j)->getRect().x -
+					m_pRedPlayer->getHitbox(i)->getRect().x -
+					m_pRedPlayer->getHitbox(i)->getRect().w) :
+					std::abs(m_pRedPlayer->getHitbox(i)->getRect().x -
+					m_pBluePlayer->getHitbox(j)->getRect().x -
+					m_pBluePlayer->getHitbox(j)->getRect().w);
 
-					// Push the other player in the direction the player was going.
-					bluePos.x += static_cast<int>(m_pRedPlayer->getXVelocity() * dt);
-					// TODO: Do a stage shift here?
-					if (bluePos.x < 0){
-						bluePos.x = 0;
-					}
-					else if (bluePos.x > m_pBluePlayer->getMaxXPos()){
-						bluePos.x = m_pBluePlayer->getMaxXPos();
-					}
+				// Apply collision handling on a case-by-case basis.
+				StateID redState = m_pRedPlayer->getCurrentState();
+				StateID blueState = m_pBluePlayer->getCurrentState();
+				if ((redState != Player::State::JUMPING && blueState != Player::State::JUMPING) ||
+					(redState == Player::State::JUMPING && blueState == Player::State::JUMPING)){
+					redPos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? -diff : diff;
+					m_pRedPlayer->setPosition(redPos);
+					bluePos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? diff : -diff;
 					m_pBluePlayer->setPosition(bluePos);
 				}
-				if (m_pBluePlayer->getCurrentState() == Player::State::WALKING_FORWARD){
-					bluePos.x += -static_cast<int>(m_pBluePlayer->getXVelocity() * dt);
-					m_pBluePlayer->setPosition(bluePos);
-
-					redPos.x += static_cast<int>(m_pBluePlayer->getXVelocity() * dt);
-					if (redPos.x < 0){
-						redPos.x = 0;
-					}
-					else if (redPos.x > m_pRedPlayer->getMaxXPos()){
-						redPos.x = m_pRedPlayer->getMaxXPos();
-					}
+				else if (redState == Player::State::JUMPING && blueState != Player::State::JUMPING){
+					redPos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? -diff : diff;
 					m_pRedPlayer->setPosition(redPos);
+				}
+				else if (blueState == Player::State::JUMPING && redState != Player::State::JUMPING){
+					bluePos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? diff : -diff;
+					m_pBluePlayer->setPosition(bluePos);
 				}
 			}
 		}
 	}
 
 	// Switch player sides if necessary.
-	if (redPos.x > (bluePos.x + (bluePos.w / 2))){
+	if (redPos.x > (bluePos.x)){
 		if (m_pRedPlayer->getSide() != Player::Side::RIGHT){
 			m_pRedPlayer->setSide(Player::Side::RIGHT);
 			m_pBluePlayer->setSide(Player::Side::LEFT);
 		}
 	}
-	else if(bluePos.x > (redPos.x + (redPos.w / 2))){
+	else if(bluePos.x > (redPos.x)){
 		if (m_pBluePlayer->getSide() != Player::Side::RIGHT){
 			m_pBluePlayer->setSide(Player::Side::RIGHT);
 			m_pRedPlayer->setSide(Player::Side::LEFT);

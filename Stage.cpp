@@ -116,7 +116,7 @@ void Stage::serverReconciliation(void)
 	while (!m_shiftUpdates.empty()){
 		ShiftUpdate update = m_shiftUpdates.front();
 
-		m_layers[0].src.x = update.shift;
+		this->setShift(update.shift);
 
 		for (std::list<Client::StageShift>::iterator itr = Client::getSingletonPtr()->m_pendingStageShifts.begin();
 			 itr != Client::getSingletonPtr()->m_pendingStageShifts.end();){
@@ -125,16 +125,15 @@ void Stage::serverReconciliation(void)
 			}
 			else{
 				printf("reapplying stage shift %d/%d\n", itr->shift, itr->seq);
-				m_layers[0].src.x += itr->shift;
+				this->shift(itr->shift);
+				if (Game::getSingletonPtr()->getPlaying() == Game::PLAYING_RED){
+					//PlayerManager::getSingletonPtr()->getBluePlayer()->
+				}
 				++itr;
 			}
 		}
 
 		m_shiftUpdates.pop();
-	}
-
-	if (m_layers[0].src.x < 0){
-		m_layers[0].src.x = 0;
 	}
 }
 
@@ -146,10 +145,8 @@ void Stage::update(double dt)
 		this->serverReconciliation();
 	}*/
 
+	// Render the stage background.
 	for (unsigned int i = 0; i<m_layers.size(); ++i){
-		// Update background source based on camera movement.
-		const int rightEdge = m_layers[i].w - m_layers[i].src.w;
-
 		// Render the layer.
 		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
 			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
@@ -164,7 +161,7 @@ void Stage::update(double dt)
 			// Calculate offset for second rendering for seamless scrolling.
 			SDL_Rect dst2 = m_layers[i].dst;
 			//dst2.x -= dst2.w;
-			dst2.x = dst2.x - dst2.w - m_layers[i].src.x + rightEdge;
+			dst2.x = dst2.x - dst2.w - m_layers[i].src.x + m_rightEdge;
 			//dst2.y = dst2.y - dst2.h - m_layers[i].src.y;
 
 			// Render a second time with offset.

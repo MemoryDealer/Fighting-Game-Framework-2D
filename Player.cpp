@@ -42,6 +42,7 @@ m_jumpStrength(0),
 m_jumpSpeed(0),
 m_xJumpVel(0),
 m_jump(0.0),
+m_jumpCtr(0),
 m_rW(0), 
 m_rH(0),
 m_floor(0),
@@ -59,6 +60,8 @@ m_pMoveTimer(new Timer()),
 m_drawHitboxes(false),
 m_maxXPos(0),
 m_colliding(false),
+m_hitboxesActive(false),
+m_debugState(0),
 m_clientInputs(),
 m_serverUpdates()
 {
@@ -67,7 +70,6 @@ m_serverUpdates()
 		Log::getSingletonPtr()->logMessage("WARNING: No fighter file specified");
 		return;
 	}
-	jumpCtr = 0;
 	this->loadFighterData(fighterFile);
 }
 
@@ -102,7 +104,7 @@ void Player::serverReconciliation(void)
 {
 	StateID state = m_pFSM->getCurrentStateID();
 
-	printf("\n\n---------ENTERING SERVER RECONCILIATION\nx=%d\n\n", m_dst.x);
+	//printf("\n\n---------ENTERING SERVER RECONCILIATION\nx=%d\n\n", m_dst.x);
 	
 	// Apply any pending player updates received from server.
 	while (!m_serverUpdates.empty()){
@@ -110,25 +112,17 @@ void Player::serverReconciliation(void)
 		// Rewind to the server's latest update.
 		switch (update.state){
 		default:
-			if (update.lastProcessedInput <= jumpCtr){
+			if (update.lastProcessedInput <= m_jumpCtr){
 				m_serverUpdates.pop();
 				continue;
 			}
 			// Don't interrupt jumping animation.
 			if (state != Player::State::JUMPING){
-				printf("Updating player directly: %d/%d\tSTATE=%d\n", update.x, update.y, update.state);
+				//printf("Updating player directly: %d/%d\tSTATE=%d\n", update.x, update.y, update.state);
 				m_dst.x = update.x;
 				m_dst.y = update.y;
 				m_xVel = update.xVel;
 			}
-			//else{
-			//	//m_serverUpdates.pop();
-			//	/*if (jumpCtr --> 0){
-			//		m_serverUpdates.pop();
-			//	}*/
-			//	
-			//	return;				
-			//}
 			break;
 
 		case Player::State::JUMPING:
@@ -164,12 +158,12 @@ void Player::serverReconciliation(void)
 			}
 		}
 
-		printf("After rewind: %d\n", m_dst.x);
+		//printf("After rewind: %d\n", m_dst.x);
 
 		m_serverUpdates.pop();
 	}
 
-	printf("\n\n---------LEAVING SERVER RECONCILIATION\nx=%d\n\n", m_dst.x);
+	//printf("\n\n---------LEAVING SERVER RECONCILIATION\nx=%d\n\n", m_dst.x);
 
 	// Keep player within stage bounds.
 	if (m_dst.x < 0){
@@ -239,6 +233,9 @@ void Player::processInput(double dt)
 
 			m_pFSM->stateTransition((m_side == Player::Side::LEFT) ? Player::State::WALKING_BACK :
 									Player::State::WALKING_FORWARD);
+			if (m_pFSM->getCurrentStateID() == Player::State::WALKING_BACK){
+				m_xVel = static_cast<int>(m_xVel * 0.90);
+			}
 		}
 		else if (m_pInput->getButton(Input::BUTTON_RIGHT) == true &&
 				 m_pInput->getButton(Input::BUTTON_LEFT) == false){
@@ -249,6 +246,10 @@ void Player::processInput(double dt)
 
 			m_pFSM->stateTransition((m_side == Player::Side::LEFT) ? Player::State::WALKING_FORWARD :
 									Player::State::WALKING_BACK);
+
+			if (m_pFSM->getCurrentStateID() == Player::State::WALKING_BACK){
+				m_xVel = static_cast<int>(m_xVel * 0.90);
+			}
 		}
 		else{
 			m_xVel = 0;
@@ -268,7 +269,7 @@ void Player::processInput(double dt)
 		if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
 			if (m_pFSM->stateTransition(Player::State::JUMPING) == Player::State::JUMPING){
 				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-					jumpCtr = Client::getSingletonPtr()->m_inputSeq;
+					m_jumpCtr = Client::getSingletonPtr()->m_inputSeq;
 				}
 				if (m_pInput->getButton(Input::BUTTON_RIGHT)){
 					m_xJumpVel = static_cast<int>(m_xMax * 1.75);
@@ -300,7 +301,8 @@ void Player::processInput(double dt)
 		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
 			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
 				m_pFSM->stateTransition(Player::State::ATTACK_LP);
-				hitboxesActive = true;
+				// Allow this move's hitboxes to connect.
+				m_hitboxesActive = true;
 				m_pInput->setReactivated(Input::BUTTON_LP, false);
 			}
 		}
@@ -334,16 +336,16 @@ void Player::processInput(double dt)
 
 void Player::applyInput(double dt)
 {
-	if (m_colliding){
+	/*if (m_colliding){
 		m_dst.x -= static_cast<int32_t>(
 			(m_pFSM->getCurrentStateID() == Player::State::JUMPING) ? m_xJumpVel * dt
 			: m_xVel * dt);
-	}
-	else{
+	}*/
+	//else{
 		m_dst.x += static_cast<int32_t>(
 			(m_pFSM->getCurrentStateID() == Player::State::JUMPING) ? m_xJumpVel * dt
 			: m_xVel * dt);
-	}
+	//}
 
 	m_dst.y = m_floor - static_cast<int>(sin(m_jump) * m_jumpStrength);
 }
@@ -354,6 +356,10 @@ void Player::update(double dt)
 {
 	this->processInput(dt);
 	this->applyInput(dt);
+
+	if (m_debugState != 0){
+		m_pFSM->setCurrentState(m_debugState);
+	}
 }
 
 // ================================================ //
@@ -666,15 +672,24 @@ bool Player::takeHit(const Move* pMove)
 				m_currentHP = m_maxHP;
 			}
 
-			// Calculate percentage from current HP.
-			double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
-			percent *= 100.0;
-
-			m_pHealthBar->setPercent(static_cast<int>(percent));
+			this->updateHP(m_currentHP);
 		}
 
 		return true;
 	}
+}
+
+// ================================================ //
+
+void Player::updateHP(const Uint32 hp)
+{
+	m_currentHP = hp;
+
+	// Calculate percentage from current HP.
+	double percent = static_cast<double>(m_currentHP) / static_cast<double>(m_maxHP);
+	percent *= 100.0;
+
+	m_pHealthBar->setPercent(static_cast<int>(percent));
 }
 
 // ================================================ //
