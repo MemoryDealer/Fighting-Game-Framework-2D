@@ -219,11 +219,62 @@ void Player::processReplayedInput(double dt)
 
 void Player::processInput(double dt)
 {
+	// Enter jumping state if up is pressed and is possible.
+	if (m_pInput->getButton(Input::BUTTON_UP)){
+		// Prevent x velocity modification in the air.
+		if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
+			if (m_pFSM->stateTransition(Player::State::JUMPING) == Player::State::JUMPING){
+				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
+					m_jumpCtr = Client::getSingletonPtr()->m_inputSeq;
+				}
+				if (m_pInput->getButton(Input::BUTTON_RIGHT)){
+					m_xJumpVel = static_cast<int>(m_xMax * 1.75);
+				}
+				else if (m_pInput->getButton(Input::BUTTON_LEFT)){
+					m_xJumpVel = -static_cast<int>(m_xMax * 1.75);
+				}
+				else{
+					m_xJumpVel = 0;
+				}
+			}
+		}
+	}
+	// Enter crouching state if possible.
+	else if (m_pInput->getButton(Input::BUTTON_DOWN)){
+		if (m_pFSM->getCurrentStateID() != Player::State::CROUCHED){
+			if (m_pFSM->stateTransition(Player::State::CROUCHING) == Player::State::CROUCHING){
+
+			}
+		}
+	}
+	// Uncrouch if crouching and no longer holding down.
+	else if (m_pInput->getButton(Input::BUTTON_DOWN) == false){
+		if (m_pFSM->getCurrentStateID() == Player::State::CROUCHED){
+			m_pFSM->stateTransition(Player::State::UNCROUCHING);
+		}
+	}
+
+	// Process attack buttons.
+	if (m_pInput->getButton(Input::BUTTON_LP) == true){
+		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
+			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
+				m_pFSM->stateTransition(Player::State::ATTACK_LP);
+				// Allow this move's hitboxes to connect.
+				m_hitboxesActive = true;
+				m_pInput->setReactivated(Input::BUTTON_LP, false);
+			}
+		}
+	}
+
+	// Process general movement.
+	switch (m_pFSM->getCurrentStateID()){
 	// Process left/right movement.
 	// Checking both left and right will force the player to cancel out movement 
 	// if both are held thus preventing the character from sliding when holding both down.
-	switch (m_pFSM->getCurrentStateID()){
 	default:
+	case Player::State::IDLE:
+	case Player::State::WALKING_BACK:
+	case Player::State::WALKING_FORWARD:
 		if (m_pInput->getButton(Input::BUTTON_LEFT) == true &&
 			m_pInput->getButton(Input::BUTTON_RIGHT) == false){
 			m_xVel -= m_xAccel;
@@ -258,60 +309,6 @@ void Player::processInput(double dt)
 		}
 		break;
 
-	case Player::State::JUMPING:
-	case Player::State::ATTACK_LP:
-		break;
-	}
-
-	// Enter jumping if up is pressed and is possible.
-	if (m_pInput->getButton(Input::BUTTON_UP)){
-		// Prevent x velocity modification in the air.
-		if (m_pFSM->getCurrentStateID() != Player::State::JUMPING){
-			if (m_pFSM->stateTransition(Player::State::JUMPING) == Player::State::JUMPING){
-				if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-					m_jumpCtr = Client::getSingletonPtr()->m_inputSeq;
-				}
-				if (m_pInput->getButton(Input::BUTTON_RIGHT)){
-					m_xJumpVel = static_cast<int>(m_xMax * 1.75);
-				}
-				else if (m_pInput->getButton(Input::BUTTON_LEFT)){
-					m_xJumpVel = -static_cast<int>(m_xMax * 1.75);
-				}
-				else{
-					m_xJumpVel = 0;
-				}
-			}
-		}
-	}
-	else if (m_pInput->getButton(Input::BUTTON_DOWN)){
-		if (m_pFSM->getCurrentStateID() != Player::State::CROUCHED){
-			if (m_pFSM->stateTransition(Player::State::CROUCHING) == Player::State::CROUCHING){
-
-			}
-		}
-	}
-	else if (m_pInput->getButton(Input::BUTTON_DOWN) == false){
-		if (m_pFSM->getCurrentStateID() == Player::State::CROUCHED){
-			m_pFSM->stateTransition(Player::State::UNCROUCHING);
-		}
-	}
-
-	// Process attack buttons.
-	if (m_pInput->getButton(Input::BUTTON_LP) == true){
-		if (m_pFSM->getCurrentStateID() != Player::State::ATTACK_LP){
-			if (m_pInput->getReactivated(Input::BUTTON_LP) == true){
-				m_pFSM->stateTransition(Player::State::ATTACK_LP);
-				// Allow this move's hitboxes to connect.
-				m_hitboxesActive = true;
-				m_pInput->setReactivated(Input::BUTTON_LP, false);
-			}
-		}
-	}
-
-	switch (m_pFSM->getCurrentStateID()){
-	default:
-		break;
-
 		// Process jumping mechanics.
 	case Player::State::JUMPING:
 		m_jump += m_jumpSpeed * dt;
@@ -336,16 +333,9 @@ void Player::processInput(double dt)
 
 void Player::applyInput(double dt)
 {
-	/*if (m_colliding){
-		m_dst.x -= static_cast<int32_t>(
-			(m_pFSM->getCurrentStateID() == Player::State::JUMPING) ? m_xJumpVel * dt
-			: m_xVel * dt);
-	}*/
-	//else{
-		m_dst.x += static_cast<int32_t>(
-			(m_pFSM->getCurrentStateID() == Player::State::JUMPING) ? m_xJumpVel * dt
-			: m_xVel * dt);
-	//}
+	m_dst.x += static_cast<int32_t>(
+		(m_pFSM->getCurrentStateID() == Player::State::JUMPING) ? m_xJumpVel * dt
+		: m_xVel * dt);
 
 	m_dst.y = m_floor - static_cast<int>(sin(m_jump) * m_jumpStrength);
 }
@@ -458,8 +448,7 @@ void Player::updateMove(void)
 	}
 	if (m_pCurrentMove->frames[m_pCurrentMove->currentFrame].h >= m_pCurrentMove->frames[0].h){
 		m_dst.h += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rh * Engine::getSingletonPtr()->getClockSpeed());
-	}
-	
+	}	
 
 	// Process move-specific instructions.
 	switch (m_pCurrentMove->id){

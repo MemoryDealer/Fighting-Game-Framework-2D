@@ -318,32 +318,54 @@ void PlayerManager::update(double dt)
 	for(int i=0; i<4; ++i){
 		for(int j=0; j<4; ++j){
 			if ((m_pRedPlayer->getHitbox(i)->intersects(m_pBluePlayer->getHitbox(j)))){
-				const int diff = (m_pRedPlayer->getSide() == Player::Side::LEFT) ?
+				// Calculate distance between each player's x component of this hitbox.
+				const int offset = 300;
+				int dist = (m_pRedPlayer->getSide() == Player::Side::LEFT) ?
 					std::abs(m_pBluePlayer->getHitbox(j)->getRect().x -
 					m_pRedPlayer->getHitbox(i)->getRect().x -
 					m_pRedPlayer->getHitbox(i)->getRect().w) :
 					std::abs(m_pRedPlayer->getHitbox(i)->getRect().x -
 					m_pBluePlayer->getHitbox(j)->getRect().x -
 					m_pBluePlayer->getHitbox(j)->getRect().w);
+				// Re-calculate the distance the player(s) should move based on collision.
+				if (dist > 0){
+					dist = static_cast<int>((offset + dist) * dt);
+				}
+				else{
+					dist = -static_cast<int>((offset + dist) * dt);
+				}
 
 				// Apply collision handling on a case-by-case basis.
-				StateID redState = m_pRedPlayer->getCurrentState();
-				StateID blueState = m_pBluePlayer->getCurrentState();
+				const StateID redState = m_pRedPlayer->getCurrentState();
+				const StateID blueState = m_pBluePlayer->getCurrentState();
 				if ((redState != Player::State::JUMPING && blueState != Player::State::JUMPING) ||
 					(redState == Player::State::JUMPING && blueState == Player::State::JUMPING)){
-					redPos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? -diff : diff;
-					m_pRedPlayer->setPosition(redPos);
-					bluePos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? diff : -diff;
-					m_pBluePlayer->setPosition(bluePos);
+					redPos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? -dist : dist;
+					bluePos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? dist : -dist;			
 				}
 				else if (redState == Player::State::JUMPING && blueState != Player::State::JUMPING){
-					redPos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? -diff : diff;
-					m_pRedPlayer->setPosition(redPos);
+					redPos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? -dist : dist;
 				}
 				else if (blueState == Player::State::JUMPING && redState != Player::State::JUMPING){
-					bluePos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? diff : -diff;
-					m_pBluePlayer->setPosition(bluePos);
+					bluePos.x += (m_pRedPlayer->getSide() == Player::Side::LEFT) ? dist : -dist;
 				}
+
+				// Keep players in bounds.
+				if (redPos.x < 0){
+					redPos.x = 0;
+				}
+				else if (redPos.x > m_pRedPlayer->getMaxXPos()){
+					redPos.x = m_pRedPlayer->getMaxXPos();
+				}
+				if (bluePos.x < 0){
+					bluePos.x = 0;
+				}
+				else if (bluePos.x > m_pBluePlayer->getMaxXPos()){
+					bluePos.x = m_pBluePlayer->getMaxXPos();
+				}
+
+				m_pRedPlayer->setPosition(redPos);
+				m_pBluePlayer->setPosition(bluePos);
 			}
 		}
 	}

@@ -489,10 +489,14 @@
 -Made a better collision system. It's choppy when the player jumps on top of the other, however. I'm sure there is a way to fix this with
 	some interpolation or something.
 
+#10/11/14
+-Fixed the collision code to look more nice and fluid when jumping. No longer teleports players when jumping over each other at edge.
+
 #TODO
 -Fix stage shifting prediction!
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.
 -Organize player processing and update functions better, there is redundancy.
+-Increase default logical size to 720p; this involves recalculating all positioning.
 
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was
