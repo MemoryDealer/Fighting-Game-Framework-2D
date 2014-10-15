@@ -124,11 +124,14 @@ public:
 	// Returns the mode the player is currently in.
 	const Uint32 getMode(void) const;
 
-	// Returns X velocity.
+	// Returns current X velocity.
 	const int32_t getXVelocity(void) const;
 
-	// Returns X jump velocity.
+	// Returns current X jump velocity.
 	const int32_t getXJumpVelocity(void) const;
+
+	// Returns max X velocity.
+	const int32_t getXMaxVelocity(void) const;
 
 	// Returns pointer to player's health bar.
 	Widget* getHealthBarPtr(void) const;
@@ -204,7 +207,7 @@ private:
 	int m_xJumpVel;
 	double m_jump;
 	// Stores the input sequence number at which the client player jumps.
-	int m_jumpCtr;
+	Uint32 m_jumpCtr;
 
 	// Render width and height (default dst rect).
 	int m_rW, m_rH;
@@ -252,11 +255,15 @@ inline const Uint32 Player::getMode(void) const{
 
 inline const int32_t Player::getXVelocity(void) const{
 	return (m_pFSM->getCurrentStateID() == Player::State::JUMPING) 
-		? m_xJumpVel : m_xVel;
+		? m_xMax : m_xVel;
 }
 
 inline const int32_t Player::getXJumpVelocity(void) const{
 	return m_xJumpVel;
+}
+
+inline const int32_t Player::getXMaxVelocity(void) const{
+	return m_xMax;
 }
 
 inline Widget* Player::getHealthBarPtr(void) const{

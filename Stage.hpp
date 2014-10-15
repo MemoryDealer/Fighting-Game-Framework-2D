@@ -64,7 +64,7 @@ public:
 	// Returns farmost right edge at which the stage can be shifted.
 	const int getRightEdge(void) const;
 
-private:
+public:
 	StageLayerList m_layers;
 	int m_rightEdge;
 	std::queue<ShiftUpdate> m_shiftUpdates;

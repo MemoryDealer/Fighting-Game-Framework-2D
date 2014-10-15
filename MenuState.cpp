@@ -29,6 +29,7 @@
 #include "GamepadManager.hpp"
 #include "Game.hpp"
 #include "Label.hpp"
+#include "Camera.hpp"
 
 // ================================================ //
 
@@ -54,6 +55,8 @@ MenuState::~MenuState(void)
 void MenuState::enter(void)
 {
 	Log::getSingletonPtr()->logMessage("Entering MenuState...");
+	
+	new Camera();
 
 	m_pBackground.reset(new Stage(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/menu.stage"));
 
@@ -71,6 +74,7 @@ void MenuState::exit(void)
 {
 	Log::getSingletonPtr()->logMessage("Exiting MenuState...");
 	
+	delete Camera::getSingletonPtr();
 	delete PlayerManager::getSingletonPtr();
 	delete StageManager::getSingletonPtr();
 }

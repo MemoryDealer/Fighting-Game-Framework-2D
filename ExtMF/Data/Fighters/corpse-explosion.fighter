@@ -8,7 +8,7 @@ h=244
 
 [physics]
 xAccel=50
-xMax=300
+xMax=250
 jumpStrength=250
 jumpSpeed=5
 

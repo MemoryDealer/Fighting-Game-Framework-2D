@@ -17,6 +17,7 @@
 #include "Client.hpp"
 #include "Game.hpp"
 #include "PlayerManager.hpp"
+#include "Camera.hpp"
 
 // ================================================ //
 
@@ -49,8 +50,11 @@ m_shiftUpdates()
 
 		// Get texture data.
 		SDL_QueryTexture(layer.pTexture, nullptr, nullptr, &layer.w, &layer.h);
-		layer.src.x = (layer.w / 2) - (layer.src.w / 2); // set starting point to center of stage
+		layer.src.x = 0;
 		layer.src.y = layer.h - layer.src.h;
+
+		// Set default camera position.
+		Camera::getSingletonPtr()->setX((layer.w / 2) - (layer.src.w / 2));
 
 		layer.dst.x = layer.dst.y = 0;
 		// Render the texture with virtual width/height by default.
@@ -97,6 +101,12 @@ void Stage::shift(const int x)
 void Stage::setShift(const int x)
 {
 	m_layers[0].src.x = x;
+	if (m_layers[0].src.x < 0){
+		m_layers[0].src.x = 0;
+	}
+	else if (m_layers[0].src.x > m_rightEdge){
+		m_layers[0].src.x = m_rightEdge;
+	}
 }
 
 
@@ -148,8 +158,20 @@ void Stage::update(double dt)
 	// Render the stage background.
 	for (unsigned int i = 0; i<m_layers.size(); ++i){
 		// Render the layer.
-		SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
-			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
+		SDL_Rect src = m_layers[i].src;
+		src.x += Camera::getSingletonPtr()->getX();
+		if (src.x < 0){
+			src.x = 0;
+		}
+		else if (src.x > m_rightEdge){
+			src.x = m_rightEdge;
+		}
+		else{
+			//src.x /= static_cast<int>(static_cast<double>(src.w) * 100.0);
+			printf("Stage: %d => %d\n", Camera::getSingletonPtr()->getX(), src.x);
+		}
+		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(),
+			m_layers[i].pTexture, &src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
 
 		// Process stage effects.
 		if (m_layers[i].Effect.scrollX || m_layers[i].Effect.scrollY){
@@ -165,7 +187,7 @@ void Stage::update(double dt)
 			//dst2.y = dst2.y - dst2.h - m_layers[i].src.y;
 
 			// Render a second time with offset.
-			SDL_RenderCopyEx(const_cast<SDL_Renderer*>(Engine::getSingletonPtr()->getRenderer()),
+			SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(),
 				m_layers[i].pTexture, &m_layers[i].src, &dst2, 0, nullptr, SDL_FLIP_NONE);
 
 			// Wrap back around to beginning.

@@ -28,6 +28,7 @@
 #include "GamepadManager.hpp"
 #include "Game.hpp"
 #include "Timer.hpp"
+#include "Camera.hpp"
 
 // ================================================ //
 
@@ -268,6 +269,14 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			else{
 				PlayerManager::getSingletonPtr()->getBluePlayer()->setDebugState(Player::State::WALKING_BACK);
 			}
+			break;
+
+		case SDLK_2:
+			Camera::getSingletonPtr()->setX(Camera::getSingletonPtr()->getX() - 5);
+			break;
+
+		case SDLK_3:
+			Camera::getSingletonPtr()->setX(Camera::getSingletonPtr()->getX() + 5);
 			break;
 
 		case SDLK_TAB:

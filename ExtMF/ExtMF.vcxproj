@@ -92,6 +92,7 @@
     <ClInclude Include="..\App.hpp" />
     <ClInclude Include="..\AppState.hpp" />
     <ClInclude Include="..\AppStateManager.hpp" />
+    <ClInclude Include="..\Camera.hpp" />
     <ClInclude Include="..\Client.hpp" />
     <ClInclude Include="..\Game.hpp" />
     <ClInclude Include="..\GUIGameState.hpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="..\App.cpp" />
     <ClCompile Include="..\AppStateManager.cpp" />
+    <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Client.cpp" />
     <ClCompile Include="..\Game.cpp" />
     <ClCompile Include="..\GUIGameState.cpp" />

@@ -492,12 +492,16 @@
 #10/11/14
 -Fixed the collision code to look more nice and fluid when jumping. No longer teleports players when jumping over each other at edge.
 
+#10/14/14
+-Spent a few days messing around with the camera position, finally have something close, just need to finalize.
+
 #TODO
 -Redo stage shifting to be more like the original snes KI. The camera seems to move whenever a player moves left or right, provided that
 	both players are not within some range of the left or right side. So if both players move in the same direction, the camera moves 
 	twice as fast. When not on the edges, the distance between the two players seems to be the screen width minus the distances from each 
 	player to their corresponding left or right edge, so it is dispersed evenly.
 -Fix stage shifting prediction!
+-Consider changing server/client classes to simple structs and holding pointers to them in each state. The singletons are cumbersome.
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.
 -Organize player processing and update functions better, there is redundancy.
 -Increase default logical size to 720p; this involves recalculating all positioning.

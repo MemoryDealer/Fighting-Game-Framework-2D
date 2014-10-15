@@ -26,6 +26,7 @@
 #include "WidgetHealthBar.hpp"
 #include "StageManager.hpp"
 #include "Stage.hpp"
+#include "Camera.hpp"
 
 // ================================================ //
 
@@ -357,8 +358,11 @@ void Player::update(double dt)
 void Player::render(void)
 {
 	this->updateMove();
+	
+	SDL_Rect render = m_dst;
+	render.x -= Camera::getSingletonPtr()->getX();
 
-	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_dst, 0, nullptr, m_flip);
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &render, 0, nullptr, m_flip);
 
 	if (m_drawHitboxes){
 		for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
@@ -503,8 +507,8 @@ void Player::updateMove(void)
 		SDL_Rect offset = { 0, 0, 0, 0 };
 		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
 
-		int xCenter = m_dst.x + (m_dst.w / 2);
-		int yCenter = m_dst.y + (m_dst.h / 2);
+		int xCenter = m_dst.x - Camera::getSingletonPtr()->getX() + (m_dst.w / 2);
+		int yCenter = m_dst.y - Camera::getSingletonPtr()->getY() + (m_dst.h / 2);
 
 		if (m_side == Player::Side::RIGHT){
 			offset.x = -offset.x;
