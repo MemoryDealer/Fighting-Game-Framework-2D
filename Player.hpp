@@ -157,6 +157,19 @@ public:
 	// Returns true if hitboxes are active.
 	const bool hitboxesActive(void) const;
 
+	// Returns the difference between the default render width and the current
+	// render width * 2. So it will be nonzero if the player's width has been 
+	// expanded to allow for a certain frame of animation.
+	// This is used in PlayerManager to calculate the correct midpoint between
+	// the players, so that the camera doesn't slide with a move animation.
+	const int getRenderWidthDiff(void) const;
+
+	// Returns the absolute destination render rect of the player.
+	const SDL_Rect& getRenderRect(void) const;
+
+	// Returns midpoint of player.
+	const int getMidpoint(void) const;
+
 	// Setters
 
 	// Sets the side of player, e.g., LEFT or RIGHT.
@@ -211,6 +224,9 @@ private:
 
 	// Render width and height (default dst rect).
 	int m_rW, m_rH;
+	SDL_Rect m_render;
+	// The amount moved each frame.
+	int m_translateX, m_translateY;
 
 	// Game.
 
@@ -296,6 +312,14 @@ inline Move* Player::getCurrentMove(void) const{
 
 inline const bool Player::hitboxesActive(void) const{
 	return m_hitboxesActive;
+}
+
+inline const int Player::getRenderWidthDiff(void) const{
+	return (m_side == Player::Side::LEFT) ? 0 : (m_dst.w - m_rW) * 2;
+}
+
+inline const SDL_Rect& Player::getRenderRect(void) const{
+	return m_render;
 }
 
 // Setters

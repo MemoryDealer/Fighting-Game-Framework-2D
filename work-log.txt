@@ -495,11 +495,12 @@
 #10/14/14
 -Spent a few days messing around with the camera position, finally have something close, just need to finalize.
 
+#10/20/14
+-Finally got a correct camera system working. The code has been vastly reduced, the bounds checking is done inside the Player class, now.
+
 #TODO
--Redo stage shifting to be more like the original snes KI. The camera seems to move whenever a player moves left or right, provided that
-	both players are not within some range of the left or right side. So if both players move in the same direction, the camera moves 
-	twice as fast. When not on the edges, the distance between the two players seems to be the screen width minus the distances from each 
-	player to their corresponding left or right edge, so it is dispersed evenly.
+-Panning camera.
+-Left player is able to shift camera farther than the bounds if they are a client in a networked game.
 -Fix stage shifting prediction!
 -Consider changing server/client classes to simple structs and holding pointers to them in each state. The singletons are cumbersome.
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.

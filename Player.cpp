@@ -46,6 +46,9 @@ m_jump(0.0),
 m_jumpCtr(0),
 m_rW(0), 
 m_rH(0),
+m_render(),
+m_translateX(0),
+m_translateY(0),
 m_floor(0),
 m_side(Player::Side::LEFT),
 m_mode(Player::Mode::LOCAL),
@@ -334,9 +337,10 @@ void Player::processInput(double dt)
 
 void Player::applyInput(double dt)
 {
-	m_dst.x += static_cast<int32_t>(
+	m_translateX = static_cast<int32_t>(
 		(m_pFSM->getCurrentStateID() == Player::State::JUMPING) ? m_xJumpVel * dt
 		: m_xVel * dt);
+	m_dst.x += m_translateX;
 
 	m_dst.y = m_floor - static_cast<int>(sin(m_jump) * m_jumpStrength);
 }
@@ -358,11 +362,32 @@ void Player::update(double dt)
 void Player::render(void)
 {
 	this->updateMove();
-	
-	SDL_Rect render = m_dst;
-	render.x -= Camera::getSingletonPtr()->getX();
 
-	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &render, 0, nullptr, m_flip);
+	// Modify the rendering rect for final position.
+	m_render = m_dst;
+	m_render.x -= Camera::getSingletonPtr()->getX() - m_dst.w / 2;
+	// Keep player in bounds of viewport.
+	if (m_render.x < 0){
+		m_dst.x -= m_translateX;
+		m_render.x = 0;
+
+		// Prevent player's hitboxes from being pushed past edge of stage.
+		int bound = -(m_dst.w / 2);
+		if (m_dst.x < bound){
+			m_dst.x = bound;
+		}
+	}
+	else if (m_render.x > m_maxXPos){
+		m_dst.x -= m_translateX;
+		m_render.x = m_maxXPos;
+
+		int bound = StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w + Camera::getSingletonPtr()->getX() + (m_dst.w / 2);
+		if (m_dst.x > bound){
+			m_dst.x = bound;
+		}
+	}
+	
+	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_render, 0, nullptr, m_flip);
 
 	if (m_drawHitboxes){
 		for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
@@ -446,8 +471,11 @@ void Player::updateMove(void)
 	if (m_pCurrentMove->frames[m_pCurrentMove->currentFrame].w >= m_pCurrentMove->frames[0].w){
 		m_dst.w += static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
 		// Adjust position when the rendering is flipped.
-		if (m_side == Player::Side::RIGHT){
-			m_dst.x -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed());
+		if (m_side == Player::Side::LEFT){
+			
+		}
+		else{
+			m_dst.x -= static_cast<int>(m_pCurrentMove->frames[m_pCurrentMove->currentFrame].rw * Engine::getSingletonPtr()->getClockSpeed()) * 2;
 		}
 	}
 	if (m_pCurrentMove->frames[m_pCurrentMove->currentFrame].h >= m_pCurrentMove->frames[0].h){
@@ -506,13 +534,16 @@ void Player::updateMove(void)
 	for (Uint32 i = 0; i < m_hitboxes.size(); ++i){
 		SDL_Rect offset = { 0, 0, 0, 0 };
 		offset = m_pCurrentMove->frames[m_pCurrentMove->currentFrame].hitboxes[i];
-
-		int xCenter = m_dst.x - Camera::getSingletonPtr()->getX() + (m_dst.w / 2);
-		int yCenter = m_dst.y - Camera::getSingletonPtr()->getY() + (m_dst.h / 2);
-
-		if (m_side == Player::Side::RIGHT){
+		if (m_side == Player::Side::LEFT){
+			offset.x += m_dst.w / 2;
+		}
+		else{
+			offset.x -= m_dst.w / 2;
 			offset.x = -offset.x;
 		}
+		
+		int xCenter = m_dst.x - Camera::getSingletonPtr()->getX() + (m_dst.w / 2);
+		int yCenter = m_dst.y - Camera::getSingletonPtr()->getY() + (m_dst.h / 2);
 
 		m_hitboxes[i]->setRect((xCenter - (offset.w / 2) + offset.x), (yCenter - (offset.h / 2) + offset.y),
 							   offset.w, offset.h);
@@ -683,6 +714,13 @@ void Player::updateHP(const Uint32 hp)
 	percent *= 100.0;
 
 	m_pHealthBar->setPercent(static_cast<int>(percent));
+}
+
+// ================================================ //
+
+const int Player::getMidpoint(void) const
+{
+	return m_dst.x + (m_dst.w) - Camera::getSingletonPtr()->getX();
 }
 
 // ================================================ //
