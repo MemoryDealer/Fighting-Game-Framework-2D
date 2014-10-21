@@ -497,10 +497,11 @@
 
 #10/20/14
 -Finally got a correct camera system working. The code has been vastly reduced, the bounds checking is done inside the Player class, now.
+-Moved the render() calls on each player directly after their initial updates in PlayerManager. Rendering them after other operations was 
+	causing random confusion in positioning, allowing the left player to move left beyond the viewport bound, dragging the camera.
 
 #TODO
 -Panning camera.
--Left player is able to shift camera farther than the bounds if they are a client in a networked game.
 -Fix stage shifting prediction!
 -Consider changing server/client classes to simple structs and holding pointers to them in each state. The singletons are cumbersome.
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.

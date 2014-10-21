@@ -386,6 +386,8 @@ void Player::render(void)
 			m_dst.x = bound;
 		}
 	}
+
+	m_translateX = m_translateY = 0;
 	
 	SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(), m_pTexture, &m_src, &m_render, 0, nullptr, m_flip);
 

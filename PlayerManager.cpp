@@ -233,6 +233,9 @@ void PlayerManager::update(double dt)
 		break;
 	}
 
+	m_pRedPlayer->render();
+	m_pBluePlayer->render();
+
 	// How much the other player shifts for adjustment.
 	SDL_Rect redPos, bluePos;
 	redPos = m_pRedPlayer->getPosition();
@@ -247,6 +250,7 @@ void PlayerManager::update(double dt)
 	Camera::getSingletonPtr()->setX(vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2);
 	
 	// Re-position non-moving player.
+	// TODO: Move this logic into Player class.
 	if (m_pBluePlayer->getCurrentState() != Player::State::WALKING_BACK &&
 		m_pBluePlayer->getCurrentState() != Player::State::WALKING_FORWARD){
 		bluePos.x += x - Camera::getSingletonPtr()->getX();
@@ -313,8 +317,8 @@ void PlayerManager::update(double dt)
 	m_pBluePlayer->setPosition(bluePos);
 
 	// Render the players.
-	m_pRedPlayer->render();
-	m_pBluePlayer->render();
+	/*m_pRedPlayer->render();
+	m_pBluePlayer->render();*/
 }
 
 // ================================================ //
