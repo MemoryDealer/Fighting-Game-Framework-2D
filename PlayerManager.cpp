@@ -233,6 +233,7 @@ void PlayerManager::update(double dt)
 		break;
 	}
 
+	// Render the players after initial updates.
 	m_pRedPlayer->render();
 	m_pBluePlayer->render();
 
@@ -313,12 +314,9 @@ void PlayerManager::update(double dt)
 		}
 	}
 
+	// Apply final positional updates.
 	m_pRedPlayer->setPosition(redPos);
 	m_pBluePlayer->setPosition(bluePos);
-
-	// Render the players.
-	/*m_pRedPlayer->render();
-	m_pBluePlayer->render();*/
 }
 
 // ================================================ //
