@@ -730,4 +730,4 @@ const int Player::getMidpoint(void) const
 	return m_dst.x + (m_dst.w) - Camera::getSingletonPtr()->getX();
 }
 
-// ================================================ //
+// ================================================ //b

@@ -245,23 +245,38 @@ void PlayerManager::update(double dt)
 	int redMove = redPos.x - redOldX;
 	int blueMove = bluePos.x - blueOldX;
 
-	printf("REd: %d\tBlue: %d\n", redMove, blueMove);
-
 	const int vRedX = (redPos.x + m_pRedPlayer->getRenderWidthDiff());
 	const int vBlueX = (bluePos.x + m_pBluePlayer->getRenderWidthDiff());
-	const int vMid = (vRedX + vBlueX) / 2;
+	int vMid = (vRedX + vBlueX) / 2;	
 
-	int x = Camera::getSingletonPtr()->getX();
+	int currentX = Camera::getSingletonPtr()->getX();
 
-	Camera::getSingletonPtr()->panX(vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2);
+	int panX = vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2;
+
+	printf("Moved: %d\n", panX);
+
+	if (redMove != 0 && blueMove != 0){
+		if (redMove < 0 && blueMove < 0){
+			printf("LEFT!!!!!!!!!!!\n");
+		}
+		else if (redMove > 0 && blueMove > 0){
+			printf("RIGHT!!!!!!!!!!!!!\n");
+		}
+	}
+
+	Camera::getSingletonPtr()->panX(panX);
 	
 	// Re-position non-moving player.
-	// TODO: Move this logic into Player class.
-	if (redMove == 0){
-		redPos.x += Camera::getSingletonPtr()->getLastX() - Camera::getSingletonPtr()->getX();
-	}
-	else if (blueMove == 0){
-		bluePos.x += Camera::getSingletonPtr()->getLastX() - Camera::getSingletonPtr()->getX();
+	// Only do this if one player is moving and the other isn't moving.
+	if ((redMove == 0 && blueMove != 0) || (blueMove == 0 && redMove != 0)){
+		if (Camera::getSingletonPtr()->getPanX() > 0 && Camera::getSingletonPtr()->getPanX() < 343){
+			if (redMove == 0){
+				redPos.x += Camera::getSingletonPtr()->getLastX() - panX;
+			}
+			if (blueMove == 0){
+				bluePos.x += Camera::getSingletonPtr()->getLastX() - panX;
+			}
+		}
 	}
 
 	// Test normal hitbox collision (hitboxes 0 through 3).

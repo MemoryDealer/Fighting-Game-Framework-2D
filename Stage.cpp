@@ -157,19 +157,23 @@ void Stage::update(double dt)
 	for (unsigned int i = 0; i<m_layers.size(); ++i){
 		// Render the layer.
 		SDL_Rect src = m_layers[i].src;
-		src.x += Camera::getSingletonPtr()->getX();
-		if (src.x < 0){
-			src.x = 0;
+
+		int currentX = src.x;
+		int shift = Camera::getSingletonPtr()->getX() - Camera::getSingletonPtr()->getLastX();
+		m_layers[i].src.x += shift; // Camera::getSingletonPtr()->getX();
+		printf("Stage x shifted: %d\t%d/%d\t%d\n", src.x - currentX, currentX, src.x, shift);
+		if (m_layers[i].src.x < 0){
+			m_layers[i].src.x = 0;
 		}
-		else if (src.x > m_rightEdge){
-			src.x = m_rightEdge;
+		else if (m_layers[i].src.x > m_rightEdge){
+			m_layers[i].src.x = m_rightEdge;
 		}
 		else{
 			//src.x /= static_cast<int>(static_cast<double>(src.w) * 100.0);			
 		}
 
 		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(),
-			m_layers[i].pTexture, &src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
+			m_layers[i].pTexture, &m_layers[i].src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
 
 		// Process stage effects.
 		if (m_layers[i].Effect.scrollX || m_layers[i].Effect.scrollY){
