@@ -155,6 +155,8 @@ void Stage::update(double dt)
 		this->serverReconciliation();
 	}*/
 
+	Camera::getSingletonPtr()->update(dt);
+
 	// Render the stage background.
 	for (unsigned int i = 0; i<m_layers.size(); ++i){
 		// Render the layer.

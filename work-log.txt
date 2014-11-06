@@ -500,14 +500,18 @@
 -Moved the render() calls on each player directly after their initial updates in PlayerManager. Rendering them after other operations was 
 	causing random confusion in positioning, allowing the left player to move left beyond the viewport bound, dragging the camera.
 
+#11/5/14
+-Added basic camera panning. It uses dt and an arbitrary speed to move n units along the x-axis each frame. The Camera::update() function is called from
+	the StageManager::update() function.
+
 #TODO
--Panning camera.
 -Fix stage shifting prediction!
 -Consider changing server/client classes to simple structs and holding pointers to them in each state. The singletons are cumbersome.
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.
 -Organize player processing and update functions better, there is redundancy.
--Increase default logical size to 720p; this involves recalculating all positioning.
+-Increase default logical size to 1080p; this involves recalculating all positioning.
 
+-Consider removing all self-rendering code and rendering each object using an ObjectManager, accessing the z-order of each object to create a priority list.
 -Some aesthetics: Shadows, interpolate health bar reduction (slide it smoothly). 
 -Need to move all update() functions above getter/setter functions in header files for consistency.
 -Encountered a vector subscript out of bounds error that is no teasily reproducable, occurred on the server with two clients when the client player was

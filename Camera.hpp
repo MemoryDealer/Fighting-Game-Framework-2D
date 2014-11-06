@@ -26,8 +26,12 @@ public:
 
 	void setX(const int x);
 
+	void update(double dt);
+
 private:
 	int m_x, m_y;
+	int m_panX, m_panY;
+	int m_speed;
 };
 
 // ================================================ //
