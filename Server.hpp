@@ -79,8 +79,8 @@ public:
 	// Broadcasts all relevant player information to clients.
 	Uint32 updatePlayers(void);
 	
-	// Broadcasts a STAGE_SHIFT message, clients will adjust stage view.
-	Uint32 stageShift(const int shift);
+	// Broadcasts a PAN_CAMERA message, clients will adjust stage view.
+	Uint32 panCamera(void);
 
 	// Sends a PlayerUpdate only to the client playing the red player.
 	// If sendToBlue is true, the update is send directly to blue's address.

@@ -502,9 +502,10 @@
 
 #11/5/14
 -Added basic camera panning. It uses dt and an arbitrary speed to move n units along the x-axis each frame. The Camera::update() function is called from
-	the StageManager::update() function.
+	the Stage::update() function.
 
 #TODO
+-Client player gets stuck at left of stage about 30 units to the right of zero before hitting edge.
 -Fix stage shifting prediction!
 -Consider changing server/client classes to simple structs and holding pointers to them in each state. The singletons are cumbersome.
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.

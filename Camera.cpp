@@ -26,7 +26,9 @@ m_x(0),
 m_y(0),
 m_panX(0),
 m_panY(0),
-m_speed(0)
+m_speed(0),
+m_rightBound(343),
+m_lastX(0)
 {
 	Config e(Engine::getSingletonPtr()->getSettingsFile());
 	m_speed = e.parseIntValue("camera", "speed");
@@ -41,14 +43,25 @@ Camera::~Camera(void)
 
 // ================================================ //
 
-void Camera::setX(const int x){
+void Camera::panX(const int x)
+{
+	m_lastX = m_x;
+
 	m_panX = x;
 	if (m_panX < 0){
 		m_panX = 0;
 	}
-	else if (m_panX > 343){
-		m_panX = 343;
+	else if (m_panX > m_rightBound){
+		m_panX = m_rightBound;
 	}
+}
+
+// ================================================ //
+
+void Camera::panY(const int y)
+{
+	m_panY = y;
+	
 }
 
 // ================================================ //
@@ -57,11 +70,12 @@ void Camera::update(double dt)
 {
 	printf("X: %d\tPanX: %d\n", m_x, m_panX);
 
-	const int snapRange = 5;
+	const int snapRange = 2;
 
+	// Pan to x-position.
 	if (m_x < m_panX){
 		m_x += static_cast<int>(m_speed * dt);
-		if (m_x >(m_panX - snapRange)){
+		if (m_x > (m_panX - snapRange)){
 			m_x = m_panX;
 		}
 	}
@@ -69,6 +83,20 @@ void Camera::update(double dt)
 		m_x -= static_cast<int>(m_speed * dt);
 		if (m_x < (m_panX + snapRange)){
 			m_x = m_panX;
+		}
+	}
+
+	// Pan to y-position.
+	if (m_y < m_panY){
+		m_y += static_cast<int>(m_speed * dt);
+		if (m_y > (m_panY - snapRange)){
+			m_y = m_panY;
+		}
+	}
+	else if (m_y > m_panY){
+		m_y -= static_cast<int>(m_speed * dt);
+		if (m_y < (m_panY + snapRange)){
+			m_y = m_panY;
 		}
 	}
 }

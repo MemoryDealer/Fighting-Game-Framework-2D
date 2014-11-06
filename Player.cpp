@@ -363,9 +363,14 @@ void Player::render(void)
 {
 	this->updateMove();
 
+	if (m_pFSM->getCurrentStateID() == Player::State::IDLE){		
+		//m_dst.x += Camera::getSingletonPtr()->getLastX() - Camera::getSingletonPtr()->getPanX();
+	}
+
 	// Modify the rendering rect for final position.
 	m_render = m_dst;
 	m_render.x -= Camera::getSingletonPtr()->getX() - m_dst.w / 2;
+
 	// Keep player in bounds of viewport.
 	if (m_render.x < 0){
 		m_dst.x -= m_translateX;

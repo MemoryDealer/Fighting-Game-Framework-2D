@@ -22,6 +22,7 @@
 #include "Stage.hpp"
 #include "Input.hpp"
 #include "Log.hpp"
+#include "Camera.hpp"
 
 // ================================================ //
 
@@ -238,27 +239,17 @@ Uint32 Server::updatePlayers(void)
 	bluePlayer.state = blue->getCurrentState();
 	bit.Write(bluePlayer);
 
-	// Write stage shift.
-	//bit.Write(StageManager::getSingletonPtr()->getStage()->getShift());
-	/*Stage::ShiftUpdate update;
-	update.shift = StageManager::getSingletonPtr()->getStage()->getShift();
-	update.lastProcessedShift = m_lastProcessedStageShift;
-	bit.Write(update);*/
-
 	return this->broadcast(bit, IMMEDIATE_PRIORITY, UNRELIABLE_SEQUENCED);
 }
 
 // ================================================ //
 
-Uint32 Server::stageShift(const int shift)
+Uint32 Server::panCamera(void)
 {
 	RakNet::BitStream bit;
-	bit.Write(static_cast<RakNet::MessageID>(NetMessage::STAGE_SHIFT));
+	bit.Write(static_cast<RakNet::MessageID>(NetMessage::PAN_CAMERA));
 
-	Stage::ShiftUpdate update;
-	update.shift = shift;
-	update.lastProcessedShift = m_lastProcessedStageShift;
-	bit.Write(update);
+	bit.Write(Camera::getSingletonPtr()->getPanX());
 
 	return this->broadcast(bit, HIGH_PRIORITY, RELIABLE);
 }

@@ -54,7 +54,7 @@ m_shiftUpdates()
 		layer.src.y = layer.h - layer.src.h;
 
 		// Set default camera position.
-		Camera::getSingletonPtr()->setX((layer.w / 2) - (layer.src.w / 2));
+		Camera::getSingletonPtr()->panX((layer.w / 2) - (layer.src.w / 2));
 
 		layer.dst.x = layer.dst.y = 0;
 		// Render the texture with virtual width/height by default.
@@ -151,10 +151,6 @@ void Stage::serverReconciliation(void)
 
 void Stage::update(double dt)
 {
-	/*if (Game::getSingletonPtr()->getMode() == Game::CLIENT){
-		this->serverReconciliation();
-	}*/
-
 	Camera::getSingletonPtr()->update(dt);
 
 	// Render the stage background.
@@ -169,9 +165,9 @@ void Stage::update(double dt)
 			src.x = m_rightEdge;
 		}
 		else{
-			//src.x /= static_cast<int>(static_cast<double>(src.w) * 100.0);
-			printf("Stage: %d => %d\n", Camera::getSingletonPtr()->getX(), src.x);
+			//src.x /= static_cast<int>(static_cast<double>(src.w) * 100.0);			
 		}
+
 		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(),
 			m_layers[i].pTexture, &src, &m_layers[i].dst, 0, nullptr, SDL_FLIP_NONE);
 

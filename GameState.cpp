@@ -272,11 +272,11 @@ void GameState::handleInputDt(SDL_Event& e, double dt)
 			break;
 
 		case SDLK_2:
-			Camera::getSingletonPtr()->setX(Camera::getSingletonPtr()->getX() - 5);
+			
 			break;
 
 		case SDLK_3:
-			Camera::getSingletonPtr()->setX(Camera::getSingletonPtr()->getX() + 5);
+			
 			break;
 
 		case SDLK_TAB:
@@ -711,6 +711,7 @@ void GameState::update(double dt)
 		// Ensure client is synced every so often.
 		if (m_pResetServerInputTimer->getTicks() > 3000){
 			Server::getSingletonPtr()->sendLastProcessedInput();
+			Server::getSingletonPtr()->panCamera();
 			m_pResetServerInputTimer->restart();
 		}
 	}
@@ -832,24 +833,19 @@ void GameState::update(double dt)
 								bluePlayer->setPosition(pos);
 							}*/
 						}
-
-						/*Stage::ShiftUpdate update;
-						bit.Read(update);
-						StageManager::getSingletonPtr()->getStage()->updateShiftFromServer(update);*/
 					}
 					break;
 
-				case NetMessage::STAGE_SHIFT:
+				case NetMessage::PAN_CAMERA:
 					{
 						RakNet::BitStream bit(Client::getSingletonPtr()->getPacket()->data,
 											  Client::getSingletonPtr()->getPacket()->length,
 											  false);
 						bit.IgnoreBytes(sizeof(RakNet::MessageID));
 
-						Stage::ShiftUpdate update;
-						bit.Read(update);
-						StageManager::getSingletonPtr()->getStage()->setShift(update.shift);
-						//StageManager::getSingletonPtr()->getStage()->updateShiftFromServer(update);
+						int panX = 0;
+						bit.Read(panX);
+						Camera::getSingletonPtr()->panX(panX);
 					}
 					break;
 

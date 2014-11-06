@@ -242,23 +242,26 @@ void PlayerManager::update(double dt)
 	redPos = m_pRedPlayer->getPosition();
 	bluePos = m_pBluePlayer->getPosition();
 
+	int redMove = redPos.x - redOldX;
+	int blueMove = bluePos.x - blueOldX;
+
+	printf("REd: %d\tBlue: %d\n", redMove, blueMove);
+
 	const int vRedX = (redPos.x + m_pRedPlayer->getRenderWidthDiff());
 	const int vBlueX = (bluePos.x + m_pBluePlayer->getRenderWidthDiff());
 	const int vMid = (vRedX + vBlueX) / 2;
 
 	int x = Camera::getSingletonPtr()->getX();
 
-	Camera::getSingletonPtr()->setX(vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2);
+	Camera::getSingletonPtr()->panX(vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2);
 	
 	// Re-position non-moving player.
 	// TODO: Move this logic into Player class.
-	if (m_pBluePlayer->getCurrentState() != Player::State::WALKING_BACK &&
-		m_pBluePlayer->getCurrentState() != Player::State::WALKING_FORWARD){
-		bluePos.x += x - Camera::getSingletonPtr()->getX();
+	if (redMove == 0){
+		redPos.x += Camera::getSingletonPtr()->getLastX() - Camera::getSingletonPtr()->getX();
 	}
-	else if (m_pRedPlayer->getCurrentState() != Player::State::WALKING_BACK &&
-		m_pRedPlayer->getCurrentState() != Player::State::WALKING_FORWARD){
-		redPos.x += x - Camera::getSingletonPtr()->getX();
+	else if (blueMove == 0){
+		bluePos.x += Camera::getSingletonPtr()->getLastX() - Camera::getSingletonPtr()->getX();
 	}
 
 	// Test normal hitbox collision (hitboxes 0 through 3).
