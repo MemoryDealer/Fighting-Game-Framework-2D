@@ -39,6 +39,9 @@ public:
 	// Returns last x-value of Camera before being panned.
 	const int getLastX(void) const;
 
+	// Returne true if Camera is not at either edge of stage.
+	const bool isBetweenBounds(void) const;
+
 	// Sets the Camera's panX position, the Camera will pan to it each frame.
 	void panX(const int x);
 
@@ -76,6 +79,10 @@ inline const int Camera::getPanY(void) const{
 
 inline const int Camera::getLastX(void) const{
 	return m_lastX;
+}
+
+inline const bool Camera::isBetweenBounds(void) const{
+	return (m_panX > 0 && m_panX < m_rightBound);
 }
 
 // ================================================ //

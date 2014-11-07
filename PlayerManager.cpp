@@ -242,40 +242,52 @@ void PlayerManager::update(double dt)
 	redPos = m_pRedPlayer->getPosition();
 	bluePos = m_pBluePlayer->getPosition();
 
-	int redMove = redPos.x - redOldX;
-	int blueMove = bluePos.x - blueOldX;
-
+	const int redMoved = redPos.x - redOldX;
+	const int blueMoved = bluePos.x - blueOldX;
 	const int vRedX = (redPos.x + m_pRedPlayer->getRenderWidthDiff());
 	const int vBlueX = (bluePos.x + m_pBluePlayer->getRenderWidthDiff());
-	int vMid = (vRedX + vBlueX) / 2;	
+	const int vMid = (vRedX + vBlueX) / 2;
+	const bool bothLeft = (redMoved < 0 && blueMoved < 0);
+	const bool bothRight = (redMoved > 0 && blueMoved > 0);
+	const int currentX = Camera::getSingletonPtr()->getX();
+	const int panX = vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2;
 
-	int currentX = Camera::getSingletonPtr()->getX();
-
-	int panX = vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2;
-
-	printf("Moved: %d\n", panX);
-
-	if (redMove != 0 && blueMove != 0){
-		if (redMove < 0 && blueMove < 0){
-			printf("LEFT!!!!!!!!!!!\n");
-		}
-		else if (redMove > 0 && blueMove > 0){
-			printf("RIGHT!!!!!!!!!!!!!\n");
-		}
-	}
-
-	Camera::getSingletonPtr()->panX(panX);
+	Camera::getSingletonPtr()->panX(panX);	
 	
 	// Re-position non-moving player.
 	// Only do this if one player is moving and the other isn't moving.
-	if ((redMove == 0 && blueMove != 0) || (blueMove == 0 && redMove != 0)){
-		if (Camera::getSingletonPtr()->getPanX() > 0 && Camera::getSingletonPtr()->getPanX() < 343){
-			if (redMove == 0){
+	if ((redMoved == 0 && blueMoved != 0) || (blueMoved == 0 && redMoved != 0)){
+		if (Camera::getSingletonPtr()->isBetweenBounds()){
+			if (redMoved == 0){
 				redPos.x += Camera::getSingletonPtr()->getLastX() - panX;
 			}
-			if (blueMove == 0){
+			if (blueMoved == 0){
 				bluePos.x += Camera::getSingletonPtr()->getLastX() - panX;
 			}
+		}
+	}
+	else if (bothLeft){
+		if (Camera::getSingletonPtr()->isBetweenBounds()){
+			double r = static_cast<double>(blueMoved);
+			double b = static_cast<double>(redMoved);
+			int ir = static_cast<int>(std::round(r / 2));
+			int ib = static_cast<int>(std::round(b / 2));
+			
+			printf("r=%.2f/b=%.2f\nir=%d/ib=%d\n", r, b, ir, ib);
+			redPos.x -= ir; // Camera::getSingletonPtr()->getLastX() - panX;
+			bluePos.x -= ib; // Camera::getSingletonPtr()->getLastX() - panX;
+		}
+	}
+	else if (bothRight){
+		if (Camera::getSingletonPtr()->isBetweenBounds()){
+			double r = static_cast<double>(blueMoved);
+			double b = static_cast<double>(redMoved);
+			int ir = static_cast<int>(std::round(r / 2));
+			int ib = static_cast<int>(std::round(b / 2));
+			
+			printf("r=%.2f/b=%.2f\nir=%d/ib=%d\n", r, b, ir, ib);
+			redPos.x -= ir; // Camera::getSingletonPtr()->getLastX() - panX;
+			bluePos.x -= ib; // Camera::getSingletonPtr()->getLastX() - panX;
 		}
 	}
 
