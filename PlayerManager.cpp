@@ -268,26 +268,14 @@ void PlayerManager::update(double dt)
 	}
 	else if (bothLeft){
 		if (Camera::getSingletonPtr()->isBetweenBounds()){
-			double r = static_cast<double>(blueMoved);
-			double b = static_cast<double>(redMoved);
-			int ir = static_cast<int>(std::round(r / 2));
-			int ib = static_cast<int>(std::round(b / 2));
-			
-			printf("r=%.2f/b=%.2f\nir=%d/ib=%d\n", r, b, ir, ib);
-			redPos.x -= ir; // Camera::getSingletonPtr()->getLastX() - panX;
-			bluePos.x -= ib; // Camera::getSingletonPtr()->getLastX() - panX;
+			redPos.x -= static_cast<int>(std::round(static_cast<double>(blueMoved) / 3));
+			bluePos.x -= static_cast<int>(std::round(static_cast<double>(redMoved) / 3));
 		}
 	}
 	else if (bothRight){
 		if (Camera::getSingletonPtr()->isBetweenBounds()){
-			double r = static_cast<double>(blueMoved);
-			double b = static_cast<double>(redMoved);
-			int ir = static_cast<int>(std::round(r / 2));
-			int ib = static_cast<int>(std::round(b / 2));
-			
-			printf("r=%.2f/b=%.2f\nir=%d/ib=%d\n", r, b, ir, ib);
-			redPos.x -= ir; // Camera::getSingletonPtr()->getLastX() - panX;
-			bluePos.x -= ib; // Camera::getSingletonPtr()->getLastX() - panX;
+			redPos.x -= static_cast<int>(std::round(static_cast<double>(blueMoved) / 3));
+			bluePos.x -= static_cast<int>(std::round(static_cast<double>(redMoved) / 3));
 		}
 	}
 
