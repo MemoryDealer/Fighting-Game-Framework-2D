@@ -244,15 +244,13 @@ void PlayerManager::update(double dt)
 
 	const int redMoved = redPos.x - redOldX;
 	const int blueMoved = bluePos.x - blueOldX;
-	const int vRedX = (redPos.x + m_pRedPlayer->getRenderWidthDiff());
-	const int vBlueX = (bluePos.x + m_pBluePlayer->getRenderWidthDiff());
-	const int vMid = (vRedX + vBlueX) / 2;
 	const bool bothLeft = (redMoved < 0 && blueMoved < 0);
 	const bool bothRight = (redMoved > 0 && blueMoved > 0);
-	const int currentX = Camera::getSingletonPtr()->getX();
-	const int panX = vMid - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2;
+	const int panX = (redPos.x + m_pRedPlayer->getRenderWidthDiff() + 
+					  bluePos.x + m_pBluePlayer->getRenderWidthDiff()) / 2
+					  - (StageManager::getSingletonPtr()->getStage()->m_layers[0].src.w) / 2;
 
-	Camera::getSingletonPtr()->panX(panX);	
+	Camera::getSingletonPtr()->panX(panX);
 	
 	// Re-position non-moving player.
 	// Only do this if one player is moving and the other isn't moving.
@@ -266,14 +264,10 @@ void PlayerManager::update(double dt)
 			}
 		}
 	}
-	else if (bothLeft){
+	else if (bothLeft || bothRight){
 		if (Camera::getSingletonPtr()->isBetweenBounds()){
-			redPos.x -= static_cast<int>(std::round(static_cast<double>(blueMoved) / 3));
-			bluePos.x -= static_cast<int>(std::round(static_cast<double>(redMoved) / 3));
-		}
-	}
-	else if (bothRight){
-		if (Camera::getSingletonPtr()->isBetweenBounds()){
+			// Adjust camera movement to simultaneously prevent it from moving too quickly
+			// and maintain apparent player movement speed.
 			redPos.x -= static_cast<int>(std::round(static_cast<double>(blueMoved) / 3));
 			bluePos.x -= static_cast<int>(std::round(static_cast<double>(redMoved) / 3));
 		}

@@ -2,8 +2,10 @@
 layers=1
 
 [layer1]
-texture=Stages/Textures/a.jpg
+texture=Stages/Textures/2.png
+#w=425
+#h=220
 w=425
-h=220
+h=443
 scrollX=0
 scrollY=0

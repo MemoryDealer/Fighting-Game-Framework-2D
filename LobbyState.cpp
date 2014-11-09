@@ -436,6 +436,7 @@ void LobbyState::processGUIAction(const int type)
 				break;
 
 			case GUILobbyStateLayer::Root::BUTTON_START:
+				StageManager::getSingletonPtr()->load(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/test.stage");
 				if (Game::getSingletonPtr()->getMode() == Game::SERVER){
 					// Load fighters being used by players.
 					if (Server::getSingletonPtr()->getReadyQueueSize() < 2){

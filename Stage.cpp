@@ -44,7 +44,7 @@ m_shiftUpdates()
 
 		layer.pTexture = Engine::getSingletonPtr()->loadTexture(
 			Engine::getSingletonPtr()->getDataDirectory() + "/" + c.parseValue(layerName, "texture"));
-
+		f: re-organize the layer struct to be more understandable
 		layer.src.w = c.parseIntValue(layerName, "w");
 		layer.src.h = c.parseIntValue(layerName, "h");
 
@@ -68,6 +68,7 @@ m_shiftUpdates()
 	}
 
 	m_rightEdge = m_layers[0].w - m_layers[0].src.w;
+	Camera::getSingletonPtr()->setRightBound(m_rightEdge);
 
 	Log::getSingletonPtr()->logMessage("Stage loaded with " + Engine::toString(numLayers) + " layer(s)!");
 }
@@ -158,18 +159,12 @@ void Stage::update(double dt)
 		// Render the layer.
 		SDL_Rect src = m_layers[i].src;
 
-		int currentX = src.x;
-		int shift = Camera::getSingletonPtr()->getX() - Camera::getSingletonPtr()->getLastX();
-		m_layers[i].src.x += shift; // Camera::getSingletonPtr()->getX();
-		printf("Stage x shifted: %d\t%d/%d\t%d\n", src.x - currentX, currentX, src.x, shift);
+		m_layers[i].src.x = Camera::getSingletonPtr()->getX();
 		if (m_layers[i].src.x < 0){
 			m_layers[i].src.x = 0;
 		}
 		else if (m_layers[i].src.x > m_rightEdge){
 			m_layers[i].src.x = m_rightEdge;
-		}
-		else{
-			//src.x /= static_cast<int>(static_cast<double>(src.w) * 100.0);			
 		}
 
 		SDL_RenderCopyEx(Engine::getSingletonPtr()->getRenderer(),
@@ -193,8 +188,9 @@ void Stage::update(double dt)
 				m_layers[i].pTexture, &m_layers[i].src, &dst2, 0, nullptr, SDL_FLIP_NONE);
 
 			// Wrap back around to beginning.
-			if (dst2.x >= 0)
+			if (dst2.x >= 0){
 				m_layers[i].dst.x = 0;
+			}
 		}
 	}
 }

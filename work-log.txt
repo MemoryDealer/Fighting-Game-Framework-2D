@@ -505,8 +505,11 @@
 	the Stage::update() function.
 
 #TODO
+-The .stage file clipping w=425 seems to be the only one that works with my current Camera code (the idle player moves too much), 
+	which is unexpected, as it is not hard-coded. Fix this, but
+	first resize everything to 1080p and work from there.
 -Client player gets stuck at left of stage about 30 units to the right of zero before hitting edge.
--When both players are walking same direction and farther player jumps back, the chasing player snaps forward a bit.
+-Fix camera snapping when player on right attacks.
 -Fix stage shifting prediction!
 -Consider changing server/client classes to simple structs and holding pointers to them in each state. The singletons are cumbersome.
 -When player who is jumping is hit, they stay standing in midair--they need to finish the jump or get knocked down.

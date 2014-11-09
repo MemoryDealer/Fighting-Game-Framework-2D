@@ -42,6 +42,9 @@ public:
 	// Returne true if Camera is not at either edge of stage.
 	const bool isBetweenBounds(void) const;
 
+	// Sets the right edge at which camera.x + camera.w can be at.
+	void setRightBound(const int bound);
+
 	// Sets the Camera's panX position, the Camera will pan to it each frame.
 	void panX(const int x);
 
@@ -83,6 +86,10 @@ inline const int Camera::getLastX(void) const{
 
 inline const bool Camera::isBetweenBounds(void) const{
 	return (m_panX > 0 && m_panX < m_rightBound);
+}
+
+inline void Camera::setRightBound(const int bound){
+	m_rightBound = bound;
 }
 
 // ================================================ //

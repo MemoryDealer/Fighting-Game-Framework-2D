@@ -64,8 +64,7 @@ void MenuState::enter(void)
 	new PlayerManager();
 	PlayerManager::getSingletonPtr()->reset();
 
-	new StageManager();
-	StageManager::getSingletonPtr()->load(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/test.stage");
+	new StageManager();	
 }
 
 // ================================================ //

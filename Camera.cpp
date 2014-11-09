@@ -14,6 +14,8 @@
 #include "Camera.hpp"
 #include "Config.hpp"
 #include "Engine.hpp"
+#include "Stage.hpp"
+#include "StageManager.hpp"
 
 // ================================================ //
 
@@ -68,9 +70,7 @@ void Camera::panY(const int y)
 
 void Camera::update(double dt)
 {
-	printf("X: %d\tPanX: %d\n", m_x, m_panX);
-
-	const int snapRange = 2;
+	const int snapRange = 5;
 
 	// Pan to x-position.
 	if (m_x < m_panX){
