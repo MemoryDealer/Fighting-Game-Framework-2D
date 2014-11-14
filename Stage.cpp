@@ -44,7 +44,7 @@ m_shiftUpdates()
 
 		layer.pTexture = Engine::getSingletonPtr()->loadTexture(
 			Engine::getSingletonPtr()->getDataDirectory() + "/" + c.parseValue(layerName, "texture"));
-		f: re-organize the layer struct to be more understandable
+		///f: re-organize the layer struct to be more understandable
 		layer.src.w = c.parseIntValue(layerName, "w");
 		layer.src.h = c.parseIntValue(layerName, "h");
 

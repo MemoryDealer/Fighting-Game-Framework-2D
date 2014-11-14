@@ -834,6 +834,7 @@ void LobbyState::update(double dt)
 					break;
 
 				case NetMessage::SERVER_STARTING_GAME:
+					StageManager::getSingletonPtr()->load(Engine::getSingletonPtr()->getDataDirectory() + "/Stages/test.stage");
 					Game::getSingletonPtr()->setPlaying(Game::SPECTATING);
 					// Load the fighters being used this match.
 					{

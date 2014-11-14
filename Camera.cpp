@@ -70,7 +70,7 @@ void Camera::panY(const int y)
 
 void Camera::update(double dt)
 {
-	const int snapRange = 5;
+	const int snapRange = 1;
 
 	// Pan to x-position.
 	if (m_x < m_panX){
